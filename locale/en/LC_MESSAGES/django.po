@@ -1,0 +1,325 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-08 08:03+0400\n"
+"PO-Revision-Date: 2025-06-01 03:21+0400\n"
+"Last-Translator:   <admin@mail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Translated-Using: django-rosetta 0.10.2\n"
+
+#: apps/files/models.py:118
+#, fuzzy, python-brace-format
+#| msgid "File type \"{content_type}\" not allowed for {file_type}."
+msgid "File type \"{content_type}\" not allowed."
+msgstr "File type '{content_type}' not allowed for {file_type}."
+
+#: apps/files/models.py:122
+#, fuzzy, python-brace-format
+#| msgid "File size exceeds the limit for {file_type}."
+msgid "File size {size:.2f} MB exceeds the limit ({limit:.2f} MB)."
+msgstr "File size exceeds the limit for {file_type}."
+
+#: apps/files/models.py:147
+msgid "Comment"
+msgstr "Comment"
+
+#: apps/files/models.py:148 apps/user/admin.py:114
+msgid "User"
+msgstr "User"
+
+#: apps/files/models.py:149
+msgid "Post"
+msgstr "Post"
+
+#: apps/files/models.py:150
+msgid "Evidence"
+msgstr "Evidence"
+
+#: apps/files/models.py:151
+msgid "Report"
+msgstr "Report"
+
+#: apps/files/models.py:152
+msgid "Plan"
+msgstr "Plan"
+
+#: apps/files/models.py:153
+msgid "Attachment"
+msgstr "Attachment"
+
+#: apps/files/models.py:154
+msgid "Finding"
+msgstr "Finding"
+
+#: apps/files/models.py:155
+msgid "Action"
+msgstr "Action"
+
+#: apps/files/models.py:156
+msgid "Template"
+msgstr "Template"
+
+#: apps/files/models.py:157
+msgid "Policy"
+msgstr "Policy"
+
+#: apps/files/models.py:158
+msgid "Other"
+msgstr "Other"
+
+#: apps/files/models.py:161
+msgid "File"
+msgstr "File"
+
+#: apps/files/models.py:162
+msgid "Original File Name"
+msgstr "Original File Name"
+
+#: apps/files/models.py:163
+msgid "Uploaded At"
+msgstr "Uploaded At"
+
+#: apps/files/models.py:170
+msgid "Uploaded By"
+msgstr "Uploaded By"
+
+#: apps/files/models.py:172
+msgid "Description"
+msgstr "Description"
+
+#: apps/files/models.py:173
+msgid "File Hash"
+msgstr "File Hash"
+
+#: apps/files/models.py:174
+msgid "Used"
+msgstr "Used"
+
+#: apps/files/models.py:176
+msgid "Type"
+msgstr "Type"
+
+#: apps/files/models.py:178
+msgid "Object Primary Key"
+msgstr "Object Primary Key"
+
+#: apps/files/models.py:179
+msgid "Primary key of the object this file is associated with."
+msgstr "Primary key of the object this file is associated with."
+
+#: apps/notifications/models.py:20
+msgid "Can view notifications"
+msgstr "Can view notifications"
+
+#: apps/notifications/models.py:21
+msgid "Can manage notifications"
+msgstr "Can manage notifications"
+
+#: apps/user/admin.py:47
+msgid "Personal info"
+msgstr "Personal info"
+
+#: apps/user/admin.py:49
+msgid "Permissions"
+msgstr "Permissions"
+
+#: apps/user/admin.py:60
+msgid "Important dates"
+msgstr "Important dates"
+
+#: apps/user/admin.py:61
+msgid "AD Sync"
+msgstr "AD Sync"
+
+#: apps/user/admin.py:84
+msgid "Switch"
+msgstr "Switch"
+
+#: apps/user/admin.py:86
+msgid "Impersonate User"
+msgstr "Impersonate User"
+
+#: apps/user/serializers.py:59 templates/admin/custom_dashboard.html:28
+msgid "Username"
+msgstr "Username"
+
+#: apps/user/serializers.py:60
+msgid "Password"
+msgstr "Password"
+
+#: apps/user/serializers.py:69
+msgid "Unable to log in with provided credentials."
+msgstr "Unable to log in with provided credentials."
+
+#: apps/user/serializers.py:72
+msgid "User account is disabled."
+msgstr "User account is disabled."
+
+#: apps/user/serializers.py:75
+msgid "Must include \"username\" and \"password\"."
+msgstr "Must include \"username\" and \"password\"."
+
+#: apps/utils/constants.py:5
+msgid "Audit"
+msgstr "Audit"
+
+#: audit/urls.py:31
+msgid "Audit Management Administration"
+msgstr "Audit Management Administration"
+
+#: audit/urls.py:32
+msgid "Audit Management Admin Portal"
+msgstr "Audit Management Admin Portal"
+
+#: audit/views.py:23
+msgid "hello"
+msgstr "Hello English"
+
+#: templates/404.html:7
+msgid "Page Not Found"
+msgstr "Page Not Found"
+
+#: templates/404.html:8
+msgid "Sorry, the page you are looking for does not exist."
+msgstr "Sorry, the page you are looking for does not exist."
+
+#: templates/404.html:9
+msgid "Return to Home"
+msgstr "Return to Home"
+
+#: templates/admin/custom_dashboard.html:22
+msgid "Custom Admin Dashboard"
+msgstr "Custom Admin Dashboard"
+
+#: templates/admin/custom_dashboard.html:25
+msgid "Welcome"
+msgstr "Welcome"
+
+#: templates/admin/custom_dashboard.html:29
+msgid "Email"
+msgstr "Email"
+
+#: templates/admin/custom_dashboard.html:30
+msgid "Language"
+msgstr "Language"
+
+#: templates/admin/custom_dashboard.html:30
+msgid "Not set"
+msgstr "Not set"
+
+#: templates/admin/custom_dashboard.html:31
+msgid "Groups"
+msgstr "Groups"
+
+#: templates/admin/custom_dashboard.html:35
+msgid "None"
+msgstr "None"
+
+#: templates/admin/custom_dashboard.html:38
+msgid "Is Superuser"
+msgstr "Is Superuser"
+
+#: templates/admin/custom_dashboard.html:38
+msgid "Yes,No"
+msgstr "Yes,No"
+
+#: templates/admin/custom_dashboard.html:42
+msgid "Statistics"
+msgstr "Statistics"
+
+#: templates/admin/custom_dashboard.html:45
+msgid "Total Users"
+msgstr "Total Users"
+
+#: templates/admin/custom_dashboard.html:49
+msgid "Users Logged In Today"
+msgstr "Users Logged In Today"
+
+#: templates/admin/custom_dashboard.html:62
+msgid "New Users Per Day"
+msgstr "New Users Per Day"
+
+#: templates/admin/custom_dashboard.html:77 templates/admin/index.html:5
+msgid "Quick Links"
+msgstr "Quick Links"
+
+#: templates/admin/custom_dashboard.html:79 templates/user/index.html:13
+msgid "Log out"
+msgstr "Log out"
+
+#: templates/admin/custom_dashboard.html:80
+msgid "Admin Home"
+msgstr "Admin Home"
+
+#: templates/admin/custom_dashboard.html:83
+msgid "Recent Celery Tasks"
+msgstr "Recent Celery Tasks"
+
+#: templates/admin/custom_dashboard.html:87
+msgid "Task ID"
+msgstr "Task ID"
+
+#: templates/admin/custom_dashboard.html:88
+msgid "Task Name"
+msgstr "Task Name"
+
+#: templates/admin/custom_dashboard.html:89
+msgid "Status"
+msgstr "Status"
+
+#: templates/admin/custom_dashboard.html:90
+msgid "Time"
+msgstr "Time"
+
+#: templates/admin/custom_dashboard.html:91
+msgid "Error"
+msgstr "Error"
+
+#: templates/admin/custom_dashboard.html:92
+msgid "Traceback"
+msgstr "Traceback"
+
+#: templates/admin/custom_dashboard.html:106
+msgid "No tasks found."
+msgstr "No tasks found."
+
+#: templates/admin/index.html:7
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: templates/base.html:6
+msgid "My Website"
+msgstr "My Website"
+
+#: templates/base.html:28
+msgid "Welcome to our site"
+msgstr "Welcome to our site"
+
+#: templates/base.html:29
+#, python-format
+msgid "Today is %(current_date)s."
+msgstr "Today is %(current_date)s."
+
+#: templates/base.html:41
+msgid "Go to Admin"
+msgstr "Go to Admin"
+
+#: templates/registration/login.html:15 templates/registration/login.html:29
+msgid "Sign in"
+msgstr "Sign in"
+
+#: templates/registration/login.html:27
+msgid "Remember Me"
+msgstr "Remember Me"

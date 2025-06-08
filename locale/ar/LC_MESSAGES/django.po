@@ -1,0 +1,324 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-08 08:03+0400\n"
+"PO-Revision-Date: 2025-06-01 03:21+0400\n"
+"Last-Translator:   <admin@mail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"X-Translated-Using: django-rosetta 0.10.2\n"
+
+#: apps/files/models.py:118
+#, python-brace-format
+msgid "File type \"{content_type}\" not allowed."
+msgstr "نوع الملف \"{content_type}\" غير مسموح به."
+
+#: apps/files/models.py:122
+#, python-brace-format
+msgid "File size {size:.2f} MB exceeds the limit ({limit:.2f} MB)."
+msgstr "حجم الملف {size:.2f} ميجابايت يتجاوز الحد ({limit:.2f} ميجابايت)."
+
+#: apps/files/models.py:147
+msgid "Comment"
+msgstr "تعليق"
+
+#: apps/files/models.py:148 apps/user/admin.py:114
+msgid "User"
+msgstr "مستخدم"
+
+#: apps/files/models.py:149
+msgid "Post"
+msgstr "منشور"
+
+#: apps/files/models.py:150
+msgid "Evidence"
+msgstr "دليل"
+
+#: apps/files/models.py:151
+msgid "Report"
+msgstr "تقرير"
+
+#: apps/files/models.py:152
+msgid "Plan"
+msgstr "خطة"
+
+#: apps/files/models.py:153
+msgid "Attachment"
+msgstr "مرفق"
+
+#: apps/files/models.py:154
+msgid "Finding"
+msgstr "نتيجة"
+
+#: apps/files/models.py:155
+msgid "Action"
+msgstr "إجراء"
+
+#: apps/files/models.py:156
+msgid "Template"
+msgstr "قالب"
+
+#: apps/files/models.py:157
+msgid "Policy"
+msgstr "سياسة"
+
+#: apps/files/models.py:158
+msgid "Other"
+msgstr "أخرى"
+
+#: apps/files/models.py:161
+msgid "File"
+msgstr "ملف"
+
+#: apps/files/models.py:162
+msgid "Original File Name"
+msgstr "اسم الملف الأصلي"
+
+#: apps/files/models.py:163
+msgid "Uploaded At"
+msgstr "تاريخ الرفع"
+
+#: apps/files/models.py:170
+msgid "Uploaded By"
+msgstr "تم الرفع بواسطة"
+
+#: apps/files/models.py:172
+msgid "Description"
+msgstr "الوصف"
+
+#: apps/files/models.py:173
+msgid "File Hash"
+msgstr "تجزئة الملف"
+
+#: apps/files/models.py:174
+msgid "Used"
+msgstr "مستخدم"
+
+#: apps/files/models.py:176
+msgid "Type"
+msgstr "النوع"
+
+#: apps/files/models.py:178
+msgid "Object Primary Key"
+msgstr "المفتاح الأساسي للكائن"
+
+#: apps/files/models.py:179
+msgid "Primary key of the object this file is associated with."
+msgstr "المفتاح الأساسي للكائن المرتبط بهذا الملف."
+
+#: apps/notifications/models.py:20
+msgid "Can view notifications"
+msgstr "يمكن عرض الإشعارات"
+
+#: apps/notifications/models.py:21
+msgid "Can manage notifications"
+msgstr "يمكن إدارة الإشعارات"
+
+#: apps/user/admin.py:47
+msgid "Personal info"
+msgstr "معلومات شخصية"
+
+#: apps/user/admin.py:49
+msgid "Permissions"
+msgstr "الصلاحيات"
+
+#: apps/user/admin.py:60
+msgid "Important dates"
+msgstr "تواريخ مهمة"
+
+#: apps/user/admin.py:61
+msgid "AD Sync"
+msgstr "مزامنة AD"
+
+#: apps/user/admin.py:84
+msgid "Switch"
+msgstr "تبديل"
+
+#: apps/user/admin.py:86
+msgid "Impersonate User"
+msgstr "انتحال المستخدم"
+
+#: apps/user/serializers.py:59 templates/admin/custom_dashboard.html:28
+msgid "Username"
+msgstr "اسم المستخدم"
+
+#: apps/user/serializers.py:60
+msgid "Password"
+msgstr "كلمة المرور"
+
+#: apps/user/serializers.py:69
+msgid "Unable to log in with provided credentials."
+msgstr "غير قادر على تسجيل الدخول باستخدام بيانات الاعتماد المقدمة."
+
+#: apps/user/serializers.py:72
+msgid "User account is disabled."
+msgstr "تم تعطيل حساب المستخدم."
+
+#: apps/user/serializers.py:75
+msgid "Must include \"username\" and \"password\"."
+msgstr "يجب تضمين \"اسم المستخدم\" و\"كلمة المرور\"."
+
+#: apps/utils/constants.py:5
+msgid "Audit"
+msgstr "تدقيق"
+
+#: audit/urls.py:31
+msgid "Audit Management Administration"
+msgstr "إدارة تدقيق الإدارة"
+
+#: audit/urls.py:32
+msgid "Audit Management Admin Portal"
+msgstr "بوابة إدارة التدقيق"
+
+#: audit/views.py:23
+msgid "hello"
+msgstr "مرحباً"
+
+#: templates/404.html:7
+msgid "Page Not Found"
+msgstr "الصفحة غير موجودة"
+
+#: templates/404.html:8
+msgid "Sorry, the page you are looking for does not exist."
+msgstr "عذراً، الصفحة التي تبحث عنها غير موجودة."
+
+#: templates/404.html:9
+msgid "Return to Home"
+msgstr "العودة إلى الصفحة الرئيسية"
+
+#: templates/admin/custom_dashboard.html:22
+msgid "Custom Admin Dashboard"
+msgstr "لوحة تحكم الإدارة المخصصة"
+
+#: templates/admin/custom_dashboard.html:25
+msgid "Welcome"
+msgstr "مرحباً"
+
+#: templates/admin/custom_dashboard.html:29
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#: templates/admin/custom_dashboard.html:30
+msgid "Language"
+msgstr "اللغة"
+
+#: templates/admin/custom_dashboard.html:30
+msgid "Not set"
+msgstr "غير محدد"
+
+#: templates/admin/custom_dashboard.html:31
+msgid "Groups"
+msgstr "المجموعات"
+
+#: templates/admin/custom_dashboard.html:35
+msgid "None"
+msgstr "لا يوجد"
+
+#: templates/admin/custom_dashboard.html:38
+msgid "Is Superuser"
+msgstr "مشرف عام"
+
+#: templates/admin/custom_dashboard.html:38
+msgid "Yes,No"
+msgstr "نعم,لا"
+
+#: templates/admin/custom_dashboard.html:42
+msgid "Statistics"
+msgstr "الإحصائيات"
+
+#: templates/admin/custom_dashboard.html:45
+msgid "Total Users"
+msgstr "إجمالي المستخدمين"
+
+#: templates/admin/custom_dashboard.html:49
+msgid "Users Logged In Today"
+msgstr "المستخدمون الذين سجلوا الدخول اليوم"
+
+#: templates/admin/custom_dashboard.html:62
+msgid "New Users Per Day"
+msgstr "المستخدمون الجدد يومياً"
+
+#: templates/admin/custom_dashboard.html:77 templates/admin/index.html:5
+msgid "Quick Links"
+msgstr "روابط سريعة"
+
+#: templates/admin/custom_dashboard.html:79 templates/user/index.html:13
+msgid "Log out"
+msgstr "تسجيل الخروج"
+
+#: templates/admin/custom_dashboard.html:80
+msgid "Admin Home"
+msgstr "الصفحة الرئيسية للإدارة"
+
+#: templates/admin/custom_dashboard.html:83
+msgid "Recent Celery Tasks"
+msgstr "مهام Celery الأخيرة"
+
+#: templates/admin/custom_dashboard.html:87
+msgid "Task ID"
+msgstr "معرف المهمة"
+
+#: templates/admin/custom_dashboard.html:88
+msgid "Task Name"
+msgstr "اسم المهمة"
+
+#: templates/admin/custom_dashboard.html:89
+msgid "Status"
+msgstr "الحالة"
+
+#: templates/admin/custom_dashboard.html:90
+msgid "Time"
+msgstr "الوقت"
+
+#: templates/admin/custom_dashboard.html:91
+msgid "Error"
+msgstr "خطأ"
+
+#: templates/admin/custom_dashboard.html:92
+msgid "Traceback"
+msgstr "تتبع الخطأ"
+
+#: templates/admin/custom_dashboard.html:106
+msgid "No tasks found."
+msgstr "لم يتم العثور على مهام."
+
+#: templates/admin/index.html:7
+msgid "Dashboard"
+msgstr "لوحة التحكم"
+
+#: templates/base.html:6
+msgid "My Website"
+msgstr "موقعي الإلكتروني"
+
+#: templates/base.html:28
+msgid "Welcome to our site"
+msgstr "مرحباً بكم في موقعنا"
+
+#: templates/base.html:29
+#, python-format
+msgid "Today is %(current_date)s."
+msgstr "اليوم هو %(current_date)s."
+
+#: templates/base.html:41
+msgid "Go to Admin"
+msgstr "الانتقال إلى لوحة الإدارة"
+
+#: templates/registration/login.html:15 templates/registration/login.html:29
+msgid "Sign in"
+msgstr "تسجيل الدخول"
+
+#: templates/registration/login.html:27
+msgid "Remember Me"
+msgstr "تذكرني"

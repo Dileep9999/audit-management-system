@@ -1,0 +1,11 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block content %}
+  <h2>{% trans "Quick Links" %}</h2>
+  <ul>
+    <li><a href="{% url 'custom_dashboard' %}">{% trans "Dashboard" %}</a></li>
+    <!-- Add more links as needed -->
+  </ul>
+  {{ block.super }}
+{% endblock %}

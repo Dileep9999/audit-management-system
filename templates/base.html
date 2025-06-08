@@ -1,0 +1,48 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+    <title>{% trans "My Website" %}</title>
+</head>
+<body>
+    <!-- Language switcher -->
+    <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.path }}">
+        <select name="language" onchange="this.form.submit()">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+                <option value="{{ language.code }}" 
+                    {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
+                    {{ language.name_local }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <!-- Content blocks -->
+    {% block content %}
+        <h1>{% trans "Welcome to our site" %} {{ request.user }}</h1>
+        <p>{% blocktrans %}Today is {{ current_date }}.{% endblocktrans %}</p>
+
+    {% endblock %}
+
+	{% if request.impersonator %}
+	<div style="padding: 10px;">
+		You are impersonating {{ request.user }}.
+		<a href="{% url 'impersonate-stop' %}"> Stop</a>
+	</div>
+{% endif %}
+ {% if request.user.is_superuser %}
+      <div style="margin-top: 2em;">
+        <a href="{% url 'admin:index' %}" class="btn btn-primary">{% trans "Go to Admin" %}</a>
+      </div>
+    {% endif %}
+
+	Current language: {{ LANGUAGE_CODE }}<br>
+	Language cookie: {{ request.COOKIES.language }}
+</body>
+</html>

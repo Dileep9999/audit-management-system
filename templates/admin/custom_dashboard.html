@@ -1,0 +1,110 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block userlinks %}
+    {{ block.super }}
+    / <a href="{% url 'rosetta-old-home-redirect' %}">Rosetta</a>
+    <form action="{% url 'set_language' %}" method="post" style="display:inline-block; margin-left:1rem;">
+        {% csrf_token %}
+        <select name="language" onchange="this.form.submit()" style="padding:2px;">
+          {% get_current_language as LANGUAGE_CODE %}
+          {% get_available_languages as LANGUAGES %}
+          {% for lang in LANGUAGES %}
+            <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %}selected{% endif %}>
+              {{ lang.1 }}
+            </option>
+          {% endfor %}
+        </select>
+    </form>
+{% endblock %}
+
+{% block content %}
+  <h1>{% trans "Custom Admin Dashboard" %}</h1>
+  <div>
+    <p>
+      {% trans "Welcome" %}, {{ request.user.get_full_name|default:request.user.username }}!
+    </p>
+    <ul>
+      <li>{% trans "Username" %}: {{ request.user.username }}</li>
+      <li>{% trans "Email" %}: {{ request.user.email }}</li>
+      <li>{% trans "Language" %}: {{ request.user.language|default:_("Not set") }}</li>
+      <li>{% trans "Groups" %}: 
+        {% for group in request.user.groups.all %}
+          {{ group.name }}{% if not forloop.last %}, {% endif %}
+        {% empty %}
+          {% trans "None" %}
+        {% endfor %}
+      </li>
+      <li>{% trans "Is Superuser" %}: {{ request.user.is_superuser|yesno:_("Yes,No") }}</li>
+    </ul>
+  </div>
+  <hr>
+  <h2>{% trans "Statistics" %}</h2>
+  <div style="display: flex; gap: 2em; margin-bottom: 2em;">
+    <div style="background: #f5f5f5; padding: 1em; border-radius: 8px; min-width: 180px; text-align: center;">
+      <h3>{% trans "Total Users" %}</h3>
+      <div style="font-size: 2em; font-weight: bold;">{{ total_users }}</div>
+    </div>
+    <div style="background: #f5f5f5; padding: 1em; border-radius: 8px; min-width: 180px; text-align: center;">
+      <h3>{% trans "Users Logged In Today" %}</h3>
+      <div style="font-size: 2em; font-weight: bold;">{{ users_logged_in_today }}</div>
+    </div>
+  </div>
+  <canvas id="userChart" width="400" height="150"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    var ctx = document.getElementById('userChart').getContext('2d');
+    var userChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ user_chart_labels|safe }},
+            datasets: [{
+                label: '{% trans "New Users Per Day" %}',
+                data: {{ user_chart_data|safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+  </script>
+  <hr>
+  <h2>{% trans "Quick Links" %}</h2>
+  <ul>
+    <li><a href="{% url 'admin:logout' %}">{% trans "Log out" %}</a></li>
+    <li><a href="{% url 'admin:index' %}">{% trans "Admin Home" %}</a></li>
+  </ul>
+  <hr>
+  <h2>{% trans "Recent Celery Tasks" %}</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>{% trans "Task ID" %}</th>
+        <th>{% trans "Task Name" %}</th>
+        <th>{% trans "Status" %}</th>
+        <th>{% trans "Time" %}</th>
+        <th>{% trans "Error" %}</th>
+        <th>{% trans "Traceback" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in recent_tasks %}
+        <tr>
+          <td>{{ task.id }}</td>
+          <td>{{ task.task_name }}</td>
+          <td>{{ task.status }}</td>
+          <td>{{ task.date_done }}</td>
+          <td style="color: red;">{{ task.result }}</td>
+          <td style="color: red;">{{ task.traceback }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6">{% trans "No tasks found." %}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
