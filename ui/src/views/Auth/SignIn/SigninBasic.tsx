@@ -97,7 +97,7 @@ const SignInBasic = () => {
         <div className="grid grid-cols-12">
           <div className="col-span-12 mb-0 md:col-span-10 lg:col-span-6 xl:col-span-4 md:col-start-2 lg:col-start-4 xl:col-start-5 card">
             <div className="md:p-10 card-body">
-              <div className="mb-5 text-center">
+              {/* <div className="mb-5 text-center">
                 <Link to="#">
                   <img
                     src={LogoMain}
@@ -124,7 +124,7 @@ const SignInBasic = () => {
                 >
                   Sign Up
                 </Link>
-              </p>
+              </p> */}
               {alert.isVisible && (
                 <div
                   className={`relative py-3 text-sm rounded-md ltr:pl-5 rtl:pr-5 ltr:pr-7 rtl:pl-7 ${alert.type}`}
@@ -257,7 +257,7 @@ const SignInBasic = () => {
                 </button>
               </div>
 
-              <div className="flex items-center gap-3 mt-3">
+              {/* <div className="flex items-center gap-3 mt-3">
                 <div className="grow">
                   <h6 className="mb-1">Users</h6>
                   <p className="text-gray-500 dark:text-dark-500">
@@ -273,7 +273,7 @@ const SignInBasic = () => {
                 >
                   Login
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
