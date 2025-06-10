@@ -251,7 +251,7 @@ const Sidebar = ({
                           </div>
                         </div>
                         <div className="pt-2 mt-3 border-t border-gray-200 dark:border-dark-800">
-                          <Link
+                          {/* <Link
                             to="/page/user-activity"
                             className="inline-block py-2 text-gray-500 before:hidden ltr:text-left rtl:text-right link hover:text-primary-500"
                           >
@@ -289,7 +289,7 @@ const Sidebar = ({
                           >
                             <Gem className="inline-block mr-2 size-4" /> Upgrade
                             Plan
-                          </Link>
+                          </Link> */}
                           <div>
                             <button
                               className="inline-block py-2 text-gray-500 ltr:text-left rtl:text-right hover:text-primary-500"

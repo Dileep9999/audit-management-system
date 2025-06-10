@@ -150,7 +150,7 @@ const TopBar: React.FC<TopBarProps> = ({
             </div>
 
             {/* Search */}
-            <div className="relative items-center hidden lg:flex">
+            {/* <div className="relative items-center hidden lg:flex">
               <Search className="absolute size-4 text-topbar top-3 ltr:left-2 rtl:right-2 group-data-[nav-type=pattern]:text-white/75"></Search>
               <input
                 type="search"
@@ -161,7 +161,7 @@ const TopBar: React.FC<TopBarProps> = ({
                   searchMenu(e.target.value)
                 }
               />
-            </div>
+            </div> */}
 
             <div className="flex items-center gap-2 ltr:ml-auto rtl:mr-auto">
               {/* Settings (Layout modal) - Commented out
