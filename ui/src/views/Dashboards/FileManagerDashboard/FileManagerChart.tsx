@@ -1,22 +1,13 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
+import useChartColors from "@hooks/useChartColors";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
-  timeFrame?: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
+  timeFrame?: string;
 }
 
 const AnalyticsApp = ({
@@ -26,27 +17,28 @@ const AnalyticsApp = ({
   timeFrame,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const labels = ['Dropbox', 'Cloud', 'Mega', 'Google', 'Drive']
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
-        return [{ name: 'Total GB', data: [55, 35, 51, 17, 32] }]
-      case 'Last Month':
-        return [{ name: 'Total GB', data: [34, 15, 21, 67, 42] }]
-      case 'Last Year':
-        return [{ name: 'Total GB', data: [64, 75, 31, 47, 72] }]
+      case "Weekly":
+        return [{ name: "Total GB", data: [55, 35, 51, 17, 32] }];
+      case "Last Month":
+        return [{ name: "Total GB", data: [34, 15, 21, 67, 42] }];
+      case "Last Year":
+        return [{ name: "Total GB", data: [64, 75, 31, 47, 72] }];
       default:
-        return [{ name: 'Total GB', data: [44, 55, 41, 67, 22] }]
+        return [{ name: "Total GB", data: [44, 55, 41, 67, 22] }];
     }
-  }
+  };
+
+  const labels = ["Dropbox", "Cloud", "Mega", "Google", "Drive"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 315,
-      type: 'bar',
+      type: "bar",
       toolbar: {
         show: false,
       },
@@ -54,7 +46,7 @@ const AnalyticsApp = ({
     plotOptions: {
       bar: {
         borderRadius: 10,
-        columnWidth: '50%',
+        columnWidth: "50%",
       },
     },
     dataLabels: {
@@ -70,18 +62,11 @@ const AnalyticsApp = ({
         bottom: -8,
       },
     },
-    xaxis: {
-      labels: {
-        rotate: -45,
-      },
-      categories: labels,
-      tickPlacement: 'on',
-    },
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        shade: 'light',
-        type: 'horizontal',
+        shade: "light",
+        type: "horizontal",
         shadeIntensity: 0.25,
         gradientToColors: undefined,
         // inverseColors: [this.colorCodes[0]],
@@ -91,7 +76,7 @@ const AnalyticsApp = ({
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -103,12 +88,12 @@ const AnalyticsApp = ({
         data-chart-colors="[bg-primary-500, bg-gray-100]"
         type="bar"
         id={chartId}
-        height={300}
+        height={315}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const OverviewStorageApp = ({
   chartColors,
@@ -116,15 +101,17 @@ const OverviewStorageApp = ({
   chartId,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
-  const series = [44, 55, 41, 17, 15]
-  const labels = ['Dropbox', 'Cloud', 'Mega', 'Google', 'Drive']
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
+
+  const series = [44, 55, 41, 17, 15];
+
+  const labels = ["Dropbox", "Cloud", "Mega", "Google", "Drive"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
-      height: 240,
-      type: 'donut',
+      height: 250,
+      type: "donut",
     },
     plotOptions: {
       pie: {
@@ -133,18 +120,23 @@ const OverviewStorageApp = ({
         offsetY: 5,
       },
     },
-
+    grid: {
+      padding: {
+        bottom: -80,
+      },
+    },
     stroke: {
       width: 0,
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
     },
     legend: {
-      position: 'bottom',
+      position: "bottom",
     },
     colors: chartsColor,
-  }
+  };
+
   return (
     <React.Fragment>
       <ReactApexChart
@@ -155,11 +147,11 @@ const OverviewStorageApp = ({
         data-chart-colors="[bg-primary-400, bg-green-400, bg-yellow-400, bg-purple-400, bg-red-400]"
         type="donut"
         id={chartId}
-        height={280}
+        height={250}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export { AnalyticsApp, OverviewStorageApp }
+export { AnalyticsApp, OverviewStorageApp };

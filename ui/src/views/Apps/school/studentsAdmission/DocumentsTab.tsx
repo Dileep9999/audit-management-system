@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import { MoveLeft, MoveRight, Upload } from 'lucide-react'
+import { MoveLeft, MoveRight, Upload } from "lucide-react";
+import React from "react";
 
 const DocumentsTab = () => {
   return (
@@ -11,7 +8,7 @@ const DocumentsTab = () => {
         <h6 className="mb-3">Passport-sized Photograph</h6>
         <div className="mb-5">
           <label htmlFor="passportPhotoInput">
-            <div className="flex items-center justify-center overflow-hidden bg-gray-100 border border-gray-200 rounded-sm cursor-pointer dark:bg-dark-850 dark:border-dark-800 size-36">
+            <div className="flex items-center justify-center overflow-hidden bg-gray-100 border border-gray-200 rounded-smcursor-pointer dark:bg-dark-850 dark:border-dark-800 size-36">
               <div className="flex flex-col items-center text-gray-500 dark:text-dark-500">
                 <Upload />
                 <div className="mt-2 mb-1">Passport Size</div>
@@ -33,7 +30,7 @@ const DocumentsTab = () => {
         <h6 className="mb-3">High School Transcript</h6>
         <div>
           <label htmlFor="transcriptInput">
-            <div className="flex items-center justify-center p-4 overflow-hidden bg-gray-100 border border-gray-200 rounded-sm cursor-pointer dark:bg-dark-850 dark:border-dark-800 h-28">
+            <div className="flex items-center justify-center p-4 overflow-hidden bg-gray-100 border border-gray-200 rounded-smcursor-pointer dark:bg-dark-850 dark:border-dark-800 h-28">
               <div className="flex flex-col items-center text-gray-500 dark:text-dark-500">
                 <Upload />
                 <div className="mt-2 mb-1">Drag and drop your certificate</div>
@@ -66,7 +63,7 @@ const DocumentsTab = () => {
         </div>
       </form>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DocumentsTab
+export default DocumentsTab;

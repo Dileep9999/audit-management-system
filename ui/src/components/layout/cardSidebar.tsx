@@ -1,36 +1,33 @@
-import { useState } from 'react'
+import { useState } from "react";
+import React from "react";
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import img2 from '@assets/images/products/img-03.png'
-import img1 from '@assets/images/products/img-04.png'
-import img3 from '@assets/images/products/img-09.png'
 import {
   ChevronDown,
   ChevronUp,
+  Heart,
   Rotate3D,
   ShoppingBag,
   ShoppingBasket,
   Trash2,
   X,
-} from 'lucide-react'
-
-import { Drawer } from '../custom/drawer/drawer'
-
-type CardSidebarProps = {
-  open: boolean
-  handleCloseModal: () => void
+} from "lucide-react";
+import img1 from "@assets/images/products/img-04.png";
+import img2 from "@assets/images/products/img-03.png";
+import img3 from "@assets/images/products/img-09.png";
+import { Drawer } from "../custom/drawer/drawer";
+import { Link } from "react-router-dom";
+interface CardSidebarProps {
+  open: boolean;
+  handleCloseModal: () => void;
 }
 
 const CardSidebar: React.FC<CardSidebarProps> = ({
   open,
   handleCloseModal,
 }) => {
-  const [count1, setCount1] = useState<number>(1)
-  const [count2, setCount2] = useState<number>(2)
-  const [count3, setCount3] = useState<number>(1)
-
+  const [count1, setCount1] = useState<number>(1);
+  const [count2, setCount2] = useState<number>(2);
+  const [count3, setCount3] = useState<number>(1);
   return (
     <>
       <Drawer
@@ -38,10 +35,10 @@ const CardSidebar: React.FC<CardSidebarProps> = ({
         onClose={() => handleCloseModal()}
         position="right"
         size="large"
-        customContentClass="div"
+        customContentClass="none"
         content={
           <>
-            <div id="basicEnd" className="drawer show drawer-lg drawer-end">
+            <div id="basicEnd" drawer-end className="drawer show drawer-lg">
               <div className="drawer-header">
                 <h6>My Cart (3)</h6>
                 <button data-drawer-close="basicEnd">
@@ -52,30 +49,32 @@ const CardSidebar: React.FC<CardSidebarProps> = ({
                 <div className="py-3 border-b border-gray-200 dark:border-dark-800 last:border-none first:pt-0">
                   <div className="flex gap-3 item-center">
                     <div className="bg-gray-100 rounded-md dark:bg-dark-850 size-16 shrink-0">
-                      <Image src={img1} alt="Img 04" />
+                      <img src={img1} alt="Img 04" />
                     </div>
                     <div className="grow">
                       <h6 className="mb-2 text-14">
-                        <Link href="#!">Crop top Sweater Clothing</Link>
+                        <Link to="#!">Crop top Sweater Clothing</Link>
                       </h6>
                       <p>
                         <span className="badge badge-green ltr:mr-2 rtl:ml-2">
                           In Stock
-                        </span>{' '}
-                        -{' '}
-                        <span className="inline-block bg-pink-500 ltr:ml-2 rtl:mr-2 size-3"></span>{' '}
+                        </span>{" "}
+                        -{" "}
+                        <span className="inline-block bg-pink-500 ltr:ml-2 rtl:mr-2 size-3"></span>{" "}
                         <span className="align-baseline">Pink</span>
                       </p>
                       <div className="flex gap-3 *:flex *:items-center items-center mt-5">
                         <Link
-                          href="#!"
-                          className="shrink-0 link link-red text-14">
+                          to="#!"
+                          className="shrink-0 link link-red text-14"
+                        >
                           <Trash2 className="size-4 ltr:mr-1 rtl:ml-1" /> Remove
                         </Link>
                         <Link
-                          href="#!"
-                          className="shrink-0 link link-primary text-14">
-                          <ShoppingBasket className="size-4 ltr:mr-1 rtl:ml-1" />{' '}
+                          to="#!"
+                          className="shrink-0 link link-primary text-14"
+                        >
+                          <ShoppingBasket className="size-4 ltr:mr-1 rtl:ml-1" />{" "}
                           Wishlist
                         </Link>
                       </div>
@@ -87,14 +86,16 @@ const CardSidebar: React.FC<CardSidebarProps> = ({
                           <div className="flex flex-col">
                             <button
                               onClick={() => setCount1(count1 + 1)}
-                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 plus hover:text-primary-500 dark:hover:text-primary-500">
+                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 plus hover:text-primary-500 dark:hover:text-primary-500"
+                            >
                               <ChevronUp className="size-3" />
                             </button>
                             <button
                               onClick={() =>
                                 setCount1(count1 <= 1 ? 1 : count1 - 1)
                               }
-                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 minus hover:text-primary-500 dark:hover:text-primary-500">
+                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 minus hover:text-primary-500 dark:hover:text-primary-500"
+                            >
                               <ChevronDown className="size-3" />
                             </button>
                           </div>
@@ -112,30 +113,32 @@ const CardSidebar: React.FC<CardSidebarProps> = ({
                 <div className="py-3 border-b border-gray-200 dark:border-dark-800 last:border-none first:pt-0">
                   <div className="flex gap-3 item-center">
                     <div className="bg-gray-100 rounded-md dark:bg-dark-850 size-16 shrink-0">
-                      <Image src={img2} alt="Img 04" />
+                      <img src={img2} alt="Img 04" />
                     </div>
                     <div className="grow">
                       <h6 className="mb-2 text-14">
-                        <Link href="#!">Spar Men Black Running Shoes</Link>
+                        <Link to="#!">Spar Men Black Running Shoes</Link>
                       </h6>
                       <p>
                         <span className="badge badge-green ltr:mr-2 rtl:ml-2">
                           In Stock
-                        </span>{' '}
-                        -{' '}
-                        <span className="inline-block bg-gray-800 dark:bg-dark-700 ltr:ml-2 rtl:mr-2 size-3"></span>{' '}
+                        </span>{" "}
+                        -{" "}
+                        <span className="inline-block bg-gray-800 dark:bg-dark-700 ltr:ml-2 rtl:mr-2 size-3"></span>{" "}
                         <span className="align-baseline">Black</span>
                       </p>
                       <div className="flex gap-3 *:flex *:items-center items-center mt-5">
                         <Link
-                          href="#!"
-                          className="shrink-0 link link-red text-14">
+                          to="#!"
+                          className="shrink-0 link link-red text-14"
+                        >
                           <Trash2 className="size-4 ltr:mr-1 rtl:ml-1" /> Remove
                         </Link>
                         <Link
-                          href="#!"
-                          className="shrink-0 link link-primary text-14">
-                          <ShoppingBasket className="size-4 ltr:mr-1 rtl:ml-1" />{' '}
+                          to="#!"
+                          className="shrink-0 link link-primary text-14"
+                        >
+                          <ShoppingBasket className="size-4 ltr:mr-1 rtl:ml-1" />{" "}
                           Wishlist
                         </Link>
                       </div>
@@ -147,14 +150,16 @@ const CardSidebar: React.FC<CardSidebarProps> = ({
                           <div className="flex flex-col">
                             <button
                               onClick={() => setCount2(count2 + 1)}
-                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 plus hover:text-primary-500 dark:hover:text-primary-500">
+                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 plus hover:text-primary-500 dark:hover:text-primary-500"
+                            >
                               <ChevronUp className="size-3" />
                             </button>
                             <button
                               onClick={() =>
                                 setCount2(count2 <= 1 ? 1 : count2 - 1)
                               }
-                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 minus hover:text-primary-500 dark:hover:text-primary-500">
+                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 minus hover:text-primary-500 dark:hover:text-primary-500"
+                            >
                               <ChevronDown className="size-3" />
                             </button>
                           </div>
@@ -172,30 +177,32 @@ const CardSidebar: React.FC<CardSidebarProps> = ({
                 <div className="py-3 border-b border-gray-200 dark:border-dark-800 last:border-none first:pt-0">
                   <div className="flex gap-3 item-center">
                     <div className="bg-gray-100 rounded-md dark:bg-dark-850 size-16 shrink-0">
-                      <Image src={img3} alt="Img 09" />
+                      <img src={img3} alt="Img 09" />
                     </div>
                     <div className="grow">
                       <h6 className="mb-2 text-14">
-                        <Link href="#!">Spar Men Black Running Shoes</Link>
+                        <Link to="#!">Spar Men Black Running Shoes</Link>
                       </h6>
                       <p>
                         <span className="badge badge-red ltr:mr-2 rtl:ml-2">
                           Out of Stock
-                        </span>{' '}
-                        -{' '}
-                        <span className="inline-block bg-blue-500 ltr:ml-2 rtl:mr-2 size-3"></span>{' '}
+                        </span>{" "}
+                        -{" "}
+                        <span className="inline-block bg-blue-500 ltr:ml-2 rtl:mr-2 size-3"></span>{" "}
                         <span className="align-baseline">Blue</span>
                       </p>
                       <div className="flex gap-3 *:flex *:items-center items-center mt-5">
                         <Link
-                          href="#!"
-                          className="shrink-0 link link-red text-14">
+                          to="#!"
+                          className="shrink-0 link link-red text-14"
+                        >
                           <Trash2 className="size-4 ltr:mr-1 rtl:ml-1" /> Remove
                         </Link>
                         <Link
-                          href="#!"
-                          className="shrink-0 link link-primary text-14">
-                          <ShoppingBasket className="size-4 ltr:mr-1 rtl:ml-1" />{' '}
+                          to="#!"
+                          className="shrink-0 link link-primary text-14"
+                        >
+                          <ShoppingBasket className="size-4 ltr:mr-1 rtl:ml-1" />{" "}
                           Wishlist
                         </Link>
                       </div>
@@ -207,14 +214,16 @@ const CardSidebar: React.FC<CardSidebarProps> = ({
                           <div className="flex flex-col">
                             <button
                               onClick={() => setCount3(count3 + 1)}
-                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 plus hover:text-primary-500 dark:hover:text-primary-500">
+                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 plus hover:text-primary-500 dark:hover:text-primary-500"
+                            >
                               <ChevronUp className="size-3" />
                             </button>
                             <button
                               onClick={() =>
                                 setCount3(count3 <= 1 ? 1 : count3 - 1)
                               }
-                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 minus hover:text-primary-500 dark:hover:text-primary-500">
+                              className="flex items-center justify-center text-gray-500 transition duration-200 ease-linear dark:text-dark-500 minus hover:text-primary-500 dark:hover:text-primary-500"
+                            >
                               <ChevronDown className="size-3" />
                             </button>
                           </div>
@@ -271,14 +280,18 @@ const CardSidebar: React.FC<CardSidebarProps> = ({
                 </div>
                 <div className="flex items-center justify-end gap-2 py-5 border-t border-gray-200 dark:border-dark-800">
                   <Link
-                    href="/apps/ecommerce/products/list"
-                    className="btn btn-sub-indigo btn-icon-text">
+                    to="/apps/ecommerce/products/list"
+                    className="btn btn-sub-indigo btn-icon-text"
+                    onClick={() => handleCloseModal()}
+                  >
                     <ShoppingBag className="size-4"></ShoppingBag> Continue
                     Shopping
                   </Link>
                   <Link
-                    href="/apps/ecommerce/checkout"
-                    className="btn btn-primary btn-icon-text">
+                    to="/apps/ecommerce/checkout"
+                    className="btn btn-primary btn-icon-text"
+                    onClick={() => handleCloseModal()}
+                  >
                     <Rotate3D className="size-4" /> Checkout
                   </Link>
                 </div>
@@ -289,7 +302,7 @@ const CardSidebar: React.FC<CardSidebarProps> = ({
         footer={<></>}
       />
     </>
-  )
-}
+  );
+};
 
-export default CardSidebar
+export default CardSidebar;

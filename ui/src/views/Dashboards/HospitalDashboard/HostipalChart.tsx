@@ -1,22 +1,13 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
-  timeFrame?: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
+  timeFrame?: string;
 }
 
 const PatientVisitApp = ({
@@ -25,33 +16,32 @@ const PatientVisitApp = ({
   chartId,
   timeFrame,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
+      case "Weekly":
         return [
-          { name: 'Net Profit', data: [30, 40, 35, 50, 40, 60, 40, 50, 60] },
-        ]
-      case 'Monthly':
+          { name: "Net Profit", data: [30, 40, 35, 50, 40, 60, 40, 50, 60] },
+        ];
+      case "Monthly":
         return [
-          { name: 'Net Profit', data: [30, 40, 50, 60, 30, 50, 20, 60, 70] },
-        ]
-      case 'Yearly':
+          { name: "Net Profit", data: [30, 40, 50, 60, 30, 50, 20, 60, 70] },
+        ];
+      case "Yearly":
         return [
-          { name: 'Net Profit', data: [53, 67, 43, 30, 40, 62, 50, 45, 85] },
-        ]
+          { name: "Net Profit", data: [53, 67, 43, 30, 40, 62, 50, 45, 85] },
+        ];
       default:
         return [
-          { name: 'Net Profit', data: [32, 39, 43, 49, 52, 58, 63, 60, 66] },
-        ]
+          { name: "Net Profit", data: [32, 39, 43, 49, 52, 58, 63, 60, 66] },
+        ];
     }
-  }
+  };
 
   const options: ApexOptions = {
     chart: {
       height: 320,
-      type: 'bar',
+      type: "bar",
       toolbar: {
         show: false,
       },
@@ -59,8 +49,7 @@ const PatientVisitApp = ({
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '55%',
-        // endingShape: 'rounded'
+        columnWidth: "55%",
       },
     },
     dataLabels: {
@@ -69,19 +58,19 @@ const PatientVisitApp = ({
     stroke: {
       show: true,
       width: 2,
-      colors: ['transparent'],
+      colors: ["transparent"],
     },
     xaxis: {
       categories: [
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
       ],
     },
     fill: {
@@ -112,12 +101,12 @@ const PatientVisitApp = ({
     tooltip: {
       y: {
         formatter: function (val) {
-          return '$ ' + val + 'k'
+          return "$ " + val + "k";
         },
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -133,8 +122,8 @@ const PatientVisitApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const PatientDepartmentApp = ({
   chartColors,
@@ -143,27 +132,28 @@ const PatientDepartmentApp = ({
   timeFrame,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
-        return [80, 40, 35, 50]
-      case 'Monthly':
-        return [30, 50, 10, 45]
-      case 'Yearly':
-        return [10, 75, 21, 18]
+      case "Weekly":
+        return [80, 40, 35, 50];
+      case "Monthly":
+        return [30, 50, 10, 45];
+      case "Yearly":
+        return [10, 75, 21, 18];
       default:
-        return [44, 55, 41, 18]
+        return [44, 55, 41, 18];
     }
-  }
-  const labels = ['Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics']
+  };
+
+  const labels = ["Cardiology", "Neurology", "Orthopedics", "Pediatrics"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 150,
-      width: '350',
-      type: 'donut',
+      width: "350",
+      type: "donut",
     },
     plotOptions: {
       pie: {
@@ -175,11 +165,11 @@ const PatientDepartmentApp = ({
       enabled: false,
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
     },
     legend: {
       formatter: function (val, opts) {
-        return val + ' - ' + opts.w.globals.series[opts.seriesIndex]
+        return val + " - " + opts.w.globals.series[opts.seriesIndex];
       },
     },
     responsive: [
@@ -191,13 +181,13 @@ const PatientDepartmentApp = ({
             height: 150,
           },
           legend: {
-            position: 'bottom',
+            position: "bottom",
           },
         },
       },
     ],
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -213,8 +203,8 @@ const PatientDepartmentApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const PatientsHistoryApp = ({
   chartColors,
@@ -223,71 +213,71 @@ const PatientsHistoryApp = ({
   timeFrame,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
+      case "Weekly":
         return [
           {
-            name: 'Inject Patients',
+            name: "Inject Patients",
             data: [30, 40, 35, 50, 70, 60, 40, 50, 60],
           },
           {
-            name: 'Surgery Patients',
+            name: "Surgery Patients",
             data: [50, 70, 30, 80, 40, 84, 33, 45, 75],
           },
-        ]
-      case 'Monthly':
+        ];
+      case "Monthly":
         return [
           {
-            name: 'Inject Patients',
+            name: "Inject Patients",
             data: [30, 30, 50, 60, 30, 50, 70, 60, 90],
           },
           {
-            name: 'Surgery Patients',
+            name: "Surgery Patients",
             data: [20, 60, 65, 56, 70, 50, 90, 75, 60],
           },
-        ]
-      case 'Yearly':
+        ];
+      case "Yearly":
         return [
           {
-            name: 'Inject Patients',
+            name: "Inject Patients",
             data: [53, 67, 73, 30, 40, 62, 50, 45, 85],
           },
           {
-            name: 'Surgery Patients',
+            name: "Surgery Patients",
             data: [100, 90, 70, 60, 100, 80, 90, 95, 140],
           },
-        ]
+        ];
       default:
         return [
-          { name: 'Inject Patients', data: [24, 32, 28, 62, 67, 80, 96, 106] },
-          { name: 'Surgery Patients', data: [5, 14, 19, 27, 35, 44, 22, 49] },
-        ]
+          { name: "Inject Patients", data: [24, 32, 28, 62, 67, 80, 96, 106] },
+          { name: "Surgery Patients", data: [5, 14, 19, 27, 35, 44, 22, 49] },
+        ];
     }
-  }
+  };
 
   const labels = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 195,
-      type: 'line',
+      type: "line",
       toolbar: {
         show: false,
       },
@@ -296,12 +286,9 @@ const PatientsHistoryApp = ({
       enabled: false,
     },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
       width: 3,
-      lineCap: 'butt',
-    },
-    xaxis: {
-      categories: labels,
+      lineCap: "butt",
     },
     tooltip: {
       x: {
@@ -310,7 +297,7 @@ const PatientsHistoryApp = ({
     },
     grid: {
       strokeDashArray: 4,
-      position: 'back',
+      position: "back",
       padding: {
         top: -20,
         right: 0,
@@ -318,7 +305,7 @@ const PatientsHistoryApp = ({
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -334,8 +321,8 @@ const PatientsHistoryApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const HospitalBirthDeathApp = ({
   chartColors,
@@ -344,44 +331,44 @@ const HospitalBirthDeathApp = ({
   timeFrame,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
+      case "Weekly":
         return [
-          { name: 'Birth Case', data: [30, 40, 35, 50, 70, 60] },
-          { name: 'Death Case', data: [50, 70, 30, 80, 40, 84] },
-          { name: 'Accident Case', data: [10, 40, 70, 90, 30, 24] },
-        ]
-      case 'Monthly':
+          { name: "Birth Case", data: [30, 40, 35, 50, 70, 60] },
+          { name: "Death Case", data: [50, 70, 30, 80, 40, 84] },
+          { name: "Accident Case", data: [10, 40, 70, 90, 30, 24] },
+        ];
+      case "Monthly":
         return [
-          { name: 'Birth Case', data: [30, 30, 50, 60, 30, 50] },
-          { name: 'Death Case', data: [20, 60, 65, 56, 70, 50] },
-          { name: 'Accident Case', data: [50, 70, 30, 80, 40, 84] },
-        ]
-      case 'Yearly':
+          { name: "Birth Case", data: [30, 30, 50, 60, 30, 50] },
+          { name: "Death Case", data: [20, 60, 65, 56, 70, 50] },
+          { name: "Accident Case", data: [50, 70, 30, 80, 40, 84] },
+        ];
+      case "Yearly":
         return [
-          { name: 'Birth Case', data: [53, 67, 73, 30, 40, 62] },
-          { name: 'Death Case', data: [20, 50, 70, 60, 40, 80] },
-          { name: 'Accident Case', data: [50, 70, 30, 80, 40, 84] },
-        ]
+          { name: "Birth Case", data: [53, 67, 73, 30, 40, 62] },
+          { name: "Death Case", data: [20, 50, 70, 60, 40, 80] },
+          { name: "Accident Case", data: [50, 70, 30, 80, 40, 84] },
+        ];
       default:
         return [
-          { name: 'Birth Case', data: [80, 50, 30, 70, 99, 36] },
-          { name: 'Death Case', data: [10, 14, 28, 16, 34, 87] },
-          { name: 'Accident Case', data: [44, 98, 54, 46, 34, 22] },
-        ]
+          { name: "Birth Case", data: [80, 50, 30, 70, 99, 36] },
+          { name: "Death Case", data: [10, 14, 28, 16, 34, 87] },
+          { name: "Accident Case", data: [44, 98, 54, 46, 34, 22] },
+        ];
     }
-  }
+  };
 
-  const labels = ['2019', '2020', '2021', '2022', '2023', '2024']
+  const labels = ["2019", "2020", "2021", "2022", "2023", "2024"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 340,
-      type: 'radar',
+      type: "radar",
     },
     stroke: {
       width: 1,
@@ -393,7 +380,7 @@ const HospitalBirthDeathApp = ({
       categories: labels,
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -409,12 +396,12 @@ const HospitalBirthDeathApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 export {
   PatientVisitApp,
   PatientDepartmentApp,
   PatientsHistoryApp,
   HospitalBirthDeathApp,
-}
+};

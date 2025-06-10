@@ -1,35 +1,36 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { Email } from '@src/dtos'
-import { initStore } from '@src/utils/init_store'
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import LoadingToast from "@src/components/custom/toast/loadingToast";
+import { Email } from "@src/dtos";
+import { initStore } from "@src/utils/init_store";
 
 interface MailState {
-  mail: Email[]
-  isLoading: boolean
-  currentEmail: Email | null
+  mail: Email[];
+  isLoading: boolean;
+  currentEmail: Email | null;
 }
 
 const initialState: MailState = {
-  mail: initStore('d-email-list') as Email[],
+  mail: initStore("d-email-list"),
   isLoading: false,
   currentEmail: null,
-}
+};
 
 const ProjectSlice = createSlice({
-  name: 'mail',
+  name: "mail",
   initialState,
   reducers: {
     // get mails data
     getMail(state, action) {
-      state.mail = action.payload
+      state.mail = action.payload;
     },
 
     // add mail list record
     addMail(state, action: PayloadAction<Email>) {
-      const newMailRecord = action.payload
+      const newMailRecord = action.payload;
       if (state.mail !== null) {
-        state.mail.unshift(newMailRecord)
+        state.mail.unshift(newMailRecord);
       } else {
-        state.mail = [newMailRecord]
+        state.mail = [newMailRecord];
       }
     },
 
@@ -37,30 +38,31 @@ const ProjectSlice = createSlice({
     deleteMail(state, action: PayloadAction<number[]>) {
       if (state.mail !== null) {
         state.mail = state.mail.filter(
-          (item) => !action.payload.includes(item.id)
-        )
+          (item) => !action.payload.includes(item._id),
+        );
       }
     },
 
     // update mail list
     editMail(state, action: PayloadAction<Email>) {
-      const mailRecord = action.payload
+      const mailRecord = action.payload;
       if (state.mail !== null) {
         const findMailIndex = state.mail.findIndex(
-          (item) => item.id === mailRecord.id
-        )
+          (item) => item._id === mailRecord._id,
+        );
         if (findMailIndex !== -1) {
-          state.mail[findMailIndex] = mailRecord
+          state.mail[findMailIndex] = mailRecord;
         }
+        LoadingToast();
       }
     },
 
     setCurrentEmail(state, action: PayloadAction<Email>) {
-      state.currentEmail = action.payload
+      state.currentEmail = action.payload;
     },
   },
-})
+});
 
 export const { getMail, addMail, deleteMail, editMail, setCurrentEmail } =
-  ProjectSlice.actions
-export default ProjectSlice.reducer
+  ProjectSlice.actions;
+export default ProjectSlice.reducer;

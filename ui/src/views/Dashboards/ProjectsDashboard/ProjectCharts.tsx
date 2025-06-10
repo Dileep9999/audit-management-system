@@ -1,23 +1,14 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
+import useChartColors from "@hooks/useChartColors";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
-  series?: number[]
-  timeFrame?: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
+  series?: any[];
+  timeFrame?: string;
 }
 
 const ProjectStatusApp = ({
@@ -26,30 +17,33 @@ const ProjectStatusApp = ({
   chartId,
   timeFrame,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
-        return [{ name: 'Earnings', data: [67, 48, 85, 51, 93, 109, 116] }]
-      case 'Monthly':
-        return [{ name: 'Earnings', data: [100, 120, 140, 130, 110, 150, 180] }]
-      case 'Yearly':
-        return [{ name: 'Earnings', data: [500, 600, 700, 300, 400, 620, 500] }]
+      case "Weekly":
+        return [{ name: "Earnings", data: [67, 48, 85, 51, 93, 109, 116] }];
+      case "Monthly":
+        return [
+          { name: "Earnings", data: [100, 120, 140, 130, 110, 150, 180] },
+        ];
+      case "Yearly":
+        return [
+          { name: "Earnings", data: [500, 600, 700, 300, 400, 620, 500] },
+        ];
       default:
-        return [{ name: 'Earnings', data: [67, 48, 85, 51, 93, 109, 116] }]
+        return [{ name: "Earnings", data: [67, 48, 85, 51, 93, 109, 116] }];
     }
-  }
+  };
 
-  const labels = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
+  const labels = ["Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
-      defaultLocale: 'en',
-      height: 125,
-      type: 'area',
+      defaultLocale: "en",
+      height: 120,
+      type: "area",
       sparkline: { enabled: !0 },
       zoom: {
         enabled: false,
@@ -60,17 +54,17 @@ const ProjectStatusApp = ({
     },
     stroke: {
       width: 3,
-      curve: 'smooth',
+      curve: "smooth",
       dashArray: 2,
     },
     legend: {
       tooltipHoverFormatter: function (val, opts) {
         return (
           val +
-          ' - <strong>' +
+          " - <strong>" +
           opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] +
-          '</strong>'
-        )
+          "</strong>"
+        );
       },
     },
     markers: {
@@ -81,11 +75,11 @@ const ProjectStatusApp = ({
     },
     yaxis: {
       title: {
-        text: 'Growth',
+        text: "Growth",
       },
       labels: {
         formatter: function (y) {
-          return '$' + y.toFixed(0) + 'k'
+          return "$" + y.toFixed(0) + "k";
         },
       },
     },
@@ -97,7 +91,7 @@ const ProjectStatusApp = ({
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -109,12 +103,12 @@ const ProjectStatusApp = ({
         data-chart-colors="[bg-primary-500]"
         type="area"
         id={chartId}
-        height={125}
+        height={120}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const PatternDonutApp = ({
   chartColors,
@@ -123,31 +117,31 @@ const PatternDonutApp = ({
   timeFrame,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
-        return [55, 33, 46]
-      case 'Monthly':
-        return [25, 60, 15]
-      case 'Yearly':
-        return [25, 75, 63]
+      case "Weekly":
+        return [55, 33, 46];
+      case "Monthly":
+        return [25, 60, 15];
+      case "Yearly":
+        return [25, 75, 63];
       default:
-        return [55, 33, 46]
+        return [55, 33, 46];
     }
-  }
+  };
 
-  const labels = ['Afternoon', 'Evening', 'Morning']
+  const labels = ["Afternoon", "Evening", "Morning"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 210,
-      type: 'donut',
+      type: "donut",
       dropShadow: {
         enabled: true,
-        color: '#111',
+        color: "#111",
         top: -1,
         left: 3,
         blur: 3,
@@ -170,9 +164,9 @@ const PatternDonutApp = ({
       enabled: false,
     },
     fill: {
-      type: 'pattern',
+      type: "pattern",
       pattern: {
-        style: 'squares',
+        style: "squares",
       },
     },
     states: {
@@ -181,13 +175,13 @@ const PatternDonutApp = ({
       },
     },
     theme: {
-      palette: 'palette2',
+      palette: "palette2",
     },
     legend: {
       show: false,
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -203,8 +197,8 @@ const PatternDonutApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const MyTask1App = ({
   chartColors,
@@ -212,17 +206,16 @@ const MyTask1App = ({
   chartId,
   series,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const labels = ['[Progress]']
+  const labels = ["[Progress]"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 60,
       width: 50,
-      type: 'radialBar',
+      type: "radialBar",
       sparkline: { enabled: !0 },
     },
     plotOptions: {
@@ -231,12 +224,12 @@ const MyTask1App = ({
           show: false,
         },
         hollow: {
-          size: '20%',
+          size: "20%",
         },
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -252,7 +245,7 @@ const MyTask1App = ({
         width={50}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export { ProjectStatusApp, PatternDonutApp, MyTask1App }
+export { ProjectStatusApp, PatternDonutApp, MyTask1App };

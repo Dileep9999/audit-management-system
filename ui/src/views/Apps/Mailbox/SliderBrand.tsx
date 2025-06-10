@@ -1,96 +1,107 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
-import img6 from '@assets/images/brands/img-06.png'
+import React, { useState } from "react";
+import img6 from "@assets/images/brands/img-06.png";
+import img8 from "@assets/images/brands/img-08.png";
+import img9 from "@assets/images/brands/img-09.png";
+import img16 from "@assets/images/brands/img-16.png";
+import img17 from "@assets/images/brands/img-17.png";
+import img20 from "@assets/images/brands/img-20.png";
+import SimpleBar from "simplebar-react";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-// Correct import
-import { Modal } from '@src/components/custom/modal/modal'
-import { Email } from '@src/dtos'
-import { Ellipsis, RotateCcw, Search } from 'lucide-react'
-import SimpleBar from 'simplebar-react'
-
-import Emails from './Emails'
+} from "@src/components/custom/dropdown/dropdown";
+import { Ellipsis, RotateCcw, Search } from "lucide-react";
+import { Modal } from "@src/components/custom/modal/modal";
+import { Link } from "react-router-dom";
+import Emails from "./emails";
 
 interface Sidemail {
-  show: boolean
-  handleShowMail: (id: number) => void
-  filteredEmails: Email[]
+  show: boolean;
+  handleShowMail: any;
+  filteredEmails: any;
+  isSideMail?: boolean;
 }
-const SliderBrand = ({ show, handleShowMail, filteredEmails }: Sidemail) => {
-  const [open, setOpen] = useState(false)
-  const [searchTerms, setSearchTerms] = useState('')
-  const [visibleItems, setVisibleItems] = useState([
-    { id: 1, text: 'Chat Management', isVisible: true },
-    { id: 2, text: 'Projects Discuss', isVisible: true },
-    { id: 3, text: 'Subscriber', isVisible: true },
-    { id: 4, text: 'Reports', isVisible: true },
-  ])
-  const router = useRouter() // Use useRouter from 'next/router'
+const SliderBrand = ({
+  show,
+  handleShowMail,
+  filteredEmails,
+  isSideMail,
+}: Sidemail) => {
+  // refresh
+  // const router = useRouter();
 
   const handleClick = (e: { preventDefault: () => void }) => {
-    e.preventDefault()
-    // Use router.reload() to reload the page
-    router.refresh()
-  }
+    e.preventDefault();
+    // router.reload();
+  };
+
+  // -------------- search modal ----------------
+  const [open, setOpen] = useState(false);
 
   const handleOpenModal = () => {
-    setOpen(true)
-  }
+    setOpen(true);
+  };
+
   const handleCloseModal = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
+
+  const [searchTerms, setSearchTerms] = useState("");
+  const [visibleItems, setVisibleItems] = useState([
+    { _id: 1, text: "Chat Management", isVisible: true },
+    { _id: 2, text: "Projects Discuss", isVisible: true },
+    { _id: 3, text: "Subscriber", isVisible: true },
+    { _id: 4, text: "Reports", isVisible: true },
+  ]);
 
   const handleSearchChange = (e: {
-    target: { value: React.SetStateAction<string> }
+    target: { value: React.SetStateAction<string> };
   }) => {
-    setSearchTerms(e.target.value)
-  }
+    setSearchTerms(e.target.value);
+  };
 
-  const handleItemClose = (id: number, onClose: () => void) => {
+  const handleItemClose = (_id: number) => {
     setVisibleItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === id ? { ...item, isVisible: false } : item
-      )
-    )
-    onClose()
-  }
+        item._id === _id ? { ...item, isVisible: false } : item,
+      ),
+    );
+  };
 
   return (
     <React.Fragment>
+      {/* <div className={`${isSideMail ? "backdrop-overlay backdrop-blur-xs xl:hidden" : ""} `}></div> */}
       <div
-        className={`xl:rounded-none xl:border-x-0 card grow ${
-          show === true ? 'w-full xl:max-w-md' : 'w-full'
-        }`}>
+        className={`${isSideMail ? "backdrop-overlay backdrop-blur-xs xl:hidden" : ""}`}
+        onClick={() => handleShowMail(false)} // or setIsSideMail(false)
+      ></div>
+      <div
+        className={`xl:rounded-none xl:border-x-0 card grow ${show === true ? "w-full xl:max-w-md" : "w-full"}`}
+      >
         <div className="card-body">
           <SimpleBar>
             <div className="flex gap-4 *:shrink-0">
               <Link
-                href="#!"
-                className="block w-24 p-2 text-center transition duration-300 ease-linear rounded-md hover:bg-gray-50 dark:hover:bg-dark-850">
+                to="#!"
+                className="block w-24 p-2 text-center transition duration-300 ease-linear rounded-md hover:bg-gray-50 dark:hover:bg-dark-850"
+              >
                 <div className="relative flex items-center justify-center mx-auto mb-1 text-lg font-semibold text-gray-500 bg-white border border-gray-200 rounded-full dark:bg-dark-900 dark:text-dark-500 dark:border-dark-800 size-12">
                   S
-                  <span className="absolute flex items-center justify-center !p-0 rounded-full !text-11 -bottom-0.5 -right-0.5 !border-2 !border-white size-5 badge dark:!border-dark-900 badge-solid-primary">
+                  <span className="absolute flex items-center justify-center p-0 leading-none rounded-full text-11 -bottom-0.5 -right-0.5 border-2 border-white size-5 badge dark:border-dark-900 badge-solid-primary">
                     5
                   </span>
                 </div>
-                <h6 className="font-medium truncate">Jason Statham</h6>
+                <h6 className="font-medium truncate">Shopia Mia</h6>
               </Link>
               <Link
-                href="#!"
-                className="block w-24 p-2 text-center transition duration-300 ease-linear rounded-md hover:bg-gray-50 dark:hover:bg-dark-850">
+                to="#!"
+                className="block w-24 p-2 text-center transition duration-300 ease-linear rounded-md hover:bg-gray-50 dark:hover:bg-dark-850"
+              >
                 <div className="relative flex items-center justify-center mx-auto mb-1 text-lg font-semibold text-gray-500 bg-white border border-gray-200 rounded-full dark:bg-dark-900 dark:text-dark-500 dark:border-dark-800 size-12">
-                  <Image
+                  <img
                     src={img6}
-                    alt="brandImg"
+                    alt="BrandImg"
                     className="size-6"
                     width={24}
                     height={24}
@@ -98,52 +109,141 @@ const SliderBrand = ({ show, handleShowMail, filteredEmails }: Sidemail) => {
                 </div>
                 <h6 className="font-medium truncate">Windows Social Media</h6>
               </Link>
-              {/* More Link items omitted for brevity */}
+              <Link
+                to="#!"
+                className="block w-24 p-2 text-center transition duration-300 ease-linear rounded-md hover:bg-gray-50 dark:hover:bg-dark-850"
+              >
+                <div className="relative flex items-center justify-center mx-auto mb-1 text-lg font-semibold text-gray-500 bg-white border border-gray-200 rounded-full dark:bg-dark-900 dark:text-dark-500 dark:border-dark-800 size-12">
+                  <img
+                    src={img8}
+                    alt="BrandImg"
+                    className="size-6"
+                    width={24}
+                    height={24}
+                  />
+                  <span className="absolute flex items-center justify-center p-0 leading-none rounded-full text-11 -bottom-0.5 -right-0.5 border-2 border-white size-5 badge dark:border-dark-900 badge-solid-primary">
+                    2
+                  </span>
+                </div>
+                <h6 className="font-medium truncate">Shopify</h6>
+              </Link>
+              <Link
+                to="#!"
+                className="block w-24 p-2 text-center transition duration-300 ease-linear rounded-md hover:bg-gray-50 dark:hover:bg-dark-850"
+              >
+                <div className="relative flex items-center justify-center mx-auto mb-1 text-lg font-semibold text-gray-500 bg-white border border-gray-200 rounded-full dark:bg-dark-900 dark:text-dark-500 dark:border-dark-800 size-12">
+                  <img
+                    src={img20}
+                    alt="BrandImg"
+                    className="size-6"
+                    width={24}
+                    height={24}
+                  />
+                </div>
+                <h6 className="font-medium truncate">Payment</h6>
+              </Link>
+              <Link
+                to="#!"
+                className="block w-24 p-2 text-center transition duration-300 ease-linear rounded-md hover:bg-gray-50 dark:hover:bg-dark-850"
+              >
+                <div className="relative flex items-center justify-center mx-auto mb-1 text-lg font-semibold text-gray-500 bg-white border border-gray-200 rounded-full dark:bg-dark-900 dark:text-dark-500 dark:border-dark-800 size-12">
+                  <img
+                    src={img9}
+                    alt="BrandImg"
+                    className="size-6"
+                    width={24}
+                    height={24}
+                  />
+                </div>
+                <h6 className="font-medium truncate">Social Media</h6>
+              </Link>
+              <Link
+                to="#!"
+                className="block w-24 p-2 text-center transition duration-300 ease-linear rounded-md hover:bg-gray-50 dark:hover:bg-dark-850"
+              >
+                <div className="relative flex items-center justify-center mx-auto mb-1 text-lg font-semibold text-gray-500 bg-white border border-gray-200 rounded-full dark:bg-dark-900 dark:text-dark-500 dark:border-dark-800 size-12">
+                  <img
+                    src={img17}
+                    alt="BrandImg"
+                    className="size-6"
+                    width={24}
+                    height={24}
+                  />
+                </div>
+                <h6 className="font-medium truncate">Romero</h6>
+              </Link>
+              <Link
+                to="#!"
+                className="block w-24 p-2 text-center transition duration-300 ease-linear rounded-md hover:bg-gray-50 dark:hover:bg-dark-850"
+              >
+                <div className="relative flex items-center justify-center mx-auto mb-1 text-lg font-semibold text-gray-500 bg-white border border-gray-200 rounded-full dark:bg-dark-900 dark:text-dark-500 dark:border-dark-800 size-12">
+                  <img
+                    src={img16}
+                    alt="BrandImg"
+                    className="size-6"
+                    width={24}
+                    height={24}
+                  />
+                </div>
+                <h6 className="font-medium truncate">Romero</h6>
+              </Link>
             </div>
           </SimpleBar>
 
           <div className="mt-3">
             <div className="flex items-center gap-2 mb-4">
-              <div className="input-check-group shrink-0"></div>
+              <div className="input-check-group shrink-0">
+                {/* <!-- main checkbox --> */}
+                {/* <input
+                                        id="checkboxBasic1"
+                                        className="input-check input-check-primary"
+                                        type="checkbox"
+                                    /> */}
+              </div>
               <h6 className="grow">
-                Main Inbox
+                Main Inbox{" "}
                 <small className="font-normal text-gray-500 ltr:ml-1 rtl:mt-1 dark:text-dark-500 text-14">
+                  {" "}
                   46 messages
                 </small>
               </h6>
               <div className="flex items-center gap-4 shrink-0">
+                {/* <Link to="#!" className="link link-red"><Trash className="size-4"></Trash></Link> */}
                 <Dropdown
                   position=""
                   trigger="click"
-                  dropdownClassName="dropdown">
+                  dropdownClassName="dropdown"
+                >
                   <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
                     <Ellipsis className="size-5"></Ellipsis>
                   </DropdownButton>
                   <DropdownMenu>
-                    <Link href="#!" className="dropdown-item">
+                    <Link to="#!" className="dropdown-item">
                       <span>Show more messages</span>
                     </Link>
-                    <Link href="#!" className="dropdown-item">
+                    <Link to="#!" className="dropdown-item">
                       <span>Hide section when empty</span>
                     </Link>
-                    <Link href="#!" className="dropdown-item">
+                    <Link to="#!" className="dropdown-item">
                       <span>Manage Inbox settings</span>
                     </Link>
-                    <Link href="#!" className="dropdown-item">
+                    <Link to="#!" className="dropdown-item">
                       <span>Mark all as read</span>
                     </Link>
                   </DropdownMenu>
                 </Dropdown>
                 <Link
-                  href="#!"
+                  to="#!"
                   className="link link-primary"
-                  onClick={handleClick}>
+                  onClick={handleClick}
+                >
                   <RotateCcw className="size-4"></RotateCcw>
                 </Link>
                 <Link
-                  href="#!"
+                  to="#!"
                   className="link link-primary"
-                  onClick={() => handleOpenModal()}>
+                  onClick={() => handleOpenModal()}
+                >
                   <Search className="size-4"></Search>
                 </Link>
               </div>
@@ -151,16 +251,8 @@ const SliderBrand = ({ show, handleShowMail, filteredEmails }: Sidemail) => {
 
             {/* mails */}
             <Emails
-              filteredEmails={filteredEmails.map((email) => ({
-                ...email,
-                id: email.id.toString(),
-                avatarImage:
-                  typeof email.avatarImage === 'string'
-                    ? email.avatarImage
-                    : undefined,
-                type: email.type, // Ensure the 'type' property is included
-              }))}
-              handleShowMail={(email) => handleShowMail(Number(email.id))}
+              filteredEmails={filteredEmails}
+              handleShowMail={handleShowMail}
             />
           </div>
         </div>
@@ -173,7 +265,7 @@ const SliderBrand = ({ show, handleShowMail, filteredEmails }: Sidemail) => {
         position="modal-top"
         id="searchMailModals"
         contentClass="!overflow-y-visible modal-content"
-        content={(onClose) => (
+        content={
           <div className="relative group/form grow">
             <input
               type="email"
@@ -182,7 +274,7 @@ const SliderBrand = ({ show, handleShowMail, filteredEmails }: Sidemail) => {
               value={searchTerms}
               onChange={handleSearchChange}
             />
-            <button className="absolute inset-y-0 flex items-center ltr:left-3 rtl:right-3 ltr:group-[&.right]/form:right-3 rtl:group-[&.right]/form:left-3 ltr:group-[&.right]/form:left-auto rtl:group-[&.right]/form:right-auto focus:outline-hidden">
+            <button className="absolute inset-y-0 flex items-center ltr:left-3 rtl:right-3 ltr:group-[&.right]/form:right-3 rtl:group-[&.right]/form:left-3 ltr:group-[&.right]/form:left-auto rtl:group-[&.right]/form:right-auto focus:outline-none">
               <Search className="text-gray-500 dark:text-dark-500 size-4 fill-gray-100 dark:fill-dark-850"></Search>
             </button>
             {searchTerms && (
@@ -195,25 +287,26 @@ const SliderBrand = ({ show, handleShowMail, filteredEmails }: Sidemail) => {
                     {visibleItems.map(
                       (item) =>
                         item.isVisible && (
-                          <span key={item.id} className="badge badge-gray">
+                          <span key={item._id} className="badge badge-gray">
                             {item.text}
                             <Link
-                              href="#"
-                              onClick={() => handleItemClose(item.id, onClose)}>
+                              to="#"
+                              onClick={() => handleItemClose(item._id)}
+                            >
                               <i className="ml-1 align-middle ri-close-fill"></i>
                             </Link>
                           </span>
-                        )
+                        ),
                     )}
                   </div>
                 </div>
               </div>
             )}
           </div>
-        )}
+        }
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default SliderBrand
+export default SliderBrand;

@@ -1,23 +1,15 @@
-'use client'
+import React from "react";
+import user5 from "@assets/images/avatar/user-5.png";
+import user20 from "@assets/images/avatar/user-20.png";
+import user13 from "@assets/images/avatar/user-13.png";
+import user14 from "@assets/images/avatar/user-14.png";
+import user15 from "@assets/images/avatar/user-15.png";
+import user18 from "@assets/images/avatar/user-18.png";
 
-import React from 'react'
+import overview from "@assets/images/event/overview.jpg";
+import { TicketMinus } from "lucide-react";
 
-import Image from 'next/image'
-
-import user5 from '@assets/images/avatar/user-5.png'
-import user13 from '@assets/images/avatar/user-13.png'
-import user14 from '@assets/images/avatar/user-14.png'
-import user15 from '@assets/images/avatar/user-15.png'
-import user18 from '@assets/images/avatar/user-18.png'
-import user20 from '@assets/images/avatar/user-20.png'
-import overview from '@assets/images/event/overview.jpg'
-import { TicketMinus } from 'lucide-react'
-
-interface EventDetailsProps {
-  handleModal: () => void
-}
-
-const EventDetails: React.FC<EventDetailsProps> = ({ handleModal }) => {
+const EventDetails = ({ handleModal }: any) => {
   return (
     <React.Fragment>
       <div className="col-span-12 xl:col-span-8 2xl:col-span-9">
@@ -27,9 +19,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ handleModal }) => {
           </div>
           <div className="card-body">
             <div className="mb-5">
-              <Image
+              <img
                 src={overview}
-                alt="userImg"
+                alt="overviewImg"
                 className="object-cover w-full rounded-md h-72"
               />
             </div>
@@ -52,44 +44,44 @@ const EventDetails: React.FC<EventDetailsProps> = ({ handleModal }) => {
                 </p>
                 <div className="flex grow">
                   <div className="transition duration-300 ease-linear hover:-translate-y-1">
-                    <Image
+                    <img
                       className="border-2 border-white rounded-full dark:border-dark-800 size-8"
-                      alt="userImg"
+                      alt="user5Img"
                       src={user5}
                     />
                   </div>
                   <div className="transition duration-300 ease-linear hover:-translate-y-1">
-                    <Image
+                    <img
                       className="border-2 border-white rounded-full dark:border-dark-800 size-8"
-                      alt="userImg"
+                      alt="user20Img"
                       src={user20}
                     />
                   </div>
                   <div className="transition duration-300 ease-linear hover:-translate-y-1">
-                    <Image
+                    <img
                       className="border-2 border-white rounded-full dark:border-dark-800 size-8"
-                      alt="userImg"
+                      alt="user13Img"
                       src={user13}
                     />
                   </div>
                   <div className="transition duration-300 ease-linear hover:-translate-y-1">
-                    <Image
+                    <img
                       className="border-2 border-white rounded-full dark:border-dark-800 size-8"
-                      alt="userImg"
+                      alt="user14Img"
                       src={user14}
                     />
                   </div>
                   <div className="transition duration-300 ease-linear hover:-translate-y-1">
-                    <Image
+                    <img
                       className="border-2 border-white rounded-full dark:border-dark-800 size-8"
-                      alt="userImg"
+                      alt="user15Img"
                       src={user15}
                     />
                   </div>
                   <div className="transition duration-300 ease-linear hover:-translate-y-1">
-                    <Image
+                    <img
                       className="border-2 border-white rounded-full dark:border-dark-800 size-8"
-                      alt="userImg"
+                      alt="user18Img"
                       src={user18}
                     />
                   </div>
@@ -99,8 +91,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ handleModal }) => {
                 <button
                   className="btn btn-red"
                   data-modal-target="bookEventModal"
-                  onClick={handleModal}>
-                  Book Now{' '}
+                  onClick={handleModal}
+                >
+                  Book Now{" "}
                   <TicketMinus className="inline-block ltr:ml-1 rtl:mr-1 size-5" />
                 </button>
               </div>
@@ -109,126 +102,125 @@ const EventDetails: React.FC<EventDetailsProps> = ({ handleModal }) => {
             <p className="mb-3 text-gray-500 dark:text-dark-500">
               Join us for an unforgettable experience filled with live
               performances, vibrant energy, and a celebration of music and
-              culture. This year, we&apos;re bringing together some of the
-              biggest names in the industry, alongside emerging artists, to
-              create a diverse and dynamic lineup that promises to entertain and
-              inspire.
+              culture. This year, we're bringing together some of the biggest
+              names in the industry, alongside emerging artists, to create a
+              diverse and dynamic lineup that promises to entertain and inspire.
             </p>
             <h6 className="mb-3">Event Highlights:</h6>
-            <ul className="mb-4 flex flex-col gap-3 text-gray-500 list-disc list-inside dark:text-dark-500 marker:text-green-500">
+            <ul className="mb-4 space-y-3 text-gray-500 list-disc list-inside dark:text-dark-500 marker:text-green-500">
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Live Performances:
-                </span>
+                </span>{" "}
                 Enjoy non-stop music from top artists across multiple stages.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Food and Drinks:
-                </span>
+                </span>{" "}
                 Savor delicious cuisine and refreshing beverages from local
                 vendors.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Workshops and Activities:
-                </span>
+                </span>{" "}
                 Participate in interactive workshops and activities for all
                 ages.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Merchandise:
-                </span>
+                </span>{" "}
                 Get your hands on exclusive festival merchandise and
                 memorabilia.
               </li>
             </ul>
             <h6 className="mb-3">Details:</h6>
-            <ul className="mb-4 flex flex-col gap-3 text-gray-500 list-disc list-inside dark:text-dark-500 marker:text-green-500">
+            <ul className="mb-4 space-y-3 text-gray-500 list-disc list-inside dark:text-dark-500 marker:text-green-500">
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Date:
-                </span>{' '}
+                </span>{" "}
                 20 Dec 2024
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Time:
-                </span>{' '}
+                </span>{" "}
                 2:30 pm
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Location:
-                </span>
+                </span>{" "}
                 Sydney, Australia
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Tickets Price:
-                </span>
+                </span>{" "}
                 $599.00
               </li>
             </ul>
             <h6 className="mb-3">Additional Information:</h6>
-            <ul className="mb-4 flex flex-col gap-3 text-gray-500 list-disc list-inside dark:text-dark-500 marker:text-green-500">
+            <ul className="mb-4 space-y-3 text-gray-500 list-disc list-inside dark:text-dark-500 marker:text-green-500">
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Parking:
-                </span>
+                </span>{" "}
                 On-site parking available with a shuttle service to the festival
                 grounds.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Accommodations:
-                </span>
+                </span>{" "}
                 Partner hotels offering special festival rates for attendees.
                 Check our website for more details.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Accessibility:
-                </span>
+                </span>{" "}
                 The event is fully accessible with dedicated areas for
                 wheelchair users and assistance for those with disabilities.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Safety Measures:
-                </span>
+                </span>{" "}
                 We prioritize your safety with on-site medical facilities,
                 security personnel, and clear signage throughout the venue.
               </li>
             </ul>
             <h6 className="mb-3">How to Prepare:</h6>
-            <ul className="mb-4 flex flex-col gap-3 text-gray-500 list-disc list-inside dark:text-dark-500 marker:text-green-500">
+            <ul className="mb-4 space-y-3 text-gray-500 list-disc list-inside dark:text-dark-500 marker:text-green-500">
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Plan Ahead:
-                </span>
+                </span>{" "}
                 Check the schedule and plan which performances you want to
                 catch.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Stay Hydrated:
-                </span>
+                </span>{" "}
                 Bring a reusable water bottle and stay hydrated throughout the
                 event.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Dress Comfortably:
-                </span>
+                </span>{" "}
                 Wear comfortable clothing and shoes suitable for outdoor
                 activities.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Stay Connected:
-                </span>
+                </span>{" "}
                 Follow us on social media for live updates and announcements.
               </li>
             </ul>
@@ -236,24 +228,24 @@ const EventDetails: React.FC<EventDetailsProps> = ({ handleModal }) => {
             <p className="mb-3 text-gray-500 dark:text-dark-500">
               We are committed to making this festival environmentally friendly:
             </p>
-            <ul className="mb-4 flex flex-col gap-3 text-gray-500 list-disc list-inside dark:text-dark-500 marker:text-green-500">
+            <ul className="mb-4 space-y-3 text-gray-500 list-disc list-inside dark:text-dark-500 marker:text-green-500">
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Recycling Stations:
-                </span>
+                </span>{" "}
                 Easily accessible recycling bins throughout the venue.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Eco-friendly Products:
-                </span>
+                </span>{" "}
                 Encouraging the use of biodegradable and recyclable materials by
                 our vendors.
               </li>
               <li>
                 <span className="font-medium text-gray-800 dark:text-dark-50">
                   Green Transportation:
-                </span>
+                </span>{" "}
                 Promoting the use of public transport, biking, and carpooling to
                 reduce the festival’s carbon footprint.
               </li>
@@ -273,7 +265,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ handleModal }) => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default EventDetails
+export default EventDetails;

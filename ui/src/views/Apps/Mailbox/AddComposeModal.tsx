@@ -1,54 +1,42 @@
-'use client'
+import { Modal } from "@src/components/custom/modal/modal";
+import { Email } from "@src/dtos";
+import { addEmailListRecordData } from "@src/slices/thunk";
+import { AppDispatch } from "@src/slices/reducer";
+import { ImagePlus, Link2, Pencil, Smile } from "lucide-react";
+import React, { useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
-import React, { useCallback, useState } from 'react'
+interface AddComponseModalProps {
+  isModalOpen: boolean;
+  onClose: () => void;
+  mailList: Email[];
+}
 
-import Link from 'next/link'
-
-import { Modal } from '@src/components/custom/modal/modal'
-import { Email } from '@src/dtos'
-import { AddComposeModalProps } from '@src/dtos/apps/mail'
-import { AppDispatch } from '@src/slices/reducer'
-import { addEmailListRecordData } from '@src/slices/thunk'
-import { ImagePlus, Link2, Pencil, Smile } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
-
-const AddComposeModal: React.FC<AddComposeModalProps> = ({
+const AddComposeModal: React.FC<AddComponseModalProps> = ({
   isModalOpen,
   onClose,
   mailList,
 }) => {
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleCloseModal = () => {
-    onClose()
-    resetForm()
-  }
+    onClose();
+    resetForm();
+  };
 
   const formatDate = (date: Date): string => {
-    const day = date.getDate()
-    const month = date.toLocaleString('default', { month: 'long' })
-    const time = date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-    return `${day} ${month}, ${time}`
-  }
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "long" });
+    const time = date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return `${day} ${month}, ${time}`;
+  };
 
-  const [defaultMail] = useState<Email>({
-    id: mailList && mailList.length > 0 ? mailList.length + 1 : 1,
-    sender: '',
-    email: '',
-    date: formatDate(new Date()),
-    subject: '',
-    message: '',
-    avatarText: '',
-    avatarColor: 'red',
-    badges: ['Inbox'],
-    type: 'sent',
-    replies: [],
-  })
-
+  // Initialize the default email values for the form
   const {
     register,
     handleSubmit,
@@ -57,65 +45,77 @@ const AddComposeModal: React.FC<AddComposeModalProps> = ({
     reset,
     formState: { errors },
   } = useForm<Email>({
-    mode: 'onSubmit',
-    defaultValues: defaultMail,
-  })
+    mode: "onSubmit",
+    defaultValues: {
+      _id: mailList && mailList.length > 0 ? mailList.length + 1 : 1,
+      sender: "",
+      email: "",
+      date: formatDate(new Date()),
+      subject: "",
+      message: "",
+      avatarText: "",
+      avatarColor: "red",
+      badges: ["Inbox"],
+      type: "sent",
+      replies: [],
+    },
+  });
 
   const validateEmailField = (email: string): string | true => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
-      return 'Email is required.'
+      return "Email is required.";
     } else if (!emailPattern.test(email)) {
-      return 'Invalid email format.'
+      return "Invalid email format.";
     }
-    return true
-  }
+    return true;
+  };
 
   const submitForm = (data: Email, onClose: () => void) => {
-    let isValid = true
+    let isValid = true;
 
     // Validate email field
-    const emailValidation = validateEmailField(data.email || '')
+    const emailValidation = validateEmailField(data.email || "");
     if (emailValidation !== true) {
-      setError('email', { type: 'manual', message: emailValidation })
-      isValid = false
+      setError("email", { type: "manual", message: emailValidation });
+      isValid = false;
     } else {
-      clearErrors('email')
+      clearErrors("email");
     }
 
     // Check if subject is empty
     if (!data.subject) {
-      setError('subject', { type: 'manual', message: 'Subject is required.' })
-      isValid = false
+      setError("subject", { type: "manual", message: "Subject is required." });
+      isValid = false;
     } else {
-      clearErrors('subject')
+      clearErrors("subject");
     }
 
     // Check if message is empty
     if (!data.message) {
-      setError('message', { type: 'manual', message: 'Message is required.' })
-      isValid = false
+      setError("message", { type: "manual", message: "Message is required." });
+      isValid = false;
     } else {
-      clearErrors('message')
+      clearErrors("message");
     }
 
     if (isValid) {
       const newRecord: Email = {
         ...data,
-        id: mailList && mailList.length > 0 ? mailList.length + 1 : 1,
+        _id: mailList && mailList.length > 0 ? mailList.length + 1 : 1,
         date: formatDate(new Date()),
-        sender: data.email.split('@')[0],
-        avatarText: data.email.split('@')[0].slice(0, 2).toUpperCase(),
-      }
-      dispatch(addEmailListRecordData(newRecord))
-      resetForm()
-      onClose()
+        sender: data.email.split("@")[0],
+        avatarText: data.email.split("@")[0].slice(0, 2).toUpperCase(),
+      };
+      dispatch(addEmailListRecordData(newRecord));
+      resetForm();
+      onClose();
     }
-  }
+  };
 
   const resetForm = useCallback(() => {
-    reset()
-  }, [reset])
+    reset();
+  }, [reset]);
 
   return (
     <React.Fragment>
@@ -123,14 +123,15 @@ const AddComposeModal: React.FC<AddComposeModalProps> = ({
         isOpen={isModalOpen}
         onClose={() => handleCloseModal()}
         position="modal-top"
-        id={'addComposeModals'}
+        id={"addComposeModals"}
         contentClass="modal-content"
         size="modal-lg"
         content={(onClose) => (
           <>
             <form
               action="#!"
-              onSubmit={handleSubmit((data) => submitForm(data, onClose))}>
+              onSubmit={handleSubmit((data) => submitForm(data, onClose))}
+            >
               <div>
                 <div className="flex items-center gap-2">
                   <p className="text-gray-500 dark:text-dark-500">To:</p>
@@ -138,12 +139,12 @@ const AddComposeModal: React.FC<AddComposeModalProps> = ({
                     type="text"
                     className="h-auto px-0 border-0 form-input"
                     placeholder="Type email"
-                    {...register('email', { required: 'Email is required.' })}
+                    {...register("email", { required: "Email is required." })}
                   />
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Cc
                   </Link>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Bcc
                   </Link>
                 </div>
@@ -157,7 +158,7 @@ const AddComposeModal: React.FC<AddComposeModalProps> = ({
                   type="text"
                   className="h-auto p-0 border-0 form-input"
                   placeholder="Subject"
-                  {...register('subject', { required: 'Subject is required.' })}
+                  {...register("subject", { required: "Subject is required." })}
                 />
                 {errors.subject && (
                   <p className="text-red-500">{errors.subject.message}</p>
@@ -170,9 +171,10 @@ const AddComposeModal: React.FC<AddComposeModalProps> = ({
                     className="h-auto px-0 border-0 resize-none form-input"
                     rows={3}
                     placeholder="Type something ..."
-                    {...register('message', {
-                      required: 'Message is required.',
-                    })}></textarea>
+                    {...register("message", {
+                      required: "Message is required.",
+                    })}
+                  ></textarea>
                   {errors.message && (
                     <p className="text-red-500">{errors.message.message}</p>
                   )}
@@ -182,7 +184,8 @@ const AddComposeModal: React.FC<AddComposeModalProps> = ({
                   <div className="shrink-0">
                     <label
                       htmlFor="sendImages"
-                      className="btn btn-active-gray btn-icon">
+                      className="btn btn-active-gray btn-icon"
+                    >
                       <ImagePlus className="size-5" />
                     </label>
                     <input type="file" id="sendImages" className="hidden" />
@@ -195,13 +198,15 @@ const AddComposeModal: React.FC<AddComposeModalProps> = ({
                   </button>
                   <button
                     type="button"
-                    className="mr-auto link link-yellow shrink-0">
+                    className="mr-auto link link-yellow shrink-0"
+                  >
                     <Smile className="size-5" />
                   </button>
                   <button
                     type="button"
                     className="btn btn-sub-gray shrink-0"
-                    onClick={onClose}>
+                    onClick={onClose}
+                  >
                     Draft
                   </button>
                   <button type="submit" className="btn btn-primary shrink-0">
@@ -214,7 +219,7 @@ const AddComposeModal: React.FC<AddComposeModalProps> = ({
         )}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default AddComposeModal
+export default AddComposeModal;

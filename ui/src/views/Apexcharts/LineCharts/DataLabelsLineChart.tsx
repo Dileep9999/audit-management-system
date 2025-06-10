@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import useChartColors from "@hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import React from "react";
+import ReactApexChart from "react-apexcharts";
 
 interface LineChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: any;
 }
 
 const DataLabelsLineChart = ({
@@ -24,28 +15,29 @@ const DataLabelsLineChart = ({
   chartId,
 }: LineChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'High - 2013',
+      name: "High - 2013",
       data: [28, 29, 33, 36, 32, 32, 33],
     },
     {
-      name: 'Low - 2013',
+      name: "Low - 2013",
       data: [12, 11, 14, 18, 17, 13, 13],
     },
-  ]
-  const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']
+  ];
+  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
 
   const options: ApexOptions = {
+    labels: labels,
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 300,
-      type: 'line',
+      type: "line",
       dropShadow: {
         enabled: true,
-        color: '#000',
+        color: "#000",
         top: 18,
         left: 7,
         blur: 10,
@@ -59,7 +51,7 @@ const DataLabelsLineChart = ({
       enabled: true,
     },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
     },
     grid: {
       padding: {
@@ -69,27 +61,21 @@ const DataLabelsLineChart = ({
       },
     },
     legend: {
-      position: 'top',
-      horizontalAlign: 'right',
+      position: "top",
+      horizontalAlign: "right",
       floating: true,
       offsetY: -25,
       offsetX: -5,
     },
-    xaxis: {
-      title: {
-        text: 'Month',
-      },
-      categories: labels,
-    },
     yaxis: {
       title: {
-        text: 'Temperature',
+        text: "Temperature",
       },
       min: 5,
       max: 40,
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -100,12 +86,12 @@ const DataLabelsLineChart = ({
         type="line"
         data-chart-colors="[bg-primary-500, bg-gray-300]"
         data-chart-dark-colors="[bg-primary-500, bg-gray-300]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DataLabelsLineChart
+export default DataLabelsLineChart;

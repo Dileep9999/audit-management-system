@@ -1,11 +1,7 @@
-'use client'
-
-import React from 'react'
-
-import { NextPageWithLayout } from '@src/dtos'
-
-import { VisitBrowsersApp } from './Chart'
-import AnimatedCounter from './Counter'
+import React from "react";
+import AnimatedCounter from "./counter";
+import { VisitBrowsersApp } from "./chart";
+import { NextPageWithLayout } from "@dtos/layout";
 
 const VisitBrowsers: NextPageWithLayout = () => {
   return (
@@ -16,19 +12,19 @@ const VisitBrowsers: NextPageWithLayout = () => {
             Visit Browsers
           </p>
           <h5>
-            <AnimatedCounter start={500} end={4510} duration={3000} />+
+            <AnimatedCounter start={500} end={4510} duration={3000} />+{" "}
             <span className="text-xs text-green-500">
               <i className="align-baseline ri-arrow-up-line"></i> 1.9%
             </span>
           </h5>
           <VisitBrowsersApp
             chartColors="[bg-primary-500, bg-orange-500, bg-yellow-500]"
-            chartDarkColors={'[bg-primary-500, bg-orange-500, bg-yellow-500]'}
+            chartDarkColors={""}
             chartId="visitBrowsersChart"
           />
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default VisitBrowsers
+  );
+};
+export default VisitBrowsers;

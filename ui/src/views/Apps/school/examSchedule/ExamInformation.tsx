@@ -1,45 +1,41 @@
-'use client'
+import React, { useEffect, useState } from "react";
+import { examInformation } from "@src/data";
 
-import React, { useEffect, useState } from 'react'
-
-import Link from 'next/link'
-
-import UseNumberCounter from '@src/components/common/NumberCounter'
-import { examInformation } from '@src/data'
 import {
-  Blend,
   BookOpenText,
   LibraryBig,
-  NotebookText,
   NotepadTextDashed,
+  NotebookText,
   Video,
-} from 'lucide-react'
+  Blend,
+} from "lucide-react";
+import UseNumberCounter from "@src/components/common/numberCounter";
+import { Link } from "react-router-dom";
 
 const ExamInformation = () => {
-  const [isOpen, setIsOpen] = useState(true)
-  const [percent] = useState(34) // The progress percentage
-  const [progress, setProgress] = useState(100) // Initial dash offset
-  useEffect(() => {
-    // Simulate the progress animation
-    const animateProgress = () => {
-      const strokeDashOffset = 100 - percent // Calculate dash offset based on percentage
-      setProgress(strokeDashOffset)
-    }
+  const [isOpen, setIsOpen] = useState(true);
+  const percent = 34;
+  const [progress, setProgress] = useState(100);
 
-    animateProgress()
-  }, [percent])
+  useEffect(() => {
+    const animateProgress = () => {
+      const strokeDashOffset = 100 - percent;
+      setProgress(strokeDashOffset);
+    };
+    animateProgress();
+  }, [percent]);
 
   const getLucideIcon = (icon: string, className: string) => {
     const icons: { [key: string]: React.ReactElement } = {
-      'book-open-text': <BookOpenText className={className} />,
-      'library-big': <LibraryBig className={className} />,
-      'notepad-text-dashed': <NotepadTextDashed className={className} />,
-      'notebook-text': <NotebookText className={className} />,
+      "book-open-text": <BookOpenText className={className} />,
+      "library-big": <LibraryBig className={className} />,
+      "notepad-text-dashed": <NotepadTextDashed className={className} />,
+      "notebook-text": <NotebookText className={className} />,
       video: <Video className={className} />,
       blend: <Blend className={className} />,
-    }
-    return icons[icon]
-  }
+    };
+    return icons[icon];
+  };
 
   return (
     <React.Fragment>
@@ -47,9 +43,10 @@ const ExamInformation = () => {
         <div className="font-medium text-center ltr:pr-10 rtl:pl-10 alert alert-primary mb-space">
           <span>Today Test: 2 Test and online 1 Test</span>
           <Link
-            href="#"
-            onClick={() => setIsOpen(false)} // Handle close functionality
-            className="absolute text-lg transition duration-200 ease-linear text-primary-400 hover:text-primary-500 ltr:right-5 rtl:left-5 top-2">
+            to="#"
+            onClick={() => setIsOpen(false)}
+            className="absolute text-lg transition duration-200 ease-linear text-primary-400 hover:text-primary-500 ltr:right-5 rtl:left-5 top-2"
+          >
             <i className="ri-close-fill"></i>
           </Link>
         </div>
@@ -65,7 +62,8 @@ const ExamInformation = () => {
                 width="36"
                 height="36"
                 viewBox="0 0 36 36"
-                xmlns="http://www.w3.org/2000/svg">
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <circle
                   cx="18"
                   cy="18"
@@ -84,7 +82,7 @@ const ExamInformation = () => {
                     strokeWidth="3"
                     strokeDasharray="100"
                     strokeDashoffset={progress}
-                    style={{ transition: 'stroke-dashoffset 1s ease-out' }}
+                    style={{ transition: "stroke-dashoffset 1s ease-out" }}
                   />
                 </g>
               </svg>
@@ -99,11 +97,13 @@ const ExamInformation = () => {
         {examInformation.map((exam, index) => (
           <div
             key={index}
-            className="relative col-span-12 sm:col-span-6 xl:col-span-3 card">
+            className="relative col-span-12 sm:col-span-6 xl:col-span-3 card"
+          >
             <div className="card-body">
               <div
-                className={`absolute top-5 ltr:right-5 rtl:left-5 ${exam.icon.color} ${exam.icon.backgroundColor} size-6`}>
-                {getLucideIcon(exam.icon.name, 'w-6 h-6')}
+                className={`absolute top-5 ltr:right-5 rtl:left-5 ${exam.icon.color} ${exam.icon.backgroundColor} size-6`}
+              >
+                {getLucideIcon(exam.icon.name, `w-6 h-6`)}
               </div>
               <p className={`mb-3 ${exam.textColor} ${exam.backgroundColor}`}>
                 {exam.testType}
@@ -116,7 +116,7 @@ const ExamInformation = () => {
         ))}
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ExamInformation
+export default ExamInformation;

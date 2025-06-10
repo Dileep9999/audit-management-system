@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import useChartColors from "@src/hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const TestMarksSubjectChat = ({
@@ -23,44 +14,44 @@ const TestMarksSubjectChat = ({
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Performance',
+      name: "Performance",
       data: [69, 78, 49, 63, 54, 87],
     },
-  ]
+  ];
 
   const labels = [
-    'Mathematics',
-    'Physics',
-    'Chemistry',
-    'Biology',
-    'CS',
-    'English',
-  ]
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "CS",
+    "English",
+  ];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 260,
-      type: 'bar',
+      type: "bar",
       toolbar: {
         show: false,
       },
     },
     plotOptions: {
       bar: {
-        columnWidth: '20%',
+        columnWidth: "20%",
         distributed: true,
       },
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        shade: 'dark',
-        type: 'horizontal',
+        shade: "dark",
+        type: "horizontal",
         shadeIntensity: 0.2,
         inverseColors: true,
         opacityFrom: 1,
@@ -72,19 +63,19 @@ const TestMarksSubjectChat = ({
     states: {
       normal: {
         filter: {
-          type: 'none',
+          type: "none",
           value: 0,
         },
       },
       hover: {
         filter: {
-          type: 'none',
+          type: "none",
           value: 0,
         },
       },
       active: {
         filter: {
-          type: 'none',
+          type: "none",
           value: 0,
         },
       },
@@ -92,7 +83,7 @@ const TestMarksSubjectChat = ({
     dataLabels: {
       enabled: false,
       formatter: function (val) {
-        return val + '%'
+        return val + "%";
       },
     },
     legend: {
@@ -111,12 +102,12 @@ const TestMarksSubjectChat = ({
     yaxis: {
       labels: {
         formatter: function (val) {
-          return val + '%'
+          return val + "%";
         },
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -132,7 +123,7 @@ const TestMarksSubjectChat = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TestMarksSubjectChat
+export default TestMarksSubjectChat;

@@ -1,17 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
+import React from "react";
+import { Ellipsis } from "lucide-react";
+import { client } from "@data/index";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { client } from '@src/data/index'
-import { Ellipsis } from 'lucide-react'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
 
 const ClientInformation = () => {
   return (
@@ -21,7 +16,7 @@ const ClientInformation = () => {
           <div className="card" key={index}>
             <div className="card-body">
               <div className="flex flex-wrap items-center gap-2">
-                <Image
+                <img
                   src={person.image}
                   alt={person.name}
                   className="rounded-md size-10 shrink-0"
@@ -43,15 +38,15 @@ const ClientInformation = () => {
                   <DropdownButton>
                     <Ellipsis className="size-5" />
                   </DropdownButton>
-                  <DropdownMenu menuClass="dropdown-left">
-                    <Link href="#!" className="dropdown-item">
+                  <DropdownMenu menuclass="dropdown-left">
+                    <Link to="#!" className="dropdown-item">
                       <span>Overview</span>
                     </Link>
 
-                    <Link href="#!" className="dropdown-item">
+                    <Link to="#!" className="dropdown-item">
                       <span>Edit</span>
                     </Link>
-                    <Link href="#!" className="dropdown-item">
+                    <Link to="#!" className="dropdown-item">
                       <span>Delete</span>
                     </Link>
                   </DropdownMenu>
@@ -62,7 +57,7 @@ const ClientInformation = () => {
         ))}
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ClientInformation
+export default ClientInformation;

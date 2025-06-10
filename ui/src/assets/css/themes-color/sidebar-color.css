@@ -1,4 +1,4 @@
-[data-sidebar-colors='dark'] {
+[data-sidebar-colors="dark"] {
   --color-sidebar: var(--color-gray-800);
   --color-sidebar-border: var(--color-gray-800);
   --color-menu-title: var(--color-gray-500);
@@ -11,7 +11,7 @@
   --color-effect: var(--color-gray-800);
 }
 
-[data-sidebar-colors='brand'] {
+[data-sidebar-colors="brand"] {
   --color-sidebar: #1a57d4;
   --color-sidebar-border: #1a57d4;
   --color-menu-title: #bcc5e6;
@@ -24,7 +24,7 @@
   --color-effect: #1a57d4;
 }
 
-[data-sidebar-colors='purple'] {
+[data-sidebar-colors="purple"] {
   --color-sidebar: var(--color-purple-950);
   --color-sidebar-border: var(--color-purple-950);
   --color-menu-title: #b98fd7;
@@ -37,7 +37,7 @@
   --color-effect: var(--color-purple-950);
 }
 
-[data-sidebar-colors='sky'] {
+[data-sidebar-colors="sky"] {
   --color-sidebar: var(--color-sky-900);
   --color-sidebar-border: var(--color-sky-900);
   --color-menu-title: #8ea2b5;

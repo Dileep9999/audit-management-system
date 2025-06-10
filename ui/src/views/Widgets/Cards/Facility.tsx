@@ -1,20 +1,18 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import { facility } from '@src/data/index'
-import { GalleryVerticalEnd, Headset, Shuffle, Truck } from 'lucide-react'
+import { Truck, GalleryVerticalEnd, Headset, Shuffle } from "lucide-react";
+import { facility } from "@data/index";
 
 const Facility = () => {
   const getLucideIcon = (icon: string, className: string) => {
     const icons: { [key: string]: React.ReactElement } = {
       truck: <Truck className={className} />,
-      'gallery-vertical-end': <GalleryVerticalEnd className={className} />,
+      "gallery-vertical-end": <GalleryVerticalEnd className={className} />,
       headset: <Headset className={className} />,
       shuffle: <Shuffle className={className} />,
-    }
-    return icons[icon]
-  }
+    };
+    return icons[icon];
+  };
 
   return (
     <React.Fragment>
@@ -43,7 +41,7 @@ const Facility = () => {
         ))}
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Facility
+export default Facility;

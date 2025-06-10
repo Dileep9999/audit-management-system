@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import useChartColors from "@hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const MarkersBarChart = ({
@@ -24,100 +15,100 @@ const MarkersBarChart = ({
   chartId,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Actual',
+      name: "Actual",
       data: [
         {
-          x: '2011',
+          x: "2011",
           y: 12,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 14,
               strokeWidth: 2,
               strokeDashArray: 2,
-              strokeColor: '#775DD0',
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2012',
+          x: "2012",
           y: 44,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 54,
               strokeWidth: 5,
               strokeHeight: 10,
-              strokeColor: '#775DD0',
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2013',
+          x: "2013",
           y: 54,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 52,
               strokeWidth: 10,
               strokeHeight: 0,
-              strokeLineCap: 'round',
-              strokeColor: '#775DD0',
+              strokeLineCap: "round",
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2014',
+          x: "2014",
           y: 66,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 61,
               strokeWidth: 10,
               strokeHeight: 0,
-              strokeLineCap: 'round',
-              strokeColor: '#775DD0',
+              strokeLineCap: "round",
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2015',
+          x: "2015",
           y: 81,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 66,
               strokeWidth: 10,
               strokeHeight: 0,
-              strokeLineCap: 'round',
-              strokeColor: '#775DD0',
+              strokeLineCap: "round",
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2016',
+          x: "2016",
           y: 67,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 70,
               strokeWidth: 5,
               strokeHeight: 10,
-              strokeColor: '#775DD0',
+              strokeColor: "#775DD0",
             },
           ],
         },
       ],
     },
-  ]
+  ];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
     },
     plotOptions: {
       bar: {
@@ -126,21 +117,21 @@ const MarkersBarChart = ({
     },
     colors: chartsColor,
     dataLabels: {
-      formatter: function (val: number, opt) {
+      formatter: function (val: number, opt: any) {
         const goals =
-          opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex].goals
+          opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex].goals;
         if (goals && goals.length) {
-          return `${val} / ${goals[0].value}`
+          return `${val} / ${goals[0].value}`;
         }
-        return val
+        return val;
       },
     },
     legend: {
       show: true,
       showForSingleSeries: true,
-      customLegendItems: ['Actual', 'Expected'],
+      customLegendItems: ["Actual", "Expected"],
       markers: {
-        fillColors: ['#00E396', '#775DD0'],
+        fillColors: ["#00E396", "#775DD0"],
       },
     },
     grid: {
@@ -149,7 +140,7 @@ const MarkersBarChart = ({
         bottom: -10,
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -158,12 +149,12 @@ const MarkersBarChart = ({
         series={series}
         data-chart-colors="[bg-green-500]"
         type="bar"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default MarkersBarChart
+export default MarkersBarChart;

@@ -1,146 +1,130 @@
-import { TeacherListList } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
+import { AppDispatch } from "@src/slices/reducer";
+import api from "@src/utils/axios_api";
+import { TeacherListList } from "@src/dtos";
+import { REACT_APP_SCHOOL_TEACHER_LIST_API } from "@src/utils/url_helper";
 import {
-  LocalStorageRecord,
   addLocalStorageRecord,
   createLocalStorage,
   deleteLocalStorageRecord,
   getLocalStorage,
   updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_SCHOOL_TEACHER_LIST_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
-
+} from "@src/utils/crud_functions";
 import {
   addTeacherList,
   deleteTeacherList,
   editTeacherList,
   getTeacherList,
-} from './reducer'
+} from "./reducer";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-const SCHOOL_TEACHER_LIST_API = NEXT_PUBLIC_SCHOOL_TEACHER_LIST_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const SCHOOL_TEACHER_LIST_API = REACT_APP_SCHOOL_TEACHER_LIST_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get teacher list
 export const getTeacherListData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = (await getLocalStorage('d-teacher-list')) as
-        | TeacherListList[]
-        | null
+      const responseData = await getLocalStorage("d-teacher-list");
       if (!responseData) {
-        const response = await api.get(SCHOOL_TEACHER_LIST_API)
-        const { data } = response
-        createLocalStorage('d-teacher-list', data)
-        dispatch(getTeacherList(data))
+        const response = await api.get(SCHOOL_TEACHER_LIST_API);
+        createLocalStorage("d-teacher-list", response);
+        dispatch(getTeacherList(response));
       } else {
-        if (responseData) {
-          dispatch(getTeacherList(responseData))
-        } else {
-          throw new Error('Invalid data format from local storage')
-        }
+        dispatch(responseData);
       }
     } else {
-      const response = await api.get(SCHOOL_TEACHER_LIST_API)
-      const { data } = response
-      dispatch(getTeacherList(data))
+      const response = await api.get(SCHOOL_TEACHER_LIST_API);
+      dispatch(getTeacherList(response));
     }
-  } catch (error) {
-    let errorMessage = 'teacher List Fetch Failed'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-    }
-    toast.error(errorMessage, { autoClose: 3000 })
-    console.error('student record updation failed:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Teacher List Fetch Failed.";
+    ErrorToast(errorMessage);
+    console.error("Error fetching teacher list data:", error);
   }
-}
+};
 
 // add teacher record
 export const addTeacherListData =
   (newRecord: TeacherListList) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(
+      const response = await api.post(
         SCHOOL_TEACHER_LIST_API,
         newRecord,
-        'teacher List'
-      )
-      const { data, message } = response
-      toast.success(message || 'Teacher record added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-teacher-list', { ...data })
-      dispatch(addTeacherList(data))
-    } catch (error) {
-      let errorMessage = 'Teacher addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('Teacher addition failed:', error)
+        "Teacher List",
+      );
+      const { message } = response;
+      AddToast(message || "Teacher List added successfully");
+      addLocalStorageRecord("d-teacher-list", newRecord);
+      dispatch(addTeacherList(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Teacher List addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding teacher list record:", error);
     }
-  }
+  };
 
 // edit teacher record
 export const editTeacherListData =
   (teacher: TeacherListList) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(
+      const response = await api.put(
         SCHOOL_TEACHER_LIST_API,
         teacher,
-        'teacher List'
-      )
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-teacher-list',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editTeacherList(data))
-    } catch (error) {
-      let errorMessage = 'teacher record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('teacher record updation failed:', error)
+        "Teacher List",
+      );
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Teacher List updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-teacher-list", teacher);
+      dispatch(editTeacherList(teacher));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Teacher List record updation failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating teacher list:", error);
     }
-  }
+  };
 
 // delete teacher record
 export const deleteTeacherListData =
   (teacher: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = teacher.map(async (id) => {
-        const response = await customDelete(
+      const deletePromises = teacher.map(async (_id) => {
+        const response = await api.delete(
           SCHOOL_TEACHER_LIST_API,
-          id,
-          'teacher List'
-        )
-        const { message } = response
-        toast.success(message || 'teacher record deleted successfully', {
-          autoClose: 3000,
-        })
-        return response.data
-      })
-      const deletedProducts = await Promise.all(deletePromises)
-      dispatch(deleteTeacherList(deletedProducts))
+          _id,
+          "Teacher List",
+        );
+        const { message } = response;
+        DeleteToast(message || "Teacher record deleted successfully");
+        return _id;
+      });
+
+      const deletedTeachers = await Promise.all(deletePromises);
+      dispatch(deleteTeacherList(deletedTeachers));
       deleteLocalStorageRecord({
-        key: 'd-teacher-list',
+        key: "d-teacher-list",
         listRecord: teacher,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'teacher record deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('teacher record deletion failed:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Teacher List record deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting teacher list: ", error);
     }
-  }
+  };

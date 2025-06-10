@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface PieChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const SimplePieChart = ({
@@ -24,15 +15,15 @@ const SimplePieChart = ({
   chartId,
 }: PieChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const series = [44, 55, 13, 43, 22]
-  const labels = ['Team A', 'Team B', 'Team C', 'Team D', 'Team E']
+  const series = [44, 55, 13, 43, 22];
+  const labels = ["Team A", "Team B", "Team C", "Team D", "Team E"];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'pie',
+      type: "pie",
     },
     labels: labels,
     colors: chartsColor,
@@ -44,12 +35,12 @@ const SimplePieChart = ({
             width: 200,
           },
           legend: {
-            position: 'bottom',
+            position: "bottom",
           },
         },
       },
     ],
-  }
+  };
 
   return (
     <React.Fragment>
@@ -59,12 +50,12 @@ const SimplePieChart = ({
         series={series}
         type="pie"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-yellow-500, bg-purple-500, bg-red-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default SimplePieChart
+export default SimplePieChart;

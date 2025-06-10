@@ -1,21 +1,16 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { patients } from '@src/data/index'
-import { Phone } from 'lucide-react'
-import SimpleBar from 'simplebar-react'
+import React from "react";
+import SimpleBar from "simplebar-react";
+import { Phone } from "lucide-react";
+import { Link } from "react-router-dom";
+import { patients } from "@data/index";
 
 const PatientsList = () => {
   const getLucideIcon = (icon: string, className: string) => {
     const icons: { [key: string]: React.ReactElement } = {
       phone: <Phone className={className} />,
-    }
-    return icons[icon]
-  }
+    };
+    return icons[icon];
+  };
 
   return (
     <React.Fragment>
@@ -25,23 +20,25 @@ const PatientsList = () => {
           <div className="shrink-0">
             <div className="inline-flex gap-3 text-sm">
               <Link
-                href="#!"
-                className="relative inline-block text-gray-500 dark:text-dark-500 transition duration-200 ease-linear grow hover:text-purple-500 dark:hover:text-purple-500 after:size-1 after:absolute after:transition-all after:duration-200 after:opacity-0 after:-bottom-3 hover:after:-bottom-1.5 hover:after:opacity-100 after:mx-auto after:rounded-full after:inset-x-0 after:bg-purple-500 [&.active]:after:-bottom-1.5 [&.active]:after:opacity-100 [&.active]:text-purple-500 active">
+                to="#!"
+                className="relative inline-block text-gray-500 dark:text-dark-500 transition duration-200 ease-linear grow hover:text-purple-500 dark:hover:text-purple-500 after:size-1 after:absolute after:transition-all after:duration-200 after:opacity-0 after:-bottom-3 hover:after:-bottom-1.5 hover:after:opacity-100 after:mx-auto after:rounded-full after:inset-x-0 after:bg-purple-500 [&.active]:after:-bottom-1.5 [&.active]:after:opacity-100 [&.active]:text-purple-500 active"
+              >
                 Day
               </Link>
               <Link
-                href="#!"
-                className="relative inline-block text-gray-500 dark:text-dark-500 transition duration-200 ease-linear grow hover:text-purple-500 dark:hover:text-purple-500 after:size-1 after:absolute after:transition-all after:duration-200 after:opacity-0 after:-bottom-3 hover:after:-bottom-1.5 hover:after:opacity-100 after:mx-auto after:rounded-full after:inset-x-0 after:bg-purple-500 [&.active]:after:-bottom-1.5 [&.active]:after:opacity-100 [&.active]:text-purple-500">
+                to="#!"
+                className="relative inline-block text-gray-500 dark:text-dark-500 transition duration-200 ease-linear grow hover:text-purple-500 dark:hover:text-purple-500 after:size-1 after:absolute after:transition-all after:duration-200 after:opacity-0 after:-bottom-3 hover:after:-bottom-1.5 hover:after:opacity-100 after:mx-auto after:rounded-full after:inset-x-0 after:bg-purple-500 [&.active]:after:-bottom-1.5 [&.active]:after:opacity-100 [&.active]:text-purple-500"
+              >
                 Week
               </Link>
             </div>
           </div>
         </div>
         <SimpleBar className="h-36 card-body">
-          <div className="flex flex-col gap-3">
+          <div className="space-y-3">
             {patients.map((patient, index) => (
               <div key={index} className="flex items-center gap-3">
-                <Image
+                <img
                   src={patient.image}
                   alt={patient.alt}
                   className="rounded-md size-10 shrink-0"
@@ -62,7 +59,7 @@ const PatientsList = () => {
         </SimpleBar>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default PatientsList
+export default PatientsList;

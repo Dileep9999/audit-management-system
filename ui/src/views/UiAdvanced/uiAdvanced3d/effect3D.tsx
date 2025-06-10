@@ -1,10 +1,7 @@
-'use client'
+import React from "react";
+import TiltCard from "./tiltCard";
 
-import React from 'react'
-
-import TiltCard from './tiltCard'
-
-const App = () => {
+const Effect3D = () => {
   return (
     <React.Fragment>
       {/* Basic Tilt */}
@@ -31,7 +28,7 @@ const App = () => {
             glare value with
           </p>
           <TiltCard
-            options={{ max: 25, speed: 400, glare: true, 'max-glare': 0.8 }}
+            options={{ max: 25, speed: 400, glare: true, "max-glare": 0.8 }}
             className="bg-gradient-to-br from-green-500 via-indigo-500 to-sky-500"
           />
         </div>
@@ -136,7 +133,7 @@ const App = () => {
             Setting this option will disable the X-Axis on the tilt element.
           </p>
           <TiltCard
-            options={{ max: 25, speed: 400, axis: 'y' }}
+            options={{ max: 25, speed: 400, axis: "y" }}
             className="bg-gradient-to-br from-green-500 via-indigo-500 to-sky-500"
           />
         </div>
@@ -152,13 +149,13 @@ const App = () => {
             Setting this option will disable the Y-Axis on the tilt element.
           </p>
           <TiltCard
-            options={{ max: 25, speed: 400, axis: 'x' }}
+            options={{ max: 25, speed: 400, axis: "x" }}
             className="bg-gradient-to-br from-green-500 via-indigo-500 to-sky-500"
           />
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default App
+export default Effect3D;

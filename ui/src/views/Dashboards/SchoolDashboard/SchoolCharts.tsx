@@ -1,22 +1,13 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
+import useChartColors from "@hooks/useChartColors";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
-  timeFrame?: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
+  timeFrame?: string;
 }
 
 const GradientDonutApp = ({
@@ -24,19 +15,20 @@ const GradientDonutApp = ({
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
-  const series = [44, 55]
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
+
+  const series = [44, 55];
+
   const options: ApexOptions = {
     chart: {
       height: 180,
-      type: 'donut',
+      type: "donut",
     },
     legend: {
       show: true,
-      position: 'bottom',
+      position: "bottom",
     },
-    labels: ['Process', 'In Process'],
+    labels: ["Process", "In Process"],
     plotOptions: {
       pie: {
         startAngle: -90,
@@ -47,10 +39,10 @@ const GradientDonutApp = ({
       enabled: false,
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -66,8 +58,8 @@ const GradientDonutApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const DumbbellColumnApp = ({
   chartColors,
@@ -76,157 +68,157 @@ const DumbbellColumnApp = ({
   timeFrame,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
+      case "Weekly":
         return [
           {
             data: [
               {
-                x: '2018',
+                x: "2018",
                 y: [241, 100],
               },
               {
-                x: '2019',
+                x: "2019",
                 y: [150, 41],
               },
               {
-                x: '2020',
+                x: "2020",
                 y: [210, 100],
               },
               {
-                x: '2021',
+                x: "2021",
                 y: [200, 10],
               },
               {
-                x: '2022',
+                x: "2022",
                 y: [100, 10],
               },
               {
-                x: '2023',
+                x: "2023",
                 y: [190, 120],
               },
               {
-                x: '2024',
+                x: "2024",
                 y: [154, 241],
               },
             ],
           },
-        ]
-      case 'Monthly':
+        ];
+      case "Monthly":
         return [
           {
             data: [
               {
-                x: '2018',
+                x: "2018",
                 y: [141, 90],
               },
               {
-                x: '2019',
+                x: "2019",
                 y: [90, 21],
               },
               {
-                x: '2020',
+                x: "2020",
                 y: [60, 120],
               },
               {
-                x: '2021',
+                x: "2021",
                 y: [100, 50],
               },
               {
-                x: '2022',
+                x: "2022",
                 y: [90, 30],
               },
               {
-                x: '2023',
+                x: "2023",
                 y: [110, 70],
               },
               {
-                x: '2024',
+                x: "2024",
                 y: [114, 141],
               },
             ],
           },
-        ]
-      case 'Yearly':
+        ];
+      case "Yearly":
         return [
           {
             data: [
               {
-                x: '2018',
+                x: "2018",
                 y: [141, 180],
               },
               {
-                x: '2019',
+                x: "2019",
                 y: [190, 61],
               },
               {
-                x: '2020',
+                x: "2020",
                 y: [120, 50],
               },
               {
-                x: '2021',
+                x: "2021",
                 y: [190, 90],
               },
               {
-                x: '2022',
+                x: "2022",
                 y: [120, 85],
               },
               {
-                x: '2023',
+                x: "2023",
                 y: [90, 170],
               },
               {
-                x: '2024',
+                x: "2024",
                 y: [54, 241],
               },
             ],
           },
-        ]
+        ];
       default:
         return [
           {
             data: [
               {
-                x: '2018',
+                x: "2018",
                 y: [241, 100],
               },
               {
-                x: '2019',
+                x: "2019",
                 y: [150, 41],
               },
               {
-                x: '2020',
+                x: "2020",
                 y: [210, 100],
               },
               {
-                x: '2021',
+                x: "2021",
                 y: [200, 10],
               },
               {
-                x: '2022',
+                x: "2022",
                 y: [100, 10],
               },
               {
-                x: '2023',
+                x: "2023",
                 y: [190, 120],
               },
               {
-                x: '2024',
+                x: "2024",
                 y: [154, 241],
               },
             ],
           },
-        ]
+        ];
     }
-  }
+  };
 
   const options: ApexOptions = {
     chart: {
       height: 290,
-      type: 'rangeBar',
+      type: "rangeBar",
       zoom: {
         enabled: false,
       },
@@ -241,14 +233,14 @@ const DumbbellColumnApp = ({
     legend: {
       show: true,
       showForSingleSeries: true,
-      position: 'top',
-      horizontalAlign: 'center',
-      customLegendItems: ['New Students', 'Leave Students'],
+      position: "top",
+      horizontalAlign: "center",
+      customLegendItems: ["New Students", "Leave Students"],
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        type: 'vertical',
+        type: "vertical",
         gradientToColors: [chartsColor[1]],
         inverseColors: true,
         stops: [0, 100],
@@ -271,10 +263,10 @@ const DumbbellColumnApp = ({
       },
     },
     xaxis: {
-      tickPlacement: 'on',
+      tickPlacement: "on",
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -290,7 +282,7 @@ const DumbbellColumnApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export { GradientDonutApp, DumbbellColumnApp }
+export { GradientDonutApp, DumbbellColumnApp };

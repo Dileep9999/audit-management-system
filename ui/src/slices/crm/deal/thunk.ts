@@ -1,78 +1,68 @@
-import { DealItem } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete } from '@src/utils/axios_api'
+import { AppDispatch } from "@src/slices/reducer";
+import { deleteDealList, getDealList } from "./reducer";
+import api from "@src/utils/axios_api";
 import {
   createLocalStorage,
   deleteLocalStorageRecord,
   getLocalStorage,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_CRM_DEAL_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+} from "@src/utils/crud_functions";
+import { REACT_APP_CRM_DEAL_API } from "@src/utils/url_helper";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
+import ErrorToast from "@src/components/custom/toast/errorToast";
 
-import { deleteDealList, getDealList } from './reducer'
-
-const DEAL_LIST_API = NEXT_PUBLIC_CRM_DEAL_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const DEAL_LIST_API = REACT_APP_CRM_DEAL_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get data
 export const getDealData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = (await getLocalStorage('d-crm-deal-list')) as
-        | DealItem[]
-        | null
-      if (!responseData || !Array.isArray(responseData)) {
-        const response = await api.get(DEAL_LIST_API)
-        const { data } = response
-        createLocalStorage('d-crm-deal-list', data)
-        dispatch(getDealList(data))
+      const responseData = await getLocalStorage("d-crm-deals-list");
+      if (!responseData) {
+        const response = await api.get(DEAL_LIST_API);
+        createLocalStorage("d-crm-deals-list", response);
+        dispatch(getDealList(response));
       } else {
-        dispatch(getDealList(responseData))
+        dispatch(getDealList(responseData));
       }
     } else {
-      const response = await api.get(DEAL_LIST_API)
-      const { data } = response
-      dispatch(getDealList(data))
+      const response = await api.get(DEAL_LIST_API);
+      dispatch(getDealList(response));
     }
-  } catch (error) {
-    let errorMessage = 'Error fetching contact data'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-      toast.error(errorMessage, { autoClose: 3000 })
-    }
-    console.error('Error fetching contact data:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Deal List Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching deal data:", error);
   }
-}
+};
 
 // delete customer record
 export const deleteDealListData =
-  (products: number[]) => async (dispatch: AppDispatch) => {
+  (question: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = products.map(async (id: number) => {
-        const response = await customDelete(DEAL_LIST_API, id, 'deal')
-        const { data, message } = response
-        toast.success(message || 'Deal record deleted successfully', {
-          autoClose: 3000,
-        })
-        return data
-      })
-      const deletedProducts = await Promise.all(deletePromises)
-      dispatch(deleteDealList(deletedProducts))
+      const deletePromises = question.map(async (_id) => {
+        const response = await api.delete(DEAL_LIST_API, _id, "Deal");
+        const { message } = response;
+        DeleteToast(message || "Deal record deleted successfully");
+        return _id;
+      });
+
+      const deletedDeals = await Promise.all(deletePromises);
+      dispatch(deleteDealList(deletedDeals));
       deleteLocalStorageRecord({
-        key: 'd-crm-deal-list',
-        listRecord: products,
+        key: "d-crm-deals-list",
+        listRecord: question,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'Error in deleting products'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Error in deleting products:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Deal record deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting deal: ", error);
     }
-  }
+  };

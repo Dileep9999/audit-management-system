@@ -1,63 +1,65 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { ProjectList } from '@src/dtos'
-import { initStore } from '@src/utils/init_store'
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import LoadingToast from "@src/components/custom/toast/loadingToast";
+import { ProjectList } from "@src/dtos";
+import { initStore } from "@src/utils/init_store";
 
 interface ProjectListState {
-  projectList: ProjectList[]
-  isLoading: boolean
+  projectlist: ProjectList[];
+  isLoading: boolean;
 }
 
 const initialState: ProjectListState = {
-  projectList: initStore('d-project-list') as ProjectList[],
+  projectlist: initStore("d-project-list"),
   isLoading: false,
-}
+};
 
 const ProjectSlice = createSlice({
-  name: 'projectlist',
+  name: "projectlist",
   initialState,
   reducers: {
     getProjectList(state, action: PayloadAction<ProjectList[]>) {
-      state.projectList = action.payload
+      state.projectlist = action.payload;
     },
 
     deleteProjectList(state, action: PayloadAction<number[]>) {
-      if (state.projectList !== null) {
-        state.projectList = state.projectList.filter(
-          (item) => !action.payload.includes(item.id)
-        )
+      if (state.projectlist !== null) {
+        state.projectlist = state.projectlist.filter(
+          (item) => !action.payload.includes(item._id),
+        );
       }
     },
 
     editProjectList(state, action: PayloadAction<ProjectList>) {
-      const projectList = action.payload
-      if (state.projectList !== null) {
-        const findProjectIndex = state.projectList.findIndex(
-          (item) => item.id === projectList.id
-        )
-        const findProjectRecord = state.projectList.find(
-          (item) => item.id === projectList.id
-        )
+      const projectlist = action.payload;
+      if (state.projectlist !== null) {
+        const findProjectIndex = state.projectlist.findIndex(
+          (item) => item._id === projectlist._id,
+        );
+        const findProjectRecord = state.projectlist.find(
+          (item) => item._id === projectlist._id,
+        );
         if (findProjectIndex !== -1 && findProjectRecord) {
-          state.projectList[findProjectIndex] = projectList
+          state.projectlist[findProjectIndex] = projectlist;
         }
+        LoadingToast();
       }
     },
 
     addProjectList(state, action: PayloadAction<ProjectList>) {
-      const newProject = action.payload
-      if (state.projectList !== null) {
-        state.projectList.unshift(newProject)
+      const newProject = action.payload;
+      if (state.projectlist !== null) {
+        state.projectlist.unshift(newProject);
       } else {
-        state.projectList = [newProject]
+        state.projectlist = [newProject];
       }
     },
   },
-})
+});
 
 export const {
   getProjectList,
   addProjectList,
   editProjectList,
   deleteProjectList,
-} = ProjectSlice.actions
-export default ProjectSlice.reducer
+} = ProjectSlice.actions;
+export default ProjectSlice.reducer;

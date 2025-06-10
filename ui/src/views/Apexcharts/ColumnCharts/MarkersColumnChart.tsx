@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import useChartColors from "@hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import React from "react";
+import ReactApexChart from "react-apexcharts";
 
 interface ColumnChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const MarkersColumnChart = ({
@@ -24,123 +15,123 @@ const MarkersColumnChart = ({
   chartId,
 }: ColumnChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Actual',
+      name: "Actual",
       data: [
         {
-          x: '2011',
+          x: "2011",
           y: 1292,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 1400,
               strokeHeight: 5,
-              strokeColor: '#775DD0',
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2012',
+          x: "2012",
           y: 4432,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 5400,
               strokeHeight: 5,
-              strokeColor: '#775DD0',
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2013',
+          x: "2013",
           y: 5423,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 5200,
               strokeHeight: 5,
-              strokeColor: '#775DD0',
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2014',
+          x: "2014",
           y: 6653,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 6500,
               strokeHeight: 5,
-              strokeColor: '#775DD0',
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2015',
+          x: "2015",
           y: 8133,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 6600,
               strokeHeight: 13,
               strokeWidth: 0,
-              strokeLineCap: 'round',
-              strokeColor: '#775DD0',
+              strokeLineCap: "round",
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2016',
+          x: "2016",
           y: 7132,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 7500,
               strokeHeight: 5,
-              strokeColor: '#775DD0',
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2017',
+          x: "2017",
           y: 7332,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 8700,
               strokeHeight: 5,
-              strokeColor: '#775DD0',
+              strokeColor: "#775DD0",
             },
           ],
         },
         {
-          x: '2018',
+          x: "2018",
           y: 6553,
           goals: [
             {
-              name: 'Expected',
+              name: "Expected",
               value: 7300,
               strokeHeight: 2,
               strokeDashArray: 2,
-              strokeColor: '#775DD0',
+              strokeColor: "#775DD0",
             },
           ],
         },
       ],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
     },
     plotOptions: {
       bar: {
-        columnWidth: '60%',
+        columnWidth: "60%",
       },
     },
     colors: chartsColor,
@@ -150,12 +141,12 @@ const MarkersColumnChart = ({
     legend: {
       show: true,
       showForSingleSeries: true,
-      customLegendItems: ['Actual', 'Expected'],
+      customLegendItems: ["Actual", "Expected"],
       markers: {
-        fillColors: ['#00E396', '#775DD0'],
+        fillColors: ["#00E396", "#775DD0"],
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -164,12 +155,12 @@ const MarkersColumnChart = ({
         series={series}
         type="bar"
         data-chart-colors="[bg-primary-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default MarkersColumnChart
+export default MarkersColumnChart;

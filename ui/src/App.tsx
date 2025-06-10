@@ -1,0 +1,123 @@
+import "flatpickr/dist/flatpickr.css";
+import "simplebar-react/dist/simplebar.min.css";
+import "@assets/css/tailwind.css";
+import "@assets/css/icons.css";
+import "@assets/css/fonts/fonts.css";
+import "./assets/css/plugins.css";
+
+import React, { useEffect } from "react";
+import { getPreviousStorageData } from "./slices/layout/utils"; // Adjust the path if needed
+import { withTranslation } from "react-i18next";
+import store, { AppDispatch } from "./slices/reducer";
+
+import {
+  changeLayoutMode,
+  changeLayoutContentWidth,
+  changeSidebarSize,
+  changeDirection,
+  changeLayout,
+  changeSidebarColor,
+  changeDataColor,
+  changeLayoutLanguage,
+  changeModernNavigation,
+  getStudentListData,
+  changeDarkModeClass,
+} from "./slices/thunk";
+
+import Routing from "./routes";
+import { getPatientsData } from "./slices/hospital/patients/thunk";
+import { getProductListData } from "./slices/ecommerce/products/list/thunk";
+import { getWishList } from "./slices/ecommerce/wishlist/thunk";
+import { getInvoiceListData } from "./slices/invoice/thunk";
+import { getEcommerceShopCartData } from "./slices/ecommerce/shop_cart/thunk";
+import { getOrderData } from "./slices/ecommerce/order/thunk";
+import { LAYOUT_LANGUAGES } from "./components/constants/layout";
+import { initialState } from "./slices/layout/reducer";
+
+function App() {
+  useEffect(() => {
+    const htmlElement = document.documentElement;
+    htmlElement.classList.add("scroll-smooth", "group");
+    return () => {
+      htmlElement.classList.remove("scroll-smooth", "group");
+    };
+  }, []);
+
+  useEffect(() => {
+    const dispatch = store.dispatch as AppDispatch; // Use AppDispatch
+    dispatch(getEcommerceShopCartData());
+    dispatch(getOrderData());
+    dispatch(getInvoiceListData());
+    dispatch(getWishList());
+    dispatch(getPatientsData());
+    dispatch(getStudentListData());
+    dispatch(getProductListData());
+
+    dispatch(
+      changeLayoutMode(
+        getPreviousStorageData("data-layout-mode") ?? initialState.layoutMode,
+      ),
+    );
+    dispatch(
+      changeLayoutContentWidth(
+        getPreviousStorageData("data-layout-content-width") ??
+          initialState.layoutWidth,
+      ),
+    );
+    dispatch(
+      changeSidebarSize(
+        getPreviousStorageData("data-sidebar-size") ??
+          initialState.layoutSidebar,
+      ),
+    );
+    dispatch(
+      changeDirection(
+        getPreviousStorageData("data-layout-direction") ??
+          initialState.layoutDirection,
+      ),
+    );
+    dispatch(
+      changeLayout(
+        getPreviousStorageData("data-layout-type") ?? initialState.layoutType,
+      ),
+    );
+    dispatch(
+      changeSidebarColor(
+        getPreviousStorageData("data-sidebar-colors") ??
+          initialState.layoutSidebarColor,
+      ),
+    );
+    dispatch(
+      changeLayoutLanguage(
+        getPreviousStorageData("data-layout-language") ??
+          LAYOUT_LANGUAGES.ENGLISH,
+      ),
+    );
+    dispatch(
+      changeDataColor(
+        getPreviousStorageData("data-theme-color") ??
+          initialState.layoutDataColor,
+      ),
+    );
+    dispatch(
+      changeDarkModeClass(
+        getPreviousStorageData("data-theme-dark-class") ??
+          initialState.layoutDarkModeClass,
+      ),
+    );
+    dispatch(
+      changeModernNavigation(
+        getPreviousStorageData("data-theme-nav-type") ??
+          initialState.layoutNavigation,
+      ),
+    );
+  }, []);
+
+  return (
+    <React.Fragment>
+      <Routing />
+    </React.Fragment>
+  );
+}
+
+export default withTranslation()(App);

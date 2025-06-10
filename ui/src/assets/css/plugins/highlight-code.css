@@ -10,7 +10,7 @@
     --deckgo-highlight-code-token-selector: var(--color-green-400);
   }
 
-  [data-mode='dark'] .deckgo-highlight-code-carbon {
+  [data-mode="dark"] .deckgo-highlight-code-carbon {
     --deckgo-highlight-code-carbon-background: var(--color-dark-850);
   }
 }

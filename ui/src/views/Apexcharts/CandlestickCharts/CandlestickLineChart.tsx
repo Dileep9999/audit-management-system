@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
+import useChartColors from "@hooks/useChartColors";
 
 interface CandleChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const CandlestickLineChart = ({
@@ -23,14 +14,12 @@ const CandlestickLineChart = ({
   chartDarkColors,
   chartId,
 }: CandleChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
-
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
   const series = [
     {
-      name: 'Line',
+      name: "Line",
       color: chartsColor[0],
-      type: 'line',
+      type: "line",
       data: [
         {
           x: new Date(1538778600000),
@@ -51,8 +40,8 @@ const CandlestickLineChart = ({
       ],
     },
     {
-      name: 'Candle',
-      type: 'candlestick',
+      name: "Candle",
+      type: "candlestick",
       data: [
         {
           x: new Date(1538778600000),
@@ -296,16 +285,15 @@ const CandlestickLineChart = ({
         },
       ],
     },
-  ]
-
+  ];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'line',
+      type: "line",
     },
     title: {
-      text: 'CandleStick Chart',
-      align: 'left',
+      text: "CandleStick Chart",
+      align: "left",
     },
     stroke: {
       width: [3, 1],
@@ -315,36 +303,36 @@ const CandlestickLineChart = ({
       shared: true,
       custom: [
         function ({ seriesIndex, dataPointIndex, w }) {
-          return w.globals.series[seriesIndex][dataPointIndex]
+          return w.globals.series[seriesIndex][dataPointIndex];
         },
         function ({ seriesIndex, dataPointIndex, w }) {
-          const o = w.globals.seriesCandleO[seriesIndex][dataPointIndex]
-          const h = w.globals.seriesCandleH[seriesIndex][dataPointIndex]
-          const l = w.globals.seriesCandleL[seriesIndex][dataPointIndex]
-          const c = w.globals.seriesCandleC[seriesIndex][dataPointIndex]
+          const o = w.globals.seriesCandleO[seriesIndex][dataPointIndex];
+          const h = w.globals.seriesCandleH[seriesIndex][dataPointIndex];
+          const l = w.globals.seriesCandleL[seriesIndex][dataPointIndex];
+          const c = w.globals.seriesCandleC[seriesIndex][dataPointIndex];
           return (
             '<div class="apexcharts-tooltip-candlestick">' +
             '<div>Open: <span class="value">' +
             o +
-            '</span></div>' +
+            "</span></div>" +
             '<div>High: <span class="value">' +
             h +
-            '</span></div>' +
+            "</span></div>" +
             '<div>Low: <span class="value">' +
             l +
-            '</span></div>' +
+            "</span></div>" +
             '<div>Close: <span class="value">' +
             c +
-            '</span></div>' +
-            '</div>'
-          )
+            "</span></div>" +
+            "</div>"
+          );
         },
       ],
     },
     xaxis: {
-      type: 'datetime',
+      type: "datetime",
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -354,12 +342,12 @@ const CandlestickLineChart = ({
         series={series}
         data-chart-colors="[bg-primary-500, bg-sky-500]"
         type="candlestick"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default CandlestickLineChart
+export default CandlestickLineChart;

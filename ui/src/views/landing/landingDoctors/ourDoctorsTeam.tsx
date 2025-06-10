@@ -1,12 +1,7 @@
-'use client'
+import React, { useEffect } from "react";
 
-import React, { useEffect } from 'react'
-
-import Image from 'next/image'
-
-import aboutImage from '@assets/images/hospital/landing/about.jpg'
-import Aos from 'aos'
-import 'aos/dist/aos.css'
+import aboutImage from "@assets/images/hospital/landing/about.jpg";
+import "aos/dist/aos.css";
 import {
   CalendarPlus,
   Headset,
@@ -14,16 +9,9 @@ import {
   MoveRight,
   Pill,
   ShieldCheck,
-} from 'lucide-react'
+} from "lucide-react";
 
 const OurDoctorsTeam: React.FC = () => {
-  useEffect(() => {
-    Aos.init({
-      duration: 2000,
-      once: true,
-    })
-  }, [])
-
   return (
     <React.Fragment>
       <section className="relative py-14 md:py-28" id="about-us">
@@ -31,7 +19,7 @@ const OurDoctorsTeam: React.FC = () => {
           <div className="grid items-center grid-cols-1 gap-20 lg:grid-cols-2">
             <div>
               <div className="relative thumbnail before:absolute before:border ltr:before:-right-4 rtl:before:-left-4 before:size-full before:-bottom-4 before:border-sky-300 after:absolute after:size-full after:border ltr:after:-right-5 rtl:after:-left-5 after:-bottom-5 after:border-sky-300">
-                <Image
+                <img
                   src={aboutImage}
                   alt="aboutImage"
                   className="relative z-10 rounded-xl"
@@ -95,7 +83,7 @@ const OurDoctorsTeam: React.FC = () => {
               </div>
               <div className="flex items-center gap-3">
                 <button type="button" className="py-3 btn btn-sky">
-                  Learn More{' '}
+                  Learn More{" "}
                   <MoveRight className="inline-block ml-1 rtl:hidden size-4" />
                   <MoveLeft className="hidden mr-1 rtl:inline-block size-4" />
                 </button>
@@ -105,7 +93,7 @@ const OurDoctorsTeam: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default OurDoctorsTeam
+export default OurDoctorsTeam;

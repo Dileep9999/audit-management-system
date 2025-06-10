@@ -1,128 +1,118 @@
-import { EventGrid } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
+import { AppDispatch } from "@src/slices/reducer";
 import {
-  LocalStorageRecord,
+  getEventGrid,
+  addEventGrid,
+  editEventGrid,
+  deleteEventGrid,
+} from "./reducer";
+import { EventGrid } from "@src/dtos";
+import api from "@src/utils/axios_api";
+import { REACT_APP_EVENT_GRID_API } from "@src/utils/url_helper";
+import {
   addLocalStorageRecord,
   createLocalStorage,
   deleteLocalStorageRecord,
   getLocalStorage,
   updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_EVENT_GRID_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
+} from "@src/utils/crud_functions";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-import {
-  addEventGrid,
-  deleteEventgrid,
-  editEventGrid,
-  getEventGrid,
-} from './reducer'
-
-const EVENT_GRID_API = NEXT_PUBLIC_EVENT_GRID_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const EVENT_GRID_API = REACT_APP_EVENT_GRID_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get event grid data
 export const getEventGridData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = await getLocalStorage<EventGrid[]>('d-events-grid')
+      const responseData = await getLocalStorage("d-events-grid");
       if (!responseData) {
-        const response = await api.get(EVENT_GRID_API)
-        const { data } = response
-        createLocalStorage('d-events-grid', data)
-        dispatch(getEventGrid(data))
+        const response = await api.get(EVENT_GRID_API);
+        createLocalStorage("d-events-grid", response);
+        dispatch(getEventGrid(response));
       } else {
-        dispatch(getEventGrid(responseData))
+        dispatch(getEventGrid(responseData));
       }
     } else {
-      const response = await api.get(EVENT_GRID_API)
-      const { data } = response
-      dispatch(getEventGrid(data))
+      const response = await api.get(EVENT_GRID_API);
+      dispatch(getEventGrid(response));
     }
-  } catch (error) {
-    let errorMessage = 'Staff List Fetch Failed'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-      toast.error(errorMessage, { autoClose: 3000 })
-    }
-    console.error('Staff List Fetch Failed:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Event Grid List Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching event grid data:", error);
   }
-}
+};
 
 // add new event grid
 export const addEventGridData =
   (newRecord: EventGrid) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(EVENT_GRID_API, newRecord, 'event grid')
-      const { data, message } = response
-      toast.success(message || 'event grid added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-events-grid', { ...data })
-      dispatch(addEventGrid(data))
-    } catch (error) {
-      let errorMessage = 'event grid addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('event grid addition failed:', error)
+      const response = await api.post(EVENT_GRID_API, newRecord, "Event Grid");
+      const { message } = response;
+      AddToast(message || "Event Grid record added successfully");
+      addLocalStorageRecord("d-events-grid", newRecord);
+      dispatch(addEventGrid(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Event grid addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding event grid record:", error);
     }
-  }
+  };
 
 // edit event grid
 export const editEventGridData =
   (event: EventGrid) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(EVENT_GRID_API, event, 'event grid')
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-events-grid',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editEventGrid(data))
-    } catch (error) {
-      let errorMessage = 'event grid record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('event grid record updation failed:', error)
+      const response = await api.put(EVENT_GRID_API, event, "Event Grid");
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Event Grid updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-events-grid", event);
+      dispatch(editEventGrid(event));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Event Grid record updation failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating event grid record:", error);
     }
-  }
+  };
 
 // delete event grid
 export const deleteEventGridtData =
   (event: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = event.map(async (id) => {
-        const response = await customDelete(EVENT_GRID_API, id, 'event grid')
-        const { message } = response
-        toast.success(message || 'event grid deleted successfully', {
-          autoClose: 3000,
-        })
-        return response.data
-      })
-      const deletedProducts = await Promise.all(deletePromises)
-      dispatch(deleteEventgrid(deletedProducts))
+      const deletePromises = event.map(async (_id) => {
+        const response = await api.delete(EVENT_GRID_API, _id, "Event Grid");
+        const { message } = response;
+        DeleteToast(message || "Event Grid record deleted successfully");
+        return _id;
+      });
+
+      const deletedEventGrid = await Promise.all(deletePromises);
+      dispatch(deleteEventGrid(deletedEventGrid));
       deleteLocalStorageRecord({
-        key: 'd-events-grid',
+        key: "d-events-grid",
         listRecord: event,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'event grid deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('event grid deletion failed:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Exam Grid deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting event grid: ", error);
     }
-  }
+  };

@@ -1,25 +1,20 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
+import { NextPageWithLayout } from "@dtos/layout";
+import { TrafficApp } from "./ecomCharts";
+import React, { useState } from "react";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-
-import { TrafficApp } from './ecomcharts'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
 
 const Traffic: NextPageWithLayout = () => {
-  const [timeFrame, setTimeFrame] = useState('Recent')
-  const [open, setOpen] = useState(false)
+  const [timeFrame, setTimeFrame] = useState("Recent");
+  const [open, setOpen] = useState(false);
 
   const toggle = () => {
-    setOpen(!open)
-  }
+    setOpen(!open);
+  };
 
   return (
     <React.Fragment>
@@ -31,11 +26,10 @@ const Traffic: NextPageWithLayout = () => {
               Recent
               <svg
                 onClick={toggle}
-                className={`transition-transform duration-300 ltr:ml-1 rtl:mr-1 size-4 ${
-                  open ? 'transform rotate-180' : ''
-                }`}
+                className={`transition-transform duration-300 ltr:ml-1 rtl:mr-1 size-4 ${open ? "transform rotate-180" : ""}`}
                 viewBox="0 0 20 20"
-                fill="currentColor">
+                fill="currentColor"
+              >
                 <path
                   fillRule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -45,28 +39,32 @@ const Traffic: NextPageWithLayout = () => {
             </DropdownButton>
             <DropdownMenu>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Recent')}>
+                onClick={() => setTimeFrame("Recent")}
+              >
                 <span>Recent</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Weekly')}>
+                onClick={() => setTimeFrame("Weekly")}
+              >
                 <span>Weekly</span>
               </Link>
 
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Monthly')}>
+                onClick={() => setTimeFrame("Monthly")}
+              >
                 <span>Monthly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => setTimeFrame('Yearly')}>
+                onClick={() => setTimeFrame("Yearly")}
+              >
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
@@ -75,13 +73,13 @@ const Traffic: NextPageWithLayout = () => {
         <div className="card-body">
           <TrafficApp
             chartColors="[bg-sky-500, bg-indigo-500]"
+            chartDarkColors={""}
             chartId="trafficChart"
             timeFrame={timeFrame}
-            chartDarkColors="[bg-sky-500, bg-indigo-500]"
           />
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default Traffic
+  );
+};
+export default Traffic;

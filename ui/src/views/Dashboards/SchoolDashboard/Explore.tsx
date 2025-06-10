@@ -1,11 +1,6 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-
-import school from '@assets/images/dashboards/school.png'
-import { NextPageWithLayout } from '@src/dtos'
+import React from "react";
+import school from "@assets/images/dashboards/school.png";
+import { NextPageWithLayout } from "@dtos/layout";
 
 const Explore: NextPageWithLayout = () => {
   return (
@@ -19,7 +14,7 @@ const Explore: NextPageWithLayout = () => {
             Explore Now
           </button>
           <div className="mt-5">
-            <Image
+            <img
               src={school}
               alt="schoolImg"
               className="mx-auto h-44"
@@ -30,6 +25,6 @@ const Explore: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default Explore
+  );
+};
+export default Explore;

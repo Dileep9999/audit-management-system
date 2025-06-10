@@ -1,20 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import useChartColors from "@hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const NegativeAreaChart = ({
@@ -23,11 +15,11 @@ const NegativeAreaChart = ({
   chartId,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'north',
+      name: "north",
       data: [
         {
           x: 1996,
@@ -112,7 +104,7 @@ const NegativeAreaChart = ({
       ],
     },
     {
-      name: 'south',
+      name: "south",
       data: [
         {
           x: 1996,
@@ -196,28 +188,28 @@ const NegativeAreaChart = ({
         },
       ],
     },
-  ]
+  ];
   const options: ApexOptions = {
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 300,
-      type: 'area',
+      type: "area",
     },
     dataLabels: {
       enabled: false,
     },
     stroke: {
-      curve: 'straight',
+      curve: "straight",
     },
     title: {
-      text: 'Area with Negative Values',
-      align: 'left',
+      text: "Area with Negative Values",
+      align: "left",
       style: {
-        fontSize: '14px',
+        fontSize: "14px",
       },
     },
     xaxis: {
-      type: 'datetime',
+      type: "datetime",
       axisBorder: {
         show: false,
       },
@@ -231,7 +223,7 @@ const NegativeAreaChart = ({
 
       labels: {
         style: {
-          colors: '#8e8da4',
+          colors: "#8e8da4",
         },
         offsetY: -7,
         offsetX: 0,
@@ -248,11 +240,11 @@ const NegativeAreaChart = ({
     },
     tooltip: {
       x: {
-        format: 'yyyy',
+        format: "yyyy",
       },
       fixed: {
         enabled: false,
-        position: 'topRight',
+        position: "topRight",
       },
     },
     grid: {
@@ -266,7 +258,7 @@ const NegativeAreaChart = ({
       },
     },
     colors: chartsColor,
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -276,11 +268,11 @@ const NegativeAreaChart = ({
         data-chart-colors="[bg-primary-500, bg-gray-300]"
         type="area"
         height={380}
-        chartId={chartId}
+        id={chartId}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default NegativeAreaChart
+export default NegativeAreaChart;

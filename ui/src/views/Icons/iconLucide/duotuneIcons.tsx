@@ -1,9 +1,3 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
 import {
   Apple,
   Bell,
@@ -12,9 +6,11 @@ import {
   Heart,
   ShoppingBag,
   ShoppingCart,
-} from 'lucide-react'
+} from "lucide-react";
+import React from "react";
+import { Link } from "react-router-dom";
 
-const DuotuneIcons = () => {
+const DuoTuneIcons = () => {
   return (
     <React.Fragment>
       <div className="col-span-12 md:col-span-6 card">
@@ -53,31 +49,31 @@ const DuotuneIcons = () => {
         </div>
         <div className="card-body">
           <div className="flex items-center gap-5">
-            <Link href="#!">
+            <Link to="#!">
               <Apple className="transition duration-300 ease-linear size-6 text-primary-500 hover:fill-primary-500/20" />
             </Link>
-            <Link href="#!">
+            <Link to="#!">
               <Heart className="text-red-500 transition duration-300 ease-linear size-6 hover:fill-red-500/20" />
             </Link>
-            <Link href="#!">
+            <Link to="#!">
               <ShoppingCart className="text-green-500 transition duration-300 ease-linear size-6 hover:fill-green-500/20" />
             </Link>
-            <Link href="#!">
+            <Link to="#!">
               <Bell className="transition duration-300 ease-linear size-6 text-sky-500 hover:fill-sky-500/20" />
             </Link>
-            <Link href="#!">
+            <Link to="#!">
               <ShoppingBag className="text-purple-500 transition duration-300 ease-linear size-6 hover:fill-purple-500/20" />
             </Link>
-            <Link href="#!">
+            <Link to="#!">
               <CalendarDays className="text-yellow-500 transition duration-300 ease-linear size-6 hover:fill-yellow-500/20" />
             </Link>
-            <Link href="#!">
+            <Link to="#!">
               <Building2 className="text-pink-500 transition duration-300 ease-linear size-6 hover:fill-pink-500/20" />
             </Link>
           </div>
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default DuotuneIcons
+  );
+};
+export default DuoTuneIcons;

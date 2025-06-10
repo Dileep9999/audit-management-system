@@ -1,20 +1,22 @@
-'use client'
+import { Modal } from "@src/components/custom/modal/modal";
+import { Trash2 } from "lucide-react";
+import React from "react";
 
-import React from 'react'
-
-import { Modal } from '@src/components/custom/modal/modal'
-import { DeleteGroupModalProps } from '@src/dtos/apps/chat'
-import { Trash2 } from 'lucide-react'
+interface DeleteGroupModalProps {
+  open: boolean;
+  closeModal: () => void;
+  deleteGroupChatRecord: () => void;
+}
 
 const DeleteGroupModal: React.FC<DeleteGroupModalProps> = ({
   open,
   closeModal,
   deleteGroupChatRecord,
 }) => {
-  const handleOnDelete = (onClose: () => void) => {
-    deleteGroupChatRecord()
-    onClose()
-  }
+  const handleOnDeleteChart = (onClose: () => void) => {
+    deleteGroupChatRecord();
+    onClose();
+  };
   return (
     <React.Fragment>
       <Modal
@@ -37,7 +39,10 @@ const DeleteGroupModal: React.FC<DeleteGroupModalProps> = ({
               <div className="flex items-center justify-center gap-2">
                 <button
                   className="btn btn-red"
-                  onClick={() => handleOnDelete(onClose)}>
+                  onClick={() => {
+                    handleOnDeleteChart(onClose);
+                  }}
+                >
                   Delete
                 </button>
                 <button onClick={onClose} className="btn link link-primary">
@@ -49,7 +54,7 @@ const DeleteGroupModal: React.FC<DeleteGroupModalProps> = ({
         )}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DeleteGroupModal
+export default DeleteGroupModal;

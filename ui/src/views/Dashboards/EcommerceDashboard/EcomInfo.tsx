@@ -1,33 +1,28 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import user8 from '@assets/images/avatar/user-8.png'
-import user18 from '@assets/images/avatar/user-18.png'
-import user20 from '@assets/images/avatar/user-20.png'
+import React, { useState } from "react";
+import user20 from "@assets/images/avatar/user-20.png";
+import user18 from "@assets/images/avatar/user-18.png";
+import user8 from "@assets/images/avatar/user-8.png";
+import { ShoppingCart, TrendingUp, Video } from "lucide-react";
+import { NextPageWithLayout } from "@dtos/layout";
+import { BasicColumnApp, NetProfitApp, SimpleDonutApp } from "./ecomCharts";
+import AnimatedCounter from "../analyticsDashboards/counter";
+import { Link } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-import { ShoppingCart, TrendingUp, Video } from 'lucide-react'
-import { Tooltip } from 'react-tooltip'
-import 'react-tooltip/dist/react-tooltip.css'
-
-import AnimatedCounter from '../AnalyticsDashboards/Counter'
-import { BasicColumnApp, NetProfitApp, SimpleDonutApp } from './ecomcharts'
+} from "@src/components/custom/dropdown/dropdown";
 
 const EcomInfo: NextPageWithLayout = () => {
-  const [timeFrame, setTimeFrame] = useState('All')
-  const [open, setOpen] = useState(false)
+  const [timeFrame, setTimeFrame] = useState("All");
+  const [open, setOpen] = useState(false);
 
   const toggle = () => {
-    setOpen(!open)
-  }
+    setOpen(!open);
+  };
+
   return (
     <React.Fragment>
       <div className="order-2 col-span-12 md:col-span-6 xl:col-span-3 2xl:col-span-2 card">
@@ -41,7 +36,7 @@ const EcomInfo: NextPageWithLayout = () => {
           </p>
           <SimpleDonutApp
             chartColors="[bg-primary-500, bg-green-500, bg-yellow-500, bg-red-500, bg-purple-500]"
-            chartDarkColors={''}
+            chartDarkColors={""}
             chartId="simpleDonutChart"
           />
         </div>
@@ -67,25 +62,29 @@ const EcomInfo: NextPageWithLayout = () => {
             <button
               type="button"
               className="py-1.5 px-3 btn btn-primary"
-              onClick={() => setTimeFrame('All')}>
+              onClick={() => setTimeFrame("All")}
+            >
               All
             </button>
             <button
               type="button"
               className="py-1.5 px-3 btn btn-outline-gray border-gray-200 dark:border-dark-800"
-              onClick={() => setTimeFrame('Weekly')}>
+              onClick={() => setTimeFrame("Weekly")}
+            >
               Weekly
             </button>
             <button
               type="button"
               className="py-1.5 px-3 btn btn-outline-gray border-gray-200 dark:border-dark-800"
-              onClick={() => setTimeFrame('Monthly')}>
+              onClick={() => setTimeFrame("Monthly")}
+            >
               Monthly
             </button>
             <button
               type="button"
               className="py-1.5 px-3 btn btn-outline-gray border-gray-200 dark:border-dark-800"
-              onClick={() => setTimeFrame('Yearly')}>
+              onClick={() => setTimeFrame("Yearly")}
+            >
               Yearly
             </button>
           </div>
@@ -93,7 +92,7 @@ const EcomInfo: NextPageWithLayout = () => {
         <div className="card-body">
           <BasicColumnApp
             chartColors="[bg-red-200, bg-sky-500]"
-            chartDarkColors={'[bg-red-200, bg-sky-500]'}
+            chartDarkColors="[bg-red-200, bg-sky-500]"
             chartId="basicColumnChart"
             timeFrame={timeFrame}
           />
@@ -112,44 +111,48 @@ const EcomInfo: NextPageWithLayout = () => {
           </div>
           <div className="flex mt-5 -space-x-3 rtl:space-x-reverse">
             <Link
-              href="#!"
-              className="transition duration-300 ease-linear hover:z-10">
-              <Image
+              to="#!"
+              className="transition duration-300 ease-linear hover:z-10"
+            >
+              <img
                 className="border-2 border-white rounded-full dark:border-dark-900 size-7"
                 src={user20}
-                alt="usermg"
+                alt="user20Img"
                 data-tooltip-id="lealUser"
                 data-tooltip-content="Leal Bureau"
               />
               <Tooltip id="lealUser" />
             </Link>
             <Link
-              href="#!"
-              className="transition duration-300 ease-linear hover:z-10">
-              <Image
+              to="#!"
+              className="transition duration-300 ease-linear hover:z-10"
+            >
+              <img
                 className="border-2 border-white rounded-full dark:border-dark-900 size-7"
                 src={user18}
-                alt="usermg"
+                alt="user18Img"
                 data-tooltip-id="julieUser"
                 data-tooltip-content="Julie Seltzer"
               />
               <Tooltip id="julieUser" />
             </Link>
             <Link
-              href="#!"
-              className="transition duration-300 ease-linear hover:z-10">
-              <Image
+              to="#!"
+              className="transition duration-300 ease-linear hover:z-10"
+            >
+              <img
                 className="border-2 border-white rounded-full dark:border-dark-900 size-7"
                 src={user8}
-                alt="usermg"
+                alt="user8Img"
                 data-tooltip-id="julie2User"
                 data-tooltip-content="Julie Seltzer"
               />
               <Tooltip id="julie2User" />
             </Link>
             <Link
-              href="#!"
-              className="flex items-center justify-center text-xs transition duration-300 ease-linear bg-gray-100 rounded-full dark:bg-dark-850 hover:z-10 size-7">
+              to="#!"
+              className="flex items-center justify-center text-xs transition duration-300 ease-linear bg-gray-100 rounded-full dark:bg-dark-850 hover:z-10 size-7"
+            >
               4+
             </Link>
           </div>
@@ -170,7 +173,7 @@ const EcomInfo: NextPageWithLayout = () => {
 
           <NetProfitApp
             chartColors="[bg-primary-500, bg-green-500]"
-            chartDarkColors=""
+            chartDarkColors={"[bg-primary-500, bg-green-500]"}
             chartId="netProfitChart"
           />
         </div>
@@ -180,14 +183,16 @@ const EcomInfo: NextPageWithLayout = () => {
           <Dropdown
             position=""
             trigger="click"
-            dropdownClassName="dropdown float-end">
+            dropdownClassName="dropdown float-end"
+          >
             <DropdownButton colorClass="flex px-3 py-1.5 text-xs border-gray-200 font-medium dark:border-dark-800 link link-primary btn">
               Recent
               <svg
                 onClick={toggle}
-                className={`transition-transform duration-300 ltr:ml-1 rtl:mr-1 size-4 ${open ? 'transform rotate-180' : ''}`}
+                className={`transition-transform duration-300 ltr:ml-1 rtl:mr-1 size-4 ${open ? "transform rotate-180" : ""}`}
                 viewBox="0 0 20 20"
-                fill="currentColor">
+                fill="currentColor"
+              >
                 <path
                   fillRule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -196,22 +201,22 @@ const EcomInfo: NextPageWithLayout = () => {
               </svg>
             </DropdownButton>
             <DropdownMenu>
-              <Link href="#!" className="dropdown-item ">
+              <Link to="#!" className="dropdown-item ">
                 <span>Weekly</span>
               </Link>
 
-              <Link href="#!" className="dropdown-item ">
+              <Link to="#!" className="dropdown-item ">
                 <span>Monthly</span>
               </Link>
-              <Link href="#!" className="dropdown-item">
+              <Link to="#!" className="dropdown-item">
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
           </Dropdown>
           <h5 className="flex items-center gap-2 mb-1.5">
-            8,956{' '}
+            8,956{" "}
             <span className="leading-4 badge badge-sub-green">
-              <TrendingUp className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4" />{' '}
+              <TrendingUp className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4" />{" "}
               2.87
             </span>
           </h5>
@@ -224,6 +229,6 @@ const EcomInfo: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default EcomInfo
+  );
+};
+export default EcomInfo;

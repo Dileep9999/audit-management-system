@@ -1,128 +1,113 @@
-'use client'
-
-import React, { useEffect, useState } from 'react'
-
-import Image from 'next/image'
-
-import { Modal } from '@src/components/custom/modal/modal'
-import { TodayAppointments } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
+import { AppDispatch } from "@src/slices/reducer";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { TodayAppointments } from "@src/dtos";
+import { useForm } from "react-hook-form";
 import {
   addTodayAppointmentsData,
   editTodayAppointmentsData,
-} from '@src/slices/thunk'
-import { Upload } from 'lucide-react'
-import Flatpickr from 'react-flatpickr'
-import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
+} from "@src/slices/thunk";
+import { Upload } from "lucide-react";
+import Flatpickr from "react-flatpickr";
+import { Modal } from "@src/components/custom/modal/modal";
 
-const EditeTodayAppointments = ({
+const EditTodayAppointments = ({
   modalState,
   closeModal,
   eventList,
   editMode = false,
   currentContact = null,
-}: {
-  modalState: { showEditcontactForm: boolean; showAddcontactForm: boolean }
-  closeModal: (formType: string) => void
-  eventList: TodayAppointments[]
-  editMode?: boolean
-  currentContact?: TodayAppointments | null
-}) => {
-  const dispatch: AppDispatch = useDispatch()
-  const [preview, setPreview] = useState<string | null>(null)
+}: any) => {
+  const dispatch: AppDispatch = useDispatch();
+  const [preview, setPreview] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     setValue,
     reset,
     formState: { errors },
-  } = useForm<TodayAppointments>()
+  } = useForm<TodayAppointments>();
 
   useEffect(() => {
     if (editMode && currentContact) {
       Object.keys(currentContact).forEach((key) => {
-        setValue(
-          key as keyof TodayAppointments,
-          currentContact[key as keyof TodayAppointments]
-        )
-      })
+        setValue(key as keyof TodayAppointments, (currentContact as any)[key]);
+      });
 
-      setPreview(currentContact.image)
-      setValue('startTime', currentContact.startTime)
-      setValue('endTime', currentContact.endTime)
+      setPreview(currentContact.image);
+      setValue("startTime", currentContact.startTime);
+      setValue("endTime", currentContact.endTime);
     } else {
       reset({
-        id: 0,
-        image: '',
-        patientName: '',
-        treatment: '',
-        date: '',
-        startTime: '',
-        endTime: '',
-      })
-      setPreview(null)
+        _id: 0,
+        image: "",
+        patientName: "",
+        treatment: "",
+        date: "",
+        startTime: "",
+        endTime: "",
+      });
+      setPreview(null);
     }
-  }, [editMode, currentContact, setValue, reset])
+  }, [editMode, currentContact, setValue, reset]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null
+    const file = e.target.files?.[0] || null;
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     } else {
-      setPreview(null)
+      setPreview(null);
     }
-  }
+  };
 
   const submitForm = (data: TodayAppointments, onClose: () => void) => {
     if (editMode && currentContact) {
       const updatedContact: TodayAppointments = {
         ...data,
-        image: preview || '',
-      }
-      dispatch(editTodayAppointmentsData(updatedContact))
+        image: preview || "",
+      };
+      dispatch(editTodayAppointmentsData(updatedContact));
     } else {
       const newContact = {
         ...data,
-        id: eventList.length + 1,
-        image: preview || '',
-      }
-      dispatch(addTodayAppointmentsData(newContact))
+        _id: eventList.length + 1,
+        image: preview || "",
+      };
+      dispatch(addTodayAppointmentsData(newContact));
     }
-    reset()
-    onClose()
-  }
+    reset();
+    onClose();
+  };
 
   return (
     <React.Fragment>
       <Modal
         isOpen={
           editMode
-            ? modalState.showEditcontactForm
-            : modalState.showAddcontactForm
+            ? modalState.showEditContactForm
+            : modalState.showAddContactForm
         }
-        title={editMode ? 'Edit Appointment' : 'Add Appointment'}
+        title={editMode ? "Edit Appointment" : "Add Appointment"}
         onClose={() =>
-          closeModal(editMode ? 'showEditcontactForm' : 'showAddcontactForm')
+          closeModal(editMode ? "showEditContactForm" : "showAddContactForm")
         }
         position="modal-center"
-        id={editMode ? 'showEditcontactForm' : 'showAddcontactForm'}
+        id={editMode ? "showEditContactForm" : "showAddContactForm"}
         contentClass="modal-content"
         content={(onClose) => (
           <>
             <form onSubmit={handleSubmit((data) => submitForm(data, onClose))}>
               <div className="grid grid-cols-12 gap-5">
-                {/* Image upload and preview */}
                 <div className="col-span-12">
                   <div>
                     <label htmlFor="logo">
                       <span className="inline-flex items-center justify-center w-full h-32 overflow-hidden bg-gray-100 border border-gray-200 rounded-md cursor-pointer dark:bg-dark-850 dark:border-dark-800">
                         {preview ? (
-                          <Image
+                          <img
                             src={preview}
                             alt="Preview"
                             width={92}
@@ -159,8 +144,8 @@ const EditeTodayAppointments = ({
                     id="nameInput"
                     className="form-input"
                     placeholder="Event name"
-                    {...register('patientName', {
-                      required: 'Patient name is required.',
+                    {...register("patientName", {
+                      required: "Patient name is required.",
                     })}
                   />
                   {errors.patientName && (
@@ -178,23 +163,19 @@ const EditeTodayAppointments = ({
                   <Flatpickr
                     className="form-input"
                     placeholder="Select start time"
-                    value={currentContact ? currentContact.startTime : ''}
+                    value={currentContact ? currentContact.startTime : ""}
                     options={{
                       enableTime: true,
                       noCalendar: true,
-                      dateFormat: 'h:i K',
+                      dateFormat: "h:i K",
                       time_24hr: false,
                     }}
                     onChange={(selectedDates) => {
                       const selectedTime = selectedDates[0]?.toLocaleTimeString(
                         [],
-                        {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: true,
-                        }
-                      )
-                      setValue('startTime', selectedTime || '')
+                        { hour: "2-digit", minute: "2-digit", hour12: true },
+                      );
+                      setValue("startTime", selectedTime || "");
                     }}
                   />
                 </div>
@@ -207,23 +188,19 @@ const EditeTodayAppointments = ({
                   <Flatpickr
                     className="form-input"
                     placeholder="Select end time"
-                    value={currentContact ? currentContact.endTime : ''}
+                    value={currentContact ? currentContact.endTime : ""}
                     options={{
                       enableTime: true,
                       noCalendar: true,
-                      dateFormat: 'h:i K',
+                      dateFormat: "h:i K",
                       time_24hr: false,
                     }}
                     onChange={(selectedDates) => {
                       const selectedTime = selectedDates[0]?.toLocaleTimeString(
                         [],
-                        {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: true,
-                        }
-                      )
-                      setValue('endTime', selectedTime || '')
+                        { hour: "2-digit", minute: "2-digit", hour12: true },
+                      );
+                      setValue("endTime", selectedTime || "");
                     }}
                   />
                 </div>
@@ -238,8 +215,8 @@ const EditeTodayAppointments = ({
                     id="treatmentInput"
                     className="form-input"
                     placeholder="Treatment"
-                    {...register('treatment', {
-                      required: 'Treatment is required.',
+                    {...register("treatment", {
+                      required: "Treatment is required.",
                     })}
                   />
                   {errors.treatment && (
@@ -255,11 +232,12 @@ const EditeTodayAppointments = ({
                 <button
                   type="button"
                   className="btn btn-active-red"
-                  onClick={() => onClose()}>
+                  onClick={onClose}
+                >
                   Cancel
                 </button>
                 <button className="btn btn-primary" type="submit">
-                  {editMode ? 'Edit Appointment' : 'Add Appointment'}
+                  {editMode ? "Edit Appointment" : "Add Appointment"}
                 </button>
               </div>
             </form>
@@ -267,7 +245,7 @@ const EditeTodayAppointments = ({
         )}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default EditeTodayAppointments
+export default EditTodayAppointments;

@@ -1,11 +1,7 @@
-'use client'
+import PrismCode from "@src/components/common/prism";
 
-import React from 'react'
+const installation = `<i className="las la-battery-three-quarters"></i>`;
 
-import PrismCode from '@src/components/common/Prism'
+const Usage = () => <PrismCode language="javascript" code={installation} />;
 
-const installation = '<i className="las la-battery-three-quarters"></i>'
-
-const Usage = () => <PrismCode language="javascript" code={installation} />
-
-export { Usage }
+export { Usage };

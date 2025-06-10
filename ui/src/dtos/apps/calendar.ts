@@ -1,31 +1,26 @@
-// events
-export interface EventItem {
-  _id?: number
-  id?: number
-  title: string
-  start: string
-  end: string
-  eventTime: string
-  className?: string
-  classNames?: string[]
-  extendedProps?: {
-    guests?: string[]
-    location?: string
-  } | null
-}
-export interface DateClickArg {
-  date: Date
+interface Guest {
+  name: string;
+  email: string;
+  // Add other guest-related properties here as needed
 }
 
-export interface CalendarEvent {
-  id: string
-  title: string
-  start: string
-  end?: string | number
-  eventTime?: string // Add this property
-  extendedProps?: {
-    guests?: string[]
-    location?: string
-  } // Remove null allowance
-  classNames?: string[] | undefined
+interface ExtendedProps {
+  guests: Guest[]; // Array of guests with name and email properties
+  location: string;
+}
+
+// events
+export interface EventItem {
+  _id?: number;
+
+  id?: number;
+  title: any;
+  start: string;
+  end: string;
+  eventTime: string;
+  classNames: string[];
+  extendedProps: {
+    guests: any;
+    location: any;
+  };
 }

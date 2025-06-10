@@ -1,105 +1,96 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface TreemapChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: any;
 }
 
-const ColorRangeTreemapChart = ({
+const ColorRangeTreeMapChart = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: TreemapChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
       data: [
         {
-          x: 'INTC',
+          x: "INTC",
           y: 1.2,
         },
         {
-          x: 'GS',
+          x: "GS",
           y: 0.4,
         },
         {
-          x: 'CVX',
+          x: "CVX",
           y: -1.4,
         },
         {
-          x: 'GE',
+          x: "GE",
           y: 2.7,
         },
         {
-          x: 'CAT',
+          x: "CAT",
           y: -0.3,
         },
         {
-          x: 'RTX',
+          x: "RTX",
           y: 5.1,
         },
         {
-          x: 'CSCO',
+          x: "CSCO",
           y: -2.3,
         },
         {
-          x: 'JNJ',
+          x: "JNJ",
           y: 2.1,
         },
         {
-          x: 'PG',
+          x: "PG",
           y: 0.3,
         },
         {
-          x: 'TRV',
+          x: "TRV",
           y: 0.12,
         },
         {
-          x: 'MMM',
+          x: "MMM",
           y: -2.31,
         },
         {
-          x: 'NKE',
+          x: "NKE",
           y: 3.98,
         },
         {
-          x: 'IYT',
+          x: "IYT",
           y: 1.67,
         },
       ],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'treemap',
+      type: "treemap",
     },
     legend: {
       show: false,
     },
     title: {
-      text: 'Treemap with Color scale',
+      text: "Treemap with Color scale",
     },
     dataLabels: {
       enabled: true,
       style: {
-        fontSize: '12px',
+        fontSize: "12px",
       },
       offsetY: -4,
     },
@@ -114,18 +105,18 @@ const ColorRangeTreemapChart = ({
             {
               from: -6,
               to: 0,
-              color: '#CD363A',
+              color: "#CD363A",
             },
             {
               from: 0.001,
               to: 6,
-              color: '#52B12C',
+              color: "#52B12C",
             },
           ],
         },
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -134,12 +125,12 @@ const ColorRangeTreemapChart = ({
         series={series}
         type="treemap"
         data-chart-colors="[bg-primary-500, bg-green-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ColorRangeTreemapChart
+export default ColorRangeTreeMapChart;

@@ -25,8 +25,8 @@
   }
 
   .ql-editor {
-    li[data-list='checked'] > .ql-ui,
-    li[data-list='unchecked'] > .ql-ui {
+    li[data-list="checked"] > .ql-ui,
+    li[data-list="unchecked"] > .ql-ui {
       @apply text-gray-500 dark:text-dark-500;
     }
 
@@ -81,7 +81,7 @@
       @apply bg-white border-gray-200 dark:border-dark-800 dark:bg-dark-900 shadow-lg shadow-gray-200 dark:shadow-dark-850;
     }
 
-    .ql-tooltip input[type='text'],
+    .ql-tooltip input[type="text"],
     .ql-tooltip a.ql-action::after {
       @apply border-gray-200 dark:border-dark-800;
     }

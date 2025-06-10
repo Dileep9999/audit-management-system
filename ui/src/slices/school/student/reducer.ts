@@ -1,52 +1,54 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { StudentList } from '@src/dtos'
-import { initStore } from '@src/utils/init_store'
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { initStore } from "@src/utils/init_store";
+import { StudentList } from "@src/dtos";
+import LoadingToast from "@src/components/custom/toast/loadingToast";
 
 interface StudentState {
-  studentList: StudentList[] | null
-  isLoading: boolean
-  editeMode: boolean
-  currentStudent: StudentList | null
+  studentList: StudentList[] | null;
+  isLoading: boolean;
+  editMode: boolean;
+  currentStudent: StudentList | null;
 }
 
 const initialState: StudentState = {
-  studentList: initStore('d-students-list') as StudentList[] | null,
+  studentList: initStore("d-students-list"),
   isLoading: false,
-  editeMode: false,
+  editMode: false,
   currentStudent: null,
-}
+};
 
 const studentSlice = createSlice({
-  name: 'student',
+  name: "student",
   initialState,
   reducers: {
     //get student List
     getStudentList(state, action: PayloadAction<StudentList[]>) {
-      state.studentList = action.payload
+      state.studentList = action.payload;
     },
 
     //add student list
     addStudentList(state, action: PayloadAction<StudentList>) {
-      const newStudent = action.payload
+      const newStudent = action.payload;
       if (state.studentList !== null) {
-        state.studentList.unshift(newStudent)
+        state.studentList.unshift(newStudent);
       } else {
-        state.studentList = [newStudent]
+        state.studentList = [newStudent];
       }
     },
 
     //edite student list
     editStudentList(state, action: PayloadAction<StudentList>) {
-      const student = action.payload
+      const student = action.payload;
       if (state.studentList !== null) {
         const findStudentIndex = state.studentList.findIndex(
-          (item) => item.id === student.id
-        )
+          (item) => item._id === student._id,
+        );
         const findStudentRecord = state.studentList.find(
-          (item) => item.id === student.id
-        )
+          (item) => item._id === student._id,
+        );
         if (findStudentIndex !== -1 && findStudentRecord) {
-          state.studentList[findStudentIndex] = student
+          state.studentList[findStudentIndex] = student;
+          LoadingToast();
         }
       }
     },
@@ -55,23 +57,23 @@ const studentSlice = createSlice({
     deleteStudentList(state, action: PayloadAction<number[]>) {
       if (state.studentList !== null) {
         state.studentList = state.studentList.filter(
-          (item) => !action.payload.includes(item.id)
-        )
+          (item) => !action.payload.includes(item._id),
+        );
       }
     },
 
     setCurrentStudent(
       state,
-      action: PayloadAction<{ student: StudentList; mode: boolean }>
+      action: PayloadAction<{ student: StudentList; mode: boolean }>,
     ) {
-      const { student, mode } = action.payload
+      const { student, mode } = action.payload;
       if (student !== null && student !== undefined && mode !== undefined) {
-        state.editeMode = mode
-        state.currentStudent = student
+        state.editMode = mode;
+        state.currentStudent = student;
       }
     },
   },
-})
+});
 
 export const {
   getStudentList,
@@ -79,6 +81,6 @@ export const {
   editStudentList,
   deleteStudentList,
   setCurrentStudent,
-} = studentSlice.actions
+} = studentSlice.actions;
 
-export default studentSlice.reducer
+export default studentSlice.reducer;

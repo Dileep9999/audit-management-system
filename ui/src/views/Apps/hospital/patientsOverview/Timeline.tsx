@@ -1,10 +1,7 @@
-'use client'
+import React from "react";
+import SimpleBar from "simplebar-react";
 
-import React from 'react'
-
-import SimpleBar from 'simplebar-react'
-
-const Timeline = () => {
+const TimeLine = () => {
   return (
     <React.Fragment>
       <div className="col-span-12 row-span-2 md:col-span-6 xl:col-span-3 card">
@@ -55,7 +52,7 @@ const Timeline = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Timeline
+export default TimeLine;

@@ -1,8 +1,6 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import { CalendarFold } from 'lucide-react'
+import { CalendarFold } from "lucide-react";
 
 const ReadyToGive: React.FC = () => {
   return (
@@ -28,8 +26,9 @@ const ReadyToGive: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  className="font-medium bg-white hover:bg-gray-100 dark:text-gray-900 btn">
-                  <CalendarFold className="inline-block size-4 ltr:mr-1 rtl:ml-1" />{' '}
+                  className="font-medium bg-white hover:bg-gray-100 dark:text-gray-900 btn"
+                >
+                  <CalendarFold className="inline-block size-4 ltr:mr-1 rtl:ml-1" />{" "}
                   Schedule Demo
                 </button>
               </div>
@@ -38,7 +37,7 @@ const ReadyToGive: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ReadyToGive
+export default ReadyToGive;

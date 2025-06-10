@@ -1,51 +1,53 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { WishListProduct } from '@src/dtos'
-import { initStore } from '@src/utils/init_store'
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import LoadingToast from "@src/components/custom/toast/loadingToast";
+import { WishListProduct } from "@src/dtos";
+import { initStore } from "@src/utils/init_store";
 
 interface WishListState {
-  wishListData: WishListProduct[] | null
-  isLoading: boolean
+  wishListData: WishListProduct[] | null;
+  isLoading: boolean;
 }
 
 const initialState: WishListState = {
-  wishListData: initStore('d-wishlist') as WishListProduct[],
+  wishListData: initStore("d-wishlist"),
   isLoading: false,
-}
+};
 
 const WishListSlice = createSlice({
-  name: 'wishlist',
+  name: "wishlist",
   initialState,
   reducers: {
     // get wishlist data
     getWishListData(state, action: PayloadAction<WishListProduct[]>) {
-      state.wishListData = action.payload
+      state.wishListData = action.payload;
     },
 
     addWishListProduct(state, action: PayloadAction<WishListProduct>) {
-      const newProduct = action.payload
+      const newProduct = action.payload;
       if (state.wishListData !== null) {
-        state.wishListData.unshift(newProduct)
+        state.wishListData.unshift(newProduct);
       } else {
-        state.wishListData = [newProduct]
+        state.wishListData = [newProduct];
       }
     },
 
     // update list product quantity record
     modifyWishListProductQuantity(
       state,
-      action: PayloadAction<WishListProduct>
+      action: PayloadAction<WishListProduct>,
     ) {
-      const updatedWishListRecord = action.payload
+      const updatedWishListRecord = action.payload;
       if (state.wishListData !== null) {
         const findWishListRecordIndex = state.wishListData.findIndex(
-          (item) => item.id === updatedWishListRecord.id
-        )
+          (item) => item._id === updatedWishListRecord._id,
+        );
         const findWishListRecord = state.wishListData.find(
-          (item) => item.id === updatedWishListRecord.id
-        )
+          (item) => item._id === updatedWishListRecord._id,
+        );
         if (findWishListRecordIndex !== -1 && findWishListRecord) {
-          state.wishListData[findWishListRecordIndex] = updatedWishListRecord
+          state.wishListData[findWishListRecordIndex] = updatedWishListRecord;
         }
+        LoadingToast();
       }
     },
 
@@ -53,17 +55,17 @@ const WishListSlice = createSlice({
     removeWishListProduct(state, action: PayloadAction<number[]>) {
       if (state.wishListData !== null) {
         state.wishListData = state.wishListData.filter(
-          (item) => !action.payload.includes(item.id)
-        )
+          (item) => !action.payload.includes(item._id),
+        );
       }
     },
   },
-})
+});
 
 export const {
   getWishListData,
   addWishListProduct,
   modifyWishListProductQuantity,
   removeWishListProduct,
-} = WishListSlice.actions
-export default WishListSlice.reducer
+} = WishListSlice.actions;
+export default WishListSlice.reducer;

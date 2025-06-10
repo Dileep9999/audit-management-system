@@ -1,8 +1,6 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import { Flower, Redo2, X } from 'lucide-react'
+import { Flower, Redo2, X } from "lucide-react";
 
 const ReadyToGetStarted: React.FC = () => {
   return (
@@ -12,7 +10,8 @@ const ReadyToGetStarted: React.FC = () => {
           viewBox="0 0 156 54"
           width="156"
           height="54"
-          className="hidden md:absolute ltr:-rotate-45 rtl:rotate-45 top-56 ltr:left-48 rtl:right-48">
+          className="hidden md:absolute ltr:-rotate-45 rtl:rotate-45 top-56 ltr:left-48 rtl:right-48"
+        >
           <g id="&lt;Group&gt;">
             <path
               id="&lt;Path&gt;"
@@ -36,7 +35,7 @@ const ReadyToGetStarted: React.FC = () => {
               <div className="border rounded-sm bg-gradient-to-br border-gray-200 dark:border-slate-300/10 dark:from-purple-500/5 dark:to-body-invoice dark:shadow-purple-100/5">
                 <div className="p-8">
                   <h6 className="flex items-center gap-3 mb-1 text-16">
-                    <Flower className="inline-block text-green-500 size-5" />{' '}
+                    <Flower className="inline-block text-green-500 size-5" />{" "}
                     Lite Plan
                   </h6>
                   <p className="mb-8 text-gray-500">
@@ -55,27 +54,27 @@ const ReadyToGetStarted: React.FC = () => {
                   <div className="mt-6">
                     <ul className="flex flex-col gap-3 *:flex *:items-center *:gap-2">
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         30 Products & Projects
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Custom Permissions
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Some Basic Integration
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Up to 50 Team Members
                       </li>
                       <li className="text-gray-500 dark:text-muted-invoice">
-                        <X className="inline-block text-red-500 size-4" />{' '}
+                        <X className="inline-block text-red-500 size-4" />{" "}
                         Advanced Security
                       </li>
                       <li className="text-gray-500 dark:text-muted-invoice">
-                        <X className="inline-block text-red-500 size-4" />{' '}
+                        <X className="inline-block text-red-500 size-4" />{" "}
                         Permissions & Workflows
                       </li>
                       <li className="text-gray-500 dark:text-muted-invoice">
@@ -94,7 +93,7 @@ const ReadyToGetStarted: React.FC = () => {
                 </div>
                 <div className="p-8">
                   <h6 className="flex items-center gap-3 mb-1 text-16">
-                    <Flower className="inline-block text-green-500 size-5" />{' '}
+                    <Flower className="inline-block text-green-500 size-5" />{" "}
                     Professional Plan
                   </h6>
                   <p className="mb-8 text-gray-500">
@@ -113,27 +112,27 @@ const ReadyToGetStarted: React.FC = () => {
                   <div className="mt-6">
                     <ul className="flex flex-col gap-3 *:flex *:items-center *:gap-2">
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         30 Products & Projects
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Custom Permissions
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Some Basic Integration
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Up to 50 Team Members
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Advanced Security
                       </li>
                       <li className="text-gray-500 dark:text-muted-invoice">
-                        <X className="inline-block text-red-500 size-4" />{' '}
+                        <X className="inline-block text-red-500 size-4" />{" "}
                         Permissions & Workflows
                       </li>
                       <li className="text-gray-500 dark:text-muted-invoice">
@@ -149,7 +148,7 @@ const ReadyToGetStarted: React.FC = () => {
               <div className="border rounded-sm bg-gradient-to-br border-gray-200 dark:border-slate-300/10 dark:from-purple-500/5 dark:to-body-invoice dark:shadow-purple-100/5">
                 <div className="p-8">
                   <h6 className="flex items-center gap-3 mb-1 text-16">
-                    <Flower className="inline-block text-green-500 size-5" />{' '}
+                    <Flower className="inline-block text-green-500 size-5" />{" "}
                     Business Plan
                   </h6>
                   <p className="mb-8 text-gray-500">
@@ -168,31 +167,31 @@ const ReadyToGetStarted: React.FC = () => {
                   <div className="mt-6">
                     <ul className="flex flex-col gap-3 *:flex *:items-center *:gap-2">
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         30 Products & Projects
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Custom Permissions
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Some Basic Integration
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Up to 50 Team Members
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Advanced Security
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         Permissions & Workflows
                       </li>
                       <li>
-                        <Redo2 className="inline-block text-green-500 size-4" />{' '}
+                        <Redo2 className="inline-block text-green-500 size-4" />{" "}
                         24/7 Support
                       </li>
                     </ul>
@@ -204,7 +203,7 @@ const ReadyToGetStarted: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ReadyToGetStarted
+export default ReadyToGetStarted;

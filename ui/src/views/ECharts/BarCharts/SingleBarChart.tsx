@@ -1,55 +1,22 @@
-'use client'
+import React from "react";
+import ReactEcharts from "echarts-for-react";
 
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-
-// Dynamically import the ReactApexChart component
-const ReactEcharts = dynamic(() => import('echarts-for-react'), {
-  ssr: false,
-})
-
-interface barChartsProps {
-  chartColors: string
-  chartDarkColors: string
-}
-
-const SingleBarChart = ({ chartColors, chartDarkColors }: barChartsProps) => {
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
-
+const SingleBarChart = () => {
   const option = {
     xAxis: {
-      type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      type: "category",
+      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     },
     yAxis: {
-      type: 'value',
-      splitLine: {
-        lineStyle: {
-          color: chartsColor[2],
-        },
-      },
-    },
-    legend: {
-      textStyle: {
-        color: chartsColor[3],
-      },
-    },
-    axisLine: {
-      lineStyle: {
-        color: chartsColor[2],
-      },
+      type: "value",
     },
     grid: {
-      top: '3%',
-      left: '2%',
-      right: '0%',
-      bottom: '2%',
+      top: "3%",
+      left: "2%",
+      right: "0%",
+      bottom: "2%",
       containLabel: true,
     },
-    colors: chartsColor,
     series: [
       {
         data: [
@@ -57,7 +24,7 @@ const SingleBarChart = ({ chartColors, chartDarkColors }: barChartsProps) => {
           {
             value: 200,
             itemStyle: {
-              color: chartsColor[1],
+              color: "#a90000",
             },
           },
           150,
@@ -66,16 +33,16 @@ const SingleBarChart = ({ chartColors, chartDarkColors }: barChartsProps) => {
           110,
           130,
         ],
-        type: 'bar',
+        type: "bar",
       },
     ],
-  }
+  };
 
   return (
     <React.Fragment>
-      <ReactEcharts style={{ height: '350px' }} option={option} />
+      <ReactEcharts style={{ height: "350px" }} option={option} />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default SingleBarChart
+export default SingleBarChart;

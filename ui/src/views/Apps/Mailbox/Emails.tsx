@@ -1,28 +1,24 @@
-'use client'
+import React from "react";
+import { Link } from "react-router-dom";
+import SimpleBar from "simplebar-react";
 
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { EmailsProps } from '@src/dtos/apps/mail'
-import SimpleBar from 'simplebar-react'
-
-const Emails: React.FC<EmailsProps> = ({ filteredEmails, handleShowMail }) => {
+const Emails = ({ filteredEmails, handleShowMail }: any) => {
   return (
     <React.Fragment>
       <SimpleBar className="-mx-5 h-[35rem]">
         <div className="border-t border-gray-200 divide-y divide-gray-200 dark:border-dark-800 dark:divide-dark-800">
-          {filteredEmails.map((email) => (
+          {filteredEmails.map((email: any) => (
             <div
-              key={'filtered-email-' + email.id}
+              key={"filtered-email" + email.id}
               className="flex gap-3 p-5 transition duration-300 ease-linear hover:bg-gray-50 dark:hover:bg-dark-850"
-              onClick={() => handleShowMail(email)}>
+              onClick={() => handleShowMail(email)}
+            >
               <div className="self-start mt-3 input-check-group shrink-0"></div>
               <div
-                className={`flex items-center justify-center rounded-full ${email.avatarColor ? `${email.avatarColor}` : 'bg-red-500/10'} shrink-0 size-10`}>
+                className={`flex items-center justify-center rounded-full ${email.avatarColor ? `${email.avatarColor}` : "bg-red-500/10"} shrink-0 size-10`}
+              >
                 {email.avatarImage ? (
-                  <Image
+                  <img
                     src={email.avatarImage}
                     alt={email.sender}
                     className="rounded-full"
@@ -30,7 +26,7 @@ const Emails: React.FC<EmailsProps> = ({ filteredEmails, handleShowMail }) => {
                     height={40}
                   />
                 ) : (
-                  <span className="text-red-500">{email.avatarText}</span>
+                  <span className="text-red-500">{email.sender.charAt(0)}</span>
                 )}
               </div>
               <div className="overflow-hidden grow">
@@ -40,11 +36,12 @@ const Emails: React.FC<EmailsProps> = ({ filteredEmails, handleShowMail }) => {
                 </p>
                 <h6 className="mb-1">{email.sender}</h6>
                 <Link
-                  href={`mailto:${email.email}`}
-                  className="link link-primary">
+                  to={`mailto:${email.email}`}
+                  className="link link-primary"
+                >
                   {email.email}
                 </Link>
-                <Link href="#!" className="block mt-3">
+                <Link to="#!" className="block mt-3">
                   <h6 className="mb-1">{email.subject}</h6>
                   <p className="truncate">{email.message}</p>
                 </Link>
@@ -53,18 +50,19 @@ const Emails: React.FC<EmailsProps> = ({ filteredEmails, handleShowMail }) => {
                     <span
                       key={index}
                       className={`badge ${
-                        badge === 'Application' ||
-                        badge === 'Scheduled' ||
-                        badge === 'Important'
-                          ? 'badge-green'
-                          : badge === 'Inbox' || badge === 'Drafts'
-                            ? 'badge-gray'
-                            : badge === 'Developers'
-                              ? 'badge-yellow'
-                              : badge === 'Photographer'
-                                ? 'badge-sky'
-                                : 'badge-red'
-                      }`}>
+                        badge === "Application" ||
+                        badge === "Scheduled" ||
+                        badge === "Important"
+                          ? "badge-green"
+                          : badge === "Inbox" || badge === "Drafts"
+                            ? "badge-gray"
+                            : badge === "Developers"
+                              ? "badge-yellow"
+                              : badge === "Photographer"
+                                ? "badge-sky"
+                                : "badge-red"
+                      }`}
+                    >
                       {badge}
                     </span>
                   ))}
@@ -75,7 +73,7 @@ const Emails: React.FC<EmailsProps> = ({ filteredEmails, handleShowMail }) => {
         </div>
       </SimpleBar>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Emails
+export default Emails;

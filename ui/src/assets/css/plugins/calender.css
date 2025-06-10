@@ -30,7 +30,7 @@
     @apply mb-space;
   }
 
-  [data-mode='dark'] .fc-theme-standard {
+  [data-mode="dark"] .fc-theme-standard {
     --fc-page-bg-color: var(--color-dark-900);
     --fc-border-color: var(--color-dark-800);
     --fc-neutral-text-color: var(--color-dark-500);

@@ -1,12 +1,7 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-
-import main from '@assets/images/dashboards/music/main.png'
-import { NextPageWithLayout } from '@src/dtos'
-import { Play } from 'lucide-react'
+import React from "react";
+import main from "@assets/images/dashboards/music/main.png";
+import { Play } from "lucide-react";
+import { NextPageWithLayout } from "@dtos/layout";
 
 const HomeSection: NextPageWithLayout = () => {
   return (
@@ -16,29 +11,29 @@ const HomeSection: NextPageWithLayout = () => {
           <div className="col-span-12 md:col-span-8 lg:col-span-7 xl:col-span-9">
             <div className="lg:max-w-[400px] xl:max-w-[500px] py-10">
               <h1 className="mb-3 text-white">
-                Dream Top <span className="text-pink-400">10</span> Tracks
+                Dream Top <span className="text-pink-400">10</span> Track
               </h1>
               <p className="mb-6 text-primary-50">
-                On March 24, 2025, Dream released his second song, entitled
-                &quot;Mask&quot;, which garnered over 24.7 million views on
-                YouTube.
+                On May 20, 2021, Dream released his second song, entitled
+                "Mask", which garnered over 24.7 million views on YouTube.
               </p>
               <button
                 type="button"
-                className="text-white rounded-lg rounded-tl-3xl rounded-br-3xl py-2.5 hover:-translate-y-1.5 -tracking-tighter btn bg-white/20 backdrop-blur-xl">
-                <Play className="inline-block ltr:mr-1 rtl:ml-1 size-4"></Play>{' '}
+                className="text-white rounded-lg rounded-tl-3xl rounded-br-3xl py-2.5 hover:-translate-y-1.5 -tracking-tighter btn bg-white/20 backdrop-blur-xl"
+              >
+                <Play className="inline-block ltr:mr-1 rtl:ml-1 size-4"></Play>{" "}
                 Play All
               </button>
             </div>
           </div>
           <div className="col-span-12 md:col-span-4 lg:col-span-5 xl:col-span-3">
             <div className="mt-6 lg:-mt-8">
-              <Image src={main} alt="bannerImg" />
+              <img src={main} alt="mainImg" />
             </div>
           </div>
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default HomeSection
+  );
+};
+export default HomeSection;

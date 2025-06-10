@@ -1,128 +1,118 @@
-import { EventList } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
+import { AppDispatch } from "@src/slices/reducer";
 import {
-  LocalStorageRecord,
+  getEventList,
+  editEventList,
+  addEventList,
+  deleteEventList,
+} from "./reducer";
+import { EventList } from "@src/dtos";
+import api from "@src/utils/axios_api";
+import { REACT_APP_EVENT_LIST_API } from "@src/utils/url_helper";
+import {
   addLocalStorageRecord,
   createLocalStorage,
   deleteLocalStorageRecord,
   getLocalStorage,
   updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_EVENT_LIST_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
+} from "@src/utils/crud_functions";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-import {
-  addEventList,
-  deleteEventList,
-  editEventList,
-  getEventList,
-} from './reducer'
-
-const EVENT_lIST_API = NEXT_PUBLIC_EVENT_LIST_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const EVENT_lIST_API = REACT_APP_EVENT_LIST_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get event list data
 export const getEventListData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = (await getLocalStorage('d-events-list')) as
-        | EventList[]
-        | null
+      const responseData = await getLocalStorage("d-events-list");
       if (!responseData) {
-        const response = await api.get(EVENT_lIST_API)
-        const { data } = response
-        createLocalStorage('d-events-list', data)
-        dispatch(getEventList(data))
+        const response = await api.get(EVENT_lIST_API);
+        createLocalStorage("d-events-list", response);
+        dispatch(getEventList(response));
       } else {
-        dispatch(getEventList(responseData || []))
+        dispatch(getEventList(responseData));
       }
     } else {
-      const response = await api.get(EVENT_lIST_API)
-      const { data } = response
-      dispatch(getEventList(data))
+      const response = await api.get(EVENT_lIST_API);
+      dispatch(getEventList(response));
     }
-  } catch (error) {
-    let errorMessage = 'Error fetching Satff data'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-      toast.error(errorMessage, { autoClose: 3000 })
-    }
-    console.error('Error fetching Satff data:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Event List Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching exam event list data:", error);
   }
-}
+};
 
 // add new event list
 export const addEventListData =
   (newRecord: EventList) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(EVENT_lIST_API, newRecord, 'event')
-      const { data, message } = response
-      toast.success(message || 'event added successfully', { autoClose: 3000 })
-      addLocalStorageRecord('d-events-list', { ...data })
-      dispatch(addEventList(data))
-    } catch (error) {
-      let errorMessage = 'Error adding record'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Error adding record:', error)
+      const response = await api.post(EVENT_lIST_API, newRecord, "Event List");
+      const { message } = response;
+      AddToast(message || "Event List record added successfully");
+      addLocalStorageRecord("d-events-list", newRecord);
+      dispatch(addEventList(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Event List addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding event list record:", error);
     }
-  }
+  };
 
 // edit event list
 export const editEventListData =
   (event: EventList) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(EVENT_lIST_API, event, 'event')
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-events-list',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editEventList(data))
-    } catch (error) {
-      let errorMessage = 'event record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('event record updation failed:', error)
+      const response = await api.put(EVENT_lIST_API, event, "Event List");
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Event List updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-events-list", event);
+      dispatch(editEventList(event));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Event List record updation failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating event list record:", error);
     }
-  }
+  };
 
 // delete event list
 export const deleteEventListData =
   (event: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = event.map(async (id) => {
-        const response = await customDelete(EVENT_lIST_API, id, 'event')
-        const { message } = response
-        toast.success(message || 'event deleted successfully', {
-          autoClose: 3000,
-        })
-        return response.data
-      })
-      const deletedProducts = await Promise.all(deletePromises)
-      dispatch(deleteEventList(deletedProducts))
+      const deletePromises = event.map(async (_id) => {
+        const response = await api.delete(EVENT_lIST_API, _id, "Event List");
+        const { message } = response;
+        DeleteToast(message || "Event List record deleted successfully");
+        return _id;
+      });
+
+      const deletedEventList = await Promise.all(deletePromises);
+      dispatch(deleteEventList(deletedEventList));
       deleteLocalStorageRecord({
-        key: 'd-events-list',
+        key: "d-events-list",
         listRecord: event,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'event record deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('event record deletion failed:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Event List deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting event list: ", error);
     }
-  }
+  };

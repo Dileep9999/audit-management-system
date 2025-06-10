@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import useChartColors from "@hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import React from "react";
+import ReactApexChart from "react-apexcharts";
 
 interface RangeChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const BasicRangeChart = ({
@@ -24,73 +15,73 @@ const BasicRangeChart = ({
   chartId,
 }: RangeChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'New York Temperature',
+      name: "New York Temperature",
       data: [
         {
-          x: 'Jan',
+          x: "Jan",
           y: [-2, 4],
         },
         {
-          x: 'Feb',
+          x: "Feb",
           y: [-1, 6],
         },
         {
-          x: 'Mar',
+          x: "Mar",
           y: [3, 10],
         },
         {
-          x: 'Apr',
+          x: "Apr",
           y: [8, 16],
         },
         {
-          x: 'May',
+          x: "May",
           y: [13, 22],
         },
         {
-          x: 'Jun',
+          x: "Jun",
           y: [18, 26],
         },
         {
-          x: 'Jul',
+          x: "Jul",
           y: [21, 29],
         },
         {
-          x: 'Aug',
+          x: "Aug",
           y: [21, 28],
         },
         {
-          x: 'Sep',
+          x: "Sep",
           y: [17, 24],
         },
         {
-          x: 'Oct',
+          x: "Oct",
           y: [11, 18],
         },
         {
-          x: 'Nov',
+          x: "Nov",
           y: [6, 12],
         },
         {
-          x: 'Dec',
+          x: "Dec",
           y: [1, 7],
         },
       ],
     },
-  ]
+  ];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'rangeArea',
+      type: "rangeArea",
     },
     stroke: {
-      curve: 'straight',
+      curve: "straight",
     },
     title: {
-      text: 'New York Temperature (all year round)',
+      text: "New York Temperature (all year round)",
     },
     markers: {
       hover: {
@@ -104,7 +95,7 @@ const BasicRangeChart = ({
     yaxis: {
       labels: {
         formatter: (val) => {
-          return val + '°C'
+          return val + "°C";
         },
       },
     },
@@ -115,7 +106,7 @@ const BasicRangeChart = ({
         bottom: 0,
       },
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -125,12 +116,12 @@ const BasicRangeChart = ({
         series={series}
         type="rangeArea"
         data-chart-colors="[bg-primary-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default BasicRangeChart
+export default BasicRangeChart;

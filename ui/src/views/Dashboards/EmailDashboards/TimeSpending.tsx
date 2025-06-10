@@ -1,13 +1,8 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
-import { NextPageWithLayout } from '@src/dtos'
-import { MoveLeft, MoveRight } from 'lucide-react'
-
-import { TimeSpendingApp } from './EmailChart'
+import React from "react";
+import { MoveLeft, MoveRight } from "lucide-react";
+import { NextPageWithLayout } from "@dtos/layout";
+import { Link } from "react-router-dom";
+import { TimeSpendingApp } from "./emailChart";
 
 const TimeSpending: NextPageWithLayout = () => {
   return (
@@ -15,9 +10,9 @@ const TimeSpending: NextPageWithLayout = () => {
       <div className="col-span-12 xl:col-span-4 card">
         <div className="flex items-center gap-5 card-header">
           <h6 className="card-title grow">All Time Spending</h6>
-          <Link href="#!" className="badge badge-sub-gray">
-            See All{' '}
-            <MoveRight className="ltr:inline-block rtl:hidden ml-0.5 size-4" />
+          <Link to="#!" className="badge badge-sub-gray">
+            See All{" "}
+            <MoveRight className="ltr:inline-block rtl:hidden ml-0.5 size-4" />{" "}
             <MoveLeft className="rtl:inline-block ltr:hidden mr-0.5 size-4" />
           </Link>
         </div>
@@ -36,7 +31,7 @@ const TimeSpending: NextPageWithLayout = () => {
             <div className="col-span-12">
               <TimeSpendingApp
                 chartColors="[bg-primary-500, bg-green-500]"
-                chartDarkColors={''}
+                chartDarkColors={""}
                 chartId="timeSpendingChart"
               />
             </div>
@@ -44,6 +39,6 @@ const TimeSpending: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default TimeSpending
+  );
+};
+export default TimeSpending;

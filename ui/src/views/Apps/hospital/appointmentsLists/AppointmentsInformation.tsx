@@ -1,13 +1,10 @@
-'use client'
-
-import React from 'react'
-
 import {
   CalendarDays,
   CalendarPlus,
   CalendarPlus2,
   CalendarX2,
-} from 'lucide-react'
+} from "lucide-react";
+import React from "react";
 
 const AppointmentsInformation = () => {
   return (
@@ -67,7 +64,7 @@ const AppointmentsInformation = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default AppointmentsInformation
+export default AppointmentsInformation;

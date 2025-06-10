@@ -1,23 +1,22 @@
-import React, { useEffect } from 'react'
-
-import Prism from 'prismjs'
-import 'prismjs/themes/prism-okaidia.css'
+import React, { useEffect } from "react";
+import Prism from "prismjs";
+import "prismjs/themes/prism-okaidia.css";
 
 interface PrismCodeProps {
-  language: string
-  code: string
+  language: string;
+  code: string;
 }
 
 const PrismCode: React.FC<PrismCodeProps> = ({ language, code }) => {
   useEffect(() => {
-    Prism.highlightAll()
-  }, [code])
+    Prism.highlightAll(); // Highlight all code blocks
+  }, [code]);
 
   return (
-    <pre className={`language-${language}`} tabIndex={0}>
+    <pre>
       <code className={`language-${language}`}>{code}</code>
     </pre>
-  )
-}
+  );
+};
 
-export default PrismCode
+export default PrismCode;

@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import { WidgetsData } from '@src/data'
+import { WidgetsData } from "@data/index";
+import React from "react";
 
 const Widgets = () => {
   return (
@@ -12,27 +9,28 @@ const Widgets = () => {
           {WidgetsData &&
             WidgetsData.map((item, index) => {
               if (!item) {
-                return null // Skip rendering if item is undefined
+                return null; // Skip rendering if item is undefined
               }
               return (
                 <div key={index} className="card">
                   <div className="card-body">
                     <div
-                      className={`flex items-center justify-center ${item.iconColor} rounded-md size-12`}>
+                      className={`flex items-center justify-center ${item.iconColor} rounded-md size-12`}
+                    >
                       <item.icon />
                     </div>
 
                     <h6 className="mt-6 mb-1.5">{item.label}</h6>
                     <p className={`font-medium ${item.color}`}>
-                      <i className={item.arrowIcon}></i> {item.Percent}
+                      <i className={item.arrowiocn}></i> {item.Percent}
                     </p>
                   </div>
                 </div>
-              )
+              );
             })}
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default Widgets
+  );
+};
+export default Widgets;

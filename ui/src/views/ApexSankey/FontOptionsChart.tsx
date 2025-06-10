@@ -1,183 +1,179 @@
-'use client'
-
-import React, { useEffect, useRef, useState } from 'react'
-
-import useChartColors from '@src/hooks/useChartColors'
-import ApexSankey from 'apexsankey'
-
+import ApexSankey from "apexsankey";
+import { useEffect, useRef, useState } from "react";
 import {
   BarChartsProps,
   DataType,
   GraphOptions,
-} from '../../dtos/pages/apexsankey'
+} from "../../dtos/pages/apexsankey";
+import useChartColors from "@hooks/useChartColors";
 
 const FontOptionsChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
-  const apexSankeyContainerRef = useRef<HTMLDivElement | null>(null)
-  const [data, setData] = useState<DataType | null>(null)
-  const colors = useChartColors({ chartColors, chartDarkColors })
+  const apexSankeyContainerRef = useRef<HTMLDivElement | null>(null);
+  const [data, setData] = useState<DataType | null>(null);
+  const colors = useChartColors({ chartColors, chartDarkColors });
 
   // Initialize data once
   useEffect(() => {
     const initialData: DataType = {
       nodes: [
-        { id: 'Berlin', title: 'Berlin' },
-        { id: 'Job Applications', title: 'Job Applications' },
-        { id: 'Barcelona', title: 'Barcelona' },
-        { id: 'Madrid', title: 'Madrid' },
-        { id: 'Amsterdam', title: 'Amsterdam' },
-        { id: 'Paris', title: 'Paris' },
-        { id: 'London', title: 'London' },
-        { id: 'Munich', title: 'Munich' },
-        { id: 'Brussels', title: 'Brussels' },
-        { id: 'Dubai', title: 'Dubai' },
-        { id: 'Dublin', title: 'Dublin' },
-        { id: 'Other Cities', title: 'Other Cities' },
-        { id: 'No Response', title: 'No Response' },
-        { id: 'Responded', title: 'Responded' },
-        { id: 'Rejected', title: 'Rejected' },
-        { id: 'Interviewed', title: 'Interviewed' },
-        { id: 'No Offer', title: 'No Offer' },
-        { id: 'Declined Offer', title: 'Declined Offer' },
-        { id: 'Accepted Offer', title: 'Accepted Offer' },
+        { id: "Berlin", title: "Berlin" },
+        { id: "Job Applications", title: "Job Applications" },
+        { id: "Barcelona", title: "Barcelona" },
+        { id: "Madrid", title: "Madrid" },
+        { id: "Amsterdam", title: "Amsterdam" },
+        { id: "Paris", title: "Paris" },
+        { id: "London", title: "London" },
+        { id: "Munich", title: "Munich" },
+        { id: "Brussels", title: "Brussels" },
+        { id: "Dubai", title: "Dubai" },
+        { id: "Dublin", title: "Dublin" },
+        { id: "Other Cities", title: "Other Cities" },
+        { id: "No Response", title: "No Response" },
+        { id: "Responded", title: "Responded" },
+        { id: "Rejected", title: "Rejected" },
+        { id: "Interviewed", title: "Interviewed" },
+        { id: "No Offer", title: "No Offer" },
+        { id: "Declined Offer", title: "Declined Offer" },
+        { id: "Accepted Offer", title: "Accepted Offer" },
       ],
       edges: [
         {
-          source: 'Berlin',
-          target: 'Job Applications',
+          source: "Berlin",
+          target: "Job Applications",
           value: 102,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Barcelona',
-          target: 'Job Applications',
+          source: "Barcelona",
+          target: "Job Applications",
           value: 39,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Madrid',
-          target: 'Job Applications',
+          source: "Madrid",
+          target: "Job Applications",
           value: 35,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Amsterdam',
-          target: 'Job Applications',
+          source: "Amsterdam",
+          target: "Job Applications",
           value: 15,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Paris',
-          target: 'Job Applications',
+          source: "Paris",
+          target: "Job Applications",
           value: 14,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'London',
-          target: 'Job Applications',
+          source: "London",
+          target: "Job Applications",
           value: 6,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Munich',
-          target: 'Job Applications',
+          source: "Munich",
+          target: "Job Applications",
           value: 5,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Brussels',
-          target: 'Job Applications',
+          source: "Brussels",
+          target: "Job Applications",
           value: 4,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Dubai',
-          target: 'Job Applications',
+          source: "Dubai",
+          target: "Job Applications",
           value: 3,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Dublin',
-          target: 'Job Applications',
+          source: "Dublin",
+          target: "Job Applications",
           value: 3,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Other Cities',
-          target: 'Job Applications',
+          source: "Other Cities",
+          target: "Job Applications",
           value: 12,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Job Applications',
-          target: 'No Response',
+          source: "Job Applications",
+          target: "No Response",
           value: 189,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Job Applications',
-          target: 'Responded',
+          source: "Job Applications",
+          target: "Responded",
           value: 49,
-          color: 'orange',
+          color: "orange",
         },
         {
-          source: 'Responded',
-          target: 'Rejected',
+          source: "Responded",
+          target: "Rejected",
           value: 38,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Responded',
-          target: 'Interviewed',
+          source: "Responded",
+          target: "Interviewed",
           value: 11,
-          color: 'orange',
+          color: "orange",
         },
         {
-          source: 'Interviewed',
-          target: 'No Offer',
+          source: "Interviewed",
+          target: "No Offer",
           value: 8,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Interviewed',
-          target: 'Declined Offer',
+          source: "Interviewed",
+          target: "Declined Offer",
           value: 2,
-          color: '#dddddd',
+          color: "#dddddd",
         },
         {
-          source: 'Interviewed',
-          target: 'Accepted Offer',
+          source: "Interviewed",
+          target: "Accepted Offer",
           value: 1,
-          color: 'orange',
+          color: "orange",
         },
       ],
       options: {
         order: [
           [
-            ['Berlin', 'Barcelona', 'Madrid', 'Amsterdam', 'Paris', 'London'],
-            ['Munich', 'Brussels', 'Dubai', 'Dublin', 'Other Cities'],
+            ["Berlin", "Barcelona", "Madrid", "Amsterdam", "Paris", "London"],
+            ["Munich", "Brussels", "Dubai", "Dublin", "Other Cities"],
           ],
-          [['Job Applications']],
-          [['Responded'], ['No Response']],
-          [['Interviewed'], ['Rejected']],
-          [['Accepted Offer', 'Declined Offer', 'No Offer'], []],
+          [["Job Applications"]],
+          [["Responded"], ["No Response"]],
+          [["Interviewed"], ["Rejected"]],
+          [["Accepted Offer", "Declined Offer", "No Offer"], []],
         ],
       },
-    }
-    setData(initialData)
-  }, [])
+    };
+    setData(initialData);
+  }, []);
 
   // Render chart when data or colors change
   useEffect(() => {
-    if (colors.length === 0 || !data || !apexSankeyContainerRef.current) return
+    if (colors.length === 0 || !data || !apexSankeyContainerRef.current) return;
 
     const renderChart = () => {
       const graphOptions: GraphOptions = {
         nodeWidth: 20,
         fontWeight: 500,
-        fontSize: '10px',
+        fontSize: "10px",
         height: 300,
         fontColor: colors[0],
-        canvasStyle: '',
+        canvasStyle: "",
         nodeBorderColor: colors[2],
         tooltipBGColor: colors[1],
         tooltipBorderColor: colors[2],
@@ -192,39 +188,39 @@ const FontOptionsChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
                             <h6 class="dark:text-dark-100">${target.title}</h6>
                             <div>: ${value}</div> 
                         </div>
-                    `
+                    `;
         },
-      }
+      };
 
       // Clear previous chart
       if (apexSankeyContainerRef.current) {
-        apexSankeyContainerRef.current.innerHTML = ''
+        apexSankeyContainerRef.current.innerHTML = "";
       }
 
       // Initialize and render new chart
       const newApexSankeyChart = new ApexSankey(
         apexSankeyContainerRef.current,
-        graphOptions
-      )
-      newApexSankeyChart.render(data)
-    }
+        graphOptions,
+      );
+      newApexSankeyChart.render(data);
+    };
 
-    renderChart()
+    renderChart();
 
     // Handle window resize
     const handleResize = () => {
-      renderChart()
-    }
+      renderChart();
+    };
 
-    window.addEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize);
 
     // Cleanup on unmount
     return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [data, colors])
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [data, colors]);
 
-  return <div ref={apexSankeyContainerRef}></div>
-}
+  return <div ref={apexSankeyContainerRef}></div>;
+};
 
-export default FontOptionsChart
+export default FontOptionsChart;

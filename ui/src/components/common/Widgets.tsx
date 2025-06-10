@@ -1,56 +1,53 @@
-'use client'
-
-import React, { useEffect, useState } from 'react'
-
-import { InvoiceList } from '@src/dtos'
-import { CircleAlert, CircleCheckBig, Hourglass, X } from 'lucide-react'
+import { InvoiceList } from "@src/dtos";
+import { CircleAlert, CircleCheckBig, Hourglass, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 interface WidgetsProps {
-  invoices: InvoiceList[]
+  invoices: InvoiceList[];
 }
 
 const Widgets: React.FC<WidgetsProps> = ({ invoices }) => {
-  const totalInvoices = invoices ? invoices.length : 1
+  const totalInvoices = invoices ? invoices.length : 1;
 
-  const [paidCount, setPaidCount] = useState(0)
-  const [unPaidCount, setUnPaidCount] = useState(0)
-  const [pendingCount, setPendingCount] = useState(0)
-  const [overdueCount, setOverdueCount] = useState(0)
+  const [paidCount, setPaidCount] = useState(0);
+  const [unPaidCount, setUnPaidCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [overdueCount, setOverdueCount] = useState(0);
 
-  const paidPercentage = (paidCount / totalInvoices) * 100
-  const unpaidPercentage = (unPaidCount / totalInvoices) * 100
-  const pendingPercentage = (pendingCount / totalInvoices) * 100
-  const overduePercentage = (overdueCount / totalInvoices) * 100
+  const paidPercentage = (paidCount / totalInvoices) * 100;
+  const unpaidPercentage = (unPaidCount / totalInvoices) * 100;
+  const pendingPercentage = (pendingCount / totalInvoices) * 100;
+  const overduePercentage = (overdueCount / totalInvoices) * 100;
 
   useEffect(() => {
     if (!invoices) {
-      setPaidCount(1)
-      setUnPaidCount(1)
-      setPendingCount(1)
-      setOverdueCount(1)
-      return
+      setPaidCount(1);
+      setUnPaidCount(1);
+      setPendingCount(1);
+      setOverdueCount(1);
+      return;
     }
     setPaidCount(
       invoices
-        ? invoices.filter((invoice) => invoice.status === 'Paid').length
-        : 1
-    )
+        ? invoices.filter((invoice) => invoice.status === "Paid").length
+        : 1,
+    );
     setUnPaidCount(
       invoices
-        ? invoices.filter((invoice) => invoice.status === 'Unpaid').length
-        : 1
-    )
+        ? invoices.filter((invoice) => invoice.status === "Unpaid").length
+        : 1,
+    );
     setPendingCount(
       invoices
-        ? invoices.filter((invoice) => invoice.status === 'Pending').length
-        : 1
-    )
+        ? invoices.filter((invoice) => invoice.status === "Pending").length
+        : 1,
+    );
     setOverdueCount(
       invoices
-        ? invoices.filter((invoice) => invoice.status === 'Overdue').length
-        : 1
-    )
-  }, [invoices])
+        ? invoices.filter((invoice) => invoice.status === "Overdue").length
+        : 1,
+    );
+  }, [invoices]);
 
   return (
     <React.Fragment>
@@ -64,7 +61,7 @@ const Widgets: React.FC<WidgetsProps> = ({ invoices }) => {
           <p className="text-gray-500 dark:text-dark-500">
             <span className="align-bottom badge badge-green">
               <span>{paidPercentage > 0 ? paidPercentage.toFixed(2) : 0}</span>%
-            </span>
+            </span>{" "}
             This month
           </p>
         </div>
@@ -82,7 +79,7 @@ const Widgets: React.FC<WidgetsProps> = ({ invoices }) => {
                 {unpaidPercentage > 0 ? unpaidPercentage.toFixed(2) : 0}
               </span>
               %
-            </span>
+            </span>{" "}
             This month
           </p>
         </div>
@@ -100,7 +97,7 @@ const Widgets: React.FC<WidgetsProps> = ({ invoices }) => {
                 {pendingPercentage ? pendingPercentage.toFixed(2) : 0}
               </span>
               %
-            </span>
+            </span>{" "}
             This month
           </p>
         </div>
@@ -118,13 +115,13 @@ const Widgets: React.FC<WidgetsProps> = ({ invoices }) => {
                 {overduePercentage > 0 ? overduePercentage.toFixed(2) : 0}
               </span>
               %
-            </span>
+            </span>{" "}
             This month
           </p>
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Widgets
+export default Widgets;

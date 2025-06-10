@@ -1,23 +1,18 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import user11 from '@assets/images/avatar/user-11.png'
-import user13 from '@assets/images/avatar/user-13.png'
-import user14 from '@assets/images/avatar/user-14.png'
-import user16 from '@assets/images/avatar/user-16.png'
-import brands22 from '@assets/images/brands/img-22.png'
+import { Ellipsis } from "lucide-react";
+import React from "react";
+import SimpleBar from "simplebar-react";
+import user14 from "@assets/images/avatar/user-14.png";
+import user13 from "@assets/images/avatar/user-13.png";
+import user16 from "@assets/images/avatar/user-16.png";
+import user11 from "@assets/images/avatar/user-11.png";
+import brands22 from "@assets/images/brands/img-22.png";
+import { NextPageWithLayout } from "@dtos/layout";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-import { Ellipsis } from 'lucide-react'
-import SimpleBar from 'simplebar-react'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
 
 const Activity: NextPageWithLayout = () => {
   return (
@@ -30,14 +25,14 @@ const Activity: NextPageWithLayout = () => {
               <Ellipsis className="size-5" />
             </DropdownButton>
             <DropdownMenu>
-              <Link href="#!" className="dropdown-item ">
+              <Link to="#!" className="dropdown-item ">
                 <span>Weekly</span>
               </Link>
 
-              <Link href="#!" className="dropdown-item ">
+              <Link to="#!" className="dropdown-item ">
                 <span>Monthly</span>
               </Link>
-              <Link href="#!" className="dropdown-item">
+              <Link to="#!" className="dropdown-item">
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
@@ -48,9 +43,9 @@ const Activity: NextPageWithLayout = () => {
             <ul className="*:before:absolute *:before:w-0.5 *:before:bg-gray-200 dark:*:before:bg-dark-800 *:before:top-5 *:before:-bottom-5 *:relative ltr:*:before:left-[3px] rtl:*:before:right-[3px] flex flex-col *:pb-5 ltr:*:pl-5 rtl:*:pr-5 *:after:absolute *:after:bg-white dark:*:after:bg-dark-900 *:after:size-2 *:after:border *:after:border-gray-300 dark:*:after:border-dark-700 ltr:*:after:left-0 rtl:*:after:right-0 *:after:top-5 *:after:rounded-xs">
               <li className="last:before:hidden last:pb-0 [&.active]:before:bg-purple-500 [&.active]:after:border-purple-500">
                 <div className="flex items-center gap-3 mb-3">
-                  <Image
+                  <img
                     src={user14}
-                    alt="userImg"
+                    alt="user14Img"
                     className="rounded-md size-10"
                   />
                   <div className="grow">
@@ -65,9 +60,9 @@ const Activity: NextPageWithLayout = () => {
               </li>
               <li className="last:before:hidden last:pb-0 [&.active]:before:bg-purple-500 [&.active]:after:border-purple-500">
                 <div className="flex items-center gap-3 mb-3">
-                  <Image
+                  <img
                     src={user16}
-                    alt="userImg"
+                    alt="user16Img"
                     className="rounded-md size-10"
                   />
                   <div className="grow">
@@ -77,22 +72,22 @@ const Activity: NextPageWithLayout = () => {
                     </p>
                   </div>
                 </div>
-                <h6 className="mb-1 ">
+                <h6 className="mb-1">
                   Commented on
-                  <Link href="#!" className="text-primary-500 ps-1.5">
+                  <Link to="#!" className="text-primary-500">
                     Chat App
                   </Link>
                 </h6>
                 <p className="text-gray-500">
-                  &quot;Great product but only if you end up using the exact
-                  examples in the demos provided.&quot;
+                  "Great product but only if you end up using the exact examples
+                  in the demos provided."
                 </p>
               </li>
               <li className="last:before:hidden last:pb-0 [&.active]:before:bg-purple-500 [&.active]:after:border-purple-500">
                 <div className="flex items-center gap-3 mb-3">
-                  <Image
+                  <img
                     src={user11}
-                    alt="userImg"
+                    alt="user11Img"
                     className="rounded-md size-10"
                   />
                   <div className="grow">
@@ -103,15 +98,15 @@ const Activity: NextPageWithLayout = () => {
                   </div>
                 </div>
                 <h6 className="mb-1">
-                  Add a file to
-                  <Link href="#!" className="text-red-500 ps-1.5">
+                  Add a file to{" "}
+                  <Link to="#!" className="text-red-500">
                     domiex
                   </Link>
                 </h6>
                 <div className="flex items-center gap-3 p-3 border border-dashed rounded-md border-gray-200 rounded-md dark:border-dark-800">
-                  <Image
+                  <img
                     src={brands22}
-                    alt="brandImg"
+                    alt="brands22Img"
                     className="size-9 shrink-0"
                   />
                   <div className="grow">
@@ -122,9 +117,9 @@ const Activity: NextPageWithLayout = () => {
               </li>
               <li className="last:before:hidden last:pb-0 [&.active]:before:bg-purple-500 [&.active]:after:border-purple-500">
                 <div className="flex items-center gap-3 mb-3">
-                  <Image
+                  <img
                     src={user13}
-                    alt="userImg"
+                    alt="user13Img"
                     className="rounded-md size-10"
                   />
                   <div className="grow">
@@ -142,6 +137,6 @@ const Activity: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default Activity
+  );
+};
+export default Activity;

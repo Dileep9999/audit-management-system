@@ -1,62 +1,99 @@
-'use client'
+import React, { useState, useCallback } from "react";
 
-import React, { useCallback, useState } from 'react'
-
-import { BorderSpacing } from '@src/data/table'
-import { BorderDataItem } from '@src/dtos/table'
+interface DataItem {
+  name: string;
+  age: number;
+  date: string;
+  address: string;
+  salary: string;
+  editable?: number; // Index of the row being edited
+}
 
 const SortingTables: React.FC = () => {
-  const [data, setData] = useState<BorderDataItem[]>(BorderSpacing)
-
-  const [sortColumn, setSortColumn] = useState<keyof BorderDataItem>('name')
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
-  const [editableIndex, setEditableIndex] = useState<number | null>(null)
+  const [data, setData] = useState<DataItem[]>([
+    {
+      name: "Jeremy McMullen",
+      age: 37,
+      date: "21 Jan, 2024",
+      address: "United States",
+      salary: "$15,236",
+    },
+    {
+      name: "Charles Fischer",
+      age: 29,
+      date: "28 Jan, 2024",
+      address: "Romania",
+      salary: "$8,563",
+    },
+    {
+      name: "Louise Harms",
+      age: 32,
+      date: "02 Feb, 2024",
+      address: "Canada",
+      salary: "$7,986",
+    },
+    {
+      name: "Henry Boyle",
+      age: 34,
+      date: "11 Feb, 2024",
+      address: "Germany",
+      salary: "$36,322",
+    },
+    {
+      name: "John Brown",
+      age: 26,
+      date: "20 Feb, 2024",
+      address: "Mexico",
+      salary: "$11,741",
+    },
+  ]);
+  const [sortColumn, setSortColumn] = useState<keyof DataItem>("name");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [editableIndex, setEditableIndex] = useState<number | null>(null);
 
   // Function to handle sorting
   const sortData = useCallback(() => {
     const sortedData = [...data].sort((a, b) => {
-      const aValue = a[sortColumn]
-      const bValue = b[sortColumn]
+      const aValue = a[sortColumn];
+      const bValue = b[sortColumn];
+      const aVal = aValue !== undefined ? String(aValue) : "";
+      const bVal = bValue !== undefined ? String(bValue) : "";
 
-      // Ensure aValue and bValue are strings for comparison
-      const aVal = aValue !== undefined ? String(aValue) : ''
-      const bVal = bValue !== undefined ? String(bValue) : ''
+      if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+    return sortedData;
+  }, [data, sortColumn, sortDirection]);
 
-      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1
-      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1
-      return 0
-    })
-    return sortedData
-  }, [data, sortColumn, sortDirection])
-
-  const sortedData = sortData()
+  const sortedData = sortData();
 
   // Handle sorting by column
-  const handleSort = (column: keyof BorderDataItem) => {
-    setSortColumn(column)
-    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-  }
+  const handleSort = (column: keyof DataItem) => {
+    setSortColumn(column);
+    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  };
 
   // Handle editing and saving data
   const handleEditToggle = (index: number) => {
-    setEditableIndex(editableIndex === index ? null : index)
-  }
+    setEditableIndex(editableIndex === index ? null : index);
+  };
 
   const handleUpdateValue = (
     index: number,
-    field: keyof BorderDataItem,
-    value: string
+    field: keyof DataItem,
+    value: string,
   ) => {
-    const updatedData = [...data]
-    updatedData[index] = { ...updatedData[index], [field]: value }
-    setData(updatedData)
-  }
+    const updatedData = [...data];
+    updatedData[index] = { ...updatedData[index], [field]: value };
+    setData(updatedData);
+  };
 
   // Remove item
   const handleRemove = (index: number) => {
-    const updatedData = data.filter((_, i) => i !== index)
-    setData(updatedData)
-  }
+    const updatedData = data.filter((_, i) => i !== index);
+    setData(updatedData);
+  };
 
   return (
     <div className="col-span-12 card">
@@ -68,30 +105,35 @@ const SortingTables: React.FC = () => {
           <table className="table">
             <tbody>
               <tr className="cursor-pointer">
-                <th onClick={() => handleSort('name')}>
+                <th onClick={() => handleSort("name")}>
                   <span className="align-middle">Name</span>
                   <i
-                    className={`inline-block text-gray-500 dark:text-dark-500 size-4 ${sortColumn === 'name' ? (sortDirection === 'asc' ? 'icon-sort-asc' : 'icon-sort-desc') : ''}`}></i>
+                    className={`inline-block text-gray-500 dark:text-dark-500 size-4 ${sortColumn === "name" ? (sortDirection === "asc" ? "icon-sort-asc" : "icon-sort-desc") : ""}`}
+                  ></i>
                 </th>
-                <th onClick={() => handleSort('age')}>
+                <th onClick={() => handleSort("age")}>
                   <span className="align-middle">Age</span>
                   <i
-                    className={`inline-block text-gray-500 dark:text-dark-500 size-4 ${sortColumn === 'age' ? (sortDirection === 'asc' ? 'icon-sort-asc' : 'icon-sort-desc') : ''}`}></i>
+                    className={`inline-block text-gray-500 dark:text-dark-500 size-4 ${sortColumn === "age" ? (sortDirection === "asc" ? "icon-sort-asc" : "icon-sort-desc") : ""}`}
+                  ></i>
                 </th>
-                <th onClick={() => handleSort('date')}>
+                <th onClick={() => handleSort("date")}>
                   <span className="align-middle">Date</span>
                   <i
-                    className={`inline-block text-gray-500 dark:text-dark-500 size-4 ${sortColumn === 'date' ? (sortDirection === 'asc' ? 'icon-sort-asc' : 'icon-sort-desc') : ''}`}></i>
+                    className={`inline-block text-gray-500 dark:text-dark-500 size-4 ${sortColumn === "date" ? (sortDirection === "asc" ? "icon-sort-asc" : "icon-sort-desc") : ""}`}
+                  ></i>
                 </th>
-                <th onClick={() => handleSort('address')}>
+                <th onClick={() => handleSort("address")}>
                   <span className="align-middle">Address</span>
                   <i
-                    className={`inline-block text-gray-500 dark:text-dark-500 size-4 ${sortColumn === 'address' ? (sortDirection === 'asc' ? 'icon-sort-asc' : 'icon-sort-desc') : ''}`}></i>
+                    className={`inline-block text-gray-500 dark:text-dark-500 size-4 ${sortColumn === "address" ? (sortDirection === "asc" ? "icon-sort-asc" : "icon-sort-desc") : ""}`}
+                  ></i>
                 </th>
-                <th onClick={() => handleSort('salary')}>
+                <th onClick={() => handleSort("salary")}>
                   <span className="align-middle">Salary</span>
                   <i
-                    className={`inline-block text-gray-500 dark:text-dark-500 size-4 ${sortColumn === 'salary' ? (sortDirection === 'asc' ? 'icon-sort-asc' : 'icon-sort-desc') : ''}`}></i>
+                    className={`inline-block text-gray-500 dark:text-dark-500 size-4 ${sortColumn === "salary" ? (sortDirection === "asc" ? "icon-sort-asc" : "icon-sort-desc") : ""}`}
+                  ></i>
                 </th>
                 <th>Action</th>
               </tr>
@@ -100,84 +142,91 @@ const SortingTables: React.FC = () => {
                   <tr key={index}>
                     <td
                       contentEditable={
-                        editableIndex === index ? 'true' : 'false'
+                        editableIndex === index ? "true" : "false"
                       }
                       suppressContentEditableWarning
                       onInput={(e) =>
                         handleUpdateValue(
                           index,
-                          'name',
-                          e.currentTarget.textContent || ''
+                          "name",
+                          e.currentTarget.textContent || "",
                         )
-                      }>
+                      }
+                    >
                       {item.name}
                     </td>
                     <td
                       contentEditable={
-                        editableIndex === index ? 'true' : 'false'
+                        editableIndex === index ? "true" : "false"
                       }
                       suppressContentEditableWarning
                       onInput={(e) =>
                         handleUpdateValue(
                           index,
-                          'age',
-                          e.currentTarget.textContent || ''
+                          "age",
+                          e.currentTarget.textContent || "",
                         )
-                      }>
+                      }
+                    >
                       {item.age}
                     </td>
                     <td
                       contentEditable={
-                        editableIndex === index ? 'true' : 'false'
+                        editableIndex === index ? "true" : "false"
                       }
                       suppressContentEditableWarning
                       onInput={(e) =>
                         handleUpdateValue(
                           index,
-                          'date',
-                          e.currentTarget.textContent || ''
+                          "date",
+                          e.currentTarget.textContent || "",
                         )
-                      }>
+                      }
+                    >
                       {item.date}
                     </td>
                     <td
                       contentEditable={
-                        editableIndex === index ? 'true' : 'false'
+                        editableIndex === index ? "true" : "false"
                       }
                       suppressContentEditableWarning
                       onInput={(e) =>
                         handleUpdateValue(
                           index,
-                          'address',
-                          e.currentTarget.textContent || ''
+                          "address",
+                          e.currentTarget.textContent || "",
                         )
-                      }>
+                      }
+                    >
                       {item.address}
                     </td>
                     <td
                       contentEditable={
-                        editableIndex === index ? 'true' : 'false'
+                        editableIndex === index ? "true" : "false"
                       }
                       suppressContentEditableWarning
                       onInput={(e) =>
                         handleUpdateValue(
                           index,
-                          'salary',
-                          e.currentTarget.textContent || ''
+                          "salary",
+                          e.currentTarget.textContent || "",
                         )
-                      }>
+                      }
+                    >
                       {item.salary}
                     </td>
                     <td>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleEditToggle(index)}
-                          className="text-primary-500">
-                          {editableIndex === index ? 'Save' : 'Edit'}
+                          className="text-primary-500"
+                        >
+                          {editableIndex === index ? "Save" : "Edit"}
                         </button>
                         <button
                           onClick={() => handleRemove(index)}
-                          className="text-red-500">
+                          className="text-red-500"
+                        >
                           Remove
                         </button>
                       </div>
@@ -188,7 +237,8 @@ const SortingTables: React.FC = () => {
                 <tr>
                   <td
                     colSpan={6}
-                    className="p-5 text-center text-gray-500 dark:text-dark-500">
+                    className="p-5 text-center text-gray-500 dark:text-dark-500"
+                  >
                     No data available.
                   </td>
                 </tr>
@@ -198,7 +248,7 @@ const SortingTables: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SortingTables
+export default SortingTables;

@@ -1,21 +1,19 @@
-'use client'
-
-import React from 'react'
+import React from "react";
 
 interface Wrestler {
-  name: string
-  signatureMoves: string
+  name: string;
+  signatureMoves: string;
 }
 
 const CaptionSide: React.FC = () => {
   const data: Wrestler[] = [
     {
       name: '"Stone Cold" Steve Austin',
-      signatureMoves: 'Stone Cold Stunner, Lou Thesz Press',
+      signatureMoves: "Stone Cold Stunner, Lou Thesz Press",
     },
-    { name: 'Bret "The Hitman" Hart', signatureMoves: 'The Sharpshooter' },
-    { name: 'Razor Ramon', signatureMoves: "Razor's Edge, Fallaway Slam" },
-  ]
+    { name: 'Bret "The Hitman" Hart', signatureMoves: "The Sharpshooter" },
+    { name: "Razor Ramon", signatureMoves: "Razor's Edge, Fallaway Slam" },
+  ];
 
   return (
     <div className="col-span-12 card">
@@ -44,7 +42,7 @@ const CaptionSide: React.FC = () => {
         </table>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CaptionSide
+export default CaptionSide;

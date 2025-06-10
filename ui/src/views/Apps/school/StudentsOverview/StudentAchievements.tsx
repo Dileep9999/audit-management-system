@@ -1,43 +1,39 @@
-'use client'
+import React, { useCallback, useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
 
-import React, { useCallback, useEffect, useState } from 'react'
-
-import Image from 'next/image'
-
-import medal from '@assets/images/school/medal.png'
-import trophy from '@assets/images/school/trophy.png'
-import winner from '@assets/images/school/winner.png'
-import { GraduationCap } from 'lucide-react'
-import { Autoplay, Navigation } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/react'
+import trophy from "@assets/images/school/trophy.png";
+import medal from "@assets/images/school/medal.png";
+import winner from "@assets/images/school/winner.png";
+import { GraduationCap } from "lucide-react";
 
 const StudentAchievements = () => {
   // Array of exams
   const exams = [
-    { subject: 'Vector Algebra (Mathematics)', date: '15 July, 2024' },
-    { subject: 'Biomolecules (Chemistry)', date: '20 August, 2024' },
-    { subject: 'Human Reproduction (Biology)', date: '10 September, 2024' },
-  ]
+    { subject: "Vector Algebra (Mathematics)", date: "15 July, 2024" },
+    { subject: "Biomolecules (Chemistry)", date: "20 August, 2024" },
+    { subject: "Human Reproduction (Biology)", date: "10 September, 2024" },
+  ];
 
-  const [currentExamIndex, setCurrentExamIndex] = useState(0)
-  const [show, setShow] = useState(true)
+  const [currentExamIndex, setCurrentExamIndex] = useState(0);
+  const [show, setShow] = useState(true);
 
   const nextExam = useCallback(() => {
-    setShow(false)
+    setShow(false);
     setTimeout(() => {
-      setCurrentExamIndex((currentExamIndex + 1) % exams.length)
-      setShow(true)
-    }, 500)
-  }, [currentExamIndex, exams.length])
+      setCurrentExamIndex((currentExamIndex + 1) % exams.length);
+      setShow(true);
+    }, 500);
+  }, [currentExamIndex, exams.length]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      nextExam()
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [nextExam])
+      nextExam();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [nextExam]);
 
-  const currentExam = exams[currentExamIndex]
+  const currentExam = exams[currentExamIndex];
   return (
     <React.Fragment>
       <div className="col-span-12 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
@@ -65,15 +61,16 @@ const StudentAchievements = () => {
               spaceBetween={50}
               slidesPerView={1}
               navigation={{
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
               }}
               loop={true}
-              className="group/swiper">
+              className="group/swiper"
+            >
               <SwiperSlide>
                 <div className="py-3 text-center">
                   <div className="flex items-center justify-center p-2 mx-auto rounded-full bg-gradient-to-t from-yellow-500/10 ring-offset-2 dark:ring-offset-dark-900 size-28 ring-2 ring-yellow-500/10">
-                    <Image
+                    <img
                       src={trophy}
                       alt="Academic Excellence Awards"
                       className="size-20"
@@ -86,7 +83,7 @@ const StudentAchievements = () => {
               <SwiperSlide>
                 <div className="py-3 text-center">
                   <div className="flex items-center justify-center p-2 mx-auto rounded-full bg-gradient-to-t from-green-500/10 ring-offset-2 dark:ring-offset-dark-900 size-28 ring-2 ring-green-500/10">
-                    <Image
+                    <img
                       src={medal}
                       alt="Special Recognition Awards"
                       className="size-20"
@@ -99,7 +96,7 @@ const StudentAchievements = () => {
               <SwiperSlide>
                 <div className="py-3 text-center">
                   <div className="flex items-center justify-center p-2 mx-auto rounded-full bg-gradient-to-t from-yellow-500/10 ring-offset-2 dark:ring-offset-dark-900 size-28 ring-2 ring-yellow-500/10">
-                    <Image
+                    <img
                       src={winner}
                       alt="Arts and Sports Awards"
                       className="size-20"
@@ -124,10 +121,11 @@ const StudentAchievements = () => {
           <h6 className="mb-1">Upcoming Test</h6>
           <div
             className={`${
-              show ? 'opacity-100' : 'opacity-0'
-            } transition-opacity ease-out duration-500`}>
+              show ? "opacity-100" : "opacity-0"
+            } transition-opacity ease-out duration-500`}
+          >
             <p className="text-gray-500 dark:text-dark-500">
-              Your <span className="font-semibold">{currentExam.subject}</span>{' '}
+              Your <span className="font-semibold">{currentExam.subject}</span>{" "}
               Test will be on
               <span className="font-semibold"> {currentExam.date}</span>
             </p>
@@ -143,7 +141,7 @@ const StudentAchievements = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default StudentAchievements
+export default StudentAchievements;

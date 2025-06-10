@@ -1,5 +1,5 @@
 declare namespace JSX {
   interface IntrinsicElements {
-    'deckgo-highlight-code': any
+    "deckgo-highlight-code": any;
   }
 }

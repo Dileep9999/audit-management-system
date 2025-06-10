@@ -1,23 +1,21 @@
-'use client'
+import React from "react";
 
-import React from 'react'
+import { Link } from "react-router-dom";
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import image1 from '@assets/images/school/landing/img-01.png'
-import image2 from '@assets/images/school/landing/img-02.png'
-import image3 from '@assets/images/school/landing/img-03.png'
-import image4 from '@assets/images/school/landing/img-04.png'
-import UseNumberCounter from '@src/components/common/NumberCounter'
-import { CirclePlay, MoveLeft, MoveRight } from 'lucide-react'
+import image1 from "@assets/images/school/landing/img-01.png";
+import image2 from "@assets/images/school/landing/img-02.png";
+import image3 from "@assets/images/school/landing/img-03.png";
+import image4 from "@assets/images/school/landing/img-04.png";
+import { CirclePlay, MoveLeft, MoveRight } from "lucide-react";
+import UseNumberCounter from "@src/components/common/numberCounter";
 
 const HeroBanner: React.FC = () => {
   return (
     <React.Fragment>
       <section
         className="pt-48 pb-14 md:pb-24 bg-gradient-to-b from-orange-500/10"
-        id="home">
+        id="home"
+      >
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto text-center">
             <h1 className="mb-5 text-5xl font-medium leading-normal capitalize">
@@ -27,7 +25,8 @@ const HeroBanner: React.FC = () => {
                   version="1.2"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 334 80"
-                  className="absolute left-0 bottom-1.5 h-11">
+                  className="absolute left-0 bottom-1.5 h-11"
+                >
                   <g id="Graphic Elements">
                     <g id="&lt;Group&gt;">
                       <path
@@ -121,12 +120,13 @@ const HeroBanner: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <button
                 type="button"
-                className="py-3 rounded-full btn btn-primary min-w-40 hover:-translate-y-0.5">
-                Get Started{' '}
+                className="py-3 rounded-full btn btn-primary min-w-40 hover:-translate-y-0.5"
+              >
+                Get Started{" "}
                 <MoveRight className="ml-1 ltr:inline-block rtl:hidden size-4" />
                 <MoveLeft className="mr-1 rtl:inline-block ltr:hidden size-4" />
               </button>
-              <Link href="#!" className="flex items-center gap-2 font-semibold">
+              <Link to="#!" className="flex items-center gap-2 font-semibold">
                 <div className="flex items-center justify-center bg-orange-500 rounded-full size-9 text-primary-50">
                   <CirclePlay className="size-5" />
                 </div>
@@ -137,7 +137,7 @@ const HeroBanner: React.FC = () => {
           <div className="grid grid-cols-2 gap-8 mt-8 md:grid-cols-4 lg:gap-x-16">
             <div>
               <div className="relative p-6 overflow-hidden bg-white rounded-t-full dark:bg-dark-900/40 max-h-96 before:absolute before:h-2/3 before:inset-x-0 before:bottom-0 before:bg-sky-500/10 before:rounded-t-full">
-                <Image
+                <img
                   src={image1}
                   alt="leadingImg"
                   className="relative"
@@ -148,7 +148,7 @@ const HeroBanner: React.FC = () => {
             </div>
             <div>
               <div className="relative p-6 overflow-hidden bg-white rounded-t-full dark:bg-dark-900/40 max-h-96 before:absolute before:h-2/3 before:inset-x-0 before:bottom-0 before:bg-purple-500/10 before:rounded-t-full">
-                <Image
+                <img
                   src={image2}
                   alt="leadingImg"
                   className="relative"
@@ -159,7 +159,7 @@ const HeroBanner: React.FC = () => {
             </div>
             <div>
               <div className="relative p-6 overflow-hidden bg-white rounded-t-full dark:bg-dark-900/40 max-h-96 before:absolute before:h-2/3 before:inset-x-0 before:bottom-0 before:bg-green-500/10 before:rounded-t-full">
-                <Image
+                <img
                   src={image3}
                   alt="leadingImg"
                   className="relative"
@@ -170,7 +170,7 @@ const HeroBanner: React.FC = () => {
             </div>
             <div>
               <div className="relative p-6 overflow-hidden bg-white rounded-t-full dark:bg-dark-900/40 max-h-96 before:absolute before:h-2/3 before:inset-x-0 before:bottom-0 before:bg-yellow-500/10 before:rounded-t-full">
-                <Image
+                <img
                   src={image4}
                   alt="leadingImg"
                   className="relative"
@@ -242,7 +242,7 @@ const HeroBanner: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default HeroBanner
+export default HeroBanner;

@@ -1,12 +1,9 @@
-'use client'
+import React from "react";
 
-import React from 'react'
+import { Link } from "react-router-dom";
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import img1 from '@assets/images/invoice/img-01.jpg'
-import { MoveLeft, MoveRight } from 'lucide-react'
+import img1 from "@assets/images/invoice/img-01.jpg";
+import { MoveLeft, MoveRight } from "lucide-react";
 
 const OnlineInvoicing: React.FC = () => {
   return (
@@ -35,7 +32,8 @@ const OnlineInvoicing: React.FC = () => {
               <div className="relative">
                 <svg
                   viewBox="0 0 402 397"
-                  className="absolute right-0 -bottom-24 2xl:-right-24 size-64">
+                  className="absolute right-0 -bottom-24 2xl:-right-24 size-64"
+                >
                   <g id="&lt;Group&gt;">
                     <g id="&lt;Group&gt;">
                       <g id="&lt;Group&gt;">
@@ -79,7 +77,7 @@ const OnlineInvoicing: React.FC = () => {
                     </g>
                   </g>
                 </svg>
-                <Image
+                <img
                   src={img1}
                   alt="invoiceImg"
                   className="rounded-md shadow-lg shadow-gray-200 thumbnail"
@@ -92,7 +90,7 @@ const OnlineInvoicing: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default OnlineInvoicing
+export default OnlineInvoicing;

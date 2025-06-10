@@ -1,21 +1,16 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
-import { NextPageWithLayout } from '@src/dtos'
 import {
   Droplets,
   MessagesSquare,
   Presentation,
   ShoppingBag,
-} from 'lucide-react'
-
-import { MyTask1App } from './ProjectCharts'
+} from "lucide-react";
+import React, { useState } from "react";
+import { MyTask1App } from "./projectCharts";
+import { NextPageWithLayout } from "@dtos/layout";
+import { Link } from "react-router-dom";
 
 const MyTasks: NextPageWithLayout = () => {
-  const [active, setActive] = useState<string>('activeTask')
+  const [active, setActive] = useState<string>("activeTask");
   return (
     <React.Fragment>
       <div className="order-9 col-span-12 xl:col-span-6 2xl:col-span-4">
@@ -24,27 +19,25 @@ const MyTasks: NextPageWithLayout = () => {
           <ul className="flex border-b border-gray-200 mb-space dark:border-dark-800">
             <li>
               <Link
-                href="#!"
-                className={`relative block px-4 text-center py-2 font-medium after:absolute after:h-[1px] transition duration-200 ease-linear after:w-0 hover:after:w-full after:transition-all after:duration-200 after:opacity-0 after:-bottom-[1px] hover:after:opacity-100 [&.active]:after:opacity-100 [&.active]:after:w-full [&.active]:text-primary-500 after:mx-auto after:bg-primary-500 after:rounded-full after:inset-x-0 ${
-                  active === 'activeTask' ? 'active' : ''
-                }`}
-                onClick={() => setActive('activeTask')}>
+                to="#!"
+                className={`relative block px-4 text-center py-2 font-medium after:absolute after:h-[1px] transition duration-200 ease-linear after:w-0 hover:after:w-full after:transition-all after:duration-200 after:opacity-0 after:-bottom-[1px] hover:after:opacity-100 [&.active]:after:opacity-100 [&.active]:after:w-full [&.active]:text-primary-500 after:mx-auto after:bg-primary-500 after:rounded-full after:inset-x-0 ${active === "activeTask" ? "active" : ""}`}
+                onClick={() => setActive("activeTask")}
+              >
                 Active
               </Link>
             </li>
             <li>
               <Link
-                href="#!"
-                className={`relative block px-4 text-center py-2 font-medium after:absolute after:h-[1px] transition duration-200 ease-linear after:w-0 hover:after:w-full after:transition-all after:duration-200 after:opacity-0 after:-bottom-[1px] hover:after:opacity-100 [&.active]:after:opacity-100 [&.active]:after:w-full [&.active]:text-primary-500 after:mx-auto after:bg-primary-500 after:rounded-full after:inset-x-0 ${
-                  active === 'completedTask' ? 'active' : ''
-                }`}
-                onClick={() => setActive('completedTask')}>
+                to="#!"
+                className={`relative block px-4 text-center py-2 font-medium after:absolute after:h-[1px] transition duration-200 ease-linear after:w-0 hover:after:w-full after:transition-all after:duration-200 after:opacity-0 after:-bottom-[1px] hover:after:opacity-100 [&.active]:after:opacity-100 [&.active]:after:w-full [&.active]:text-primary-500 after:mx-auto after:bg-primary-500 after:rounded-full after:inset-x-0 ${active === "completedTask" ? "active" : ""}`}
+                onClick={() => setActive("completedTask")}
+              >
                 Completed
               </Link>
             </li>
             <li className="ml-auto">
-              <Link href="#!" className="btn btn-primary py-1.5 px-3.5">
-                <i className="align-baseline ri-add-line ltr:mr-1 rtl:ml-1"></i>{' '}
+              <Link to="#!" className="btn btn-primary py-1.5 px-3.5">
+                <i className="align-baseline ri-add-line ltr:mr-1 rtl:ml-1"></i>{" "}
                 Create
               </Link>
             </li>
@@ -57,15 +50,15 @@ const MyTasks: NextPageWithLayout = () => {
                 </div>
                 <div className="grow">
                   <h6 className="mb-1">
-                    <Link href="#!">Ecommerce HTML Template</Link>
+                    <Link to="#!">Ecommerce HTML Template</Link>
                   </h6>
                   <div className="flex divide-x divide-gray-200 divide-dashed dark:divide-dark-800">
-                    <Link href="#!" className="pr-3 link link-primary">
-                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-message-3-line"></i>{' '}
+                    <Link to="#!" className="pr-3 link link-primary">
+                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-message-3-line"></i>{" "}
                       154 Comments
                     </Link>
-                    <Link href="#!" className="pl-3 link link-primary">
-                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-file-list-3-line"></i>{' '}
+                    <Link to="#!" className="pl-3 link link-primary">
+                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-file-list-3-line"></i>{" "}
                       2+ Files
                     </Link>
                   </div>
@@ -73,7 +66,7 @@ const MyTasks: NextPageWithLayout = () => {
                 <div className="shrink-0">
                   <MyTask1App
                     chartColors="bg-primary-500"
-                    chartDarkColors={''}
+                    chartDarkColors={""}
                     chartId="myTask1Chart"
                     series={[32]}
                   />
@@ -87,15 +80,15 @@ const MyTasks: NextPageWithLayout = () => {
                 </div>
                 <div className="grow">
                   <h6 className="mb-1">
-                    <Link href="#!">Project Management Admin</Link>
+                    <Link to="#!">Project Management Admin</Link>
                   </h6>
                   <div className="flex divide-x divide-gray-200 divide-dashed dark:divide-dark-800">
-                    <Link href="#!" className="pr-3 link link-primary">
-                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-message-3-line"></i>{' '}
+                    <Link to="#!" className="pr-3 link link-primary">
+                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-message-3-line"></i>{" "}
                       321 Comments
                     </Link>
-                    <Link href="#!" className="pl-3 link link-primary">
-                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-file-list-3-line"></i>{' '}
+                    <Link to="#!" className="pl-3 link link-primary">
+                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-file-list-3-line"></i>{" "}
                       16+ Files
                     </Link>
                   </div>
@@ -103,7 +96,7 @@ const MyTasks: NextPageWithLayout = () => {
                 <div className="shrink-0">
                   <MyTask1App
                     chartColors="bg-green-500"
-                    chartDarkColors={''}
+                    chartDarkColors={""}
                     chartId="myTask1Chart"
                     series={[45]}
                   />
@@ -117,15 +110,15 @@ const MyTasks: NextPageWithLayout = () => {
                 </div>
                 <div className="grow">
                   <h6 className="mb-1">
-                    <Link href="#!">Dropbox Development</Link>
+                    <Link to="#!">Dropbox Development</Link>
                   </h6>
                   <div className="flex divide-x divide-gray-200 divide-dashed dark:divide-dark-800">
-                    <Link href="#!" className="pr-3 link link-primary">
-                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-message-3-line"></i>{' '}
+                    <Link to="#!" className="pr-3 link link-primary">
+                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-message-3-line"></i>{" "}
                       29 Comments
                     </Link>
-                    <Link href="#!" className="pl-3 link link-primary">
-                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-file-list-3-line"></i>{' '}
+                    <Link to="#!" className="pl-3 link link-primary">
+                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-file-list-3-line"></i>{" "}
                       3+ Files
                     </Link>
                   </div>
@@ -133,7 +126,7 @@ const MyTasks: NextPageWithLayout = () => {
                 <div className="shrink-0">
                   <MyTask1App
                     chartColors="bg-red-500"
-                    chartDarkColors={''}
+                    chartDarkColors={""}
                     chartId="myTask1Chart"
                     series={[79]}
                   />
@@ -147,15 +140,15 @@ const MyTasks: NextPageWithLayout = () => {
                 </div>
                 <div className="grow">
                   <h6 className="mb-1">
-                    <Link href="#!">Real Chat Application with Socket</Link>
+                    <Link to="#!">Real Chat Application with Socket</Link>
                   </h6>
                   <div className="flex divide-x divide-gray-200 divide-dashed dark:divide-dark-800">
-                    <Link href="#!" className="pr-3 link link-primary">
-                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-message-3-line"></i>{' '}
+                    <Link to="#!" className="pr-3 link link-primary">
+                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-message-3-line"></i>{" "}
                       8 Comments
                     </Link>
-                    <Link href="#!" className="pl-3 link link-primary">
-                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-file-list-3-line"></i>{' '}
+                    <Link to="#!" className="pl-3 link link-primary">
+                      <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-file-list-3-line"></i>{" "}
                       1+ Files
                     </Link>
                   </div>
@@ -163,7 +156,7 @@ const MyTasks: NextPageWithLayout = () => {
                 <div className="shrink-0">
                   <MyTask1App
                     chartColors="bg-yellow-500"
-                    chartDarkColors={''}
+                    chartDarkColors={""}
                     chartId="myTask1Chart"
                     series={[100]}
                   />
@@ -174,6 +167,6 @@ const MyTasks: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default MyTasks
+  );
+};
+export default MyTasks;

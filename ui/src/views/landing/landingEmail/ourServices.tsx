@@ -1,24 +1,23 @@
-'use client'
+import React, { useEffect } from "react";
 
-import React, { useEffect } from 'react'
+import { Link } from "react-router-dom";
 
-import Link from 'next/link'
-
-import AOS from 'aos'
-import 'aos/dist/aos.css'
-import { Fan, GalleryVerticalEnd, Gem, MoveRight } from 'lucide-react'
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { Fan, GalleryVerticalEnd, Gem, MoveRight } from "lucide-react";
 
 const ServicesSection: React.FC = () => {
   useEffect(() => {
     AOS.init({
       duration: 2000,
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <section
       className="relative py-12 md:py-24 bg-gray-50 dark:bg-dark-900/50"
-      id="services">
+      id="services"
+    >
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space">
           <div data-aos="fade-up">
@@ -31,7 +30,7 @@ const ServicesSection: React.FC = () => {
               behaving in such a way that others think of them as competent,
               reliable, and respectful.
             </p>
-            <Link href="#!" className="link link-primary text-16">
+            <Link to="#!" className="link link-primary text-16">
               Read More <MoveRight className="inline-block ml-1 size-4" />
             </Link>
           </div>
@@ -45,7 +44,7 @@ const ServicesSection: React.FC = () => {
               outlines the terms of a loan agreement between a borrower and a
               lender, specifying.
             </p>
-            <Link href="#!" className="link link-primary text-16">
+            <Link to="#!" className="link link-primary text-16">
               Read More <MoveRight className="inline-block ml-1 size-4" />
             </Link>
           </div>
@@ -58,14 +57,14 @@ const ServicesSection: React.FC = () => {
               Automation is the application of technology, programs, robotics,
               or processes to achieve outcomes with minimal human input.
             </p>
-            <Link href="#!" className="link link-primary text-16">
+            <Link to="#!" className="link link-primary text-16">
               Read More <MoveRight className="inline-block ml-1 size-4" />
             </Link>
           </div>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default ServicesSection
+export default ServicesSection;

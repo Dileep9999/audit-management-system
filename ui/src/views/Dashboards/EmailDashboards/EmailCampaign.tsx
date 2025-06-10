@@ -1,46 +1,39 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import UseNumberCounter from '@src/components/common/NumberCounter'
-import { NextPageWithLayout } from '@src/dtos'
-
+import { NextPageWithLayout } from "@dtos/layout";
+import React, { useState } from "react";
+import UseNumberCounter from "@src/components/common/numberCounter";
 import {
   EmailCampaignChart,
   GradientDonutApp,
   LabelColumnApp,
-} from './EmailChart'
+} from "./emailChart";
 
 const EmailCampaign: NextPageWithLayout = () => {
-  const [timeFrame, setTimeFrame] = useState<string>('Monthly')
+  const [timeFrame, setTimeFrame] = useState<string>("Monthly");
   return (
     <React.Fragment>
       <div className="col-span-12 xl:col-span-8 xl:row-span-2 card">
         <div className="flex flex-col gap-5 lg:items-center lg:flex-row card-header">
-          <h6 className="card-title grow">Email Campaigns Performance</h6>
+          <h6 className="card-title grow">Email Campaign Performance</h6>
           <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-md dark:bg-dark-850 shrink-0">
             <button
               type="button"
-              className={`px-3 py-1 text-xs [&.active]:bg-white dark:[&.active]:bg-dark-900 btn ${
-                timeFrame === 'Monthly' ? 'active' : ''
-              }`}
-              onClick={() => setTimeFrame('Monthly')}>
+              className={`px-3 py-1 text-xs [&.active]:bg-white dark:[&.active]:bg-dark-900 btn ${timeFrame === "Monthly" ? "active" : ""}`}
+              onClick={() => setTimeFrame("Monthly")}
+            >
               Monthly
             </button>
             <button
               type="button"
-              className={`px-3 py-1 text-xs [&.active]:bg-white dark:[&.active]:bg-dark-900 btn ${
-                timeFrame === 'Weekly' ? 'active' : ''
-              }`}
-              onClick={() => setTimeFrame('Weekly')}>
+              className={`px-3 py-1 text-xs [&.active]:bg-white dark:[&.active]:bg-dark-900 btn ${timeFrame === "Weekly" ? "active" : ""}`}
+              onClick={() => setTimeFrame("Weekly")}
+            >
               Weekly
             </button>
             <button
               type="button"
-              className={`px-3 py-1 text-xs [&.active]:bg-white dark:[&.active]:bg-dark-900 btn ${
-                timeFrame === 'Yearly' ? 'active' : ''
-              }`}
-              onClick={() => setTimeFrame('Yearly')}>
+              className={`px-3 py-1 text-xs [&.active]:bg-white dark:[&.active]:bg-dark-900 btn ${timeFrame === "Yearly" ? "active" : ""}`}
+              onClick={() => setTimeFrame("Yearly")}
+            >
               Yearly
             </button>
           </div>
@@ -49,8 +42,8 @@ const EmailCampaign: NextPageWithLayout = () => {
           <EmailCampaignChart
             chartColors="[bg-primary-500, bg-gray-300]"
             chartDarkColors="[bg-primary-500, bg-dark-600]"
-            chartId="labelLineChart"
             timeFrame={timeFrame}
+            chartId="labelLineChart"
           />
         </div>
       </div>
@@ -61,7 +54,7 @@ const EmailCampaign: NextPageWithLayout = () => {
             <div className="card-body">
               <GradientDonutApp
                 chartColors="[bg-primary-500, bg-red-500]"
-                chartDarkColors={''}
+                chartDarkColors={""}
                 chartId="gradientDonutChart"
               />
             </div>
@@ -70,18 +63,18 @@ const EmailCampaign: NextPageWithLayout = () => {
             <div>
               <LabelColumnApp
                 chartColors="[bg-primary-200]"
-                chartDarkColors={''}
+                chartDarkColors={""}
                 chartId="labelColumnChart"
               />
             </div>
             <p className="mt-4 text-primary-100">Total Revenue</p>
             <h5 className="text-white">
-              $<UseNumberCounter start={0} end={145} duration={3000} />M
+              $<UseNumberCounter start={145} end={500} duration={3000} />M
             </h5>
           </div>
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default EmailCampaign
+  );
+};
+export default EmailCampaign;

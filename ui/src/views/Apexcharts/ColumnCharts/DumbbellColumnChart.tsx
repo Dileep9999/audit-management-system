@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface ColumnChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const DumbbellColumnChart = ({
@@ -24,46 +15,46 @@ const DumbbellColumnChart = ({
   chartId,
 }: ColumnChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
       data: [
         {
-          x: '2008',
+          x: "2008",
           y: [2800, 4500],
         },
         {
-          x: '2009',
+          x: "2009",
           y: [3200, 4100],
         },
         {
-          x: '2010',
+          x: "2010",
           y: [2950, 7800],
         },
         {
-          x: '2011',
+          x: "2011",
           y: [3000, 4600],
         },
         {
-          x: '2012',
+          x: "2012",
           y: [3500, 4100],
         },
         {
-          x: '2013',
+          x: "2013",
           y: [4500, 6500],
         },
         {
-          x: '2014',
+          x: "2014",
           y: [4100, 5600],
         },
       ],
     },
-  ]
+  ];
   const options: ApexOptions = {
     chart: {
       height: 290,
-      type: 'rangeBar',
+      type: "rangeBar",
       zoom: {
         enabled: false,
       },
@@ -78,14 +69,14 @@ const DumbbellColumnChart = ({
     legend: {
       show: true,
       showForSingleSeries: true,
-      position: 'top',
-      horizontalAlign: 'left',
-      customLegendItems: ['Product A', 'Product B'],
+      position: "top",
+      horizontalAlign: "left",
+      customLegendItems: ["Product A", "Product B"],
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        type: 'vertical',
+        type: "vertical",
         gradientToColors: [chartsColor[1]],
         inverseColors: true,
         stops: [0, 100],
@@ -108,10 +99,10 @@ const DumbbellColumnChart = ({
       },
     },
     xaxis: {
-      tickPlacement: 'on',
+      tickPlacement: "on",
     },
     colors: chartsColor,
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -120,12 +111,12 @@ const DumbbellColumnChart = ({
         series={series}
         type="rangeBar"
         data-chart-colors="[bg-primary-500, bg-pink-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DumbbellColumnChart
+export default DumbbellColumnChart;

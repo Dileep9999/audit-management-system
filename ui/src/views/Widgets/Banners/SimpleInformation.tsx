@@ -1,11 +1,7 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import imag1 from '@assets/images/dashboards/img-1.png'
+import imag1 from "@assets/images/dashboards/img-1.png";
+import { Link } from "react-router-dom";
 
 const SimpleInformation = () => {
   return (
@@ -20,16 +16,16 @@ const SimpleInformation = () => {
                 designed to streamline your administrative tasks and provide you
                 with real-time insights.
               </p>
-              <Link href="#!" className="btn btn-sky">
+              <Link to="#!" className="btn btn-sky">
                 Get Started
               </Link>
             </div>
           </div>
         </div>
         <div className="absolute border-[20px] border-sky-500/15 ltr:-right-12 rtl:-left-12 -bottom-12 size-56 rounded-full"></div>
-        <Image
+        <img
           src={imag1}
-          alt="dashboardImg"
+          alt="imag1"
           className="absolute ltr:right-3 rtl:left-3 -bottom-6"
         />
       </div>
@@ -43,21 +39,21 @@ const SimpleInformation = () => {
                 designed to streamline your administrative tasks and provide you
                 with real-time insights.
               </p>
-              <Link href="#!" className="btn btn-gray">
+              <Link to="#!" className="btn btn-gray">
                 Get Started
               </Link>
             </div>
           </div>
         </div>
         <div className="absolute border-[20px] border-gray-200 dark:border-dark-800 ltr:-right-12 rtl:-left-12 -bottom-12 size-56 rounded-full"></div>
-        <Image
+        <img
           src={imag1}
-          alt="dashboardImg"
+          alt="imag1"
           className="absolute ltr:right-3 rtl:left-3 -bottom-6"
         />
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default SimpleInformation
+export default SimpleInformation;

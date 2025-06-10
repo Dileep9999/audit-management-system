@@ -1,6 +1,4 @@
-'use client'
-
-import React from 'react'
+import React from "react";
 
 const SizesIcons = () => {
   return (
@@ -18,7 +16,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-3">
+                className="size-3"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -33,7 +32,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-4">
+                className="size-4"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -48,7 +48,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-5">
+                className="size-5"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -63,7 +64,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-6">
+                className="size-6"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -78,7 +80,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-7">
+                className="size-7"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -93,7 +96,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-8">
+                className="size-8"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -108,7 +112,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-9">
+                className="size-9"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -123,7 +128,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-10">
+                className="size-10"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -138,7 +144,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-12">
+                className="size-12"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -153,7 +160,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-14">
+                className="size-14"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -168,7 +176,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-16">
+                className="size-16"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -183,7 +192,8 @@ const SizesIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-20">
+                className="size-20"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -195,6 +205,6 @@ const SizesIcons = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default SizesIcons
+  );
+};
+export default SizesIcons;

@@ -1,21 +1,17 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Image from 'next/image'
-
-import { ourPatientData } from '@src/data/LandingPage/doctors'
-import { PatientData } from '@src/dtos'
-import { Quote } from 'lucide-react'
-import 'swiper/css'
-import { Swiper, SwiperSlide } from 'swiper/react'
+import { PatientData } from "@src/dtos";
+import { Quote } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { ourpatientdata } from "@src/data/landingPage/doctors";
 
 const OurClients: React.FC = () => {
   return (
     <React.Fragment>
       <section
         className="relative py-14 md:py-28 bg-slate-50 dark:bg-dark-900/30"
-        id="feedback">
+        id="feedback"
+      >
         <div className="container mx-auto px-4 xl:px-20">
           <div className="max-w-4xl mx-auto mb-12 text-center">
             <h2 className="mb-2 text-4xl leading-normal capitalize md:text-5xl">
@@ -34,7 +30,7 @@ const OurClients: React.FC = () => {
         <Swiper
           spaceBetween={30}
           slidesPerView={1}
-          pagination={{ clickable: true, el: '.swiper-pagination' }}
+          pagination={{ clickable: true, el: ".swiper-pagination" }}
           className="py-2 mySwiper"
           dir="ltr"
           breakpoints={{
@@ -50,15 +46,16 @@ const OurClients: React.FC = () => {
               slidesPerView: 4,
               spaceBetween: 30,
             },
-          }}>
+          }}
+        >
           <div className="swiper-wrapper">
-            {ourPatientData.map((data: PatientData, index: number) => (
+            {ourpatientdata.map((data: PatientData, index: number) => (
               <SwiperSlide key={index}>
                 <div className="relative p-6 mb-0 border-0 swiper-slide card">
                   <Quote className="absolute stroke-1 size-12 text-sky-400 fill-sky-500/15 ltr:right-5 rtl:left-5 top-5" />
                   <div className="flex gap-4">
                     <div className="flex items-center gap-2 overflow-hidden rounded-md size-12 shrink-0">
-                      <Image
+                      <img
                         src={data.image}
                         alt="PatientImg"
                         width={48}
@@ -83,7 +80,7 @@ const OurClients: React.FC = () => {
         </Swiper>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default OurClients
+export default OurClients;

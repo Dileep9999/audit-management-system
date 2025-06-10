@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import { MoveLeft, MoveRight } from 'lucide-react'
+import { MoveLeft, MoveRight } from "lucide-react";
+import React from "react";
 
 const GuardianDetailsTab = () => {
   return (
@@ -60,7 +57,8 @@ const GuardianDetailsTab = () => {
           <div className="col-span-12 sm:col-span-6">
             <label
               htmlFor="alternativegdMobileNumberInput"
-              className="form-label">
+              className="form-label"
+            >
               Alternative Mobile Number
             </label>
             <input
@@ -77,13 +75,13 @@ const GuardianDetailsTab = () => {
             Previous
           </button>
           <button type="button" className="btn btn-primary">
-            Save to Next{' '}
+            Save to Next{" "}
             <MoveRight className="inline-block ltr:ml-1 rtl:mr-1 size-4" />
           </button>
         </div>
       </form>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default GuardianDetailsTab
+export default GuardianDetailsTab;

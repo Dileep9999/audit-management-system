@@ -1,11 +1,6 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { internDoctors } from '@src/data/index'
+import { internDoctors } from "@data/index";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const InternsDoctors = () => {
   return (
@@ -18,19 +13,21 @@ const InternsDoctors = () => {
               return (
                 <Link
                   key={index}
-                  href="#!"
-                  className="transition duration-300 ease-linear hover:z-10">
-                  <Image
+                  to="#!"
+                  className="transition duration-300 ease-linear hover:z-10"
+                >
+                  <img
                     className="border-2 border-white rounded-full dark:border-dark-900 size-7"
                     src={item.src}
                     alt="doctorImg"
                   />
                 </Link>
-              )
+              );
             })}
             <Link
-              href="#!"
-              className="transition duration-300 ease-linear hover:z-10">
+              to="#!"
+              className="transition duration-300 ease-linear hover:z-10"
+            >
               <div className="flex items-center justify-center text-white border-2 border-white rounded-full dark:border-dark-900 text-11 bg-primary-500 size-7">
                 +14
               </div>
@@ -39,7 +36,7 @@ const InternsDoctors = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default InternsDoctors
+export default InternsDoctors;

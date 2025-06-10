@@ -1,10 +1,6 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
-import { CircleCheckBig, MoveRight } from 'lucide-react'
+import React from "react";
+import { CircleCheckBig, MoveRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const SuccessfulPasswordBasic = () => {
   return (
@@ -27,7 +23,7 @@ const SuccessfulPasswordBasic = () => {
                   continue accessing your account.
                 </p>
                 <div className="text-center">
-                  <Link href="/auth/signin-basic" className="btn btn-primary">
+                  <Link to="/auth/signin-basic" className="btn btn-primary">
                     <span className="align-middle">Return to SignIn </span>
                     <MoveRight className="inline-block size-4 ml-0.5" />
                   </Link>
@@ -38,6 +34,6 @@ const SuccessfulPasswordBasic = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default SuccessfulPasswordBasic
+  );
+};
+export default SuccessfulPasswordBasic;

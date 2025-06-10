@@ -1,13 +1,10 @@
-'use client'
+import React from "react";
 
-import React from 'react'
+import { Link } from "react-router-dom";
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { ourExpertDoctorsData } from '@src/data/LandingPage/doctors'
-import { ExpertDoctorData } from '@src/dtos'
-import { CalendarRange, MoveLeft, MoveRight, Phone, Star } from 'lucide-react'
+import { ExpertDoctorData } from "@src/dtos";
+import { CalendarRange, MoveLeft, MoveRight, Phone, Star } from "lucide-react";
+import { ourexpertdoctorsdata } from "@src/data/landingPage/doctors";
 
 const OurExpertDoctors: React.FC = () => {
   return (
@@ -27,24 +24,26 @@ const OurExpertDoctors: React.FC = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-space">
-            {ourExpertDoctorsData.map(
+            {ourexpertdoctorsdata.map(
               (item: ExpertDoctorData, index: number) => (
                 <div
                   className="relative overflow-hidden transition duration-300 ease-linear card hover:-translate-y-2 "
-                  key={index}>
+                  key={index}
+                >
                   <span className="absolute rounded-xs ltr:-left-0.5 rtl:-right-0.5 top-6 badge badge-sub-orange text-13 px-5 py-1.5">
-                    <Star className="inline-block ltr:mr-1 rtl:ml-1 size-3" />{' '}
+                    <Star className="inline-block ltr:mr-1 rtl:ml-1 size-3" />{" "}
                     {item.rating}
                   </span>
                   <div className="p-8">
                     <div className="mx-auto mt-6 overflow-hidden rounded-full shadow-lg size-24 ring-1 shadow-slate-200 ring-offset-2 ring-sky-500/20 dark:shadow-dark-800 dark:ring-offset-dark-900">
-                      <Image src={item.image} alt="doctorImg" />
+                      <img src={item.image} alt="doctorImg" />
                     </div>
                     <div className="mt-5 text-center">
                       <h6 className="mb-1">
                         <Link
-                          href="#!"
-                          className="link link-sky text-slate-800 dark:text-dark-100 dark:text-dark-100">
+                          to="#!"
+                          className="link link-sky text-slate-800 dark:text-dark-100 dark:text-dark-100"
+                        >
                           {item.name}
                         </Link>
                       </h6>
@@ -58,20 +57,20 @@ const OurExpertDoctors: React.FC = () => {
                   </div>
                   <div className="grid grid-cols-2 border-t border-gray-200 dark:border-dark-800">
                     <div className="p-4 text-center">
-                      <Link href="#!" className="link link-sky">
+                      <Link to="#!" className="link link-sky">
                         <CalendarRange className="inline-block ltr:mr-1 rtl:ml-1 size-4 mb-0.5" />
                         Availability
                       </Link>
                     </div>
                     <div className="p-4 text-center border-l border-gray-200 dark:border-dark-800">
-                      <Link href="#!" className="link link-sky">
-                        <Phone className="inline-block ltr:mr-1 rtl:ml-1 size-4 mb-0.5" />{' '}
+                      <Link to="#!" className="link link-sky">
+                        <Phone className="inline-block ltr:mr-1 rtl:ml-1 size-4 mb-0.5" />{" "}
                         Book Now
                       </Link>
                     </div>
                   </div>
                 </div>
-              )
+              ),
             )}
           </div>
           <div className="mt-5 text-center">
@@ -84,7 +83,7 @@ const OurExpertDoctors: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default OurExpertDoctors
+export default OurExpertDoctors;

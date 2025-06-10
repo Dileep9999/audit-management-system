@@ -1,11 +1,7 @@
-'use client'
-
-import React from 'react'
-
-import { NextPageWithLayout } from '@src/dtos'
-import { TrendingDown, TrendingUp } from 'lucide-react'
-
-import AnimatedCounter from '../AnalyticsDashboards/Counter'
+import React from "react";
+import { TrendingDown, TrendingUp } from "lucide-react";
+import { NextPageWithLayout } from "@dtos/layout";
+import AnimatedCounter from "../analyticsDashboards/counter";
 
 const Widgets: NextPageWithLayout = () => {
   return (
@@ -14,8 +10,8 @@ const Widgets: NextPageWithLayout = () => {
         <div className="card-body">
           <p className="mb-2 text-gray-500">Emails Sent</p>
           <h5>
-            <AnimatedCounter start={0} end={48} duration={3000} />k
-            <TrendingUp className="inline-block text-green-500 mx-1 size-4" />
+            <AnimatedCounter start={0} end={48} duration={3000} />k{" "}
+            <TrendingUp className="inline-block text-green-500 ltr:ml-1 rtl:mr-1 size-4" />{" "}
             <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
               This years
             </small>
@@ -28,8 +24,8 @@ const Widgets: NextPageWithLayout = () => {
             Average Click Rate
           </p>
           <h5>
-            <AnimatedCounter start={0} end={32} duration={3000} />k
-            <TrendingUp className="inline-block text-green-500 mx-1 size-4" />
+            <AnimatedCounter start={0} end={32} duration={3000} />k{" "}
+            <TrendingUp className="inline-block text-green-500 ltr:ml-1 rtl:mr-1 size-4" />{" "}
             <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
               This years
             </small>
@@ -40,8 +36,8 @@ const Widgets: NextPageWithLayout = () => {
         <div className="card-body">
           <p className="mb-2 text-gray-500 dark:text-dark-500">Open Rate</p>
           <h5>
-            <AnimatedCounter start={0} end={84} duration={3000} />%
-            <TrendingDown className="inline-block text-red-500 mx-1 size-4" />
+            <AnimatedCounter start={0} end={84} duration={3000} />%{" "}
+            <TrendingDown className="inline-block text-red-500 ltr:ml-1 rtl:mr-1 size-4" />{" "}
             <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
               This years
             </small>
@@ -52,8 +48,8 @@ const Widgets: NextPageWithLayout = () => {
         <div className="card-body">
           <p className="mb-2 text-gray-500 dark:text-dark-500">Unsubscribe</p>
           <h5>
-            <AnimatedCounter start={0} end={26} duration={3000} />%
-            <TrendingDown className="inline-block text-red-500 mx-1 size-4" />
+            <AnimatedCounter start={0} end={26} duration={3000} />%{" "}
+            <TrendingDown className="inline-block text-red-500 ltr:ml-1 rtl:mr-1 size-4" />{" "}
             <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
               This years
             </small>
@@ -61,6 +57,6 @@ const Widgets: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default Widgets
+  );
+};
+export default Widgets;

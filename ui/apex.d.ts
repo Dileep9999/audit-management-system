@@ -1,9 +1,10 @@
-declare module 'apextree' {
-  const ApexTree: any
-  export = ApexTree
+declare module "apextree" {
+  const ApexTree: any;
+  export default ApexTree;
 }
-declare module 'apexsankey' {
-  const ApexSankey: any
-  export = ApexSankey
+
+declare module "apexsankey" {
+  const ApexSankey: any;
+  export default ApexSankey;
 }
-declare module '*.css'
+declare module "*.css";

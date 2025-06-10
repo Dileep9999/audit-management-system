@@ -1,62 +1,57 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
-import { NextPageWithLayout, Transaction } from '@src/dtos'
+import { NextPageWithLayout, Transaction } from "@dtos/index";
+import { Link } from "react-router-dom";
 
 const transactions: Transaction[] = [
   {
-    name: 'Jeremy McMullen',
-    status: 'Success',
-    date: '21 Jan, 2024',
-    price: '$154',
+    name: "Jeremy McMullen",
+    status: "Success",
+    date: "21 Jan, 2024",
+    price: "$154",
   },
   {
-    name: 'Charles Fischer',
-    status: 'Cancel',
-    date: '28 Jan, 2024',
-    price: '$150',
+    name: "Charles Fischer",
+    status: "Cancel",
+    date: "28 Jan, 2024",
+    price: "$150",
   },
   {
-    name: 'Louise Harms',
-    status: 'Success',
-    date: '02 Feb, 2024',
-    price: '$255',
+    name: "Louise Harms",
+    status: "Success",
+    date: "02 Feb, 2024",
+    price: "$255",
   },
   {
-    name: 'Henry Boyle',
-    status: 'Success',
-    date: '11 Feb, 2024',
-    price: '$347',
+    name: "Henry Boyle",
+    status: "Success",
+    date: "11 Feb, 2024",
+    price: "$347",
   },
   {
-    name: 'Isabella Smith',
-    status: 'Success',
-    date: '15 Feb, 2024',
-    price: '$398',
+    name: "Isabella Smith",
+    status: "Success",
+    date: "15 Feb, 2024",
+    price: "$398",
   },
   {
-    name: 'Ethan Johnson',
-    status: 'Cancel',
-    date: '20 Feb, 2024',
-    price: '$495',
+    name: "Ethan Johnson",
+    status: "Cancel",
+    date: "20 Feb, 2024",
+    price: "$495",
   },
   {
-    name: 'Marina Bashirian',
-    status: 'Success',
-    date: '18 Mar, 2025',
-    price: '$174',
+    name: "Mason Brown",
+    status: "Success",
+    date: "25 Feb, 2024",
+    price: "$578",
   },
-]
+];
 
 const RecentTransaction: NextPageWithLayout = () => {
   return (
     <div className="col-span-12 2xl:col-span-4 card">
       <div className="flex items-center gap-3 card-header">
-        <h6 className="card-title grow">Recent Transactions</h6>
-        <Link href="#!" className="link link-primary shrink-0">
+        <h6 className="card-title grow">Recent Transaction</h6>
+        <Link to="#!" className="link link-primary shrink-0">
           See all <i className="align-baseline ri-arrow-right-line"></i>
         </Link>
       </div>
@@ -87,7 +82,8 @@ const RecentTransaction: NextPageWithLayout = () => {
                   <td>{item.price}</td>
                   <td>
                     <span
-                      className={`badge ${item.status === 'Cancel' ? 'badge-red' : 'badge-green'}`}>
+                      className={`badge ${item.status === "Cancel" ? "badge-red" : "badge-green"}`}
+                    >
                       {item.status}
                     </span>
                   </td>
@@ -98,7 +94,7 @@ const RecentTransaction: NextPageWithLayout = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RecentTransaction
+export default RecentTransaction;

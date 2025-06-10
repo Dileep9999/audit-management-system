@@ -1,24 +1,20 @@
-'use client'
+import React, { useEffect } from "react";
 
-import React, { useEffect } from 'react'
-
-import Image from 'next/image'
-
-import img6 from '@assets/images/school/landing/img-06.png'
-import img7 from '@assets/images/school/landing/img-07.png'
-import img8 from '@assets/images/school/landing/img-08.png'
-import img9 from '@assets/images/school/landing/img-09.png'
-import img10 from '@assets/images/school/landing/img-10.png'
-import Aos from 'aos'
-import 'aos/dist/aos.css'
+import img6 from "@assets/images/school/landing/img-06.png";
+import img7 from "@assets/images/school/landing/img-07.png";
+import img8 from "@assets/images/school/landing/img-08.png";
+import img9 from "@assets/images/school/landing/img-09.png";
+import img10 from "@assets/images/school/landing/img-10.png";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 const OurMentors: React.FC = () => {
   useEffect(() => {
     Aos.init({
       duration: 1000,
       once: true,
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <React.Fragment>
@@ -37,7 +33,7 @@ const OurMentors: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-8">
             <div className="relative bg-transparent border-0 shadow-none dark:bg-transparent card thumbnail">
               <div className="relative pb-0 card-body before:absolute before:inset-x-0 before:bottom-0 before:bg-gray-100 dark:before:bg-gray-900/40 before:h-[80%] before:rounded-t-full">
-                <Image
+                <img
                   src={img6}
                   alt="landingImg"
                   className="relative mx-auto max-h-80"
@@ -54,7 +50,7 @@ const OurMentors: React.FC = () => {
             </div>
             <div className="relative bg-transparent border-0 shadow-none dark:bg-transparent card thumbnail">
               <div className="relative pb-0 card-body before:absolute before:inset-x-0 before:bottom-0 before:bg-gray-100 dark:before:bg-gray-900/40 before:h-[80%] before:rounded-t-full">
-                <Image
+                <img
                   src={img7}
                   alt="landingImg"
                   className="relative mx-auto max-h-80"
@@ -71,7 +67,7 @@ const OurMentors: React.FC = () => {
             </div>
             <div className="relative bg-transparent border-0 shadow-none dark:bg-transparent card thumbnail">
               <div className="relative pb-0 card-body before:absolute before:inset-x-0 before:bottom-0 before:bg-gray-100 dark:before:bg-gray-900/40 before:h-[80%] before:rounded-t-full">
-                <Image
+                <img
                   src={img8}
                   alt="landingImg"
                   className="relative mx-auto max-h-80"
@@ -88,7 +84,7 @@ const OurMentors: React.FC = () => {
             </div>
             <div className="relative bg-transparent border-0 shadow-none dark:bg-transparent card thumbnail">
               <div className="relative pb-0 card-body before:absolute before:inset-x-0 before:bottom-0 before:bg-gray-100 dark:before:bg-gray-900/40 before:h-[80%] before:rounded-t-full">
-                <Image
+                <img
                   src={img9}
                   alt="landingImg"
                   className="relative mx-auto max-h-80"
@@ -105,7 +101,7 @@ const OurMentors: React.FC = () => {
             </div>
             <div className="relative bg-transparent border-0 shadow-none dark:bg-transparent card thumbnail">
               <div className="relative pb-0 card-body before:absolute before:inset-x-0 before:bottom-0 before:bg-gray-100 dark:before:bg-gray-900/40 before:h-[80%] before:rounded-t-full">
-                <Image
+                <img
                   src={img10}
                   alt="landingImg"
                   className="relative mx-auto max-h-80"
@@ -124,7 +120,7 @@ const OurMentors: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default OurMentors
+export default OurMentors;

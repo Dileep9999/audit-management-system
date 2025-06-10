@@ -1,12 +1,7 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import user from '@assets/images/avatar/user-39.png'
-import { MessageCircleMore } from 'lucide-react'
+import React from "react";
+import user from "@assets/images/avatar/user-39.png";
+import { MessageCircleMore } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const InChargeDoctor = () => {
   return (
@@ -17,21 +12,21 @@ const InChargeDoctor = () => {
             Doctor In Charge
           </p>
           <div className="flex items-center gap-2">
-            <Image src={user} alt="userImg" className="rounded-full size-9" />
+            <img src={user} alt="userImg" className="rounded-full size-9" />
             <div className="grow">
               <h6>Dr. Jose Miller</h6>
               <p className="text-xs text-gray-500 dark:text-dark-500">
                 Neurologist
               </p>
             </div>
-            <Link href="#!" className="inline-block text-red-500">
+            <Link to="#!" className="inline-block text-red-500">
               <MessageCircleMore className="fill-red-500/10" />
             </Link>
           </div>
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default InChargeDoctor
+export default InChargeDoctor;

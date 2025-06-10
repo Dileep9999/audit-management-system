@@ -1,11 +1,10 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
-
-import { X } from 'lucide-react'
+import React, { useCallback, useEffect, useRef, useState, memo } from "react";
+import { X } from "lucide-react";
 
 // ModalHeader Component
 interface ModalHeaderProps {
-  title?: string
-  onClose: () => void
+  title?: string;
+  onClose: () => void;
 }
 
 const ModalHeader: React.FC<ModalHeaderProps> = memo(({ title, onClose }) => {
@@ -16,80 +15,82 @@ const ModalHeader: React.FC<ModalHeaderProps> = memo(({ title, onClose }) => {
         <X className="size-5" />
       </button>
     </div>
-  )
-})
+  );
+});
 
-ModalHeader.displayName = 'ModalHeader'
+ModalHeader.displayName = "ModalHeader";
 
 // ModalContent Component
 interface ModalContentProps {
-  children?: React.ReactNode
-  contentClass?: string
+  children?: React.ReactNode;
+  contentClass?: string;
 }
 
 const ModalContent: React.FC<ModalContentProps> = memo(
   ({ children, contentClass }) => {
-    return <div className={`modal-content ${contentClass}`}>{children}</div>
-  }
-)
+    return <div className={`modal-content ${contentClass}`}>{children}</div>;
+  },
+);
 
-ModalContent.displayName = 'ModalContent'
+ModalContent.displayName = "ModalContent";
 
 // ModalFooter Component
 interface ModalFooterProps {
-  children?: React.ReactNode
-  footerClass?: string
-  isFooter?: boolean
+  children?: React.ReactNode;
+  footerClass?: string;
+  isFooter?: string;
 }
 
 const ModalFooter: React.FC<ModalFooterProps> = memo(
   ({ children, footerClass, isFooter }) => {
     return (
-      <div className={`${isFooter ? '' : ' modal-footer'} ${footerClass}`}>
+      <div
+        className={`${isFooter ? " " : "modal-footer"} ${footerClass && footerClass}`}
+      >
         {children}
       </div>
-    )
-  }
-)
+    );
+  },
+);
 
-ModalFooter.displayName = 'ModalFooter'
+ModalFooter.displayName = "ModalFooter";
 
 // Main Modal Component
 interface CustomModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
   position?:
-    | 'modal-center'
-    | 'modal-top'
-    | 'modal-topLeft'
-    | 'modal-tr'
-    | 'modal-left'
-    | 'modal-right'
-    | 'modal-tl'
-    | 'modal-tr'
-    | 'modal-br'
-    | 'modal-bl'
+    | "modal-center"
+    | "modal-top"
+    | "modal-topLeft"
+    | "modal-tr"
+    | "modal-left"
+    | "modal-right"
+    | "modal-tl"
+    | "modal-tr"
+    | "modal-br"
+    | "modal-bl";
   size?:
-    | 'modal-xs'
-    | 'modal-sm'
-    | 'modal-md'
-    | 'modal-lg'
-    | 'modal-xl'
-    | 'modal-2xl'
-  title?: string
-  content?: React.ReactNode | ((onClose: () => void) => React.ReactNode)
-  footer?: React.ReactNode | ((onClose: () => void) => React.ReactNode)
-  id?: string
-  contentClass?: string
-  footerClass?: string
-  isFooter?: boolean
+    | "modal-xs"
+    | "modal-sm"
+    | "modal-md"
+    | "modal-lg"
+    | "modal-xl"
+    | "modal-2xl";
+  title?: string;
+  content?: React.ReactNode | ((onClose: () => void) => React.ReactNode);
+  footer?: React.ReactNode | ((onClose: () => void) => React.ReactNode);
+  id?: string;
+  contentClass?: string;
+  footerClass?: string;
+  isFooter?: string;
 }
 
 const Modal: React.FC<CustomModalProps> = ({
   isOpen,
   onClose,
-  position = 'center',
-  size = 'md',
+  position = "modal-center",
+  size = "md",
   title,
   content,
   footer,
@@ -98,60 +99,61 @@ const Modal: React.FC<CustomModalProps> = ({
   footerClass,
   isFooter,
 }) => {
-  const modalRef = useRef<HTMLDivElement>(null)
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [isVisible, setIsVisible] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Handle overlay click to close the modal
-  const handleOverlayClick = (e: React.MouseEvent) => {
+  const handleOverlayClick = useCallback((e: React.MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-      closeWithAnimation()
+      closeWithAnimation();
     }
-  }
+  }, []);
 
   // Close modal with animation
   const closeWithAnimation = useCallback(() => {
-    setIsAnimating(true)
+    setIsAnimating(true);
 
     setTimeout(() => {
-      setIsAnimating(false)
-      setIsVisible(false)
-      onClose()
-      document.body.classList.remove('overflow-hidden')
-    }, 300)
-  }, [onClose])
+      setIsAnimating(false);
+      setIsVisible(false);
+      onClose();
+      document.body.classList.remove("overflow-hidden");
+    }, 300);
+  }, [onClose]);
 
   // Handle modal open/close state
   useEffect(() => {
     if (isOpen) {
-      setIsVisible(true)
-      setIsAnimating(true)
-      document.body.classList.add('overflow-hidden')
+      setIsVisible(true);
+      setIsAnimating(true);
+      document.body.classList.add("overflow-hidden");
 
       const timeout = setTimeout(() => {
-        setIsAnimating(false)
-      }, 300)
+        setIsAnimating(false);
+      }, 300);
 
-      return () => clearTimeout(timeout)
+      return () => clearTimeout(timeout);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   // Don't render if the modal is not visible
-  if (!isVisible) return null
+  if (!isVisible) return null;
 
   return (
     <>
       <div>
         {/* Backdrop overlay */}
         <div
-          className={`backdrop-overlay backdrop-blur-xs ${isAnimating ? 'show' : ''}`}
+          className={`backdrop-overlay backdrop-blur-xs ${isAnimating ? "show" : ""}`}
           onClick={closeWithAnimation}
         />
         {/* Modal container */}
         <div
-          className={`modal ${position} ${isAnimating ? 'show' : ''}`}
+          className={`modal ${position} ${isAnimating ? "show" : ""}`}
           onClick={handleOverlayClick}
-          id={id}>
+          id={id}
+        >
           <div className={`modal-wrap ${size} ${position}`} ref={modalRef}>
             {/* Modal header */}
             {title && (
@@ -159,14 +161,14 @@ const Modal: React.FC<CustomModalProps> = ({
             )}
             {/* Modal content */}
             <ModalContent contentClass={contentClass}>
-              {typeof content === 'function'
+              {typeof content === "function"
                 ? content(closeWithAnimation)
                 : content}
             </ModalContent>
             {/* Modal footer */}
             {footer && (
               <ModalFooter footerClass={footerClass} isFooter={isFooter}>
-                {typeof footer === 'function'
+                {typeof footer === "function"
                   ? footer(closeWithAnimation)
                   : footer}
               </ModalFooter>
@@ -175,7 +177,7 @@ const Modal: React.FC<CustomModalProps> = ({
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export { ModalHeader, ModalContent, ModalFooter, Modal }
+export { ModalHeader, ModalContent, ModalFooter, Modal };

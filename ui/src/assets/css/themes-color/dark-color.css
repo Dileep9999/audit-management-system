@@ -1,4 +1,4 @@
-[data-mode='dark'].zinc {
+[data-mode="dark"].zinc {
   --color-dark-50: oklch(0.985 0 0);
   --color-dark-100: oklch(0.967 0.001 286.375);
   --color-dark-200: oklch(0.92 0.004 286.32);
@@ -13,7 +13,7 @@
   --color-dark-950: oklch(0.141 0.005 285.823);
 }
 
-[data-mode='dark'].stone {
+[data-mode="dark"].stone {
   --color-dark-50: oklch(0.985 0.001 106.423);
   --color-dark-100: oklch(0.97 0.001 106.424);
   --color-dark-200: oklch(0.923 0.003 48.717);
@@ -28,7 +28,7 @@
   --color-dark-950: oklch(0.147 0.004 49.25);
 }
 
-[data-mode='dark'].neutral {
+[data-mode="dark"].neutral {
   --color-dark-50: oklch(0.985 0 0);
   --color-dark-100: oklch(0.97 0 0);
   --color-dark-200: oklch(0.922 0 0);
@@ -43,7 +43,7 @@
   --color-dark-950: oklch(0.145 0 0);
 }
 
-[data-mode='dark'].gray {
+[data-mode="dark"].gray {
   --color-dark-50: oklch(0.985 0.002 247.839);
   --color-dark-100: oklch(0.967 0.003 264.542);
   --color-dark-200: oklch(0.928 0.006 264.531);

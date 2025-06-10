@@ -1,40 +1,32 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-// Dynamically import the ReactApexChart component
-const ReactEcharts = dynamic(() => import('echarts-for-react'), {
-  ssr: false,
-})
+import React from "react";
+import ReactEcharts from "echarts-for-react";
 
 const PolarLineChart = () => {
-  const data = []
+  const data = [];
   for (let i = 0; i <= 360; i++) {
-    const t = (i / 180) * Math.PI
-    const r = Math.sin(2 * t) * Math.cos(2 * t)
-    data.push([r, i])
+    const t = (i / 180) * Math.PI;
+    const r = Math.sin(2 * t) * Math.cos(2 * t);
+    data.push([r, i]);
   }
 
   const option = {
     title: {
-      text: 'Two Value-Axes in Polar',
+      text: "Two Value-Axes in Polar",
     },
     legend: {
-      data: ['line'],
+      data: ["line"],
     },
     polar: {
-      center: ['50%', '54%'],
+      center: ["50%", "54%"],
     },
     tooltip: {
-      trigger: 'axis',
+      trigger: "axis",
       axisPointer: {
-        type: 'cross',
+        type: "cross",
       },
     },
     angleAxis: {
-      type: 'value',
+      type: "value",
       startAngle: 0,
     },
     radiusAxis: {
@@ -42,20 +34,20 @@ const PolarLineChart = () => {
     },
     series: [
       {
-        coordinateSystem: 'polar',
-        name: 'line',
-        type: 'line',
+        coordinateSystem: "polar",
+        name: "line",
+        type: "line",
         showSymbol: false,
         data: data,
       },
     ],
     animationDuration: 2000,
-  }
+  };
   return (
     <React.Fragment>
-      <ReactEcharts style={{ height: '350px' }} option={option} />
+      <ReactEcharts style={{ height: "350px" }} option={option} />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default PolarLineChart
+export default PolarLineChart;

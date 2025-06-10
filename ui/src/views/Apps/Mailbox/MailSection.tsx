@@ -1,16 +1,10 @@
-'use client'
+import { Email, Replys } from "@src/dtos";
 
-import React, { useEffect, useRef, useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { Email, Replys } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
 import {
   editEmailListRecordData,
   setCurrentEmailRecordData,
-} from '@src/slices/thunk'
+} from "@src/slices/thunk";
+import { AppDispatch } from "@src/slices/reducer";
 import {
   Archive,
   ArrowLeft,
@@ -26,9 +20,11 @@ import {
   Reply,
   Smile,
   Trash2,
-} from 'lucide-react'
-import { useDispatch } from 'react-redux'
-import SimpleBar from 'simplebar-react'
+} from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import SimpleBar from "simplebar-react";
 
 const MailSection = ({
   show,
@@ -37,133 +33,137 @@ const MailSection = ({
   filteredEmails,
   onClickEmailDelete,
 }: {
-  show: boolean
-  handleShowMail: () => void
-  mail: Email | null
-  filteredEmails: Email[]
-  onClickEmailDelete: (email: Email) => void
+  show: boolean;
+  handleShowMail: any;
+  mail: Email | null;
+  filteredEmails: any;
+  onClickEmailDelete: any;
 }) => {
   const [mailForm, setMailForm] = useState({
-    email: mail?.email || '',
-    message: '',
-  })
-  const [currentMail, setCurrentMail] = useState<Email | null>(mail)
+    email: mail?.email || "",
+    message: "",
+  });
+  const [currentMail, setCurrentMail] = useState<Email | null>(mail);
 
-  const mailRef = useRef<HTMLDivElement | null>(null)
+  const mailRef = useRef<HTMLDivElement | null>(null);
 
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
 
   // Scroll to bottom function
   const scrollToBottom = () => {
     setTimeout(() => {
       if (mailRef.current) {
-        mailRef.current.scrollIntoView({ behavior: 'smooth' })
+        mailRef.current.scrollIntoView({ behavior: "smooth" });
       }
-    }, 200)
-  }
+    }, 200);
+  };
 
   useEffect(() => {
-    scrollToBottom()
-  }, [mail])
+    scrollToBottom();
+  }, [mail]);
 
   useEffect(() => {
-    setCurrentMail(mail)
+    setCurrentMail(mail);
     if (mail) {
-      setMailForm({ email: mail.email, message: '' }) // Set the message with a reply prefix
+      setMailForm({ email: mail.email, message: "" });
     }
-  }, [mail])
+  }, [mail]);
 
   const handleSendReply = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!mailForm.message.trim() || !currentMail) return
+    if (!mailForm.message.trim() || !currentMail) return;
 
-    const replies = currentMail.replies ?? []
+    const replies = currentMail.replies ?? [];
 
     const newReply: Replys = {
-      id: replies && replies.length > 0 ? replies.length + 1 : 1,
+      _id: replies && replies.length > 0 ? replies.length + 1 : 1,
       sender: currentMail.sender,
       email: currentMail.email,
       avatarImage: currentMail.avatarImage,
       date: new Date().toLocaleString(),
       subject: `Re: ${currentMail.subject}`,
       message: mailForm.message,
-    }
+    };
 
     const updatedMail = {
       ...currentMail,
       replies: [...replies, newReply],
-    }
+    };
 
     if (updatedMail.replies && updatedMail.replies.length > 0) {
-      dispatch(editEmailListRecordData(updatedMail))
-      dispatch(setCurrentEmailRecordData(updatedMail))
+      dispatch(editEmailListRecordData(updatedMail));
+      dispatch(setCurrentEmailRecordData(updatedMail));
     }
-    scrollToBottom()
-    setMailForm({ email: currentMail.email, message: '' })
-  }
+    scrollToBottom();
+    setMailForm({ email: currentMail.email, message: "" });
+  };
 
-  if (!mail) return null
+  if (!mail) return null;
 
   const handleIncreaseIndex = () => {
-    const currentIndex = currentMail ? filteredEmails.indexOf(currentMail) : -1
+    const currentIndex = filteredEmails.indexOf(currentMail);
     if (currentIndex < filteredEmails.length - 1) {
-      const nextMail = filteredEmails[currentIndex + 1]
-      dispatch(setCurrentEmailRecordData(nextMail))
+      const nextMail = filteredEmails[currentIndex + 1];
+      dispatch(setCurrentEmailRecordData(nextMail));
     }
-  }
+  };
 
   const handleDecreaseIndex = () => {
-    const currentIndex = currentMail ? filteredEmails.indexOf(currentMail) : -1
+    const currentIndex = filteredEmails.indexOf(currentMail);
     if (currentIndex > 0) {
-      const previousMail = filteredEmails[currentIndex - 1]
-      dispatch(setCurrentEmailRecordData(previousMail))
+      const previousMail = filteredEmails[currentIndex - 1];
+      dispatch(setCurrentEmailRecordData(previousMail));
     }
-  }
+  };
 
   return (
     <React.Fragment>
       <div
         className="rounded-l-none card grow"
-        style={{ display: show === true ? '' : 'none' }}>
+        style={{ display: show === true ? "" : "none" }}
+      >
         <div className="flex items-center gap-2 card-header">
           <Link
-            href="#!"
+            to="#!"
             className="btn btn-icon btn-active-gray"
-            onClick={() => handleShowMail()}>
+            onClick={() => handleShowMail()}
+          >
             <ArrowLeft className="size-4">ds</ArrowLeft>
           </Link>
-          <Link href="#!" className="btn btn-icon btn-active-gray">
+          <Link to="#!" className="btn btn-icon btn-active-gray">
             <Archive className="size-4"></Archive>
           </Link>
-          <Link href="#!" className="btn btn-icon btn-active-gray">
+          <Link to="#!" className="btn btn-icon btn-active-gray">
             <OctagonAlert className="size-4"></OctagonAlert>
           </Link>
           <div className="flex items-center gap-1 mx-auto text-gray-500 dark:text-dark-500">
-            <Link href="#!" onClick={() => handleDecreaseIndex()}>
+            <Link to="#!" onClick={() => handleDecreaseIndex()}>
               <ChevronLeft className="size-4"></ChevronLeft>
             </Link>
             <p>
-              <span>{mail.id}</span> of <span>{filteredEmails.length}</span>
+              <span>{mail._id}</span> of <span>{filteredEmails.length}</span>
             </p>
-            <Link href="#!" onClick={() => handleIncreaseIndex()}>
+            <Link to="#!" onClick={() => handleIncreaseIndex()}>
               <ChevronRight className="size-4"></ChevronRight>
             </Link>
           </div>
-          <Link href="#!" className="btn btn-icon btn-active-gray">
+          <Link to="#!" className="btn btn-icon btn-active-gray">
             <Reply className="size-4"></Reply>
           </Link>
-          <Link href="#!" className="btn btn-icon btn-active-gray">
+          <Link to="#!" className="btn btn-icon btn-active-gray">
             <Clock3 className="size-4"></Clock3>
           </Link>
           <Link
-            href="#!"
+            to="#!"
             data-modal-target="deleteModal"
             onClick={(e) => {
-              e.preventDefault()
-              onClickEmailDelete(mail)
+              e.preventDefault();
+              onClickEmailDelete(mail);
             }}
-            className="btn btn-icon btn-active-red">
+            className="btn btn-icon btn-active-red"
+          >
+            {" "}
             <Trash2 className="size-4"></Trash2>
           </Link>
         </div>
@@ -175,7 +175,7 @@ const MailSection = ({
                 <div className="flex items-center gap-2">
                   <div className="flex items-center justify-center text-red-500 rounded-full bg-red-500/10 shrink-0 size-10">
                     {mail.avatarImage ? (
-                      <Image
+                      <img
                         src={mail.avatarImage}
                         alt="avatarImage"
                         className="rounded-full"
@@ -183,14 +183,15 @@ const MailSection = ({
                         height={40}
                       />
                     ) : (
-                      <span>{mail.avatarText || 'BS'}</span>
+                      <span>{mail.avatarText || "BS"}</span>
                     )}
                   </div>
                   <div className="grow">
                     <h6>{mail.sender}</h6>
                     <Link
-                      href={`mailto:${mail.email}`}
-                      className="link link-primary">
+                      to={`mailto:${mail.email}`}
+                      className="link link-primary"
+                    >
                       {mail.email}
                     </Link>
                   </div>
@@ -201,13 +202,14 @@ const MailSection = ({
                 <div className="mt-5">
                   <h6 className="mb-3">{mail.subject}</h6>
 
-                  <div className="flex flex-col gap-2">
+                  <div className="space-y-2">
                     <p>{mail.message}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-5 mt-4">
                     <Link
-                      href="#!"
-                      className="flex items-center gap-2 p-2 transition duration-300 ease-linear border border-gray-200 border-dashed rounded-md dark:border-dark-800 hover:border-gray-300 dark:hover:border-dark-700 hover:shadow-lg hover:shadow-gray-200 dark:hover:shadow-dark-850">
+                      to="#!"
+                      className="flex items-center gap-2 p-2 transition duration-300 ease-linear border border-gray-200 border-dashed rounded-md dark:border-dark-800 hover:border-gray-300 dark:hover:border-dark-700 hover:shadow-lg hover:shadow-gray-200 dark:hover:shadow-dark-850"
+                    >
                       <div className="flex items-center justify-center font-semibold text-gray-500 transition duration-200 ease-linear bg-gray-100 rounded-full dark:text-dark-500 dark:bg-dark-850 shrink-0 size-10">
                         <FileText className="size-4"></FileText>
                       </div>
@@ -222,8 +224,9 @@ const MailSection = ({
                       </div>
                     </Link>
                     <Link
-                      href="#!"
-                      className="flex items-center gap-2 p-2 transition duration-300 ease-linear border border-gray-200 border-dashed rounded-md dark:border-dark-800 hover:border-gray-300 dark:hover:border-dark-700 hover:shadow-lg hover:shadow-gray-200 dark:hover:shadow-dark-850">
+                      to="#!"
+                      className="flex items-center gap-2 p-2 transition duration-300 ease-linear border border-gray-200 border-dashed rounded-md dark:border-dark-800 hover:border-gray-300 dark:hover:border-dark-700 hover:shadow-lg hover:shadow-gray-200 dark:hover:shadow-dark-850"
+                    >
                       <div className="flex items-center justify-center font-semibold text-gray-500 transition duration-200 ease-linear bg-gray-100 rounded-full dark:text-dark-500 dark:bg-dark-850 shrink-0 size-10">
                         <ImageIcon className="size-4"></ImageIcon>
                       </div>
@@ -243,12 +246,12 @@ const MailSection = ({
               <div>
                 {mail.replies && mail.replies.length > 0 && (
                   <>
-                    {mail.replies.map((reply) => (
-                      <div key={reply.id} className="mt-4">
+                    {mail.replies.map((reply, index) => (
+                      <div key={index} className="mt-4">
                         <div className="flex items-center gap-2">
                           <div className="flex items-center justify-center text-green-500 bg-green-100 rounded-full shrink-0 size-10">
                             {reply.avatarImage ? (
-                              <Image
+                              <img
                                 src={reply.avatarImage}
                                 alt="avatarImage"
                                 className="rounded-full"
@@ -256,23 +259,24 @@ const MailSection = ({
                                 height={40}
                                 onError={(e) => {
                                   e.currentTarget.src =
-                                    '/assets/images/avatar/user-18.png'
+                                    "https://images.kcubeinfotech.com/domiex/images/avatar/user-18.png";
                                 }}
                               />
                             ) : (
                               <span>
                                 {reply.sender
-                                  .split(' ')
+                                  .split(" ")
                                   .map((word) => word.charAt(0).toUpperCase())
-                                  .join('') || 'BS'}
+                                  .join("") || "BS"}
                               </span>
                             )}
                           </div>
                           <div className="grow">
                             <h6>{reply.sender}</h6>
                             <Link
-                              href={`mailto:${reply.email}`}
-                              className="link link-primary">
+                              to={`mailto:${reply.email}`}
+                              className="link link-primary"
+                            >
                               {reply.email}
                             </Link>
                           </div>
@@ -282,7 +286,7 @@ const MailSection = ({
                         </div>
                         <div className="mt-5">
                           <h6 className="mb-3">{reply.subject}</h6>
-                          <div className="flex flex-col gap-2">
+                          <div className="space-y-2">
                             <p>{reply.message}</p>
                           </div>
                           <p className="mt-4">Best regards,</p>
@@ -313,10 +317,10 @@ const MailSection = ({
                       setMailForm({ ...mailForm, email: e.target.value })
                     }
                   />
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Cc
                   </Link>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Bcc
                   </Link>
                 </div>
@@ -330,14 +334,14 @@ const MailSection = ({
                   onChange={(e) =>
                     setMailForm({ ...mailForm, message: e.target.value })
                   }
-                  onKeyDown={(e) =>
-                    e.key === 'Enter' && handleSendReply(e)
-                  }></textarea>
+                  onKeyDown={(e) => e.key === "Enter" && handleSendReply(e)}
+                ></textarea>
                 <div className="flex items-center gap-3">
                   <div className="shrink-0">
                     <label
                       htmlFor="sendImages"
-                      className="btn btn-active-gray btn-icon">
+                      className="btn btn-active-gray btn-icon"
+                    >
                       <ImageIcon className="size-5" />
                     </label>
                     <input type="file" id="sendImages" className="hidden" />
@@ -353,7 +357,8 @@ const MailSection = ({
                   </button>
                   <button
                     type="button"
-                    className="ml-auto btn btn-sub-gray shrink-0">
+                    className="ml-auto btn btn-sub-gray shrink-0"
+                  >
                     Draft
                   </button>
                   <button type="submit" className="btn btn-primary shrink-0">
@@ -366,7 +371,7 @@ const MailSection = ({
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default MailSection
+export default MailSection;

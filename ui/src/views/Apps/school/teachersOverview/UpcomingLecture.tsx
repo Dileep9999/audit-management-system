@@ -1,16 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
 import {
   Atom,
   FlaskConical,
   HeartPulse,
   JapaneseYen,
   Scale,
-} from 'lucide-react'
+} from "lucide-react";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const UpcomingLecture = () => {
   return (
@@ -20,7 +16,7 @@ const UpcomingLecture = () => {
           <h6 className="card-title">Upcoming Lecture</h6>
         </div>
         <div className="card-body">
-          <div className="flex flex-col gap-3">
+          <div className="space-y-3">
             <div className="flex gap-3 item-center">
               <div className="flex items-center justify-center rounded-md shrink-0 text-sky-500 bg-sky-500/15 size-10">
                 <FlaskConical className="size-5" />
@@ -32,7 +28,7 @@ const UpcomingLecture = () => {
                 </p>
               </div>
               <div className="shrink-0">
-                <Link href="#!" className="btn btn-red btn-xs">
+                <Link to="#!" className="btn btn-red btn-xs">
                   <i className="ri-eye-line"></i> Live
                 </Link>
               </div>
@@ -48,7 +44,7 @@ const UpcomingLecture = () => {
                 </p>
               </div>
               <div className="shrink-0">
-                <Link href="#!" className="btn btn-sub-gray btn-xs">
+                <Link to="#!" className="btn btn-sub-gray btn-xs">
                   <i className="ri-eye-line"></i> Live
                 </Link>
               </div>
@@ -64,7 +60,7 @@ const UpcomingLecture = () => {
                 </p>
               </div>
               <div className="shrink-0">
-                <Link href="#!" className="btn btn-sub-gray btn-xs">
+                <Link to="#!" className="btn btn-sub-gray btn-xs">
                   <i className="ri-eye-line"></i> Live
                 </Link>
               </div>
@@ -80,7 +76,7 @@ const UpcomingLecture = () => {
                 </p>
               </div>
               <div className="shrink-0">
-                <Link href="#!" className="btn btn-sub-gray btn-xs">
+                <Link to="#!" className="btn btn-sub-gray btn-xs">
                   <i className="ri-eye-line"></i> Live
                 </Link>
               </div>
@@ -96,7 +92,7 @@ const UpcomingLecture = () => {
                 </p>
               </div>
               <div className="shrink-0">
-                <Link href="#!" className="btn btn-sub-gray btn-xs">
+                <Link to="#!" className="btn btn-sub-gray btn-xs">
                   <i className="ri-eye-line"></i> Live
                 </Link>
               </div>
@@ -105,7 +101,7 @@ const UpcomingLecture = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default UpcomingLecture
+export default UpcomingLecture;

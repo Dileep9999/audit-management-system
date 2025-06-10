@@ -1,44 +1,33 @@
-'use client'
+import { Modal } from "@src/components/custom/modal/modal";
+import React, { useState } from "react";
+import user1 from "@assets/images/avatar/user-1.png";
+import user11 from "@assets/images/avatar/user-11.png";
+import user12 from "@assets/images/avatar/user-12.png";
+import user13 from "@assets/images/avatar/user-13.png";
+import overview from "@assets/images/event/overview.jpg";
+import { Link } from "react-router-dom";
 
-import React, { useState } from 'react'
+const BookNow = ({ show, closedModal }: any) => {
+  const [totalTickets, setTotalTickets] = useState<number>(0);
+  const [pricePerTicket, setPricePerTicket] = useState<number>(599);
+  const [totalAmount, setTotalAmount] = useState<number>(0);
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import user1 from '@assets/images/avatar/user-1.png'
-import user11 from '@assets/images/avatar/user-11.png'
-import user12 from '@assets/images/avatar/user-12.png'
-import user13 from '@assets/images/avatar/user-13.png'
-import overview from '@assets/images/event/overview.jpg'
-import { Modal } from '@src/components/custom/modal/modal'
-
-interface BookNowProps {
-  show: boolean
-  closedModal: () => void
-}
-
-const BookNow = ({ show, closedModal }: BookNowProps) => {
-  const [totalTickets, setTotalTickets] = useState<number>(0)
-  const [pricePerTicket, setPricePerTicket] = useState<number>(599)
-  const [totalAmount, setTotalAmount] = useState<number>(0)
-
-  // Function to calculate total amount when totalTickets or pricePerTicket changes
   const calculateTotalAmount = (tickets: number, price: number) => {
-    const amount = tickets * price
-    setTotalAmount(amount)
-  }
+    const amount = tickets * price;
+    setTotalAmount(amount);
+  };
 
   const handleTicketChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value) || 0
-    setTotalTickets(value)
-    calculateTotalAmount(value, pricePerTicket)
-  }
+    const value = parseInt(e.target.value) || 0;
+    setTotalTickets(value);
+    calculateTotalAmount(value, pricePerTicket);
+  };
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value) || 0
-    setPricePerTicket(value)
-    calculateTotalAmount(totalTickets, value)
-  }
+    const value = parseFloat(e.target.value) || 0;
+    setPricePerTicket(value);
+    calculateTotalAmount(totalTickets, value);
+  };
 
   return (
     <React.Fragment>
@@ -49,18 +38,18 @@ const BookNow = ({ show, closedModal }: BookNowProps) => {
         contentClass="p-2"
         title="Tech Innovations Summit"
         size="modal-lg"
-        content={(onClose) => (
+        content={
           <>
             <div className="modal-content">
               <div className="flex items-center gap-3 mb-4">
-                <Image
+                <img
                   src={user1}
-                  alt="userImg"
+                  alt="user1Img"
                   className="rounded-full size-12 shrink-0"
                 />
                 <div className="grow">
                   <h6 className="mb-1">
-                    <Link href="#!">Declan Grieve</Link>
+                    <Link to="#!">Declan Grieve</Link>
                   </h6>
                   <p className="text-sm text-gray-500 dark:text-dark-500">
                     Fri, 20 Dec 2024, 3:30 pm
@@ -68,9 +57,9 @@ const BookNow = ({ show, closedModal }: BookNowProps) => {
                 </div>
               </div>
               <div className="mt-5">
-                <Image
+                <img
                   src={overview}
-                  alt="userImg"
+                  alt="overviewImg"
                   className="object-cover w-full h-48 rounded-md"
                 />
               </div>
@@ -83,7 +72,7 @@ const BookNow = ({ show, closedModal }: BookNowProps) => {
                 </div>
                 <div>
                   <h6 className="mb-1">
-                    <Link href="#!" className="text-gray-800 link link-primary">
+                    <Link to="#!" className="text-gray-800 link link-primary">
                       Annual Music Festival!
                     </Link>
                   </h6>
@@ -98,30 +87,33 @@ const BookNow = ({ show, closedModal }: BookNowProps) => {
                   </p>
                   <div className="flex -space-x-3 grow">
                     <Link
-                      href="#!"
-                      className="transition duration-300 ease-linear hover:z-10">
-                      <Image
+                      to="#!"
+                      className="transition duration-300 ease-linear hover:z-10"
+                    >
+                      <img
                         className="border-2 border-white rounded-full dark:border-dark-900 size-8"
                         src={user11}
-                        alt="userImg"
+                        alt="user11Img"
                       />
                     </Link>
                     <Link
-                      href="#!"
-                      className="transition duration-300 ease-linear hover:z-10">
-                      <Image
+                      to="#!"
+                      className="transition duration-300 ease-linear hover:z-10"
+                    >
+                      <img
                         className="border-2 border-white rounded-full dark:border-dark-900 size-8"
                         src={user12}
-                        alt="userImg"
+                        alt="user12Img"
                       />
                     </Link>
                     <Link
-                      href="#!"
-                      className="transition duration-300 ease-linear hover:z-10">
-                      <Image
+                      to="#!"
+                      className="transition duration-300 ease-linear hover:z-10"
+                    >
+                      <img
                         className="border-2 border-white rounded-full dark:border-dark-900 size-8"
                         src={user13}
-                        alt="userImg"
+                        alt="user13Img"
                       />
                     </Link>
                   </div>
@@ -179,10 +171,7 @@ const BookNow = ({ show, closedModal }: BookNowProps) => {
                     />
                   </div>
                   <div className="col-span-12 ltr:text-right rtl:text-left">
-                    <button
-                      type="submit"
-                      className="btn btn-primary"
-                      onClick={onClose}>
+                    <button type="submit" className="btn btn-primary">
                       Book Now
                     </button>
                   </div>
@@ -190,10 +179,10 @@ const BookNow = ({ show, closedModal }: BookNowProps) => {
               </form>
             </div>
           </>
-        )}
+        }
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default BookNow
+export default BookNow;

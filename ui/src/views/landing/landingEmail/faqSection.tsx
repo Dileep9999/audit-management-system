@@ -1,32 +1,30 @@
-'use client'
+import React, { useEffect, useState } from "react";
 
-import React, { useEffect, useState } from 'react'
+import { Link } from "react-router-dom";
 
-import Link from 'next/link'
-
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const FAQSection: React.FC = () => {
-  const [selected, setSelected] = useState<number | null>(null)
+  const [selected, setSelected] = useState<number | null>(null);
   const [contentHeight, setContentHeight] = useState<{ [key: number]: string }>(
-    {}
-  )
+    {},
+  );
 
   const toggleAccordion = (item: number) => {
-    setSelected(selected !== item ? item : null)
-  }
+    setSelected(selected !== item ? item : null);
+  };
 
   useEffect(() => {
     if (selected !== null) {
-      const contentElement = document.getElementById(`content-${selected}`)
+      const contentElement = document.getElementById(`content-${selected}`);
       if (contentElement) {
         setContentHeight((prev) => ({
           ...prev,
           [selected]: `${contentElement.scrollHeight}px`,
-        }))
+        }));
       }
     }
-  }, [selected])
+  }, [selected]);
 
   return (
     <section className="relative py-12 md:py-24" id="faq">
@@ -38,8 +36,9 @@ const FAQSection: React.FC = () => {
           <p className="text-gray-500 dark:text-dark-500 text-16">
             Frequently asked questions.
             <Link
-              href="#!"
-              className="font-medium text-gray-800 dark:text-dark-100 underline">
+              to="#!"
+              className="font-medium text-gray-800 dark:text-dark-100 underline"
+            >
               View All FAQs
             </Link>
           </p>
@@ -50,22 +49,24 @@ const FAQSection: React.FC = () => {
               {[1, 2, 3, 4, 5].map((item: number, index: number) => (
                 <div
                   key={index}
-                  className="relative border-b border-gray-200 dark:border-dark-800 last:border-0">
+                  className="relative border-b border-gray-200 dark:border-dark-800 last:border-0"
+                >
                   <button
                     type="button"
                     className={`block w-full px-4 py-4 font-medium transition duration-200 ease-linear md:px-5 ${
                       selected === item
-                        ? 'bg-gray-50 text-primary-500 dark:bg-dark-900/30'
-                        : ''
+                        ? "bg-gray-50 text-primary-500 dark:bg-dark-900/30"
+                        : ""
                     }`}
-                    onClick={() => toggleAccordion(item)}>
+                    onClick={() => toggleAccordion(item)}
+                  >
                     <div className="flex items-center justify-between">
                       <span>
-                        {item === 1 && 'What are the features of email?'}
-                        {item === 2 && 'How do you use email features?'}
-                        {item === 3 && 'What is the main use of email?'}
-                        {item === 4 && 'How email really works?'}
-                        {item === 5 && 'What are emails used for?'}
+                        {item === 1 && "What are the features of email?"}
+                        {item === 2 && "How do you use email features?"}
+                        {item === 3 && "What is the main use of email?"}
+                        {item === 4 && "How email really works?"}
+                        {item === 5 && "What are emails used for?"}
                       </span>
                       <span className="text-gray-500 dark:text-dark-500">
                         {selected === item ? (
@@ -77,13 +78,15 @@ const FAQSection: React.FC = () => {
                     </div>
                   </button>
                   <div
-                    className={`relative overflow-hidden transition-max-height duration-700 ease-in-out ${selected === item ? 'max-h-screen' : 'max-h-0'}`}
+                    className={`relative overflow-hidden transition-max-height duration-700 ease-in-out ${selected === item ? "max-h-screen" : "max-h-0"}`}
                     style={{
-                      maxHeight: selected === item ? contentHeight[item] : '0',
-                    }}>
+                      maxHeight: selected === item ? contentHeight[item] : "0",
+                    }}
+                  >
                     <div
                       id={`content-${item}`}
-                      className="p-5 text-gray-500 dark:text-dark-500">
+                      className="p-5 text-gray-500 dark:text-dark-500"
+                    >
                       {item === 1 && (
                         <p>
                           Emails are automatically date and time stamped.
@@ -147,7 +150,7 @@ const FAQSection: React.FC = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default FAQSection
+export default FAQSection;

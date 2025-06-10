@@ -1,25 +1,31 @@
-'use client'
+import { ProjectList } from "@src/dtos";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import Select from "react-select";
 
-import React from 'react'
+interface OptionType {
+  label: string;
+  value: string;
+}
 
-import { ProjectList } from '@src/dtos'
-import { OptionType } from '@src/dtos/apps/crm'
-import { status } from '@src/dtos/apps/school'
-import { Controller, useForm } from 'react-hook-form'
-import Select from 'react-select'
+const statusOptions: OptionType[] = [
+  { label: "Paid", value: "Paid" },
+  { label: "Pending", value: "Pending" },
+  { label: "Unpaid", value: "Unpaid" },
+];
 
 const FeesStructure = () => {
   const {
     control,
     formState: { errors },
-  } = useForm<ProjectList>()
+  } = useForm<ProjectList>();
 
   const handleStatusChange = (
     selected: OptionType | null,
-    onChange: (value: string) => void
+    onChange: (value: any) => void,
   ) => {
-    onChange(selected ? selected.value : '') // Use selected value or empty string
-  }
+    onChange(selected ? selected.value : null); // Use selected value
+  };
 
   return (
     <React.Fragment>
@@ -72,15 +78,16 @@ const FeesStructure = () => {
                   <Controller
                     name="status"
                     control={control}
-                    rules={{ required: 'Status is required.' }}
+                    rules={{ required: "Status is required." }}
                     render={({ field: { onChange, value } }) => (
                       <Select
                         classNamePrefix="select"
-                        options={status}
+                        options={statusOptions}
                         value={
-                          status.find((option) => option.value === value) ||
-                          null
-                        } // Map value to option
+                          statusOptions.find(
+                            (option) => option.value === value,
+                          ) || null
+                        }
                         onChange={(selected) =>
                           handleStatusChange(selected, onChange)
                         }
@@ -118,7 +125,7 @@ const FeesStructure = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default FeesStructure
+export default FeesStructure;

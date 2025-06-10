@@ -1,14 +1,9 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import user14 from '@assets/images/avatar/user-14.png'
-import user17 from '@assets/images/avatar/user-17.png'
-import user18 from '@assets/images/avatar/user-18.png'
-import { NextPageWithLayout } from '@src/dtos'
+import React from "react";
+import user17 from "@assets/images/avatar/user-17.png";
+import user18 from "@assets/images/avatar/user-18.png";
+import user14 from "@assets/images/avatar/user-14.png";
+import { NextPageWithLayout } from "@dtos/layout";
+import { Link } from "react-router-dom";
 
 const Premium: NextPageWithLayout = () => {
   return (
@@ -22,27 +17,30 @@ const Premium: NextPageWithLayout = () => {
 
           <div className="flex -space-x-2 grow rtl:space-x-reverse">
             <Link
-              href="#!"
-              className="transition duration-300 ease-linear hover:z-10">
-              <Image
+              to="#!"
+              className="transition duration-300 ease-linear hover:z-10"
+            >
+              <img
                 className="border-2 border-white rounded-full dark:border-dark-900 size-7"
                 alt="User Images"
                 src={user17}
               />
             </Link>
             <Link
-              href="#!"
-              className="transition duration-300 ease-linear hover:z-10">
-              <Image
+              to="#!"
+              className="transition duration-300 ease-linear hover:z-10"
+            >
+              <img
                 className="border-2 border-white rounded-full dark:border-dark-900 size-7"
                 alt="User Images"
                 src={user18}
               />
             </Link>
             <Link
-              href="#!"
-              className="transition duration-300 ease-linear hover:z-10">
-              <Image
+              to="#!"
+              className="transition duration-300 ease-linear hover:z-10"
+            >
+              <img
                 className="border-2 border-white rounded-full dark:border-dark-900 size-7"
                 alt="User Images"
                 src={user14}
@@ -58,12 +56,13 @@ const Premium: NextPageWithLayout = () => {
           </div>
           <button
             type="button"
-            className="w-full border-gray-200 dark:border-dark-800 btn btn-outline-gray">
+            className="w-full border-gray-200 dark:border-dark-800 btn btn-outline-gray"
+          >
             Upgrade Now
           </button>
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default Premium
+  );
+};
+export default Premium;

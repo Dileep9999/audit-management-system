@@ -1,18 +1,5 @@
-import { UserChatMessageRecord, UserChatRecord } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
-import {
-  LocalStorageRecord,
-  addLocalStorageRecord,
-  createLocalStorage,
-  deleteLocalStorageRecord,
-  getLocalStorage,
-  updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_DEFAULT_CHAT_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
-
+import api from "@src/utils/axios_api";
+import { AppDispatch } from "@src/slices/reducer";
 import {
   addChatListRecord,
   addChatNewMessageRecord,
@@ -21,168 +8,169 @@ import {
   editDefaultChatListRecord,
   getChatList,
   setCurrentChatRecord,
-} from './reducer'
+} from "./reducer";
+import { UserChatMessageRecord, UserChatRecord } from "@src/dtos";
+import {
+  addLocalStorageRecord,
+  deleteLocalStorageRecord,
+  createLocalStorage,
+  updateLocalStorageRecord,
+  getLocalStorage,
+} from "@src/utils/crud_functions";
+import { REACT_APP_DEFAULT_CHAT_API } from "@src/utils/url_helper";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-const DEFAULT_CHAT_LIST_API = NEXT_PUBLIC_DEFAULT_CHAT_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const DEFAULT_CHAT_LIST_API = REACT_APP_DEFAULT_CHAT_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get customer list
 export const getDefaultChatData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = (await getLocalStorage('d-default-chat')) as
-        | UserChatRecord[]
-        | null
+      const responseData = await getLocalStorage("d-default-chat");
       if (!responseData) {
-        const response = await api.get(DEFAULT_CHAT_LIST_API)
-        const { data } = response
-        createLocalStorage('d-default-chat', data)
-        dispatch(getChatList(data))
+        const response = await api.get(DEFAULT_CHAT_LIST_API);
+        createLocalStorage("d-default-chat", response);
+        dispatch(getChatList(response));
       } else {
-        dispatch(getChatList(responseData || []))
+        dispatch(getChatList(responseData));
       }
     } else {
-      const response = await api.get(DEFAULT_CHAT_LIST_API)
-      const { data } = response
-      dispatch(getChatList(data))
+      const response = await api.get(DEFAULT_CHAT_LIST_API);
+      dispatch(getChatList(response));
     }
-  } catch (error) {
-    let errorMessage = 'Error fetching chat data:'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-      toast.error(errorMessage, { autoClose: 3000 })
-    }
-    console.error('Error fetching chat data::', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Chat List Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching chat data:", error);
   }
-}
+};
 
 // set current chat record
 export const setCurrentChatListRecord =
   (chat: UserChatRecord) => async (dispatch: AppDispatch) => {
     try {
-      const response = { data: chat }
-      dispatch(setCurrentChatRecord(response.data))
+      const response = { data: chat };
+      dispatch(setCurrentChatRecord(response.data));
     } catch (error) {
-      console.error('Error setting current chat record:', error)
+      console.error("Error setting current chat record:", error);
     }
-  }
+  };
 
 // add new Chat
 export const addDefaultChatRecordData =
   (newRecord: UserChatRecord) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(
-        DEFAULT_CHAT_LIST_API,
-        newRecord,
-        'Chat'
-      )
-      const { data, message } = response
-      toast.success(message || 'Chat record added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-default-chat', { ...data })
-      dispatch(addChatListRecord(data))
-    } catch (error) {
-      let errorMessage = 'Chat record addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Chat record addition failed:', error)
+      const response = await api.post(DEFAULT_CHAT_LIST_API, newRecord, "Chat");
+      const { message } = response;
+      AddToast(message || "Chat record added successfully");
+      addLocalStorageRecord("d-default-chat", newRecord);
+      dispatch(addChatListRecord(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Chat record addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding chat record:", error);
     }
-  }
+  };
 
 // delete current chat
 export const deleteDefaultChatRecordData =
-  (chat: number[]) => async (dispatch: AppDispatch) => {
+  (question: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = chat.map(async (id: number) => {
-        const response = await customDelete(DEFAULT_CHAT_LIST_API, id, 'Chat')
-        const { message, data } = response
-        toast.success(message || 'Chat record deleted successfully', {
-          autoClose: 3000,
-        })
-        return data
-      })
-      const deletedCustomers = await Promise.all(deletePromises)
-      dispatch(deleteDefaultChatListRecord(deletedCustomers))
+      const deletePromises = question.map(async (id) => {
+        const response = await api.delete(DEFAULT_CHAT_LIST_API, id, "Chat");
+        const { message } = response;
+        DeleteToast(message || "Chat record deleted successfully");
+        return id;
+      });
+
+      const deletedChats = await Promise.all(deletePromises);
+      dispatch(deleteDefaultChatListRecord(deletedChats));
       deleteLocalStorageRecord({
-        key: 'd-default-chat',
-        listRecord: chat,
+        key: "d-default-chat",
+        listRecord: question,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'Chat record deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Chat record deletion failed:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        " Chat record deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting chat record: ", error);
     }
-  }
+  };
 
 // edit customer record
 export const editDefaultChatListRecordData =
-  (chat: UserChatRecord) => async (dispatch: AppDispatch) => {
+  (question: UserChatRecord) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(DEFAULT_CHAT_LIST_API, chat, 'Chat')
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-default-chat',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editDefaultChatListRecord(data))
-    } catch (error) {
-      let errorMessage = 'Chat record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Chat record updation failed:', error)
+      const response = await api.put(DEFAULT_CHAT_LIST_API, question, "Chat");
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Chat record updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-default-chat", question);
+      dispatch(editDefaultChatListRecord(question));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Chat record updation failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating record:", error);
     }
-  }
+  };
 
 // delete message
 export const deleteDefaultChatMessageRecord =
   (userid: number, deletedMessage: UserChatMessageRecord) =>
   async (dispatch: AppDispatch) => {
     try {
-      const response = { id: userid, message: deletedMessage }
+      const response = { _id: userid, message: deletedMessage };
       dispatch(
-        deleteChatMessageRecord({ id: response.id, message: response.message })
-      )
-    } catch (error) {
-      let errorMessage = 'Chat record deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Chat record deletion failed:', error)
+        deleteChatMessageRecord({
+          _id: response._id,
+          message: response.message,
+        }),
+      );
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Chat record deletion failed";
+      ErrorToast(errorMessage || "Chat record deletion failed");
+      console.error("Error deleting record:", error);
     }
-  }
+  };
 
 // add new message
 export const addDefaultChatMessageRecord =
-  (userid: number, newMessage: UserChatMessageRecord) =>
+  (userId: number, newMessage: UserChatMessageRecord) =>
   async (dispatch: AppDispatch) => {
     try {
-      const response = { id: userid, message: newMessage }
+      const response = { _id: userId, message: newMessage };
       dispatch(
-        addChatNewMessageRecord({ id: response.id, message: response.message })
-      )
-    } catch (error) {
-      let errorMessage = 'Chat record addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Chat record addition failed:', error)
+        addChatNewMessageRecord({
+          _id: response._id,
+          message: response.message,
+        }),
+      );
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Chat record addition failed";
+      ErrorToast(errorMessage || "Chat record addition failed");
+      console.error("Error adding chat record:", error);
     }
-  }
+  };

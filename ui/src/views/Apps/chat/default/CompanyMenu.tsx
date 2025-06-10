@@ -1,22 +1,17 @@
-'use client'
-
-import React, { useEffect } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { CompanyMenuChatSidebar } from '@src/data'
-import { MenuChatSidebarRecord } from '@src/dtos'
-import SimpleBar from 'simplebar-react'
+import { CompanyMenuChatSidebar } from "@src/data";
+import { MenuChatSidebarRecord } from "@src/dtos";
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import SimpleBar from "simplebar-react";
 
 const CompanyMenu: React.FC = () => {
-  const [menuData, setMenuData] = React.useState<MenuChatSidebarRecord[]>([])
+  const [menuData, setMenuData] = React.useState<MenuChatSidebarRecord[]>([]);
 
   useEffect(() => {
     if (CompanyMenuChatSidebar) {
-      setMenuData(CompanyMenuChatSidebar)
+      setMenuData(CompanyMenuChatSidebar);
     }
-  }, [])
+  }, []);
 
   return (
     <React.Fragment>
@@ -29,13 +24,14 @@ const CompanyMenu: React.FC = () => {
                 return (
                   <Link
                     key={index}
-                    href="#!"
+                    to="#!"
                     title="link"
-                    className={`relative flex items-center justify-center font-semibold transition duration-200 ease-linear bg-gray-100 rounded-full dark:bg-dark-850 size-14 hover:ring-2 [&.active]:ring-2 hover:ring-offset-2 dark:hover:ring-offset-dark-900 [&.active]:ring-offset-2 dark:[&.active]:ring-offset-dark-900 hover:ring-primary-500 [&.active]:ring-primary-500 ${item.isOpenCompanyChat === true ? 'active' : ''} `}>
+                    className={`relative flex items-center justify-center font-semibold transition duration-200 ease-linear bg-gray-100 rounded-full dark:bg-dark-850 size-14 hover:ring-2 [&.active]:ring-2 hover:ring-offset-2 dark:hover:ring-offset-dark-900 [&.active]:ring-offset-2 dark:[&.active]:ring-offset-dark-900 hover:ring-primary-500 [&.active]:ring-primary-500 ${item.isOpenCompanyChat === true ? "active" : ""} `}
+                  >
                     {item.image ? (
-                      <Image
+                      <img
                         src={item.image}
-                        alt="icon"
+                        alt="menuDataImg"
                         className="rounded-full size-9"
                         width={36}
                         height={36}
@@ -45,13 +41,13 @@ const CompanyMenu: React.FC = () => {
                     )}
                     <span className="absolute bottom-0 bg-green-500 border-2 border-white rounded-full dark:border-dark-900 right-1 size-3"></span>
                   </Link>
-                )
+                );
               })}
           </div>
         </SimpleBar>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default CompanyMenu
+export default CompanyMenu;

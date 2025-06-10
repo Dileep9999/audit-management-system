@@ -1,18 +1,13 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
+import React from "react";
+import { Ellipsis } from "lucide-react";
+import { NextPageWithLayout } from "@dtos/layout";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { ActiveProjectData } from '@src/data'
-import { NextPageWithLayout } from '@src/dtos'
-import { Ellipsis } from 'lucide-react'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
+import { ActiveProjectData } from "@data/index";
 
 const ActiveProjects: NextPageWithLayout = () => {
   return (
@@ -25,14 +20,14 @@ const ActiveProjects: NextPageWithLayout = () => {
               <Ellipsis className="size-5" />
             </DropdownButton>
             <DropdownMenu>
-              <Link href="#!" className="dropdown-item ">
+              <Link to="#!" className="dropdown-item ">
                 <span>Weekly</span>
               </Link>
 
-              <Link href="#!" className="dropdown-item ">
+              <Link to="#!" className="dropdown-item ">
                 <span>Monthly</span>
               </Link>
-              <Link href="#!" className="dropdown-item">
+              <Link to="#!" className="dropdown-item">
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
@@ -42,34 +37,34 @@ const ActiveProjects: NextPageWithLayout = () => {
           <p className="mb-3 text-gray-500 dark:text-dark-500">
             Average 64% completed
           </p>
-          <div className="flex flex-col gap-4">
+          <div className="space-y-4">
             {ActiveProjectData.map((item, index) => {
               return (
                 <div key={index} className="flex items-center gap-3">
-                  <Image
+                  <img
                     src={item.image}
-                    alt="projectImg"
+                    alt="ActiveProjectDataImg"
                     className="size-8 shrink-0"
                   />
                   <div className="overflow-hidden grow">
-                    <h6 className="truncate">{item.projectName}</h6>
+                    <h6 className="truncate">{item.projectname}</h6>
                     <p className="text-gray-500 dark:text-dark-500">
-                      {item.projectType}
+                      {item.projecttype}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <div className="!w-20 grow progress-bar progress-1">
+                    <div className="w-20 grow progress-bar progress-1">
                       <div className={item.process}></div>
                     </div>
                     <h6 className="shrink-0">{item.Percent}</h6>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default ActiveProjects
+  );
+};
+export default ActiveProjects;

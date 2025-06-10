@@ -1,21 +1,16 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-
-import { AnalyticsApp } from './FileManagerChart'
+} from "@src/components/custom/dropdown/dropdown";
+import { NextPageWithLayout } from "@dtos/layout";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { AnalyticsApp } from "./fileManagerChart";
 
 const AnalyticsChart: NextPageWithLayout = () => {
-  const [open, setOpen] = useState(false)
-  const [timeFrame, setTimeFrame] = useState('Last Week')
+  const [open, setOpen] = useState(false);
+  const [timeFrame, setTimeFrame] = useState("Last Week");
   return (
     <React.Fragment>
       <div className="col-span-12 2xl:col-span-6 card">
@@ -25,12 +20,11 @@ const AnalyticsChart: NextPageWithLayout = () => {
             <DropdownButton colorClass="flex px-3 py-1.5 text-xs border-gray-200 dark:border-dark-800 link link-primary btn">
               Last Week
               <svg
-                className={`transition-transform duration-300 size-4 ${
-                  open ? 'transform rotate-180' : ''
-                }`}
+                className={`transition-transform duration-300 size-4 ${open ? "transform rotate-180" : ""}`}
                 viewBox="0 0 20 20"
                 fill="currentColor"
-                onClick={() => setOpen(!open)}>
+                onClick={() => setOpen(!open)}
+              >
                 <path
                   fillRule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -40,21 +34,24 @@ const AnalyticsChart: NextPageWithLayout = () => {
             </DropdownButton>
             <DropdownMenu>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Last Week')}>
+                onClick={() => setTimeFrame("Last Week")}
+              >
                 <span>Last Week</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Last Month')}>
+                onClick={() => setTimeFrame("Last Month")}
+              >
                 <span>Last Month</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => setTimeFrame('Last Year')}>
+                onClick={() => setTimeFrame("Last Year")}
+              >
                 <span>Last Year</span>
               </Link>
             </DropdownMenu>
@@ -63,13 +60,13 @@ const AnalyticsChart: NextPageWithLayout = () => {
         <div className="card-body">
           <AnalyticsApp
             chartColors="[bg-primary-500, bg-gray-100]"
-            chartDarkColors={''}
+            chartDarkColors={""}
             chartId="analyticsChart"
             timeFrame={timeFrame}
           />
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default AnalyticsChart
+  );
+};
+export default AnalyticsChart;

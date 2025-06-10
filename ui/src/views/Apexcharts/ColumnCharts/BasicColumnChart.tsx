@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface ColumnChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const BasicColumnChart = ({
@@ -24,31 +15,31 @@ const BasicColumnChart = ({
   chartId,
 }: ColumnChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Net Profit',
+      name: "Net Profit",
       data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
     },
     {
-      name: 'Revenue',
+      name: "Revenue",
       data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
     },
     {
-      name: 'Free Cash Flow',
+      name: "Free Cash Flow",
       data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
     },
-  ]
+  ];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '55%',
+        columnWidth: "55%",
         // endingShape: 'rounded'
       },
     },
@@ -58,25 +49,25 @@ const BasicColumnChart = ({
     stroke: {
       show: true,
       width: 2,
-      colors: ['transparent'],
+      colors: ["transparent"],
     },
     colors: chartsColor,
     xaxis: {
       categories: [
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
       ],
     },
     yaxis: {
       title: {
-        text: '$ (thousands)',
+        text: "$ (thousands)",
       },
     },
     fill: {
@@ -85,11 +76,11 @@ const BasicColumnChart = ({
     tooltip: {
       y: {
         formatter: function (val) {
-          return '$ ' + val + ' thousands'
+          return "$ " + val + " thousands";
         },
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -98,12 +89,12 @@ const BasicColumnChart = ({
         series={series}
         type="bar"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-yellow-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default BasicColumnChart
+export default BasicColumnChart;

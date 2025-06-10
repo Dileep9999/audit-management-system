@@ -1,11 +1,8 @@
-'use client'
+import React from "react";
 
-import React from 'react'
+import { Link } from "react-router-dom";
 
-import Link from 'next/link'
-
-import { healthServiceData } from '@src/data/LandingPage/doctors'
-import { HealthServiceData } from '@src/dtos'
+import { HealthServiceData } from "@src/dtos";
 import {
   Activity,
   Brain,
@@ -15,26 +12,28 @@ import {
   MoveRight,
   Stethoscope,
   Syringe,
-} from 'lucide-react'
+} from "lucide-react";
+import { healthservicedata } from "@src/data/landingPage/doctors";
 
 const HealthService: React.FC = () => {
   const getLucideIcon = (icon: string, className: string) => {
     const icons: { [key: string]: React.ReactElement } = {
-      'heart-pulse': <HeartPulse className={className} />,
+      "heart-pulse": <HeartPulse className={className} />,
       syringe: <Syringe className={className} />,
       brain: <Brain className={className} />,
       activity: <Activity className={className} />,
       stethoscope: <Stethoscope className={className} />,
       microscope: <Microscope className={className} />,
-    }
-    return icons[icon]
-  }
+    };
+    return icons[icon];
+  };
 
   return (
     <React.Fragment>
       <section
         className="relative py-14 md:py-28 bg-gray-50 dark:bg-dark-900/30"
-        id="services">
+        id="services"
+      >
         <div className="container mx-auto px-4 xl:px-20">
           <div className="max-w-2xl mx-auto mb-12 text-center">
             <h2 className="mb-2 text-4xl leading-normal capitalize md:text-5xl">
@@ -49,23 +48,25 @@ const HealthService: React.FC = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space">
-            {healthServiceData.map((item: HealthServiceData, index: number) => (
+            {healthservicedata.map((item: HealthServiceData, index: number) => (
               <div
                 className="p-5 transition duration-300 ease-linear rounded-lg hover:bg-white dark:hover:bg-dark-950 hover:-translate-y-2 hover:shadow-lg hover:shadow-slate-200/75 dark:hover:shadow-dark-850"
-                key={index}>
+                key={index}
+              >
                 <div
-                  className={`flex items-center justify-center rounded-md ${item.iconBgColor} size-12`}>
+                  className={`flex items-center justify-center rounded-md ${item.iconBgColor} size-12`}
+                >
                   {item.icon &&
                     getLucideIcon(
                       item.icon,
-                      `${item.iconColor} ${item.iconBg}`
+                      `${item.iconColor} ${item.iconBg}`,
                     )}
                 </div>
                 <h5 className="mt-4 mb-2">{item.title}</h5>
                 <p className="mb-3 text-gray-500 dark:text-dark-500 text-16">
                   {item.desc}
                 </p>
-                <Link href="#!" className="font-medium link link-sky">
+                <Link to="#!" className="font-medium link link-sky">
                   Read More
                   <MoveRight className="inline-block ml-1 rtl:hidden size-4" />
                   <MoveLeft className="hidden mr-1 rtl:inline-block size-4" />
@@ -76,7 +77,7 @@ const HealthService: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default HealthService
+export default HealthService;

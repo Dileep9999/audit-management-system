@@ -1,38 +1,29 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface RadialChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
-const CustomAngleRadialbarChart = ({
+const CustomAngleRadialBarChart = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: RadialChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const series = [76, 67, 61, 90]
-  const labels = ['Vimeo', 'Messenger', 'Facebook', 'LinkedIn']
+  const series = [76, 67, 61, 90];
+  const labels = ["Vimeo", "Messenger", "Facebook", "LinkedIn"];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'radialBar',
+      type: "radialBar",
     },
     plotOptions: {
       radialBar: {
@@ -41,8 +32,8 @@ const CustomAngleRadialbarChart = ({
         endAngle: 270,
         hollow: {
           margin: 5,
-          size: '30%',
-          background: 'transparent',
+          size: "30%",
+          background: "transparent",
           image: undefined,
         },
         dataLabels: {
@@ -59,8 +50,8 @@ const CustomAngleRadialbarChart = ({
     legend: {
       show: true,
       floating: true,
-      fontSize: '16px',
-      position: 'left',
+      fontSize: "16px",
+      position: "left",
       offsetX: 160,
       offsetY: 15,
       labels: {
@@ -70,7 +61,7 @@ const CustomAngleRadialbarChart = ({
       //     size: 0,
       // },
       formatter: function (seriesName, opts) {
-        return seriesName + ':  ' + opts.w.globals.series[opts.seriesIndex]
+        return seriesName + ":  " + opts.w.globals.series[opts.seriesIndex];
       },
       itemMargin: {
         vertical: 3,
@@ -87,7 +78,7 @@ const CustomAngleRadialbarChart = ({
       },
     ],
     labels: labels,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -97,12 +88,12 @@ const CustomAngleRadialbarChart = ({
         series={series}
         type="radialBar"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-yellow-500, bg-purple-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default CustomAngleRadialbarChart
+export default CustomAngleRadialBarChart;

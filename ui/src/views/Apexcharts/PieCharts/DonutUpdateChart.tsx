@@ -1,21 +1,12 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React, { useState } from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface PieChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const DonutUpdateChart = ({
@@ -24,13 +15,13 @@ const DonutUpdateChart = ({
   chartId,
 }: PieChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const [series, setSeries] = useState<number[]>([44, 55, 13, 33])
+  const [series, setSeries] = useState<number[]>([44, 55, 13, 33]);
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'donut',
+      type: "donut",
     },
     dataLabels: {
       enabled: false,
@@ -50,32 +41,32 @@ const DonutUpdateChart = ({
       },
     ],
     legend: {
-      position: 'right',
+      position: "right",
       offsetY: 0,
       height: 230,
     },
-  }
+  };
 
   const add = () => {
     setSeries((prevSeries) => [
       ...prevSeries,
       Math.floor(Math.random() * (100 - 1 + 1)) + 1,
-    ])
-  }
+    ]);
+  };
 
   const remove = () => {
-    setSeries((prevSeries) => prevSeries.slice(0, -1))
-  }
+    setSeries((prevSeries) => prevSeries.slice(0, -1));
+  };
 
   const randomize = () => {
     setSeries((prevSeries) =>
-      prevSeries.map(() => Math.floor(Math.random() * (100 - 1 + 1)) + 1)
-    )
-  }
+      prevSeries.map(() => Math.floor(Math.random() * (100 - 1 + 1)) + 1),
+    );
+  };
 
   const reset = () => {
-    setSeries([44, 55, 13, 33])
-  }
+    setSeries([44, 55, 13, 33]);
+  };
 
   return (
     <React.Fragment>
@@ -99,12 +90,12 @@ const DonutUpdateChart = ({
         series={series}
         type="donut"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-yellow-500, bg-red-500, bg-purple-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DonutUpdateChart
+export default DonutUpdateChart;

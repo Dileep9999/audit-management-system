@@ -1,21 +1,12 @@
-'use client'
-
-import React, { useEffect, useRef } from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React, { useEffect, useRef } from "react";
+import useChartColors from "@hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const GroupedBarChart = ({
@@ -24,9 +15,9 @@ const GroupedBarChart = ({
   chartId,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const chartRef = useRef<HTMLDivElement>(null)
+  const chartRef = useRef<HTMLDivElement>(null);
 
   const series = [
     {
@@ -35,17 +26,17 @@ const GroupedBarChart = ({
     {
       data: [53, 32, 33, 52, 13, 44, 32],
     },
-  ]
+  ];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
     },
     plotOptions: {
       bar: {
         horizontal: true,
         dataLabels: {
-          position: 'top',
+          position: "top",
         },
       },
     },
@@ -53,14 +44,14 @@ const GroupedBarChart = ({
       enabled: true,
       offsetX: -6,
       style: {
-        fontSize: '12px',
-        colors: ['#fff'],
+        fontSize: "12px",
+        colors: ["#fff"],
       },
     },
     stroke: {
       show: true,
       width: 1,
-      colors: ['#fff'],
+      colors: ["#fff"],
     },
     tooltip: {
       shared: true,
@@ -76,17 +67,17 @@ const GroupedBarChart = ({
         bottom: -10,
       },
     },
-  }
+  };
 
   useEffect(() => {
     if (chartRef.current) {
-      const chart = new ApexCharts(chartRef.current, options)
-      chart.render()
+      const chart = new ApexCharts(chartRef.current, options);
+      chart.render();
       return () => {
-        chart.destroy()
-      }
+        chart.destroy();
+      };
     }
-  })
+  });
 
   return (
     <React.Fragment>
@@ -96,12 +87,12 @@ const GroupedBarChart = ({
         series={series}
         data-chart-colors="[bg-primary-500, bg-sky-500]"
         type="bar"
-        chartId={chartId}
+        id={chartId}
         height={315}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default GroupedBarChart
+export default GroupedBarChart;

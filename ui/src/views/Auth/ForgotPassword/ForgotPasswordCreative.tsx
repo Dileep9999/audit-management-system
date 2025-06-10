@@ -1,31 +1,25 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
-import whiteLogo from '@assets/images/logo-white.png'
-import mainLogo from '@assets/images/main-logo.png'
-import creativeAuth from '@assets/images/others/auth-creative.png'
-import { MoveRight } from 'lucide-react'
-import { toast } from 'react-toastify'
+import React, { useState } from "react";
+import mainLogo from "@assets/images/main-logo.png";
+import whiteLogo from "@assets/images/logo-white.png";
+import creativeAuth from "@assets/images/others/auth-creative.png";
+import { MoveRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import ErrorToast from "@src/components/custom/toast/errorToast";
 
 const ForgotPasswordCreative = () => {
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState("");
 
-  const router = useRouter()
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!email) {
-      toast.error('Please enter your email')
-      return
+      ErrorToast("Please enter your email");
+      return;
     } else {
-      router.push('/auth/two-step-verification-creative')
+      navigate("/auth/two-step-verification-creative");
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -34,17 +28,17 @@ const ForgotPasswordCreative = () => {
           <div className="relative col-span-12 py-8 overflow-hidden bg-gray-100 dark:bg-dark-850 lg:min-h-screen lg:col-span-6 md:p-9 xl:p-12">
             <div className="absolute bottom-0 w-32 -rotate-45 -top-64 -right-8 bg-gray-200/20 dark:bg-dark-800/20"></div>
             <div className="p-4">
-              <Link href="/">
-                <Image
+              <Link to="/">
+                <img
                   src={mainLogo}
-                  alt="mainLogo"
+                  alt="logo"
                   className="h-8 mx-auto dark:hidden inline-block"
                   width={175}
                   height={32}
                 />
-                <Image
+                <img
                   src={whiteLogo}
-                  alt="whiteLogo"
+                  alt="logo"
                   className="hidden h-8 mx-auto dark:inline-block"
                   width={175}
                   height={32}
@@ -54,7 +48,7 @@ const ForgotPasswordCreative = () => {
                 The most straightforward way to manage your projects
               </h1>
 
-              <Image
+              <img
                 src={creativeAuth}
                 alt="creativeAuth"
                 className="absolute scale-110 rounded-lg shadow-lg top-[315px] left-[115px]"
@@ -90,16 +84,18 @@ const ForgotPasswordCreative = () => {
                       <div className="col-span-12">
                         <button
                           type="submit"
-                          className="w-full px-4 py-2 text-white rounded-md bg-primary-500 hover:bg-primary-600">
+                          className="w-full px-4 py-2 text-white rounded-md bg-primary-500 hover:bg-primary-600"
+                        >
                           Reset Password
                         </button>
                         <p className="mt-3 text-center text-gray-500">
-                          Return to the
+                          Return to the{" "}
                           <Link
-                            href="/auth/signin-creative"
-                            className="font-medium underline link link-primary">
-                            <span className="align-middle">Sign In</span>
-                            <MoveRight className="inline-block rtl:mr-1 ltr:ml-1 size-4" />
+                            to="/auth/signin-creative"
+                            className="font-medium underline link link-primary"
+                          >
+                            <span className="align-middle">Sign In</span>{" "}
+                            <MoveRight className="inline-block rtl:mr-1 ltr:ml-1 size-4" />{" "}
                           </Link>
                         </p>
                       </div>
@@ -112,6 +108,6 @@ const ForgotPasswordCreative = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default ForgotPasswordCreative
+  );
+};
+export default ForgotPasswordCreative;

@@ -1,13 +1,10 @@
-'use client'
-
-import React, { useLayoutEffect, useRef, useState } from 'react'
-
-import { X } from 'lucide-react'
-import SimpleBar from 'simplebar-react'
+import { X } from "lucide-react";
+import React, { useRef, useState, useLayoutEffect } from "react";
+import SimpleBar from "simplebar-react";
 
 interface DrawerHeaderProps {
-  title?: string
-  onClose: () => void
+  title?: string;
+  onClose: () => void;
 }
 
 const DrawerHeader: React.FC<DrawerHeaderProps> = ({ title, onClose }) => {
@@ -18,52 +15,53 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({ title, onClose }) => {
         <X className="link link-red" />
       </button>
     </div>
-  )
-}
+  );
+};
 
 const DrawerContent: React.FC<{
-  children?: React.ReactNode
-  isSimpleBar?: boolean
-  customContentClass?: string
+  children?: React.ReactNode;
+  isSimpleBar?: boolean;
+  customContentClass?: string;
 }> = ({ children, isSimpleBar, customContentClass }) => {
   return isSimpleBar ? (
     <SimpleBar
-      className={customContentClass ? customContentClass : 'drawer-content'}>
+      className={customContentClass ? customContentClass : "drawer-content"}
+    >
       {children}
     </SimpleBar>
   ) : (
-    <div className={customContentClass ? customContentClass : 'drawer-content'}>
+    <div className={customContentClass ? customContentClass : "drawer-content"}>
       {children}
     </div>
-  )
-}
+  );
+};
 
 const DrawerFooter: React.FC<{
-  children?: React.ReactNode
-  footerClass?: string
+  children?: React.ReactNode;
+  footerClass?: string;
 }> = ({ children, footerClass }) => {
-  return <div className={`drawer-footer ${footerClass}`}>{children}</div>
-}
+  return <div className={`drawer-footer ${footerClass}`}>{children}</div>;
+};
 
 interface CustomDrawerProps {
-  isOpen: boolean
-  onClose: () => void
-  position?: 'left' | 'right' | 'top' | 'bottom'
-  size?: 'small' | 'medium' | 'large' | 'half-screen'
-  title?: string
-  content?: React.ReactNode
-  isSimpleBar?: boolean
-  footer?: React.ReactNode
-  id?: string
-  footerClass?: string
-  customContentClass?: string
+  isOpen: boolean;
+  onClose: () => void;
+  position?: "left" | "right" | "top" | "bottom";
+  size?: "small" | "medium" | "large" | "half-screen";
+  title?: string;
+  content?: React.ReactNode;
+  isSimpleBar?: boolean;
+  footer?: React.ReactNode;
+  id?: string;
+  footerClass?: string;
+  customContentClass?: string;
 }
 
 const Drawer: React.FC<CustomDrawerProps> = ({
   isOpen,
   onClose,
-  position = 'right',
-  size = '',
+  position = "right",
+  size = "",
   title,
   content,
   isSimpleBar,
@@ -72,48 +70,48 @@ const Drawer: React.FC<CustomDrawerProps> = ({
   footerClass,
   customContentClass,
 }) => {
-  const drawerRef = useRef<HTMLDivElement>(null)
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [isVisible, setIsVisible] = useState(false)
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useLayoutEffect(() => {
     if (isOpen) {
-      setIsVisible(true)
-      requestAnimationFrame(() => setIsAnimating(true))
-      document.body.classList.add('overflow-hidden')
+      setIsVisible(true);
+      requestAnimationFrame(() => setIsAnimating(true));
+      document.body.classList.add("overflow-hidden");
     } else {
-      setIsAnimating(false)
-      const timeoutId = setTimeout(() => setIsVisible(false), 300)
-      return () => clearTimeout(timeoutId)
+      setIsAnimating(false);
+      const timeoutId = setTimeout(() => setIsVisible(false), 300);
+      return () => clearTimeout(timeoutId);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
-  if (!isVisible) return null
+  if (!isVisible) return null;
 
   const positionClass =
-    position === 'left'
-      ? 'drawer-start start-0 translate-x-0'
-      : position === 'right'
-        ? 'drawer-end end-0'
-        : position === 'top'
-          ? 'h-[20rem] left-0 right-0 w-full'
-          : 'h-[20rem] left-0 right-0 bottom-0 top-auto w-full'
+    position === "left"
+      ? "drawer-start start-0 translate-x-0"
+      : position === "right"
+        ? "drawer-end end-0"
+        : position === "top"
+          ? "h-[20rem] left-0 right-0 w-full"
+          : "h-[20rem] left-0 right-0 bottom-0 top-auto w-full";
   const sizeClass =
-    size === 'small'
-      ? 'drawer-sm'
-      : size === 'medium'
-        ? 'w-80'
-        : size === 'large'
-          ? 'w-96'
-          : size === 'half-screen'
-            ? 'w-1/2'
-            : 'w-80'
+    size === "small"
+      ? "drawer-sm"
+      : size === "medium"
+        ? "w-80"
+        : size === "large"
+          ? "w-96"
+          : size === "half-screen"
+            ? "w-1/2"
+            : "w-80";
 
   return (
     <>
       {/* Backdrop with fade effect */}
       <div
-        className={`backdrop-overlay backdrop-blur-xs transition-opacity duration-300 ${isAnimating ? 'opacity-100' : 'opacity-0'}`}
+        className={`backdrop-overlay backdrop-blur-xs transition-opacity duration-300 ${isAnimating ? "opacity-100" : "opacity-0"}`}
         onClick={onClose}
       />
 
@@ -121,22 +119,24 @@ const Drawer: React.FC<CustomDrawerProps> = ({
       <div
         className={`drawer fixed ${positionClass} light:bg-white ${sizeClass} transition-transform duration-300 ease-in-out ${
           isAnimating
-            ? 'translate-x-0 translate-y-0'
-            : position === 'left'
-              ? '-translate-x-full'
-              : position === 'right'
-                ? 'translate-x-full'
-                : position === 'top'
-                  ? '-translate-y-full'
-                  : 'translate-y-full'
+            ? "translate-x-0 translate-y-0"
+            : position === "left"
+              ? "-translate-x-full"
+              : position === "right"
+                ? "translate-x-full"
+                : position === "top"
+                  ? "-translate-y-full"
+                  : "translate-y-full"
         }`}
         id={id}
-        ref={drawerRef}>
+        ref={drawerRef}
+      >
         <div className="flex flex-col">
           {title && <DrawerHeader title={title} onClose={onClose} />}
           <DrawerContent
             isSimpleBar={isSimpleBar}
-            customContentClass={customContentClass}>
+            customContentClass={customContentClass}
+          >
             {content}
           </DrawerContent>
           {footer && (
@@ -145,7 +145,7 @@ const Drawer: React.FC<CustomDrawerProps> = ({
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export { DrawerHeader, DrawerContent, DrawerFooter, Drawer }
+export { DrawerHeader, DrawerContent, DrawerFooter, Drawer };

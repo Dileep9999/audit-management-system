@@ -1,131 +1,118 @@
-import { CrmContactItems } from '@src/dtos/apps/crm'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
+import { AppDispatch } from "@src/slices/reducer";
 import {
-  LocalStorageRecord,
+  getContactList,
+  addContactList,
+  editContactList,
+  deleteContactList,
+} from "./reducer";
+import api from "@src/utils/axios_api";
+import { CrmContactItems } from "@src/dtos/apps/crm";
+import { REACT_APP_CRM_CONTACT_API } from "@src/utils/url_helper";
+import {
   addLocalStorageRecord,
   createLocalStorage,
   deleteLocalStorageRecord,
   getLocalStorage,
   updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_CRM_CONTACT_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+} from "@src/utils/crud_functions";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
 
-import {
-  addContactList,
-  deleteContactList,
-  editContactList,
-  getContactList,
-} from './reducer'
-
-const CONTACT_LIST_API = NEXT_PUBLIC_CRM_CONTACT_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const CONTACT_LIST_API = REACT_APP_CRM_CONTACT_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get contact
 export const getContactData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = (await getLocalStorage('d-crm-contact-list')) as
-        | CrmContactItems[]
-        | null
+      const responseData = await getLocalStorage("d-crm-contact-list");
       if (!responseData) {
-        const response = await api.get(CONTACT_LIST_API)
-        const { data } = response
-        createLocalStorage('d-crm-contact-list', data)
-        dispatch(getContactList(data))
+        const response = await api.get(CONTACT_LIST_API);
+        createLocalStorage("d-crm-contact-list", response);
+        dispatch(getContactList(response));
       } else {
-        dispatch(getContactList(responseData || []))
+        dispatch(getContactList(responseData));
       }
     } else {
-      const response = await api.get(CONTACT_LIST_API)
-      const { data } = response
-      dispatch(getContactList(data))
+      const response = await api.get(CONTACT_LIST_API);
+      dispatch(getContactList(response));
     }
-  } catch (error) {
-    let errorMessage = 'Error fetching contact data'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-      toast.error(errorMessage, { autoClose: 3000 })
-    }
-    console.error('Error fetching contact data:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Contact List Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching contact data:", error);
   }
-}
+};
 
 // add contact record
 export const addContactListData =
   (newRecord: CrmContactItems) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(CONTACT_LIST_API, newRecord, 'contact')
-      const { data, message } = response
-      toast.success(message || 'contact record added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-crm-contact-list', { ...data })
-      dispatch(addContactList(data))
-    } catch (error) {
-      let errorMessage = 'contact record addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('contact record addition failed:', error)
+      const response = await api.post(CONTACT_LIST_API, newRecord, "Contact");
+      const { message } = response;
+      AddToast(message || "Contact record added successfully");
+      addLocalStorageRecord("d-crm-contact-list", newRecord);
+      dispatch(addContactList(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Contact record addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding contact record:", error);
     }
-  }
+  };
 
 // edit contact record
 export const editContactListData =
-  (contact: CrmContactItems) => async (dispatch: AppDispatch) => {
+  (question: CrmContactItems) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(CONTACT_LIST_API, contact, 'contact')
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-crm-contact-list',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editContactList(data))
-    } catch (error) {
-      let errorMessage = 'contact record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('contact record updation failed:', error)
+      const response = await api.put(CONTACT_LIST_API, question, "Contact");
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Contact record updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-crm-contact-list", question);
+      dispatch(editContactList(question));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Contact record updation failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding contact record:", error);
     }
-  }
+  };
 
 // delete customer record
 export const deleteContactListData =
-  (products: number[]) => async (dispatch: AppDispatch) => {
+  (question: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = products.map(async (id: number) => {
-        const response = await customDelete(CONTACT_LIST_API, id, 'contact')
-        const { data, message } = response
-        toast.success(message || 'Contact record deleted successfully', {
-          autoClose: 3000,
-        })
-        return data
-      })
-      const deletedProducts = await Promise.all(deletePromises)
-      dispatch(deleteContactList(deletedProducts))
+      const deletePromises = question.map(async (_id) => {
+        const response = await api.delete(CONTACT_LIST_API, _id, "Contact");
+        const { message } = response;
+        DeleteToast(message || "Deal record deleted successfully");
+        return _id;
+      });
+
+      const deletedContacts = await Promise.all(deletePromises);
+      dispatch(deleteContactList(deletedContacts));
       deleteLocalStorageRecord({
-        key: 'd-crm-contact-list',
-        listRecord: products,
+        key: "d-crm-contact-list",
+        listRecord: question,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'Error in deleting products'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Error in deleting products:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Contact record deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting contact: ", error);
     }
-  }
+  };

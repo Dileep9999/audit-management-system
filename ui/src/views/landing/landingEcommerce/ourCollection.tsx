@@ -1,8 +1,6 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import ReactCompareImage from 'react-compare-image'
+import ReactCompareImage from "react-compare-image";
 
 const OurCollection: React.FC = () => {
   return (
@@ -13,10 +11,11 @@ const OurCollection: React.FC = () => {
             <div className="col-span-12 md:col-span-6">
               <div
                 style={{
-                  maxWidth: '600px',
-                  margin: 'auto',
-                  position: 'relative',
-                }}>
+                  maxWidth: "600px",
+                  margin: "auto",
+                  position: "relative",
+                }}
+              >
                 <ReactCompareImage
                   leftImage="/assets/images/ecommerce/landing/cta-03.jpg"
                   rightImage="/assets/images/ecommerce/landing/cta-02.jpg"
@@ -45,7 +44,8 @@ const OurCollection: React.FC = () => {
               <button
                 type="button"
                 title="shop now"
-                className="font-medium border-gray-200 dark:border-dark-800 btn btn-outline-gray">
+                className="font-medium border-gray-200 dark:border-dark-800 btn btn-outline-gray"
+              >
                 Shop Now
                 <i className="ml-1 align-baseline ri-arrow-right-line ltr:inline-block rtl:hidden"></i>
                 <i className="mr-1 align-baseline ri-arrow-left-line ltr:hidden rtl:inline-block"></i>
@@ -55,7 +55,7 @@ const OurCollection: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default OurCollection
+export default OurCollection;

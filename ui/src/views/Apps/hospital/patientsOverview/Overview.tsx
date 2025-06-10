@@ -1,11 +1,6 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-
-import avatar5 from '@assets/images/avatar/user-5.png'
-import { MessagesSquare, Pencil, Phone } from 'lucide-react'
+import React from "react";
+import avatar5 from "@assets/images/avatar/user-5.png";
+import { MessagesSquare, Pencil, Phone } from "lucide-react";
 
 const Overview = () => {
   return (
@@ -14,9 +9,9 @@ const Overview = () => {
         <div className="card-body">
           <div className="flex flex-wrap gap-5">
             <div className="shrink">
-              <Image
+              <img
                 src={avatar5}
-                alt="avatar5"
+                alt="avatar5Img"
                 className="rounded-md size-40"
               />
             </div>
@@ -25,25 +20,25 @@ const Overview = () => {
               <div className="overflow-x-auto">
                 <div className="flex flex-wrap gap-3 item-center *:flex *:items-center">
                   <p>
-                    <i className="ltr:mr-1 rtl:ml-1 ri-user-3-line"></i>
+                    <i className="ltr:mr-1 rtl:ml-1 ri-user-3-line"></i>{" "}
                     <span className="text-gray-500 dark:text-dark-500">
                       Female
                     </span>
                   </p>
                   <p>
-                    <i className="ltr:mr-1 rtl:ml-1 ri-briefcase-line"></i>
+                    <i className="ltr:mr-1 rtl:ml-1 ri-briefcase-line"></i>{" "}
                     <span className="text-gray-500 dark:text-dark-500">
                       Accountant
                     </span>
                   </p>
                   <p>
-                    <i className="ltr:mr-1 rtl:ml-1 ri-map-pin-2-line"></i>
+                    <i className="ltr:mr-1 rtl:ml-1 ri-map-pin-2-line"></i>{" "}
                     <span className="text-gray-500 dark:text-dark-500">
                       California
                     </span>
                   </p>
                   <p>
-                    <i className="ltr:mr-1 rtl:ml-1 ri-calendar-event-line"></i>
+                    <i className="ltr:mr-1 rtl:ml-1 ri-calendar-event-line"></i>{" "}
                     <span className="text-gray-500 dark:text-dark-500">
                       13 Dec, 1998 (25 Years)
                     </span>
@@ -54,7 +49,7 @@ const Overview = () => {
                 <div className="flex flex-wrap items-center mt-5 gap-space">
                   <div className="p-4 text-center border border-gray-200 border-dashed rounded-md dark:border-dark-800 w-36 shrink-0">
                     <h4 className="mb-1">
-                      26
+                      26{" "}
                       <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
                         May, 2024
                       </small>
@@ -77,7 +72,7 @@ const Overview = () => {
                   </div>
                   <div className="p-4 text-center border border-gray-200 border-dashed rounded-md dark:border-dark-800 w-36 shrink-0">
                     <h4 className="mb-1">
-                      86
+                      86{" "}
                       <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
                         kg
                       </small>
@@ -86,7 +81,7 @@ const Overview = () => {
                   </div>
                   <div className="p-4 text-center border border-gray-200 border-dashed rounded-md dark:border-dark-800 w-36 shrink-0">
                     <h4 className="mb-1">
-                      178
+                      178{" "}
                       <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
                         cm
                       </small>
@@ -103,7 +98,8 @@ const Overview = () => {
                 </button>
                 <button
                   className="btn btn-sub-purple btn-icon"
-                  title="messages-square">
+                  title="messages-square"
+                >
                   <MessagesSquare className="size-4" />
                 </button>
                 <button type="button" className="btn btn-primary" title="add">
@@ -138,7 +134,7 @@ const Overview = () => {
                 <p className="mb-1 text-gray-500 dark:text-dark-500">
                   Pharmacy Name
                 </p>
-                <h6>ABC Pharmacy</h6>{' '}
+                <h6>PixalEyez Pharmacy</h6>
               </div>
               <div className="col-span-12 lg:col-span-6 xl:col-span-3">
                 <div className="whitespace-normal">
@@ -167,7 +163,7 @@ const Overview = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Overview
+export default Overview;

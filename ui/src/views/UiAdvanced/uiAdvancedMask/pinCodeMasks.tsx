@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import { InputMask } from '@react-input/mask'
+import React from "react";
+import { InputMask } from "@react-input/mask";
 
 const PinCodeMasks: React.FC = () => {
   return (
@@ -21,7 +18,7 @@ const PinCodeMasks: React.FC = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default PinCodeMasks
+export default PinCodeMasks;

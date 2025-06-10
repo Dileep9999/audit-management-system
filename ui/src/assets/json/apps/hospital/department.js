@@ -1,0 +1,80 @@
+import user22 from "/assets/images/avatar/user-22.png";
+import user23 from "/assets/images/avatar/user-23.png";
+
+const departmentData = [
+  {
+    departmentId: "PED-1",
+    departmentName: "Cardiology",
+    doctor: "Dr. Mark Thompson",
+    totalEmployee: "08",
+    headOfDepartment: "Dr. Sarah Patel",
+    status: "Active",
+  },
+  {
+    departmentId: "PED-2",
+    departmentName: "Orthopedics",
+    image: user22,
+    doctor: "Dr. Michael Chang",
+    totalEmployee: "10",
+    headOfDepartment: "Dr. Emily Johnson",
+    status: "Active",
+  },
+  {
+    departmentId: "PED-3",
+    departmentName: "Pediatrics",
+    doctor: "Dr. Jennifer Ramirez",
+    totalEmployee: "12",
+    headOfDepartment: "Dr. Daniel Smith",
+    status: "Active",
+  },
+  {
+    departmentId: "PED-4",
+    departmentName: "Neurology",
+    doctor: "Dr. Rebecca Evans",
+    totalEmployee: "07",
+    headOfDepartment: "Dr. Andrew Clark",
+    status: "Active",
+  },
+  {
+    departmentId: "PED-5",
+    departmentName: "Ophthalmology",
+    image: user23,
+    doctor: "Dr. Sophia Lee",
+    totalEmployee: "06",
+    headOfDepartment: "Dr. David Wong",
+    status: "Unactive",
+  },
+  {
+    departmentId: "PED-6",
+    departmentName: "Gastroenterology",
+    doctor: "Dr. Kevin Patel",
+    totalEmployee: "09",
+    headOfDepartment: "Dr. Emma Rodriguez",
+    status: "Active",
+  },
+  {
+    departmentId: "PED-7",
+    departmentName: "Obstetrics and Gynecology",
+    doctor: "Dr. Rachel Anderson",
+    totalEmployee: "11",
+    headOfDepartment: "Dr. James Wilson",
+    status: "Active",
+  },
+  {
+    departmentId: "PED-8",
+    departmentName: "Dermatology",
+    doctor: "Dr. Emily Chen",
+    totalEmployee: "07",
+    headOfDepartment: "Dr. Benjamin Davis",
+    status: "Active",
+  },
+  {
+    departmentId: "PED-9",
+    departmentName: "Urology",
+    doctor: "Dr. Christopher Carter",
+    totalEmployee: "08",
+    headOfDepartment: "Dr. Lauren Taylor",
+    status: "Active",
+  },
+];
+export default departmentData;

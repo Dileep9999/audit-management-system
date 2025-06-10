@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface LineChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: any;
 }
 
 const BasicLineChart = ({
@@ -24,39 +15,40 @@ const BasicLineChart = ({
   chartId,
 }: LineChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const values = [10, 41, 35, 51, 49, 62, 69, 91, 148]
+  const values = [10, 41, 35, 51, 49, 62, 69, 91, 148];
   const labels = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const formatCurrency = (x: number) => {
-    return '$' + x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-  }
+    return "$" + x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
 
   const series = [
     {
-      name: 'Series name',
+      name: "Series name",
       data: values,
     },
-  ]
+  ];
   const options: ApexOptions = {
+    labels: labels,
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 300,
-      type: 'line',
+      type: "line",
       zoom: {
         enabled: true,
       },
@@ -65,11 +57,11 @@ const BasicLineChart = ({
       enabled: false,
     },
     stroke: {
-      curve: 'straight',
+      curve: "straight",
     },
     grid: {
       row: {
-        colors: ['transparent'],
+        colors: ["transparent"],
         opacity: 0.5,
       },
       padding: {
@@ -77,12 +69,6 @@ const BasicLineChart = ({
         right: 5,
         bottom: 0,
       },
-    },
-    xaxis: {
-      title: {
-        text: 'Xaxis',
-      },
-      categories: labels,
     },
     tooltip: {
       x: {
@@ -93,7 +79,7 @@ const BasicLineChart = ({
       },
     },
     colors: chartsColor,
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -102,12 +88,12 @@ const BasicLineChart = ({
         series={series}
         type="line"
         data-chart-colors="[bg-primary-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default BasicLineChart
+export default BasicLineChart;

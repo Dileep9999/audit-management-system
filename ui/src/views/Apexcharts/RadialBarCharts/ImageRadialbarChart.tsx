@@ -1,37 +1,28 @@
-'use client'
+import React from "react";
+import { ApexOptions } from "apexcharts";
 
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import user1 from '@assets/images/avatar/user-1.png'
-import { ApexOptions } from 'apexcharts'
-
-import img1 from '../../../assets/images/gallery/img-01.jpg'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import user1 from "@assets/images/avatar/user-1.png";
+import img1 from "../../../assets/images/gallery/img-01.jpg";
+import ReactApexChart from "react-apexcharts";
 
 interface RadialChartsProps {
-  chartId: React.MutableRefObject<null>
+  chartId: string | number;
 }
 
-const ImageRadialbarChart = ({ chartId }: RadialChartsProps) => {
-  const series = [67]
-  const labels = ['Volatility']
+const ImageRadialBarChart = ({ chartId }: RadialChartsProps) => {
+  const series = [67];
+  const labels = ["Volatility"];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'radialBar',
+      type: "radialBar",
     },
     plotOptions: {
       radialBar: {
         hollow: {
           margin: 15,
-          size: '70%',
-          image: user1.src,
+          size: "70%",
+          image: user1,
           imageWidth: 64,
           imageHeight: 64,
           imageClipped: false,
@@ -39,28 +30,28 @@ const ImageRadialbarChart = ({ chartId }: RadialChartsProps) => {
         dataLabels: {
           name: {
             show: false,
-            color: '#fff',
+            color: "#fff",
           },
           value: {
             show: true,
-            color: '#333',
+            color: "#333",
             offsetY: 70,
-            fontSize: '22px',
+            fontSize: "22px",
           },
         },
       },
     },
     fill: {
-      type: 'image',
+      type: "image",
       image: {
-        src: [img1.src],
+        src: [img1],
       },
     },
     stroke: {
-      lineCap: 'round',
+      lineCap: "round",
     },
     labels: labels,
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -68,12 +59,12 @@ const ImageRadialbarChart = ({ chartId }: RadialChartsProps) => {
         options={options}
         series={series}
         type="radialBar"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ImageRadialbarChart
+export default ImageRadialBarChart;

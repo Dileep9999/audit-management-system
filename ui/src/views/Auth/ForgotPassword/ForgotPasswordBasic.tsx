@@ -1,30 +1,22 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
-import whiteLogo from '@assets/images/logo-white.png'
-import mainlogo from '@assets/images/main-logo.png'
-import { MoveRight } from 'lucide-react'
-import { toast } from 'react-toastify'
+import React, { useState } from "react";
+import mainLogo from "@assets/images/main-logo.png";
+import whiteLogo from "@assets/images/logo-white.png";
+import { MoveRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import ErrorToast from "@src/components/custom/toast/errorToast";
 
 const ForgotPasswordBasic = () => {
-  const [email, setEmail] = useState('')
-
-  const router = useRouter()
-
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!email) {
-      toast.error('Please enter your email')
-      return
+    e.preventDefault();
+    if (!email || !email.trim()) {
+      ErrorToast("Please enter your email");
+      return;
     } else {
-      router.push('/auth/two-step-verification-basic')
+      navigate("/auth/two-step-verification-basic");
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -34,17 +26,17 @@ const ForgotPasswordBasic = () => {
             <div className="col-span-12 md:col-span-10 lg:col-span-6 xl:col-span-4 md:col-start-2 lg:col-start-4 xl:col-start-5 mb-0 card">
               <div className="md:p-10 card-body">
                 <div className="mb-5 text-center">
-                  <Link href="#!">
-                    <Image
-                      src={mainlogo}
-                      alt="mainlogo"
+                  <Link to="#!">
+                    <img
+                      src={mainLogo}
+                      alt="logo"
                       className="h-8 mx-auto dark:hidden"
                       width={176}
                       height={32}
                     />
-                    <Image
+                    <img
                       src={whiteLogo}
-                      alt="whiteLogo"
+                      alt="logo"
                       className="hidden h-8 mx-auto dark:inline-block"
                       width={176}
                       height={32}
@@ -61,12 +53,12 @@ const ForgotPasswordBasic = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-12 gap-4 mt-5">
                     <div className="col-span-12">
-                      <label htmlFor="emailInput" className="form-label">
+                      <label htmlFor="email" className="form-label">
                         Email or Username
                       </label>
                       <input
                         type="text"
-                        id="emailInput"
+                        id="email"
                         className="w-full form-input"
                         placeholder="Enter your email or username"
                         value={email}
@@ -76,16 +68,18 @@ const ForgotPasswordBasic = () => {
                     <div className="col-span-12">
                       <button
                         type="submit"
-                        className="w-full px-4 py-2 text-white rounded-md bg-primary-500 hover:bg-primary-600">
+                        className="w-full px-4 py-2 text-white rounded-md bg-primary-500 hover:bg-primary-600"
+                      >
                         Reset Password
                       </button>
                       <p className="mt-3 text-center text-gray-500">
-                        Return to the
+                        Return to the{" "}
                         <Link
-                          href="/auth/signin-basic"
-                          className="font-medium underline link link-primary">
+                          to="/auth/signin-basic"
+                          className="font-medium underline link link-primary"
+                        >
                           <span className="align-middle">Sign In </span>
-                          <MoveRight className="inline-block rtl:mr-1 ltr:ml-1 size-4" />
+                          <MoveRight className="inline-block rtl:mr-1 ltr:ml-1 size-4" />{" "}
                         </Link>
                       </p>
                     </div>
@@ -97,6 +91,6 @@ const ForgotPasswordBasic = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default ForgotPasswordBasic
+  );
+};
+export default ForgotPasswordBasic;

@@ -1,21 +1,15 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import assigin from '@assets/images/dashboards/projects/asssign.png'
-import { NextPageWithLayout } from '@src/dtos'
-
-import AnimatedCounter from '../AnalyticsDashboards/Counter'
+import React from "react";
+import assigin from "@assets/images/dashboards/projects/asssign.png";
+import { NextPageWithLayout } from "@dtos/layout";
+import AnimatedCounter from "../analyticsDashboards/counter";
+import { Link } from "react-router-dom";
 
 const AssignProject: NextPageWithLayout = () => {
   return (
     <React.Fragment>
       <div className="relative order-5 col-span-12 overflow-hidden md:col-span-6 lg:col-span-12 2xl:col-span-3 card">
         <div className="absolute top-0 ltr:right-0 rtl:left-0 bg-primary-500/20 blur-2xl size-32"></div>
-        <Image
+        <img
           src={assigin}
           alt="assiginImg"
           className="absolute bottom-0 ltr:right-3 rtl:left-3"
@@ -34,12 +28,12 @@ const AssignProject: NextPageWithLayout = () => {
             </h6>
             <p className="text-gray-500 dark:text-dark-500">Assigned</p>
           </div>
-          <Link href="#!" className="btn btn-primary">
+          <Link to="#!" className="btn btn-primary">
             Start Now
           </Link>
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default AssignProject
+  );
+};
+export default AssignProject;

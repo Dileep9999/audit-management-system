@@ -1,122 +1,110 @@
-'use client'
-
-import React, { useEffect, useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import DeleteModal from '@src/components/common/DeleteModal'
+import DeleteModal from "@src/components/common/deleteModal";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import type { TodayAppointments } from '@src/dtos'
-import { AppDispatch, RootState } from '@src/slices/reducer'
+} from "@src/components/custom/dropdown/dropdown";
+import type { TodayAppointments } from "@src/dtos";
+import { AppDispatch, RootState } from "@src/slices/reducer";
 import {
   deleteTodayAppointmentsData,
   getTodayAppointmentsData,
-} from '@src/slices/thunk'
-import { useDispatch, useSelector } from 'react-redux'
-
-import EditeTodayAppointments from './editTodayAppointments'
+} from "@src/slices/thunk";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import EditTodayAppointments from "./editTodayAppointments";
+import { Link } from "react-router-dom";
 
 const TodayAppointments = () => {
   //get
-  const dispatch: AppDispatch = useDispatch()
+  const dispatch: AppDispatch = useDispatch();
   const { todaysAppointments } = useSelector(
-    (state: RootState) => state.Appointments
-  )
-
-  const [showAll, setShowAll] = useState(false)
+    (state: RootState) => state.Appointments,
+  );
+  const [showAll, setShowAll] = useState(false);
   const [todaysAppointment, setTodaysAppointment] = useState<
     TodayAppointments[]
-  >([])
+  >([]);
   const appointmentsToShow = showAll
     ? todaysAppointment
-    : todaysAppointment.slice(0, 4)
+    : todaysAppointment.slice(0, 4);
 
   useEffect(() => {
     if (!todaysAppointments) {
-      dispatch(getTodayAppointmentsData())
+      dispatch(getTodayAppointmentsData());
     } else {
-      setTodaysAppointment(todaysAppointments)
+      setTodaysAppointment(todaysAppointments);
     }
-  }, [todaysAppointments, dispatch])
+  }, [todaysAppointments, dispatch]);
 
   const toggleShowAll = () => {
-    setShowAll((prev) => !prev)
-  }
-
-  //delete
+    setShowAll((prev) => !prev);
+  };
 
   const [dayAppointment, setDayAppointment] =
-    useState<TodayAppointments | null>(null)
+    useState<TodayAppointments | null>(null);
 
-  const [show, setShow] = useState<boolean>(false)
+  const [show, setShow] = useState<boolean>(false);
   const toggleDelete = () => {
-    setShow(false)
-    setDayAppointment(null)
-  }
+    setShow(false);
+    setDayAppointment(null);
+  };
 
   const onClickEventListDelete = (list: TodayAppointments) => {
-    setDayAppointment(list)
-    setShow(true)
-  }
+    setDayAppointment(list);
+    setShow(true);
+  };
 
   const handleDeleteList = () => {
     if (dayAppointment) {
-      dispatch(deleteTodayAppointmentsData([dayAppointment.id]))
-      setShow(false)
+      dispatch(deleteTodayAppointmentsData([dayAppointment._id]));
+      setShow(false);
     }
-  }
+  };
 
-  //add and edite
-  const [modalState, setModalState] = useState<{
-    showAddcontactForm: boolean
-    showEditcontactForm: boolean
-  }>({
-    showAddcontactForm: false,
-    showEditcontactForm: false,
-  })
+  const [modalState, setModalState] = useState<{ [key: string]: boolean }>({
+    showAddContactForm: false,
+    showEditContactForm: false,
+  });
 
   const openModal = (key: string) =>
-    setModalState((prev) => ({ ...prev, [key]: true }))
+    setModalState((prev) => ({ ...prev, [key]: true }));
   const closeModal = (key: string) =>
-    setModalState((prev) => ({ ...prev, [key]: false }))
+    setModalState((prev) => ({ ...prev, [key]: false }));
 
-  const [editMode, setEditMode] = useState(false)
+  const [editMode, setEditMode] = useState(false);
 
   const [currentEvent, setCurrentEvent] = useState<TodayAppointments | null>(
-    null
-  )
+    null,
+  );
 
   const handleOpenModal = (
     editMode: boolean = false,
-    event: TodayAppointments | null = null
+    event: TodayAppointments | null = null,
   ) => {
-    setEditMode(editMode)
-    setCurrentEvent(event)
-    const modalKey = editMode ? 'showEditcontactForm' : 'showAddcontactForm'
-    openModal(modalKey)
-  }
+    setEditMode(editMode);
+    setCurrentEvent(event);
+    const modalKey = editMode ? "showEditContactForm" : "showAddContactForm";
+    openModal(modalKey);
+  };
 
   const handleCloseModal = () => {
-    const modalKey = editMode ? 'showEditcontactForm' : 'showAddcontactForm'
-    closeModal(modalKey)
-    setEditMode(false)
-    setCurrentEvent(null)
-  }
+    const modalKey = editMode ? "showEditContactForm" : "showAddContactForm";
+    closeModal(modalKey);
+    setEditMode(false);
+    setCurrentEvent(null);
+  };
 
   return (
     <React.Fragment>
-      <div className="flex mb-3">
+      <div className="flex mb-5">
         <h6 className="grow">Today Appointments</h6>
         <Link
-          href="#"
+          to="#"
           className="underline link link-primary shrink-0"
-          onClick={toggleShowAll}>
-          {showAll ? 'Show Less' : 'Show All'}
+          onClick={toggleShowAll}
+        >
+          {showAll ? "Show Less" : "Show All"}
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-x-space">
@@ -125,9 +113,9 @@ const TodayAppointments = () => {
             <div className="card-body">
               <div className="flex">
                 <div className="grow">
-                  <Image
+                  <img
                     src={item.image}
-                    alt="appintmentImg"
+                    alt="itemImg"
                     height={48}
                     width={48}
                     className="rounded-lg size-12"
@@ -138,24 +126,26 @@ const TodayAppointments = () => {
                     <i className="ri-more-fill"></i>
                   </DropdownButton>
                   <DropdownMenu>
-                    <Link href="#" className="dropdown-item">
+                    <Link to="#" className="dropdown-item">
                       Overview
                     </Link>
                     <Link
-                      href="#"
+                      to="#"
                       className="dropdown-item"
                       onClick={(e) => {
-                        e.preventDefault()
-                        handleOpenModal(true, item)
-                      }}>
+                        e.preventDefault();
+                        handleOpenModal(true, item);
+                      }}
+                    >
                       Edit
                     </Link>
                     <button
                       className="dropdown-item"
                       onClick={(e) => {
-                        e.preventDefault()
-                        onClickEventListDelete(item)
-                      }}>
+                        e.preventDefault();
+                        onClickEventListDelete(item);
+                      }}
+                    >
                       Delete
                     </button>
                   </DropdownMenu>
@@ -163,7 +153,7 @@ const TodayAppointments = () => {
               </div>
               <div className="mt-4">
                 <h6 className="mb-1">
-                  <Link href="#!">{item.patientName}</Link>
+                  <Link to="#!">{item.patientName}</Link>
                 </h6>
                 <p className="text-gray-500 dark:text-dark-500">
                   {item.treatment}
@@ -188,7 +178,7 @@ const TodayAppointments = () => {
         handleHide={toggleDelete}
         deleteModalFunction={handleDeleteList}
       />
-      <EditeTodayAppointments
+      <EditTodayAppointments
         modalState={modalState}
         closeModal={handleCloseModal}
         eventList={todaysAppointment}
@@ -196,7 +186,7 @@ const TodayAppointments = () => {
         currentContact={currentEvent}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TodayAppointments
+export default TodayAppointments;

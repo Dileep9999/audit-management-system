@@ -1,132 +1,115 @@
-import { Parents } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
+import { AppDispatch } from "@src/slices/reducer";
+import api from "@src/utils/axios_api";
+import { Parents } from "@src/dtos";
+import { REACT_APP_SCHOOL_PARENTS_LIST } from "@src/utils/url_helper";
 import {
-  LocalStorageRecord,
   addLocalStorageRecord,
   createLocalStorage,
   deleteLocalStorageRecord,
   getLocalStorage,
   updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_SCHOOL_PARENTS_LIST } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
-
+} from "@src/utils/crud_functions";
 import {
   addParentsList,
   deleteParentsList,
   editParentsList,
   getParentsList,
-} from './reducer'
+} from "./reducer";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-const SCHOOL_PARENTS_API = NEXT_PUBLIC_SCHOOL_PARENTS_LIST
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const SCHOOL_PARENTS_API = REACT_APP_SCHOOL_PARENTS_LIST;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get Parents list
 export const getParentsListData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = await getLocalStorage('d-parents-list')
+      const responseData = await getLocalStorage("d-parents-list");
       if (!responseData) {
-        const response = await api.get(SCHOOL_PARENTS_API)
-        const { data } = response
-        createLocalStorage('d-parents-list', data)
-        dispatch(getParentsList(data))
+        const response = await api.get(SCHOOL_PARENTS_API);
+        createLocalStorage("d-parents-list", response);
+        dispatch(getParentsList(response));
       } else {
-        dispatch(getParentsList((responseData as Parents[]) || []))
+        dispatch(getParentsList(responseData));
       }
     } else {
-      const response = await api.get(SCHOOL_PARENTS_API)
-      const { data } = response
-      dispatch(getParentsList(data))
+      const response = await api.get(SCHOOL_PARENTS_API);
+      dispatch(getParentsList(response));
     }
-  } catch (error) {
-    let errorMessage = 'error fetching Parents data'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error?.response?.data?.message || error?.message || errorMessage
-    }
-    toast.error(errorMessage, { autoClose: 3000 })
-    console.error('rror fetching Parents data', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Parents List Fetch Failed.";
+    ErrorToast(errorMessage);
+    console.error("Error fetching parents List data:", error);
   }
-}
+};
 
-// add Parents record
 export const addParentsListData =
   (newRecord: Parents) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(
-        SCHOOL_PARENTS_API,
-        newRecord,
-        'Parents'
-      )
-      const { data, message } = response
-      toast.success(message || 'parent record added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-parents-list', { ...data })
-      dispatch(addParentsList(data))
-    } catch (error) {
-      let errorMessage = 'parents addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error?.response?.data?.message || error?.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('parents addition failed', error)
+      const response = await api.post(SCHOOL_PARENTS_API, newRecord, "Parents");
+      const { message } = response;
+      AddToast(message || "Parents added successfully");
+      addLocalStorageRecord("d-parents-list", newRecord);
+      dispatch(addParentsList(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Parents addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding parents record:", error);
     }
-  }
+  };
 
 // edit parents record
 export const editParentsListData =
-  (parents: Parents) => async (dispatch: AppDispatch) => {
+  (question: Parents) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(SCHOOL_PARENTS_API, parents, 'parents')
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-parents-list',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editParentsList(data))
-    } catch (error) {
-      let errorMessage = 'Parents record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error?.response?.data?.message || error?.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('Parents record updation failed', error)
+      const response = await api.put(SCHOOL_PARENTS_API, question, "Parents");
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Book updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-parents-list", question);
+      dispatch(editParentsList(question));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || error.message || "Book update failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating book record:", error);
     }
-  }
+  };
 
 // delete customer record
 export const deleteParentsListData =
-  (parents: number[]) => async (dispatch: AppDispatch) => {
+  (question: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = parents.map(async (id) => {
-        const response = await customDelete(SCHOOL_PARENTS_API, id, 'parents')
-        const { message } = response
-        toast.success(message || 'parents record deleted successfully', {
-          autoClose: 3000,
-        })
-        return response.data
-      })
-      const deletedProducts = await Promise.all(deletePromises)
-      dispatch(deleteParentsList(deletedProducts))
+      const deletePromises = question.map(async (id) => {
+        const response = await api.delete(SCHOOL_PARENTS_API, id, "Parents");
+        const { message } = response;
+        DeleteToast(message || "Parents record deleted successfully");
+        return id;
+      });
+
+      const deletedParents = await Promise.all(deletePromises);
+      dispatch(deleteParentsList(deletedParents));
       deleteLocalStorageRecord({
-        key: 'd-parents-list',
-        listRecord: parents,
+        key: "d-parents-list",
+        listRecord: question,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'parent record deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error?.response?.data?.message || error?.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('parent record deletion failed', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Parents deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting parents: ", error);
     }
-  }
+  };

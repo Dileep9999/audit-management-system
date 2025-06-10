@@ -1,18 +1,9 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
 
 interface FunnelChartsProps {
-  chartId: React.MutableRefObject<null>
+  chartId: string;
 }
 
 const PyramidChart = ({ chartId }: FunnelChartsProps) => {
@@ -20,26 +11,26 @@ const PyramidChart = ({ chartId }: FunnelChartsProps) => {
 
   const series = [
     {
-      name: '',
+      name: "",
       data: [200, 330, 548, 740, 880, 990, 1100, 1380],
     },
-  ]
+  ];
 
   const labels = [
-    'Sweets',
-    'Processed Foods',
-    'Healthy Fats',
-    'Meat',
-    'Beans & Legumes',
-    'Dairy',
-    'Fruits & Vegetables',
-    'Grains',
-  ]
+    "Sweets",
+    "Processed Foods",
+    "Healthy Fats",
+    "Meat",
+    "Beans & Legumes",
+    "Dairy",
+    "Fruits & Vegetables",
+    "Grains",
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
       animations: {
         speed: 500,
       },
@@ -49,32 +40,32 @@ const PyramidChart = ({ chartId }: FunnelChartsProps) => {
         borderRadius: 0,
         horizontal: true,
         distributed: true,
-        barHeight: '80%',
+        barHeight: "80%",
         isFunnel: true,
       },
     },
     colors: [
-      '#F44F5E',
-      '#E55A89',
-      '#D863B1',
-      '#CA6CD8',
-      '#B57BED',
-      '#8D95EB',
-      '#62ACEA',
-      '#4BC3E6',
+      "#F44F5E",
+      "#E55A89",
+      "#D863B1",
+      "#CA6CD8",
+      "#B57BED",
+      "#8D95EB",
+      "#62ACEA",
+      "#4BC3E6",
     ],
     dataLabels: {
       enabled: true,
-      formatter: (val, opt) => {
-        return `${labels[opt.dataPointIndex]}: ${val}`
+      formatter: (val: any, opt: any) => {
+        return `${labels[opt.dataPointIndex]}: ${val}`;
       },
       dropShadow: {
         enabled: true,
       },
     },
     title: {
-      text: 'Pyramid Chart',
-      align: 'center',
+      text: "Pyramid Chart",
+      align: "center",
     },
     xaxis: {
       categories: labels,
@@ -89,7 +80,7 @@ const PyramidChart = ({ chartId }: FunnelChartsProps) => {
         bottom: 0,
       },
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -99,12 +90,12 @@ const PyramidChart = ({ chartId }: FunnelChartsProps) => {
         series={series}
         data-chart-colors="[bg-primary-500]"
         type="bar"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default PyramidChart
+export default PyramidChart;

@@ -1,14 +1,19 @@
-'use client'
+import { Modal } from "@src/components/custom/modal/modal";
+import { FolderListRecord } from "@src/dtos/apps/filemanager";
+import { AppDispatch } from "@src/slices/reducer";
+import { addFolderRecordData, editFolderRecordData } from "@src/slices/thunk";
+import { X } from "lucide-react";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 
-import React, { useEffect } from 'react'
-
-import { Modal } from '@src/components/custom/modal/modal'
-import { AddNewFolderModal, FolderListRecord } from '@src/dtos/apps/filemanager'
-import { AppDispatch } from '@src/slices/reducer'
-import { addFolderRecordData, editFolderRecordData } from '@src/slices/thunk'
-import { X } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
+interface AddNewFolderModal {
+  modalState: { [key: string]: boolean };
+  closeModal: (key: string) => void;
+  folderList: FolderListRecord[];
+  editMode: boolean;
+  currentFolder: FolderListRecord | null;
+}
 
 const AddEditFolder: React.FC<AddNewFolderModal> = ({
   modalState,
@@ -17,7 +22,7 @@ const AddEditFolder: React.FC<AddNewFolderModal> = ({
   editMode = false,
   currentFolder = null,
 }) => {
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
 
   const {
     register,
@@ -26,44 +31,40 @@ const AddEditFolder: React.FC<AddNewFolderModal> = ({
     reset,
     clearErrors,
     formState: { errors },
-  } = useForm<FolderListRecord>()
+  } = useForm<FolderListRecord>();
   useEffect(() => {
     if (editMode && currentFolder) {
-      clearErrors()
+      clearErrors();
       Object.keys(currentFolder).forEach((key) => {
-        setValue(
-          key as keyof FolderListRecord,
-          currentFolder[key as keyof FolderListRecord]
-        )
-      })
+        setValue(key as keyof FolderListRecord, (currentFolder as any)[key]);
+      });
     } else {
-      reset()
+      reset();
     }
-  }, [editMode, currentFolder, setValue, reset, clearErrors])
-  console.log('folderList', folderList)
+  }, [editMode, currentFolder, setValue, reset, clearErrors]);
+
   const submitForm = (data: FolderListRecord, onClose: () => void) => {
     if (editMode && currentFolder) {
-      const updatedContact: FolderListRecord = { ...data }
-      dispatch(editFolderRecordData(updatedContact))
+      const updatedContact: FolderListRecord = { ...data };
+      dispatch(editFolderRecordData(updatedContact));
     } else {
-      // Create new customer with generated customerId
       const newCustomer: FolderListRecord = {
         ...data,
-        id: folderList ? folderList.length + 1 : 1,
-        description: '0',
-      }
+        _id: folderList.length > 0 ? folderList.length + 10 : +1,
+        description: "0",
+      };
 
-      dispatch(addFolderRecordData(newCustomer))
-      reset()
+      dispatch(addFolderRecordData(newCustomer));
+      reset();
     }
 
-    onClose()
-  }
+    onClose();
+  };
 
-  const handleCloseModal = (modal: string) => {
-    closeModal(modal)
-    clearErrors()
-  }
+  const handleClosedModal = (modal: string) => {
+    closeModal(modal);
+    clearErrors();
+  };
 
   return (
     <React.Fragment>
@@ -73,12 +74,12 @@ const AddEditFolder: React.FC<AddNewFolderModal> = ({
             ? modalState.showEditFolder
             : modalState.showAddFolder
         }
-        title={editMode ? 'Edit Folder' : 'Create Folder'}
+        title={editMode ? "Edit Folder" : "Create Folder"}
         onClose={() =>
-          handleCloseModal(editMode ? 'showEditFolder' : 'showAddFolder')
+          handleClosedModal(editMode ? "showEditFolder" : "showAddFolder")
         }
         position="modal-center"
-        id={editMode ? 'showEditFolder' : 'showAddFolder'}
+        id={editMode ? "showEditFolder" : "showAddFolder"}
         contentClass="modal-content"
         content={(onClose) => (
           <>
@@ -91,7 +92,7 @@ const AddEditFolder: React.FC<AddNewFolderModal> = ({
                   type="text"
                   id="basicInput1"
                   className="form-input dark:bg-dark-800 dark:border-dark-500"
-                  {...register('name', { required: 'This field is required.' })}
+                  {...register("name", { required: "This field is required." })}
                 />
                 {errors.name && (
                   <span className="text-red-500">{errors.name.message}</span>
@@ -102,11 +103,12 @@ const AddEditFolder: React.FC<AddNewFolderModal> = ({
                   type="button"
                   className="btn btn-active-red"
                   data-modal-close="createFolderModal"
-                  onClick={() => onClose()}>
+                  onClick={onClose}
+                >
                   Close <X className="inline-block ltr:ml-1 rtl:mr-1 size-4" />
                 </button>
                 <button type="submit" className="btn btn-primary">
-                  {editMode ? 'Update Folder' : 'Create Folder'}
+                  {editMode ? "Update Folder" : "Create Folder"}
                 </button>
               </div>
             </form>
@@ -114,7 +116,7 @@ const AddEditFolder: React.FC<AddNewFolderModal> = ({
         )}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default AddEditFolder
+export default AddEditFolder;

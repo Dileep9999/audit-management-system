@@ -1,13 +1,8 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { TeamNumber } from '@src/data'
-import { NextPageWithLayout } from '@src/dtos'
-import SimpleBar from 'simplebar-react'
+import { TeamNumber } from "@data/index";
+import { NextPageWithLayout } from "@dtos/layout";
+import React from "react";
+import { Link } from "react-router-dom";
+import SimpleBar from "simplebar-react";
 
 const TeamMembers: NextPageWithLayout = () => {
   return (
@@ -15,9 +10,9 @@ const TeamMembers: NextPageWithLayout = () => {
       <div className="order-7 col-span-12 xl:col-span-6 2xl:col-span-4 card">
         <div className="flex items-center gap-3 card-header">
           <h6 className="card-title grow">Team Members</h6>
-          <Link href="#!" className="link link-primary shrink-0">
-            See All
-            <i className="ml-1 align-baseline ri-arrow-right-line ltr:inline-block rtl:hidden"></i>
+          <Link to="#!" className="link link-primary shrink-0">
+            See All{" "}
+            <i className="align-baseline ri-arrow-right-line ltr:inline-block rtl:hidden"></i>
             <i className="align-baseline ri-arrow-left-line rtl:inline-block ltr:hidden"></i>
           </Link>
         </div>
@@ -28,14 +23,14 @@ const TeamMembers: NextPageWithLayout = () => {
                 return (
                   <div key={index} className="p-3 mb-0 card">
                     <div className="flex items-center gap-2">
-                      <Image
+                      <img
                         src={item.img}
-                        alt="teamImg"
+                        alt="TeamnumberImg"
                         className="rounded-md size-10"
                       />
                       <div className="grow">
                         <h6 className="mb-1">
-                          <Link href="#!">{item.name}</Link>
+                          <Link to="#!">{item.name}</Link>
                         </h6>
                         <p className="text-gray-500 dark:text-dark-500">
                           {item.position}
@@ -46,13 +41,13 @@ const TeamMembers: NextPageWithLayout = () => {
                       </p>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </SimpleBar>
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default TeamMembers
+  );
+};
+export default TeamMembers;

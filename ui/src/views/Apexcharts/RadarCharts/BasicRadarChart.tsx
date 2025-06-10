@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface RadarChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const BasicRadarChart = ({
@@ -24,29 +15,29 @@ const BasicRadarChart = ({
   chartId,
 }: RadarChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Series 1',
+      name: "Series 1",
       data: [80, 50, 30, 40, 100, 20],
     },
-  ]
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June']
+  ];
+  const labels = ["January", "February", "March", "April", "May", "June"];
 
   const options: ApexOptions = {
     chart: {
       height: 370,
-      type: 'radar',
+      type: "radar",
     },
     colors: chartsColor,
     title: {
-      text: 'Basic Radar Chart',
+      text: "Basic Radar Chart",
     },
     xaxis: {
       categories: labels,
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -55,12 +46,12 @@ const BasicRadarChart = ({
         series={series}
         type="radar"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-yellow-500, bg-purple-500, bg-red-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default BasicRadarChart
+export default BasicRadarChart;

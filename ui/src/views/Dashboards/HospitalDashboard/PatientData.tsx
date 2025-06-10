@@ -1,21 +1,16 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
+import React, { useState } from "react";
+import { PatientVisitApp } from "./hostipalChart";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-
-import AnimatedCounter from '../AnalyticsDashboards/Counter'
-import { PatientVisitApp } from './HostipalChart'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
+import AnimatedCounter from "../analyticsDashboards/counter";
 
 const PatientData = () => {
-  const [timeFrame, setTimeFrame] = useState('Last Week')
-  const [open, setOpen] = useState(false)
+  const [timeFrame, setTimeFrame] = useState("Last Week");
+  const [open, setOpen] = useState(false);
 
   return (
     <React.Fragment>
@@ -24,20 +19,20 @@ const PatientData = () => {
           <div className="grid grid-cols-12 gap-space">
             <div className="col-span-12 row-span-2 xl:col-span-6">
               <div className="flex items-center gap-3 mb-space">
-                <h6 className="card-title grow">Patient Visits</h6>
+                <h6 className="card-title grow">Patient Visit</h6>
                 <Dropdown
                   position=""
                   trigger="click"
-                  dropdownClassName="dropdown">
+                  dropdownClassName="dropdown"
+                >
                   <DropdownButton colorClass="flex px-2 py-1 text-xs border-gray-200 dark:border-dark-800 link link-red btn">
                     Last Week
                     <svg
                       onClick={() => setOpen(!open)}
-                      className={`transition-transform duration-300 size-4 ${
-                        open ? 'transform rotate-180' : ''
-                      }`}
+                      className={`transition-transform duration-300 size-4 ${open ? "transform rotate-180" : ""}`}
                       viewBox="0 0 20 20"
-                      fill="currentColor">
+                      fill="currentColor"
+                    >
                       <path
                         fillRule="evenodd"
                         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -47,21 +42,24 @@ const PatientData = () => {
                   </DropdownButton>
                   <DropdownMenu>
                     <Link
-                      href="#!"
+                      to="#!"
                       className="dropdown-item "
-                      onClick={() => setTimeFrame('Weekly')}>
+                      onClick={() => setTimeFrame("Weekly")}
+                    >
                       <span>Weekly</span>
                     </Link>
                     <Link
-                      href="#!"
+                      to="#!"
                       className="dropdown-item "
-                      onClick={() => setTimeFrame('Monthly')}>
+                      onClick={() => setTimeFrame("Monthly")}
+                    >
                       <span>Monthly</span>
                     </Link>
                     <Link
-                      href="#!"
+                      to="#!"
                       className="dropdown-item"
-                      onClick={() => setTimeFrame('Yearly')}>
+                      onClick={() => setTimeFrame("Yearly")}
+                    >
                       <span>Yearly</span>
                     </Link>
                   </DropdownMenu>
@@ -69,7 +67,7 @@ const PatientData = () => {
               </div>
               <PatientVisitApp
                 chartColors="[bg-primary-500, bg-green-500, bg-yellow-500]"
-                chartDarkColors={''}
+                chartDarkColors={""}
                 chartId="patientVisitChart"
                 timeFrame={timeFrame}
               />
@@ -77,13 +75,15 @@ const PatientData = () => {
             <div className="relative col-span-12 p-5 overflow-hidden rounded-md bg-purple-500/15 lg:col-span-6 xl:col-span-3">
               <svg
                 className="absolute top-0 left-16 size-52"
-                viewBox="0 0 1422 800">
+                viewBox="0 0 1422 800"
+              >
                 <g
                   shapeRendering="crispEdges"
                   strokeLinejoin="round"
                   fill="none"
                   strokeWidth="2"
-                  className="stroke-purple-500/30">
+                  className="stroke-purple-500/30"
+                >
                   <polygon points="1066.5,200 1066.5,0 1422,200"></polygon>
                   <polygon points="1066.5,100 1066.5,0 888.75,100"></polygon>
                   <polygon points="711,0 888.75,100 711,100"></polygon>
@@ -175,13 +175,15 @@ const PatientData = () => {
             <div className="relative col-span-12 p-5 overflow-hidden rounded-md bg-red-500/15 lg:col-span-6 xl:col-span-3">
               <svg
                 className="absolute top-0 left-16 size-52"
-                viewBox="0 0 1422 800">
+                viewBox="0 0 1422 800"
+              >
                 <g
                   shapeRendering="crispEdges"
                   strokeLinejoin="round"
                   fill="none"
                   strokeWidth="2"
-                  className="stroke-red-500/30">
+                  className="stroke-red-500/30"
+                >
                   <polygon points="1066.5,200 1066.5,0 1422,200"></polygon>
                   <polygon points="1066.5,100 1066.5,0 888.75,100"></polygon>
                   <polygon points="711,0 888.75,100 711,100"></polygon>
@@ -259,7 +261,7 @@ const PatientData = () => {
               </svg>
               <div className="relative">
                 <p className="mb-12 text-gray-500 dark:text-dark-500">
-                  Surgeries
+                  Surgery
                 </p>
 
                 <h5>
@@ -273,13 +275,15 @@ const PatientData = () => {
             <div className="relative col-span-12 p-5 overflow-hidden rounded-md lg:col-span-6 xl:col-span-3 bg-sky-500/15">
               <svg
                 className="absolute top-0 left-16 size-52"
-                viewBox="0 0 1422 800">
+                viewBox="0 0 1422 800"
+              >
                 <g
                   shapeRendering="crispEdges"
                   strokeLinejoin="round"
                   fill="none"
                   strokeWidth="2"
-                  className="stroke-sky-500/30">
+                  className="stroke-sky-500/30"
+                >
                   <polygon points="1066.5,200 1066.5,0 1422,200"></polygon>
                   <polygon points="1066.5,100 1066.5,0 888.75,100"></polygon>
                   <polygon points="711,0 888.75,100 711,100"></polygon>
@@ -371,13 +375,15 @@ const PatientData = () => {
             <div className="relative col-span-12 p-5 overflow-hidden rounded-md bg-green-500/15 lg:col-span-6 xl:col-span-3">
               <svg
                 className="absolute top-0 left-16 size-52"
-                viewBox="0 0 1422 800">
+                viewBox="0 0 1422 800"
+              >
                 <g
                   shapeRendering="crispEdges"
                   strokeLinejoin="round"
                   fill="none"
                   strokeWidth="2"
-                  className="stroke-green-500/30">
+                  className="stroke-green-500/30"
+                >
                   <polygon points="1066.5,200 1066.5,0 1422,200"></polygon>
                   <polygon points="1066.5,100 1066.5,0 888.75,100"></polygon>
                   <polygon points="711,0 888.75,100 711,100"></polygon>
@@ -470,6 +476,6 @@ const PatientData = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default PatientData
+  );
+};
+export default PatientData;

@@ -1,4 +1,4 @@
-[data-layout='horizontal'][data-mode='dark'] {
+[data-layout="horizontal"][data-mode="dark"] {
   --color-sidebar: var(--color-dark-900);
   --color-sidebar-border: var(--color-dark-800);
   --color-sidebar-divider: var(--color-dark-800);

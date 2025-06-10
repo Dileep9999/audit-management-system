@@ -1,12 +1,12 @@
-import { getLocalStorage } from '@src/utils/crud_functions'
+import { getLocalStorage } from "./crud_functions";
 
-const isNotApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'false'
+const isNotApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // init store data from local storage
 export const initStore = (key: string) => {
   if (isNotApi) {
-    return getLocalStorage(key)
+    return getLocalStorage(key);
   } else {
-    return null
+    return null;
   }
-}
+};

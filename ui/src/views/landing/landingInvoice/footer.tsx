@@ -1,11 +1,9 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Link from 'next/link'
+import { Link } from "react-router-dom";
 
 const Footer: React.FC = () => {
-  const year = new Date().getFullYear()
+  const year = new Date().getFullYear();
   return (
     <React.Fragment>
       <footer className="relative py-5 border-t border-purple-200 border-dashed bg-purple-50 dark:bg-purple-500/10 dark:border-purple-500/20">
@@ -14,7 +12,7 @@ const Footer: React.FC = () => {
             <div>
               <p className="text-gray-500 dark:text-muted-invoice">
                 &copy; <span>{year}</span> Domiex. Crafted by
-                <Link href="#!" className="font-semibold">
+                <Link to="#!" className="ml-1 font-semibold">
                   SRBThemes
                 </Link>
               </p>
@@ -22,27 +20,31 @@ const Footer: React.FC = () => {
             <div>
               <div className="flex justify-end gap-6 text-lg">
                 <Link
-                  href="#!"
+                  to="#!"
                   title="twitter"
-                  className="link link-sky dark:text-muted-invoice ">
+                  className="link link-sky dark:text-muted-invoice "
+                >
                   <i className="ri-twitter-x-line"></i>
                 </Link>
                 <Link
-                  href="#!"
+                  to="#!"
                   title="instagram"
-                  className="link link-pink dark:text-muted-invoice">
+                  className="link link-pink dark:text-muted-invoice"
+                >
                   <i className="ri-instagram-line"></i>
                 </Link>
                 <Link
-                  href="#!"
+                  to="#!"
                   title="amazon"
-                  className="link link-green dark:text-muted-invoice">
+                  className="link link-green dark:text-muted-invoice"
+                >
                   <i className="ri-amazon-line"></i>
                 </Link>
                 <Link
-                  href="#!"
+                  to="#!"
                   title="chrome"
-                  className="link link-red dark:text-muted-invoice">
+                  className="link link-red dark:text-muted-invoice"
+                >
                   <i className="ri-chrome-line"></i>
                 </Link>
               </div>
@@ -51,7 +53,7 @@ const Footer: React.FC = () => {
         </div>
       </footer>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

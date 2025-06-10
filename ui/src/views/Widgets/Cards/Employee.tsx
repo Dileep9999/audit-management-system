@@ -1,11 +1,6 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { employee } from '@src/data/index'
+import { employee } from "@data/index";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Employee = () => {
   return (
@@ -15,15 +10,16 @@ const Employee = () => {
           return (
             <div key={index} className="text-center card">
               <div className="card-body">
-                <Image
+                <img
                   src={employee.image}
                   alt="employeeImg"
                   className="mx-auto rounded-md size-14"
                 />
                 <h6 className="mt-4">
                   <Link
-                    href="#"
-                    className="text-current dark:text-current link hover:text-primary-500 dark:hover:text-primary-500">
+                    to="#"
+                    className="text-current dark:text-current link hover:text-primary-500 dark:hover:text-primary-500"
+                  >
                     {employee.name}
                   </Link>
                 </h6>
@@ -32,11 +28,11 @@ const Employee = () => {
                 </p>
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Employee
+export default Employee;

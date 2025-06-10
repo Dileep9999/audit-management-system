@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import useChartColors from "@hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import React from "react";
+import ReactApexChart from "react-apexcharts";
 
 interface LineChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const SteplineLineChart = ({
@@ -24,33 +15,33 @@ const SteplineLineChart = ({
   chartId,
 }: LineChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const values = [34, 44, 54, 21, 12, 43, 33, 23, 66, 66, 58]
+  const values = [34, 44, 54, 21, 12, 43, 33, 23, 66, 66, 58];
 
   const series = [
     {
       data: values,
     },
-  ]
+  ];
   const options: ApexOptions = {
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 300,
-      type: 'line',
+      type: "line",
       zoom: {
         enabled: true,
       },
     },
     stroke: {
-      curve: 'stepline',
+      curve: "stepline",
     },
     dataLabels: {
       enabled: false,
     },
     title: {
-      text: 'Stepline Chart',
-      align: 'left',
+      text: "Stepline Chart",
+      align: "left",
     },
     markers: {
       hover: {
@@ -65,7 +56,7 @@ const SteplineLineChart = ({
         bottom: 0,
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -74,12 +65,12 @@ const SteplineLineChart = ({
         series={series}
         type="line"
         data-chart-colors="[bg-green-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default SteplineLineChart
+export default SteplineLineChart;

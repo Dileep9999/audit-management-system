@@ -1,17 +1,14 @@
-'use client'
+import React from "react";
 
-import React from 'react'
+import { Link } from "react-router-dom";
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import card1 from '@assets/images/payment/american.png'
-import card2 from '@assets/images/payment/mastercard.png'
-import card3 from '@assets/images/payment/visa.png'
-import { MoveLeft, MoveRight } from 'lucide-react'
+import card1 from "@assets/images/payment/american.png";
+import card2 from "@assets/images/payment/mastercard.png";
+import card3 from "@assets/images/payment/visa.png";
+import { MoveLeft, MoveRight } from "lucide-react";
 
 const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   return (
     <React.Fragment>
@@ -29,7 +26,8 @@ const Footer: React.FC = () => {
                 <button
                   type="submit"
                   title="submit"
-                  className="absolute ltr:right-0 rtl:left-0 link link-primary top-2">
+                  className="absolute ltr:right-0 rtl:left-0 link link-primary top-2"
+                >
                   <MoveRight className="ltr:inline-block rtl:hidden" />
                   <MoveLeft className="ltr:hidden rtl:inline-block" />
                 </button>
@@ -43,27 +41,27 @@ const Footer: React.FC = () => {
               <h5 className="mb-5 drop-shadow-lg">Quick Links</h5>
               <ul className="flex flex-col gap-5">
                 <li>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     My Account
                   </Link>
                 </li>
                 <li>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Cart
                   </Link>
                 </li>
                 <li>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Wishlist
                   </Link>
                 </li>
                 <li>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Product Overview
                   </Link>
                 </li>
                 <li>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Checkout
                   </Link>
                 </li>
@@ -73,27 +71,27 @@ const Footer: React.FC = () => {
               <h5 className="mb-5 drop-shadow-lg">Services</h5>
               <ul className="flex flex-col gap-5">
                 <li>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Refund Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Shipping & Return
                   </Link>
                 </li>
                 <li>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Term & Condition
                   </Link>
                 </li>
                 <li>
-                  <Link href="#!" className="link link-primary">
+                  <Link to="#!" className="link link-primary">
                     Help Center
                   </Link>
                 </li>
@@ -104,50 +102,46 @@ const Footer: React.FC = () => {
               <p className="mb-4 text-gray-500 dark:text-dark-500">
                 Find the nearest location to you.
                 <Link
-                  href="#!"
-                  className="text-gray-900 underline dark:text-dark-50">
+                  to="#!"
+                  className="text-gray-900 underline dark:text-dark-50"
+                >
                   Visit our Stores
                 </Link>
               </p>
               <p className="mb-1">
-                <Link href="tel:241012345678">+241 01234 5678</Link>
+                <Link to="tel:241012345678">+241 01234 5678</Link>
               </p>
               <p>
-                <Link href="mailto:support@example.com">
-                  support@example.com
-                </Link>
+                <Link to="mailto:support@example.com">support@example.com</Link>
               </p>
             </div>
           </div>
           <div className="grid flex-wrap justify-between grid-cols-1 gap-5 py-6 text-center border-t border-gray-200 border-dashed md:grid-cols-3 dark:border-dark-800">
             <div className="flex justify-center gap-6 text-lg md:justify-start">
-              <Link href="#!" title="twitter" className="link link-sky">
+              <Link to="#!" title="twitter" className="link link-sky">
                 <i className="ri-twitter-x-line"></i>
               </Link>
-              <Link href="#!" title="instagram" className="link link-pink">
+              <Link to="#!" title="instagram" className="link link-pink">
                 <i className="ri-instagram-line"></i>
               </Link>
-              <Link href="#!" title="amazon" className="link link-green">
+              <Link to="#!" title="amazon" className="link link-green">
                 <i className="ri-amazon-line"></i>
               </Link>
-              <Link href="#!" title="chrome" className="link link-red">
+              <Link to="#!" title="chrome" className="link link-red">
                 <i className="ri-chrome-line"></i>
               </Link>
             </div>
             <div className="text-center">
               <p className="text-gray-500 dark:text-dark-500">
                 &copy; {currentYear} Domiex. Crafted by
-                <Link
-                  href="#!"
-                  title="SRBThemes"
-                  className="ml-1 font-semibold">
+                <Link to="#!" title="SRBThemes" className="ml-1 font-semibold">
                   SRBThemes
                 </Link>
               </p>
             </div>
             <div className="flex justify-center gap-5 text-lg md:justify-end">
-              <Link href="#!" title="Payment">
-                <Image
+              <Link to="#!" title="Payment">
+                <img
                   src={card1}
                   alt="cardImg"
                   className="h-6"
@@ -155,8 +149,8 @@ const Footer: React.FC = () => {
                   height={24}
                 />
               </Link>
-              <Link href="#!" title="Payment">
-                <Image
+              <Link to="#!" title="Payment">
+                <img
                   src={card2}
                   alt="cardImg"
                   className="h-6"
@@ -164,8 +158,8 @@ const Footer: React.FC = () => {
                   height={24}
                 />
               </Link>
-              <Link href="#!" title="Payment">
-                <Image
+              <Link to="#!" title="Payment">
+                <img
                   src={card3}
                   alt="cardImg"
                   className="h-6"
@@ -178,7 +172,7 @@ const Footer: React.FC = () => {
         </div>
       </footer>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

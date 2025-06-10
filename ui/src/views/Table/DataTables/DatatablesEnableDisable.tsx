@@ -1,43 +1,41 @@
-'use client'
+import { employeData } from "@src/data/dataTables/employe-data";
+import React, { useState, useMemo } from "react";
 
-import React, { useMemo, useState } from 'react'
-
-import { EmployData } from '@src/data/dataTables/employe-data'
-
-const DataTableEnableDisable: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filteredData, setFilteredData] = useState(EmployData)
+const DataTablesEnableDisable: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState(employeData);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value.toLowerCase()
-    setSearchQuery(query)
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
 
-    const filtered = EmployData.filter((item) =>
+    const filtered = employeData.filter((item) =>
       Object.values(item).some((value) =>
-        value.toString().toLowerCase().includes(query)
-      )
-    )
-    setFilteredData(filtered)
-  }
+        value.toString().toLowerCase().includes(query),
+      ),
+    );
+    setFilteredData(filtered);
+  };
 
   const columns = useMemo(
     () => [
-      { accessorKey: 'Name', header: 'Name' },
-      { accessorKey: 'Position', header: 'Position' },
-      { accessorKey: 'Office', header: 'Office' },
-      { accessorKey: 'Age', header: 'Age' },
-      { accessorKey: 'StartDate', header: 'Start date' },
-      { accessorKey: 'Salary', header: 'Salary' },
+      { accessorKey: "Name", header: "Name" },
+      { accessorKey: "Position", header: "Position" },
+      { accessorKey: "Office", header: "Office" },
+      { accessorKey: "Age", header: "Age" },
+      { accessorKey: "StartDate", header: "Start date" },
+      { accessorKey: "Salary", header: "Salary" },
     ],
-    []
-  )
+    [],
+  );
 
   return (
     <>
       <div className="overflow-x-auto">
         <div
           id="example_wrapper"
-          className="dt-container dt-tailwindcss flex flex-col gap-5">
+          className="dt-container dt-tailwindcss flex flex-col gap-5"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
             <div className="md:col-start-2 justify-self-center md:justify-self-end">
               <div className="dt-search">
@@ -58,13 +56,15 @@ const DataTableEnableDisable: React.FC = () => {
           <table
             id="example"
             className="display group table whitespace-nowrap dtr-inline"
-            style={{ width: '100%' }}>
+            style={{ width: "100%" }}
+          >
             <thead>
               <tr>
                 {columns.map((column, index) => (
                   <th
                     key={index}
-                    className="bg-gray-100 dark:bg-dark-850 dt-orderable-none">
+                    className="bg-gray-100 dark:bg-dark-850 dt-orderable-none"
+                  >
                     {column.header}
                   </th>
                 ))}
@@ -81,7 +81,7 @@ const DataTableEnableDisable: React.FC = () => {
                     <td>{item.StartDate}</td>
                     <td>{item.Salary}</td>
                   </tr>
-                )
+                );
               })}
             </tbody>
             <tfoot>
@@ -98,7 +98,7 @@ const DataTableEnableDisable: React.FC = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default DataTableEnableDisable
+export default DataTablesEnableDisable;

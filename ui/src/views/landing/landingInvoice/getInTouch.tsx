@@ -1,13 +1,11 @@
-'use client'
-
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
 const GetInTouch: React.FC = () => {
-  const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
-  const [interested, setInterested] = useState('')
-  const [projectBudget, setProjectBudget] = useState('')
-  const [message, setMessage] = useState('')
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [interested, setInterested] = useState("");
+  const [projectBudget, setProjectBudget] = useState("");
+  const [message, setMessage] = useState("");
 
   return (
     <React.Fragment>
@@ -16,7 +14,7 @@ const GetInTouch: React.FC = () => {
           <div className="grid items-center grid-cols-12 mb-10">
             <div className="col-span-12 text-center md:col-span-8 md:col-start-3">
               <h2 className="mb-2 text-2xl leading-normal capitalize sm:text-3xl md:text-4xl">
-                Love for hear from you{' '}
+                Love for hear from you{" "}
                 <span className="text-purple-500">Get in Touch</span>
               </h2>
               <p className="text-gray-500 dark:text-muted-invoice">
@@ -28,7 +26,7 @@ const GetInTouch: React.FC = () => {
           <div className="grid grid-cols-12 gap-5">
             {/* Full Name Input */}
             <div className="relative col-span-12 pr-4 md:col-span-6 sm:pr-0">
-              <div className={`group ${fullName ? 'show' : ''}`}>
+              <div className={`group ${fullName ? "show" : ""}`}>
                 <input
                   type="text"
                   id="fullNameInput"
@@ -40,8 +38,9 @@ const GetInTouch: React.FC = () => {
                 <label
                   htmlFor="fullNameInput"
                   className={`absolute text-15 text-gray-500 dark:text-dark-400 duration-300 transform z-10 origin-[0] bg-white dark:bg-body-invoice px-4 peer-focus:px-2 scale-100 -translate-y-1/2 top-1/2 peer-focus:top-2 ${
-                    fullName ? 'scale-[0.85] -translate-y-4 px-2 top-2' : ''
-                  } ltr:left-4 rtl:right-4`}>
+                    fullName ? "scale-[0.85] -translate-y-4 px-2 top-2" : ""
+                  } ltr:left-4 rtl:right-4`}
+                >
                   Your Full Name
                 </label>
               </div>
@@ -49,7 +48,7 @@ const GetInTouch: React.FC = () => {
 
             {/* Email Input */}
             <div className="relative col-span-12 pr-4 md:col-span-6 sm:pr-0">
-              <div className={`group ${email ? 'show' : ''}`}>
+              <div className={`group ${email ? "show" : ""}`}>
                 <input
                   type="text"
                   id="emailInput"
@@ -61,8 +60,9 @@ const GetInTouch: React.FC = () => {
                 <label
                   htmlFor="emailInput"
                   className={`absolute text-15 text-gray-500 dark:text-dark-400 duration-300 transform z-10 origin-[0] bg-white dark:bg-body-invoice px-4 peer-focus:px-2 scale-100 -translate-y-1/2 top-1/2 peer-focus:top-2 ${
-                    email ? 'scale-[0.85] -translate-y-4 px-2 top-2' : ''
-                  } ltr:left-4 rtl:right-4`}>
+                    email ? "scale-[0.85] -translate-y-4 px-2 top-2" : ""
+                  } ltr:left-4 rtl:right-4`}
+                >
                   Your Email Address
                 </label>
               </div>
@@ -70,7 +70,7 @@ const GetInTouch: React.FC = () => {
 
             {/* Interested Input */}
             <div className="relative col-span-12 pr-4 md:col-span-6 sm:pr-0">
-              <div className={`group ${interested ? 'show' : ''}`}>
+              <div className={`group ${interested ? "show" : ""}`}>
                 <input
                   type="text"
                   id="interestedInput"
@@ -82,8 +82,9 @@ const GetInTouch: React.FC = () => {
                 <label
                   htmlFor="interestedInput"
                   className={`absolute text-15 text-gray-500 dark:text-dark-400 duration-300 transform z-10 origin-[0] bg-white dark:bg-body-invoice px-4 peer-focus:px-2 scale-100 -translate-y-1/2 top-1/2 peer-focus:top-2 ${
-                    interested ? 'scale-[0.85] -translate-y-4 px-2 top-2' : ''
-                  } ltr:left-4 rtl:right-4`}>
+                    interested ? "scale-[0.85] -translate-y-4 px-2 top-2" : ""
+                  } ltr:left-4 rtl:right-4`}
+                >
                   What you are Interested
                 </label>
               </div>
@@ -91,7 +92,7 @@ const GetInTouch: React.FC = () => {
 
             {/* Project Budget Input */}
             <div className="relative col-span-12 pr-4 md:col-span-6 sm:pr-0">
-              <div className={`group ${projectBudget ? 'show' : ''}`}>
+              <div className={`group ${projectBudget ? "show" : ""}`}>
                 <input
                   type="text"
                   id="projectBudgetInput"
@@ -104,9 +105,10 @@ const GetInTouch: React.FC = () => {
                   htmlFor="projectBudgetInput"
                   className={`absolute text-15 text-gray-500 dark:text-dark-400 duration-300 transform z-10 origin-[0] bg-white dark:bg-body-invoice px-4 peer-focus:px-2 scale-100 -translate-y-1/2 top-1/2 peer-focus:top-2 ${
                     projectBudget
-                      ? 'scale-[0.85] -translate-y-4 px-2 top-2'
-                      : ''
-                  } ltr:left-4 rtl:right-4`}>
+                      ? "scale-[0.85] -translate-y-4 px-2 top-2"
+                      : ""
+                  } ltr:left-4 rtl:right-4`}
+                >
                   Project Budget
                 </label>
               </div>
@@ -114,7 +116,7 @@ const GetInTouch: React.FC = () => {
 
             {/* Message Input */}
             <div className="col-span-12 pr-4 sm:pr-0">
-              <div className={`relative group ${message ? 'show' : ''}`}>
+              <div className={`relative group ${message ? "show" : ""}`}>
                 <textarea
                   id="MessageInput"
                   value={message}
@@ -126,8 +128,9 @@ const GetInTouch: React.FC = () => {
                 <label
                   htmlFor="messageInput"
                   className={`absolute text-15 text-gray-500 dark:text-dark-400 duration-300 transform z-10 origin-[0] bg-white dark:bg-body-invoice px-4 peer-focus:px-2 scale-100 -translate-y-1/2 top-1/2 peer-focus:top-2 ${
-                    message ? 'scale-[0.85] -translate-y-4 px-2 top-2' : ''
-                  } ltr:left-4 rtl:right-4`}>
+                    message ? "scale-[0.85] -translate-y-4 px-2 top-2" : ""
+                  } ltr:left-4 rtl:right-4`}
+                >
                   Message
                 </label>
               </div>
@@ -135,7 +138,8 @@ const GetInTouch: React.FC = () => {
             <div className="flex justify-end col-span-12 pr-4 sm:pr-0">
               <button
                 type="button"
-                className="w-full btn btn-purple max-w-[200px]">
+                className="w-full btn btn-purple max-w-[200px]"
+              >
                 Send Inquiry
               </button>
             </div>
@@ -143,7 +147,7 @@ const GetInTouch: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default GetInTouch
+export default GetInTouch;

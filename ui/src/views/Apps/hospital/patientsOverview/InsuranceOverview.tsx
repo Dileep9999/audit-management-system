@@ -1,11 +1,6 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-
-import insurance from '@assets/images/others/insurance.png'
-import { HeartHandshake } from 'lucide-react'
+import React from "react";
+import insurance from "@assets/images/others/insurance.png";
+import { HeartHandshake } from "lucide-react";
 
 const InsuranceOverview = () => {
   return (
@@ -33,7 +28,7 @@ const InsuranceOverview = () => {
           <div className="card-body">
             <div className="flex items-center gap-3">
               <div className="grow">
-                <Image src={insurance} alt="insurnceImg" className="size-14" />
+                <img src={insurance} alt="insuranceImg" className="size-14" />
                 <h6 className="mt-5 mb-1">
                   Get peace of mind with the right insurance coverage.
                 </h6>
@@ -49,7 +44,7 @@ const InsuranceOverview = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default InsuranceOverview
+export default InsuranceOverview;

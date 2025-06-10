@@ -1,4 +1,4 @@
-[data-colors='green'] {
+[data-colors="green"] {
   --color-primary-50: oklch(98.4% 0.0182 166.4);
   --color-primary-100: oklch(96.73% 0.0421 168.38);
   --color-primary-200: oklch(93.31% 0.077 165.84);
@@ -12,7 +12,7 @@
   --color-primary-950: oklch(27.46% 0.057 162.48);
 }
 
-[data-colors='orange'] {
+[data-colors="orange"] {
   --color-primary-50: oklch(97.33% 0.0134 53.35);
   --color-primary-100: oklch(93.76% 0.0324 52.33);
   --color-primary-200: oklch(86.91% 0.0692 47.91);
@@ -26,7 +26,7 @@
   --color-primary-950: oklch(24.88% 0.084 26.62);
 }
 
-[data-colors='teal'] {
+[data-colors="teal"] {
   --color-primary-50: oklch(0.984 0.014 180.72);
   --color-primary-100: oklch(0.953 0.051 180.801);
   --color-primary-200: oklch(0.91 0.096 180.426);
@@ -40,7 +40,7 @@
   --color-primary-950: oklch(0.277 0.046 192.524);
 }
 
-[data-colors='violet'] {
+[data-colors="violet"] {
   --color-primary-50: oklch(0.969 0.016 293.756);
   --color-primary-100: oklch(0.943 0.029 294.588);
   --color-primary-200: oklch(0.894 0.057 293.283);
@@ -54,7 +54,7 @@
   --color-primary-950: oklch(0.283 0.141 291.089);
 }
 
-[data-colors='fuchsia'] {
+[data-colors="fuchsia"] {
   --color-primary-50: oklch(0.977 0.017 320.058);
   --color-primary-100: oklch(0.952 0.037 318.852);
   --color-primary-200: oklch(0.903 0.076 319.62);
@@ -68,7 +68,7 @@
   --color-primary-950: oklch(0.293 0.136 325.661);
 }
 
-[data-colors='lime'] {
+[data-colors="lime"] {
   --color-primary-50: oklch(0.986 0.031 120.757);
   --color-primary-100: oklch(0.967 0.067 122.328);
   --color-primary-200: oklch(0.938 0.127 124.321);
@@ -82,7 +82,7 @@
   --color-primary-950: oklch(0.274 0.072 132.109);
 }
 
-[data-colors='amber'] {
+[data-colors="amber"] {
   --color-primary-50: oklch(0.987 0.022 95.277);
   --color-primary-100: oklch(0.962 0.059 95.617);
   --color-primary-200: oklch(0.924 0.12 95.746);

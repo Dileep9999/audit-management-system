@@ -1,11 +1,6 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
-import { Installtion } from './prismInstall'
-import { Usage } from './prismUsage'
+import { Link } from "react-router-dom";
+import { Installtion } from "./prismInstall";
+import { Usage } from "./prismUsage";
 
 const LucideIcons = () => {
   return (
@@ -13,10 +8,11 @@ const LucideIcons = () => {
       <div className="flex items-center card-header">
         <h6 className="text-xl grow">Lucide Icons</h6>
         <Link
-          href="https://lucide.dev/icons"
+          to="https://lucide.dev/icons"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-medium text-red-500 underline transition duration-200 ease-linear hover:text-red-600 shrink-0">
+          className="font-medium text-red-500 underline transition duration-200 ease-linear hover:text-red-600 shrink-0"
+        >
           View All Icons
         </Link>
       </div>
@@ -30,10 +26,10 @@ const LucideIcons = () => {
           packages to make it easier to use these icons in your project.
         </p>
 
-        <h6 className="mb-2 text-16">Installation</h6>
+        <h6 className="mb-2 text-xl">Installation</h6>
 
         <h6 className="mb-1">Package Managers</h6>
-        <p className="text-gray-500 dark:text-dark-500 mb-2">
+        <p className="text-gray-500 dark:text-dark-500">
           Implementation of the lucide icon library for web applications.
         </p>
         <Installtion />
@@ -48,15 +44,16 @@ const LucideIcons = () => {
         <p className="mb-0 text-gray-500 dark:text-dark-500">
           For more details, see the
           <Link
-            href="#!"
-            className="link hover:text-primary-600 text-primary-500">
+            to="#!"
+            className="link hover:text-primary-600 text-primary-500"
+          >
             documentation
           </Link>
           .
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LucideIcons
+export default LucideIcons;

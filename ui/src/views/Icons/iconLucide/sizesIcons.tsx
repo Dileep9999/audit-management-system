@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import { Box } from 'lucide-react'
+import React from "react";
+import { Box } from "lucide-react";
 
 const SizesIcons = () => {
   return (
@@ -74,6 +71,6 @@ const SizesIcons = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default SizesIcons
+  );
+};
+export default SizesIcons;

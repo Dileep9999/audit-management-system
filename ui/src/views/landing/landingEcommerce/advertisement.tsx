@@ -1,6 +1,4 @@
-'use client'
-
-import React from 'react'
+import React from "react";
 
 const Advertisement: React.FC = () => {
   return (
@@ -14,7 +12,7 @@ const Advertisement: React.FC = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Advertisement
+export default Advertisement;

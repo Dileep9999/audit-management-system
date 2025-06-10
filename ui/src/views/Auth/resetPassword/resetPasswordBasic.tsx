@@ -1,42 +1,37 @@
-'use client'
-
-import { useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
-import whiteLogo from '@assets/images/logo-white.png'
-import mainLogo from '@assets/images/main-logo.png'
-import { Eye, EyeOff, MoveRight } from 'lucide-react'
-import { toast } from 'react-toastify'
+import { useState } from "react";
+import mainLogo from "@assets/images/main-logo.png";
+import whiteLogo from "@assets/images/logo-white.png";
+import { Eye, EyeOff, MoveRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import ErrorToast from "@src/components/custom/toast/errorToast";
 
 const ResetPasswordBasic: React.FC = () => {
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false)
-  const [password, setPassword] = useState<string>('')
-  const [confirmPassword, setConfirmPassword] = useState<string>('')
-  const router = useRouter()
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!password) {
-      toast.error('Please enter your password')
-      return
+      ErrorToast("Please enter your password!");
+      return;
     }
 
     if (!confirmPassword) {
-      toast.error('Please confirm your password')
-      return
+      ErrorToast("Please confirm your password!");
+      return;
     }
 
     if (password === confirmPassword) {
-      router.push('/auth/signin-basic')
+      navigate("/auth/signin-basic");
     } else {
-      toast.error('Passwords do not match')
+      ErrorToast("Passwords do not match!");
     }
-  }
+  };
 
   return (
     <div className="relative flex items-center justify-center min-h-screen py-12 from-sky-100 dark:from-sky-500/15 ltr:bg-gradient-to-l rtl:bg-gradient-to-r via-green-50 dark:via-green-500/10 to-pink-50 dark:to-pink-500/10">
@@ -45,15 +40,15 @@ const ResetPasswordBasic: React.FC = () => {
           <div className="col-span-12 md:col-span-10 lg:col-span-6 xl:col-span-4 md:col-start-2 lg:col-start-4 xl:col-start-5 mb-0 card">
             <div className="md:p-10 card-body">
               <div className="mb-5 text-center">
-                <Link href="#!">
-                  <Image
+                <Link to="#!">
+                  <img
                     src={mainLogo}
                     alt="mainLogo"
                     className="h-8 mx-auto dark:hidden inline-block"
                     width={176}
                     height={32}
                   />
-                  <Image
+                  <img
                     src={whiteLogo}
                     alt="whiteLogo"
                     className="hidden h-8 mx-auto dark:inline-block"
@@ -67,7 +62,7 @@ const ResetPasswordBasic: React.FC = () => {
               </h4>
               <p className="mb-5 text-center text-gray-500">
                 Ensure that your new password is different from any passwords
-                you&apos;ve previously used.
+                you've previously used.
               </p>
 
               <form onSubmit={handleSubmit}>
@@ -78,7 +73,7 @@ const ResetPasswordBasic: React.FC = () => {
                     </label>
                     <div className="relative">
                       <input
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         id="passwordInput"
                         className="ltr:pr-8 rtl:pl-8 form-input"
                         placeholder="Enter your password"
@@ -88,7 +83,8 @@ const ResetPasswordBasic: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="absolute inset-y-0 flex items-center text-gray-500 ltr:right-3 rtl:left-3 focus:outline-hidden">
+                        className="absolute inset-y-0 flex items-center text-gray-500 ltr:right-3 rtl:left-3 focus:outline-none"
+                      >
                         {showPassword ? (
                           <Eye size={20} />
                         ) : (
@@ -100,12 +96,13 @@ const ResetPasswordBasic: React.FC = () => {
                   <div className="col-span-12">
                     <label
                       htmlFor="confirmPasswordInput"
-                      className="form-label">
+                      className="form-label"
+                    >
                       Confirm Password
                     </label>
                     <div className="relative">
                       <input
-                        type={showConfirmPassword ? 'text' : 'password'}
+                        type={showConfirmPassword ? "text" : "password"}
                         id="confirmPasswordInput"
                         className="ltr:pr-8 rtl:pl-8 form-input"
                         placeholder="Enter your confirm password"
@@ -115,7 +112,8 @@ const ResetPasswordBasic: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
-                        className="absolute inset-y-0 flex items-center text-gray-500 ltr:right-3 rtl:left-3 focus:outline-hidden">
+                        className="absolute inset-y-0 flex items-center text-gray-500 ltr:right-3 rtl:left-3 focus:outline-none"
+                      >
                         {showConfirmPassword ? (
                           <Eye size={20} />
                         ) : (
@@ -127,14 +125,16 @@ const ResetPasswordBasic: React.FC = () => {
                   <div className="col-span-12">
                     <button
                       type="submit"
-                      className="w-full px-4 py-2 text-white rounded-md bg-primary-500 hover:bg-primary-600">
+                      className="w-full px-4 py-2 text-white rounded-md bg-primary-500 hover:bg-primary-600"
+                    >
                       Set Password
                     </button>
                     <p className="mt-3 text-center text-gray-500 dark:text-dark-500">
-                      Return to the
+                      Return to the{" "}
                       <Link
-                        href="/auth/signin-basic"
-                        className="font-medium underline link link-primary">
+                        to="/auth/signin-basic"
+                        className="font-medium underline link link-primary"
+                      >
                         <span className="align-middle">Sign In </span>
                         <MoveRight className="inline-block ml-1 size-4" />
                       </Link>
@@ -147,7 +147,7 @@ const ResetPasswordBasic: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ResetPasswordBasic
+export default ResetPasswordBasic;

@@ -1,117 +1,111 @@
-'use client'
-
-import React, { useEffect, useRef } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
-import whiteLogo from '@assets/images/logo-white.png'
-import mainLogo from '@assets/images/main-logo.png'
-import creativeAuth from '@assets/images/others/auth-creative.png'
-import { MailOpen } from 'lucide-react'
-import { toast } from 'react-toastify'
+import React, { useEffect, useRef } from "react";
+import mainLogo from "@assets/images/main-logo.png";
+import whiteLogo from "@assets/images/logo-white.png";
+import creativeAuth from "@assets/images/others/auth-creative.png";
+import { MailOpen } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import ErrorToast from "@src/components/custom/toast/errorToast";
 
 interface OTPFormProps {
-  formId: string
+  formId: string;
 }
 
 const TwoStepVerificationCreative: React.FC<OTPFormProps> = ({ formId }) => {
-  const formRef = useRef<HTMLFormElement | null>(null)
-  const submitButtonRef = useRef<HTMLButtonElement | null>(null)
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const submitButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  const router = useRouter()
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const form = formRef.current
+    const form = formRef.current;
     const inputs = form
       ? (Array.from(
-          form.querySelectorAll('input[type=text]')
+          form.querySelectorAll("input[type=text]"),
         ) as HTMLInputElement[])
-      : []
-    const submitButton = submitButtonRef.current
+      : [];
+    const submitButton = submitButtonRef.current;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLInputElement
+      const target = e.target as HTMLInputElement;
       if (
         !/^[0-9]{1}$/.test(e.key) &&
-        e.key !== 'Backspace' &&
-        e.key !== 'Delete' &&
-        e.key !== 'Tab' &&
+        e.key !== "Backspace" &&
+        e.key !== "Delete" &&
+        e.key !== "Tab" &&
         !e.metaKey
       ) {
-        e.preventDefault()
+        e.preventDefault();
       }
 
-      if (e.key === 'Delete' || e.key === 'Backspace') {
-        const index = inputs.indexOf(target)
+      if (e.key === "Delete" || e.key === "Backspace") {
+        const index = inputs.indexOf(target);
         if (index > 0) {
-          inputs[index - 1].value = ''
-          inputs[index - 1].focus()
+          inputs[index - 1].value = "";
+          inputs[index - 1].focus();
         }
       }
-    }
+    };
 
     const handleInput = (e: Event) => {
-      const target = e.target as HTMLInputElement
-      const index = inputs.indexOf(target)
+      const target = e.target as HTMLInputElement;
+      const index = inputs.indexOf(target);
       if (target.value) {
         if (index < inputs.length - 1) {
-          inputs[index + 1].focus()
+          inputs[index + 1].focus();
         } else {
-          submitButton?.focus()
+          submitButton?.focus();
         }
       }
-    }
+    };
 
     const handleFocus = (e: FocusEvent) => {
-      ;(e.target as HTMLInputElement).select()
-    }
+      (e.target as HTMLInputElement).select();
+    };
 
     const handlePaste = (e: ClipboardEvent) => {
-      e.preventDefault()
-      const text = e.clipboardData?.getData('text')
-      if (!text || !/^[0-9]{6}$/.test(text)) return // Adjust length based on the number of inputs
-      const digits = text.split('')
-      inputs.forEach((input, index) => (input.value = digits[index]))
-      submitButton?.focus()
-    }
+      e.preventDefault();
+      const text = e.clipboardData?.getData("text");
+      if (!text || !/^[0-9]{6}$/.test(text)) return; // Adjust length based on the number of inputs
+      const digits = text.split("");
+      inputs.forEach((input, index) => (input.value = digits[index]));
+      submitButton?.focus();
+    };
 
     inputs.forEach((input) => {
-      input.addEventListener('input', handleInput)
-      input.addEventListener('keydown', handleKeyDown)
-      input.addEventListener('focus', handleFocus)
-      input.addEventListener('paste', handlePaste)
-    })
+      input.addEventListener("input", handleInput);
+      input.addEventListener("keydown", handleKeyDown);
+      input.addEventListener("focus", handleFocus);
+      input.addEventListener("paste", handlePaste);
+    });
 
     return () => {
       inputs.forEach((input) => {
-        input.removeEventListener('input', handleInput)
-        input.removeEventListener('keydown', handleKeyDown)
-        input.removeEventListener('focus', handleFocus)
-        input.removeEventListener('paste', handlePaste)
-      })
-    }
-  }, [formId])
+        input.removeEventListener("input", handleInput);
+        input.removeEventListener("keydown", handleKeyDown);
+        input.removeEventListener("focus", handleFocus);
+        input.removeEventListener("paste", handlePaste);
+      });
+    };
+  }, [formId]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const form = formRef.current
-    if (!form) return
+    const form = formRef.current;
+    if (!form) return;
 
     const inputs = Array.from(
-      form.querySelectorAll('input[type=text]')
-    ) as HTMLInputElement[]
-    const otp = inputs.map((input) => input.value).join('')
+      form.querySelectorAll("input[type=text]"),
+    ) as HTMLInputElement[];
+    const otp = inputs.map((input) => input.value).join("");
 
     if (otp.length !== 6) {
-      toast.error('Please enter a valid OTP')
-      return
+      ErrorToast("Please enter a valid OTP");
+      return;
     } else {
-      router.push('/auth/reset-password-creative')
+      navigate("/auth/reset-password-creative");
     }
-  }
+  };
 
   return (
     <div className="relative">
@@ -119,15 +113,15 @@ const TwoStepVerificationCreative: React.FC<OTPFormProps> = ({ formId }) => {
         <div className="relative col-span-12 py-8 overflow-hidden bg-gray-100 dark:bg-dark-850 lg:min-h-screen lg:col-span-6 md:p-9 xl:p-12">
           <div className="absolute bottom-0 w-32 -rotate-45 -top-64 -right-8 bg-gray-200/20 dark:bg-dark-800/20"></div>
           <div className="p-4">
-            <Link href="/">
-              <Image
+            <Link to="/">
+              <img
                 src={mainLogo}
                 alt="mainLogo"
                 className="h-8 mx-auto dark:hidden inline-block"
                 width={176}
                 height={32}
               />
-              <Image
+              <img
                 src={whiteLogo}
                 alt="whiteLogo"
                 className="hidden h-8 mx-auto dark:inline-block"
@@ -138,7 +132,7 @@ const TwoStepVerificationCreative: React.FC<OTPFormProps> = ({ formId }) => {
             <h1 className="max-w-lg mt-8 text-2xl font-normal leading-tight capitalize md:leading-tight md:text-4xl">
               The most straightforward way to manage your projects
             </h1>
-            <Image
+            <img
               src={creativeAuth}
               alt="creativeAuth"
               className="mt-9 xl:mt-0 relative xl:absolute xl:scale-110 rounded-lg shadow-lg xl:top-[315px] xl:left-[115px]"
@@ -158,9 +152,14 @@ const TwoStepVerificationCreative: React.FC<OTPFormProps> = ({ formId }) => {
                   OTP Verification
                 </h4>
                 <p className="mb-5 text-center text-gray-500">
-                  We&apos;re sent a code to <b>sophiamia@example.com</b>
+                  We're sent a code to <b>sophiamia@example.com</b>
                 </p>
-                <form id={formId} onSubmit={handleSubmit} ref={formRef}>
+                <form
+                  id={formId}
+                  action="/auth/reset-password-creative"
+                  ref={formRef}
+                  onSubmit={handleSubmit}
+                >
                   <div className="flex items-center justify-center gap-3">
                     {Array.from({ length: 6 }).map((_, index) => (
                       <input
@@ -176,7 +175,8 @@ const TwoStepVerificationCreative: React.FC<OTPFormProps> = ({ formId }) => {
                     <button
                       type="submit"
                       className="w-full btn btn-primary"
-                      ref={submitButtonRef}>
+                      ref={submitButtonRef}
+                    >
                       Reset Password
                     </button>
                   </div>
@@ -187,7 +187,7 @@ const TwoStepVerificationCreative: React.FC<OTPFormProps> = ({ formId }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TwoStepVerificationCreative
+export default TwoStepVerificationCreative;

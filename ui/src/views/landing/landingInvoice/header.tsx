@@ -1,43 +1,41 @@
-'use client'
+import React, { useEffect, useState } from "react";
 
-import React, { useEffect, useState } from 'react'
+import { Link } from "react-router-dom";
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import whiteLogo from '@assets/images/logo-white.png'
-import mainLogo from '@assets/images/main-logo.png'
+import whiteLogo from "@assets/images/logo-white.png";
+import mainLogo from "@assets/images/main-logo.png";
 
 const Header: React.FC = () => {
-  const [isSticky, setIsSticky] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState(0)
+  const [isSticky, setIsSticky] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 0)
-    }
+      setIsSticky(window.scrollY > 0);
+    };
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <React.Fragment>
       <header
-        className={`landing-navbar top-0 h-20 z-[1002] [&.scroll-sticky]:bg-white dark:[&.scroll-sticky]:bg-body-invoice [&.scroll-sticky]:shadow-lg [&.scroll-sticky]:shadow-gray-200/50 dark:[&.scroll-sticky]:shadow-purple-100/5 ${isSticky ? 'scroll-sticky' : ''}`}>
+        className={`landing-navbar top-0 h-20 z-[1002] [&.scroll-sticky]:bg-white dark:[&.scroll-sticky]:bg-body-invoice [&.scroll-sticky]:shadow-lg [&.scroll-sticky]:shadow-gray-200/50 dark:[&.scroll-sticky]:shadow-purple-100/5 ${isSticky ? "scroll-sticky" : ""}`}
+      >
         <div className="container mx-auto px-4 max-w-[1350px] flex justify-between items-center">
-          <Link href="/" title="logo">
-            <Image
+          <Link to="/" title="logo">
+            <img
               src={mainLogo}
               alt="Main Logo"
               className="inline-block h-7 dark:hidden"
               width={153}
               height={28}
             />
-            <Image
+            <img
               src={whiteLogo}
               alt="White Logo"
               className="hidden h-7 dark:inline-block"
@@ -46,47 +44,53 @@ const Header: React.FC = () => {
             />
           </Link>
           <div
-            className={`mx-auto navbar-collapase dark:bg-body-invoice dark:shadow-purple-100/5 dark:xl:bg-transparent ${isMenuOpen ? '' : 'hidden xl:flex'}`}>
+            className={`mx-auto navbar-collapase dark:bg-body-invoice dark:shadow-purple-100/5 dark:xl:bg-transparent ${isMenuOpen ? "" : "hidden xl:flex"}`}
+          >
             <ul className="flex flex-col xl:flex-row xl:items-center *:inline-block *:text-16 *:tracking-wide">
               <li>
-                <Link
+                <a
                   href="#home"
                   onClick={() => setActiveTab(1)}
-                  className={`inline-block px-5 py-2 font-normal tracking-wide transition-all duration-300 ease-linear dark:text-muted-invoice dark:hover:text-purple-500 [&.active]:text-purple-500 text-gray-500 hover:text-purple-500 ${activeTab === 1 ? ' active text-purple-500' : ''}`}>
+                  className={`inline-block px-5 py-2 font-normal tracking-wide transition-all duration-300 ease-linear dark:text-muted-invoice dark:hover:text-purple-500 [&.active]:text-purple-500 text-gray-500 hover:text-purple-500 ${activeTab === 1 ? " active text-purple-500" : ""}`}
+                >
                   Home
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="#About"
                   onClick={() => setActiveTab(2)}
-                  className={`inline-block px-5 py-2 font-normal tracking-wide transition-all duration-300 ease-linear dark:text-muted-invoice dark:hover:text-purple-500 [&.active]:text-purple-500 text-gray-500 hover:text-purple-500 ${activeTab === 2 ? 'active text-purple-500' : ''}`}>
+                  className={`inline-block px-5 py-2 font-normal tracking-wide transition-all duration-300 ease-linear dark:text-muted-invoice dark:hover:text-purple-500 [&.active]:text-purple-500 text-gray-500 hover:text-purple-500 ${activeTab === 2 ? "active text-purple-500" : ""}`}
+                >
                   About
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="#case"
                   onClick={() => setActiveTab(3)}
-                  className={`inline-block px-5 py-2 font-normal tracking-wide transition-all duration-300 ease-linear dark:text-muted-invoice dark:hover:text-purple-500 [&.active]:text-purple-500 text-gray-500 hover:text-purple-500 ${activeTab === 3 ? 'active text-purple-500' : ''}`}>
+                  className={`inline-block px-5 py-2 font-normal tracking-wide transition-all duration-300 ease-linear dark:text-muted-invoice dark:hover:text-purple-500 [&.active]:text-purple-500 text-gray-500 hover:text-purple-500 ${activeTab === 3 ? "active text-purple-500" : ""}`}
+                >
                   Use Cases
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="#community"
                   onClick={() => setActiveTab(4)}
-                  className={`inline-block px-5 py-2 font-normal tracking-wide transition-all duration-300 ease-linear dark:text-muted-invoice dark:hover:text-purple-500 [&.active]:text-purple-500 text-gray-500 hover:text-purple-500 ${activeTab === 4 ? 'active text-purple-500' : ''}`}>
+                  className={`inline-block px-5 py-2 font-normal tracking-wide transition-all duration-300 ease-linear dark:text-muted-invoice dark:hover:text-purple-500 [&.active]:text-purple-500 text-gray-500 hover:text-purple-500 ${activeTab === 4 ? "active text-purple-500" : ""}`}
+                >
                   Community
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="#contact-us"
                   onClick={() => setActiveTab(5)}
-                  className={`inline-block px-5 py-2 font-normal tracking-wide transition-all duration-300 ease-linear dark:text-muted-invoice dark:hover:text-purple-500 [&.active]:text-purple-500 text-gray-500 hover:text-purple-500 ${activeTab === 5 ? 'active text-purple-500' : ''}`}>
+                  className={`inline-block px-5 py-2 font-normal tracking-wide transition-all duration-300 ease-linear dark:text-muted-invoice dark:hover:text-purple-500 [&.active]:text-purple-500 text-gray-500 hover:text-purple-500 ${activeTab === 5 ? "active text-purple-500" : ""}`}
+                >
                   Contact
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -95,9 +99,10 @@ const Header: React.FC = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               title="menu toggle"
               type="button"
-              className="rounded-full xl:ltr:ml-0 xl:rtl:mr-0 ltr:ml-auto rtl:mr-auto navbar-toggle btn btn-sub-purple btn-icon xl:!hidden">
+              className="rounded-full xl:ltr:ml-0 xl:rtl:mr-0 ltr:ml-auto rtl:mr-auto navbar-toggle btn btn-sub-purple btn-icon xl:!hidden"
+            >
               <i
-                className={`text-lg ${isMenuOpen ? 'ri-close-line' : 'ri-menu-2-line'}`}
+                className={`text-lg ${isMenuOpen ? "ri-close-line" : "ri-menu-2-line"}`}
               />
             </button>
             <button className="btn btn-outline-purple">Get Started</button>
@@ -105,7 +110,7 @@ const Header: React.FC = () => {
         </div>
       </header>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

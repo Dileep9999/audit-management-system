@@ -78,7 +78,7 @@
     }
   }
 
-  .jvm-line[animation='true'] {
+  .jvm-line[animation="true"] {
     @apply animate-jvm-line;
   }
 }

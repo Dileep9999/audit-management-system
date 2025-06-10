@@ -1,47 +1,37 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
+import useChartColors from "@hooks/useChartColors";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
-  timeFrame?: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
+  timeFrame?: string;
 }
 
-const SalesRevenuechart = ({
+const SalesRevenueChart = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Total Revenue',
+      name: "Total Revenue",
       data: [31, 40, 28, 51, 42, 119, 100],
     },
-  ]
+  ];
 
-  const labels = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July']
+  const labels = ["Jan", "Feb", "March", "April", "May", "June", "July"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 140,
-      type: 'line',
+      type: "line",
       zoom: {
         enabled: false,
       },
@@ -54,17 +44,17 @@ const SalesRevenuechart = ({
     },
     stroke: {
       width: 3,
-      curve: 'smooth',
+      curve: "smooth",
       dashArray: [10],
     },
     legend: {
       tooltipHoverFormatter: function (val, opts) {
         return (
           val +
-          ' - <strong>' +
+          " - <strong>" +
           opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] +
-          '</strong>'
-        )
+          "</strong>"
+        );
       },
     },
     markers: {
@@ -95,7 +85,7 @@ const SalesRevenuechart = ({
       show: false,
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -111,32 +101,31 @@ const SalesRevenuechart = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-const AdsRevenuechart = ({
+const AdsRevenueChart = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Total Revenue',
+      name: "Total Revenue",
       data: [31, 77, 44, 31, 63, 94, 109],
     },
-  ]
+  ];
 
-  const labels = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July']
+  const labels = ["Jan", "Feb", "March", "April", "May", "June", "July"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 140,
-      type: 'line',
+      type: "line",
       zoom: {
         enabled: false,
       },
@@ -149,17 +138,17 @@ const AdsRevenuechart = ({
     },
     stroke: {
       width: 3,
-      curve: 'smooth',
+      curve: "smooth",
       dashArray: [10],
     },
     legend: {
       tooltipHoverFormatter: function (val, opts) {
         return (
           val +
-          ' - <strong>' +
+          " - <strong>" +
           opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] +
-          '</strong>'
-        )
+          "</strong>"
+        );
       },
     },
     markers: {
@@ -190,7 +179,7 @@ const AdsRevenuechart = ({
       show: false,
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -206,37 +195,36 @@ const AdsRevenuechart = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const OnlineSalesChart = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Total Sales',
+      name: "Total Sales",
       data: [44, 55, 41, 67, 22, 43, 21, 33],
     },
-  ]
+  ];
 
-  const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Pears']
+  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Pears"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 160,
-      type: 'bar',
+      type: "bar",
       sparkline: { enabled: !0 },
     },
     plotOptions: {
       bar: {
         borderRadius: 10,
-        columnWidth: '50%',
+        columnWidth: "50%",
       },
     },
     dataLabels: {
@@ -245,18 +233,11 @@ const OnlineSalesChart = ({
     stroke: {
       width: 1,
     },
-    xaxis: {
-      labels: {
-        rotate: -45,
-      },
-      categories: labels,
-      tickPlacement: 'on',
-    },
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        shade: 'light',
-        type: 'horizontal',
+        shade: "light",
+        type: "horizontal",
         shadeIntensity: 0.25,
         gradientToColors: undefined,
         inverseColors: true,
@@ -266,7 +247,7 @@ const OnlineSalesChart = ({
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -282,37 +263,36 @@ const OnlineSalesChart = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const OnlineWeeklyApp = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Total Sales',
+      name: "Total Sales",
       data: [22, 43, 21, 44, 55, 33, 41],
     },
-  ]
+  ];
 
-  const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Pears']
+  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Pears"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 160,
-      type: 'bar',
+      type: "bar",
       sparkline: { enabled: !0 },
     },
     plotOptions: {
       bar: {
         borderRadius: 10,
-        columnWidth: '50%',
+        columnWidth: "50%",
       },
     },
     dataLabels: {
@@ -321,18 +301,11 @@ const OnlineWeeklyApp = ({
     stroke: {
       width: 1,
     },
-    xaxis: {
-      labels: {
-        rotate: -45,
-      },
-      categories: labels,
-      tickPlacement: 'on',
-    },
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        shade: 'light',
-        type: 'horizontal',
+        shade: "light",
+        type: "horizontal",
         shadeIntensity: 0.25,
         gradientToColors: undefined,
         inverseColors: true,
@@ -342,7 +315,7 @@ const OnlineWeeklyApp = ({
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -358,91 +331,90 @@ const OnlineWeeklyApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const WebAnalyticsApp = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Referral',
+      name: "Referral",
       data: [
         {
-          x: 'Aug',
+          x: "Aug",
           y: 43,
         },
         {
-          x: 'Sep',
+          x: "Sep",
           y: 58,
         },
         {
-          x: 'Oct',
+          x: "Oct",
           y: 66,
         },
         {
-          x: 'Nov',
+          x: "Nov",
           y: 44,
         },
       ],
     },
     {
-      name: 'Direct',
+      name: "Direct",
       data: [
         {
-          x: 'Aug',
+          x: "Aug",
           y: 33,
         },
         {
-          x: 'Sep',
+          x: "Sep",
           y: 43,
         },
         {
-          x: 'Oct',
+          x: "Oct",
           y: 34,
         },
         {
-          x: 'Nov',
+          x: "Nov",
           y: 53,
         },
       ],
     },
     {
-      name: 'Ads',
+      name: "Ads",
       data: [
         {
-          x: 'Jan',
+          x: "Jan",
           y: 55,
         },
         {
-          x: 'Feb',
+          x: "Feb",
           y: 33,
         },
         {
-          x: 'Oct',
+          x: "Oct",
           y: 54,
         },
         {
-          x: 'Nov',
+          x: "Nov",
           y: 65,
         },
       ],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     // labels: labels,
     chart: {
       height: 315,
-      type: 'line',
+      type: "line",
     },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
       width: 3,
     },
     plotOptions: {
@@ -455,14 +427,14 @@ const WebAnalyticsApp = ({
         enabled: true,
       },
       formatter(val, opts) {
-        const seriesName = opts.w.config.series[opts.seriesIndex].name
-        return val !== null ? seriesName : ''
+        const seriesName = opts.w.config.series[opts.seriesIndex].name;
+        return val !== null ? seriesName : "";
       },
     },
     legend: {
       show: false,
-      position: 'bottom',
-      horizontalAlign: 'center',
+      position: "bottom",
+      horizontalAlign: "center",
     },
     grid: {
       padding: {
@@ -476,7 +448,7 @@ const WebAnalyticsApp = ({
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -492,8 +464,8 @@ const WebAnalyticsApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const FollowersApp = ({
   chartColors,
@@ -502,40 +474,40 @@ const FollowersApp = ({
   timeFrame,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
+      case "Weekly":
         return [
-          { name: 'Followers', data: [30, 40, 35, 50, 70, 60] },
-          { name: 'Unfollow', data: [50, 70, 60, 80, 90, 100] },
-        ]
-      case 'Monthly':
+          { name: "Followers", data: [30, 40, 35, 50, 70, 60] },
+          { name: "UnFollow", data: [50, 70, 60, 80, 90, 100] },
+        ];
+      case "Monthly":
         return [
-          { name: 'Followers', data: [100, 120, 140, 130, 110, 150] },
-          { name: 'Unfollow', data: [200, 220, 240, 230, 210, 250] },
-        ]
-      case 'Yearly':
+          { name: "Followers", data: [100, 120, 140, 130, 110, 150] },
+          { name: "UnFollow", data: [200, 220, 240, 230, 210, 250] },
+        ];
+      case "Yearly":
         return [
-          { name: 'Followers', data: [50, 60, 70, 30, 40, 62] },
-          { name: 'Unfollow', data: [100, 120, 140, 130, 110, 150] },
-        ]
+          { name: "Followers", data: [50, 60, 70, 30, 40, 62] },
+          { name: "UnFollow", data: [100, 120, 140, 130, 110, 150] },
+        ];
       default:
         return [
-          { name: 'Followers', data: [44, 55, 41, 67, 22, 43] },
-          { name: 'Unfollow', data: [13, 23, 20, 8, 13, 27] },
-        ]
+          { name: "Followers", data: [44, 55, 41, 67, 22, 43] },
+          { name: "UnFollow", data: [13, 23, 20, 8, 13, 27] },
+        ];
     }
-  }
+  };
 
-  const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 360,
-      type: 'bar',
+      type: "bar",
       stacked: true,
       toolbar: {
         show: false,
@@ -546,13 +518,13 @@ const FollowersApp = ({
     },
     plotOptions: {
       bar: {
-        columnWidth: '40%',
+        columnWidth: "40%",
         horizontal: false,
         borderRadius: 13,
       },
     },
     legend: {
-      position: 'bottom',
+      position: "bottom",
     },
     grid: {
       xaxis: {
@@ -572,7 +544,7 @@ const FollowersApp = ({
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -588,26 +560,25 @@ const FollowersApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const VisitBrowsersApp = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const series = [44, 55, 41]
+  const series = [44, 55, 41];
 
-  const labels = ['Chrome', 'Safari', 'Edge']
+  const labels = ["Chrome", "Safari", "Edge"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 160,
-      type: 'donut',
+      type: "donut",
     },
     dataLabels: {
       enabled: false,
@@ -621,7 +592,7 @@ const VisitBrowsersApp = ({
     },
 
     fill: {
-      type: 'gradient',
+      type: "gradient",
     },
     grid: {
       padding: {
@@ -629,10 +600,10 @@ const VisitBrowsersApp = ({
       },
     },
     legend: {
-      position: 'bottom',
+      position: "bottom",
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -648,8 +619,8 @@ const VisitBrowsersApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const TrafficSourceApp = ({
   chartColors,
@@ -658,69 +629,69 @@ const TrafficSourceApp = ({
   timeFrame,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
+      case "Weekly":
         return [
           {
-            name: 'Direct Traffic',
+            name: "Direct Traffic",
             data: [30, 40, 35, 50, 70, 60, 40, 50, 60],
           },
           {
-            name: 'Search Engine Traffic',
+            name: "Search Engine Traffic",
             data: [50, 70, 30, 80, 40, 84, 33, 45, 75],
           },
-        ]
-      case 'Monthly':
+        ];
+      case "Monthly":
         return [
           {
-            name: 'Direct Traffic',
+            name: "Direct Traffic",
             data: [30, 30, 50, 60, 30, 50, 70, 60, 90],
           },
           {
-            name: 'Search Engine Traffic',
+            name: "Search Engine Traffic",
             data: [20, 60, 65, 56, 70, 50, 90, 75, 60],
           },
-        ]
-      case 'Yearly':
+        ];
+      case "Yearly":
         return [
           {
-            name: 'Direct Traffic',
+            name: "Direct Traffic",
             data: [53, 67, 73, 30, 40, 62, 50, 45, 85],
           },
           {
-            name: 'Search Engine Traffic',
+            name: "Search Engine Traffic",
             data: [100, 90, 70, 60, 100, 80, 90, 95, 140],
           },
-        ]
+        ];
       default:
         return [
           {
-            name: 'Direct Traffic',
+            name: "Direct Traffic",
             data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
           },
           {
-            name: 'Search Engine Traffic',
+            name: "Search Engine Traffic",
             data: [76, 85, 100, 98, 87, 105, 91, 114, 94],
           },
-        ]
+        ];
     }
-  }
+  };
 
   const options: ApexOptions = {
     // labels: labels,
     chart: {
       height: 145,
-      type: 'bar',
+      type: "bar",
       sparkline: { enabled: !0 },
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '55%',
-        borderRadiusApplication: 'around',
+        columnWidth: "55%",
+        borderRadiusApplication: "around",
       },
     },
     dataLabels: {
@@ -728,26 +699,26 @@ const TrafficSourceApp = ({
     },
     legend: {
       show: true,
-      position: 'top',
-      horizontalAlign: 'left',
+      position: "top",
+      horizontalAlign: "left",
       offsetY: -3,
     },
     stroke: {
       show: true,
       width: 2,
-      colors: ['transparent'],
+      colors: ["transparent"],
     },
     xaxis: {
       categories: [
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
       ],
     },
     grid: {
@@ -760,12 +731,12 @@ const TrafficSourceApp = ({
     tooltip: {
       y: {
         formatter: function (val) {
-          return '$' + val + 'k'
+          return "$" + val + "k";
         },
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -781,16 +752,16 @@ const TrafficSourceApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 export {
-  SalesRevenuechart,
-  AdsRevenuechart,
+  SalesRevenueChart,
+  AdsRevenueChart,
   OnlineSalesChart,
   OnlineWeeklyApp,
   WebAnalyticsApp,
   FollowersApp,
   VisitBrowsersApp,
   TrafficSourceApp,
-}
+};

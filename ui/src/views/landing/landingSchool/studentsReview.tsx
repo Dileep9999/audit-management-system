@@ -1,16 +1,13 @@
-'use client'
+import React from "react";
 
-import React from 'react'
+import { Link } from "react-router-dom";
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { studentReviewData } from '@src/data'
-import { StudentsReviewData } from '@src/dtos'
-import { MoveLeft, MoveRight } from 'lucide-react'
-import 'swiper/css'
-import { Autoplay, Controller, Navigation } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/react'
+import { studentReviewData } from "@src/data";
+import { StudentsReviewData } from "@src/dtos";
+import { MoveLeft, MoveRight } from "lucide-react";
+import "swiper/css";
+import { Autoplay, Controller, Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 const StudentsReview: React.FC = () => {
   return (
@@ -30,8 +27,9 @@ const StudentsReview: React.FC = () => {
                 have thrived in our community:
               </p>
               <Link
-                href="#!"
-                className="text-orange-500 underline link hover:text-orange-600">
+                to="#!"
+                className="text-orange-500 underline link hover:text-orange-600"
+              >
                 View All Reviews
                 <MoveRight className="ml-1 ltr:inline-block rtl:hidden size-4" />
                 <MoveLeft className="mr-1 rtl:inline-block ltr:hidden size-4" />
@@ -43,21 +41,22 @@ const StudentsReview: React.FC = () => {
                 slidesPerView={1}
                 pagination={{ clickable: true }}
                 navigation={{
-                  nextEl: '.swiper-button-next',
-                  prevEl: '.swiper-button-prev',
+                  nextEl: ".swiper-button-next",
+                  prevEl: ".swiper-button-prev",
                 }}
                 className="p-3 swiper-container mySwiper group/swiper"
                 dir="ltr"
                 autoplay={true}
                 loop={true}
                 speed={300}
-                modules={[Navigation, Autoplay, Controller]}>
+                modules={[Navigation, Autoplay, Controller]}
+              >
                 {studentReviewData.map(
                   (data: StudentsReviewData, index: number) => (
                     <SwiperSlide key={index}>
                       <div className="card">
                         <div className="p-8 card-body">
-                          <Image
+                          <img
                             src={data.image}
                             alt="studentImg"
                             className="rounded-modern size-20"
@@ -68,7 +67,8 @@ const StudentsReview: React.FC = () => {
                               .map((_, index) => (
                                 <i
                                   key={index}
-                                  className="text-yellow-500 ri-star-fill"></i>
+                                  className="text-yellow-500 ri-star-fill"
+                                ></i>
                               ))}
                           </div>
                           <h6 className="mt-3 mb-3">{data.title}</h6>
@@ -78,7 +78,7 @@ const StudentsReview: React.FC = () => {
                         </div>
                       </div>
                     </SwiperSlide>
-                  )
+                  ),
                 )}
                 <div className="swiper-button-next after:font-remix after:!text-base after:font-semibold after:text-orange-500 opacity-0 group-hover/swiper:opacity-100 transition ease-linear duration-300 after:content-['\ea6e']"></div>
                 <div className="swiper-button-prev after:font-remix after:!text-base after:font-semibold after:text-orange-500 opacity-0 group-hover/swiper:opacity-100 transition ease-linear duration-300 after:content-['\ea64']"></div>
@@ -88,7 +88,7 @@ const StudentsReview: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default StudentsReview
+export default StudentsReview;

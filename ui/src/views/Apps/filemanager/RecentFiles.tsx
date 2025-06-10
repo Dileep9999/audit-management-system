@@ -1,91 +1,83 @@
-'use client'
-
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-
-import Image from 'next/image'
-
-import DeleteModal from '@src/components/common/DeleteModal'
-import Pagination from '@src/components/common/Pagination'
-import TableContainer from '@src/components/custom/table/table'
-import { FileListRecord } from '@src/dtos/apps/filemanager'
-import { AppDispatch, RootState } from '@src/slices/reducer'
-import { deleteFileData, getFileListData } from '@src/slices/thunk'
-import { CloudUpload, Trash } from 'lucide-react'
-import { useDispatch, useSelector } from 'react-redux'
-
-import AddEditFiles from './AddEditFiles'
+import { CloudUpload, Trash } from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import TableContainer from "@src/components/custom/table/Table";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@src/slices/reducer";
+import Pagination from "@src/components/common/pagination";
+import DeleteModal from "@src/components/common/deleteModal";
+import AddEditFiles from "./addEditFiles";
+import { FileListRecord } from "@src/dtos/apps/filemanager";
+import { getFileListData, deleteFileData } from "@src/slices/thunk";
 
 const RecentFiles = () => {
-  const { fileList } = useSelector((state: RootState) => state.FileList)
-  const dispatch = useDispatch<AppDispatch>()
-  const [selectAll, setSelectAll] = useState(false)
-  const [deletedListData, setDeletedListData] = useState<number[]>([])
-  const [fileListData, setFileListData] = useState<FileListRecord[]>([])
-
-  const [editMode, setEditMode] = useState(false)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [deletedRecord, setDeletedRecord] = useState<number[] | null>(null)
-  const [currentFile, setCurrentFile] = useState<FileListRecord | null>(null)
+  const { fileList } = useSelector((state: RootState) => state.FileList);
+  const dispatch = useDispatch<AppDispatch>();
+  const [selectAll, setSelectAll] = useState(false);
+  const [deletedListData, setDeletedListData] = useState<number[]>([]);
+  const [fileListData, setFileListData] = useState<FileListRecord[]>([]);
+  const [editMode, setEditMode] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deletedRecord, setDeletedRecord] = useState<number[] | null>(null);
+  const [currentFile, setCurrentFile] = useState<FileListRecord | null>(null);
   // add & edit modal
   const handleOpenModal = (
     editMode: boolean = true,
-    file: FileListRecord | null
+    file: FileListRecord | null,
   ) => {
-    setEditMode(editMode)
-    setCurrentFile(file)
-  }
+    setEditMode(editMode);
+    setCurrentFile(file);
+  };
   // close modal
   const handleCloseModal = () => {
-    // closeModal(modalKey);
-    setEditMode(false)
-    setCurrentFile(null)
-  }
+    setEditMode(false);
+    setCurrentFile(null);
+  };
 
   useEffect(() => {
     if (!fileList) {
-      dispatch(getFileListData())
+      dispatch(getFileListData());
     } else {
-      setFileListData(fileList)
+      setFileListData(fileList);
     }
-  }, [fileList, dispatch])
+  }, [fileList, dispatch]);
 
-  const handleDeleteRecord = (id: number) => {
-    setIsModalOpen(true)
-    setDeletedRecord([id])
-  }
+  const handleDeleteRecord = (_id: number) => {
+    setIsModalOpen(true);
+    setDeletedRecord([_id]);
+  };
   const setDeleteRecord = () => {
     if (deletedRecord && isModalOpen) {
-      dispatch(deleteFileData(deletedRecord))
-      setIsModalOpen(false)
-      setDeletedRecord(null)
+      dispatch(deleteFileData(deletedRecord));
+      setIsModalOpen(false);
+      setDeletedRecord(null);
     }
-  }
+  };
   // select all or unselect all
   const handleSelectAll = useCallback(() => {
     if (selectAll) {
-      setDeletedListData([])
+      setDeletedListData([]);
     } else {
-      setDeletedListData(fileListData.map((file) => file.id))
+      setDeletedListData(fileListData.map((file) => file._id));
     }
-    setSelectAll(!selectAll)
-  }, [selectAll, fileListData])
+    setSelectAll(!selectAll);
+  }, [selectAll, fileListData]);
 
   // set multiple delete records
-  const handleSelectRecord = (id: number) => {
+  const handleSelectRecord = (_id: number) => {
     setDeletedListData((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    )
-  }
+      prev.includes(_id) ? prev.filter((item) => item !== _id) : [...prev, _id],
+    );
+  };
   const handleRemoveSelectedRecords = () => {
-    dispatch(deleteFileData(deletedListData))
-    setDeletedListData([])
-    setSelectAll(false)
-  }
+    dispatch(deleteFileData(deletedListData));
+    setDeletedListData([]);
+    setSelectAll(false);
+  };
 
   const columns = useMemo(
     () => [
       {
-        header: () => (
+        header: (
           <input
             id="checkboxAll"
             className="input-check input-check-primary"
@@ -94,24 +86,24 @@ const RecentFiles = () => {
             onChange={handleSelectAll}
           />
         ),
-        accessorKey: 'id',
-        cell: ({ row }: { row: { original: FileListRecord } }) => (
+        accessorKey: "id",
+        cell: ({ row }: any) => (
           <input
             className="input-check input-check-primary"
             type="checkbox"
-            checked={deletedListData.includes(row.original.id)}
-            onChange={() => handleSelectRecord(row.original.id)}
+            checked={deletedListData.includes(row.original._id)}
+            onChange={() => handleSelectRecord(row.original._id)}
           />
         ),
       },
       {
-        header: () => 'Type',
-        accessorKey: 'image',
-        cell: ({ row }: { row: { original: FileListRecord } }) => (
+        header: "Type",
+        accessorKey: "image",
+        cell: ({ row }: any) => (
           <div className="flex items-center gap-2">
-            <Image
+            <img
               src={row.original.image}
-              alt="rowImg"
+              alt="TypeImg"
               className="h-6 w-6"
               width={10}
               height={10}
@@ -120,75 +112,78 @@ const RecentFiles = () => {
         ),
       },
       {
-        header: 'Document Name',
-        accessorKey: 'documentName',
+        header: "Document Name",
+        accessorKey: "documentName",
       },
       {
-        header: 'Size',
-        accessorKey: 'size',
+        header: "Size",
+        accessorKey: "size",
       },
       {
-        header: 'Last Edit',
-        accessorKey: 'lastEdit',
+        header: "Last Edit",
+        accessorKey: "lastEdit",
       },
       {
-        header: 'Action',
-        accessorKey: '',
-        cell: ({ row }: { row: { original: FileListRecord } }) => (
+        header: "Action",
+        accessorKey: "",
+        cell: ({ row }: any) => (
           <div className="flex items-center gap-2">
             <button
               className="btn btn-sub-gray btn-icon !size-8 rounded-md"
               title="edit"
               data-modal-target="renameFileModal"
               onClick={(e) => {
-                e.preventDefault()
-                handleOpenModal(true, row.original)
-              }}>
+                e.preventDefault();
+                handleOpenModal(true, row.original);
+              }}
+            >
               <i className="ri-pencil-line"></i>
             </button>
             <button
               className="btn btn-sub-red btn-icon !size-8 rounded-md"
               title="delete"
               onClick={(e) => {
-                e.preventDefault()
-                handleDeleteRecord(row.original.id)
-              }}>
+                e.preventDefault();
+                handleDeleteRecord(row.original._id);
+              }}
+            >
               <i className="ri-delete-bin-line"></i>
             </button>
           </div>
         ),
       },
     ],
-    [selectAll, deletedListData, handleSelectAll]
-  )
+    [selectAll, deletedListData, handleSelectAll],
+  );
 
-  const itemsPerPage = 5
-  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+  };
 
-  const startIndex = (currentPage - 1) * itemsPerPage
+  const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedEvents = fileListData.slice(
     startIndex,
-    startIndex + itemsPerPage
-  )
+    startIndex + itemsPerPage,
+  );
   return (
     <React.Fragment>
       <div className="card">
-        <div className="flex items-center gap-5 card-header flex-wrap">
+        <div className="flex items-center gap-5 card-header">
           <h6 className="card-title grow">Recent Files</h6>
           {deletedListData.length > 0 && (
             <button
               className="btn btn-red btn-icon"
-              onClick={handleRemoveSelectedRecords}>
+              onClick={handleRemoveSelectedRecords}
+            >
               <Trash className="inline-block size-4" />
             </button>
           )}
           <div className="shrink-0">
             <input type="file" id="fileInput" className="hidden" />
             <label htmlFor="fileInput" className="btn btn-sub-green">
-              <CloudUpload className="inline-block ltr:mr-1 rtl:ml-1 size-4" />{' '}
+              <CloudUpload className="inline-block ltr:mr-1 rtl:ml-1 size-4" />{" "}
               Upload File
             </label>
           </div>
@@ -200,13 +195,13 @@ const RecentFiles = () => {
               isPagination={false}
               columns={columns}
               data={paginatedEvents}
-              thClass="!font-medium cursor-pointer bg-gray-100 dark:bg-dark-850"
-              divClass="overflow-x-auto table-box whitespace-nowrap"
-              tableClass="table flush"
-              tbodyClass=""
+              thClassName="!font-medium cursor-pointer bg-gray-100 dark:bg-dark-850"
+              divClassName="overflow-x-auto table-box whitespace-nowrap"
+              tableClassName="table flush"
+              tBodyClassName=""
               PaginationClassName="pagination-container"
-              thtrClass="*:px-3 *:py-2.5"
-              isTableFooter={false}
+              thTrClassName="*:px-3 *:py-2.5"
+              isTFooter={false}
             />
             {fileListData.length > 0 && (
               <Pagination
@@ -235,7 +230,7 @@ const RecentFiles = () => {
         deleteModalFunction={setDeleteRecord}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default RecentFiles
+export default RecentFiles;

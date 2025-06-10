@@ -1,8 +1,6 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Link from 'next/link'
+import { Link } from "react-router-dom";
 
 import {
   Brain,
@@ -11,7 +9,7 @@ import {
   Microscope,
   Siren,
   Syringe,
-} from 'lucide-react'
+} from "lucide-react";
 
 const AvailableFacilities: React.FC = () => {
   return (
@@ -20,8 +18,9 @@ const AvailableFacilities: React.FC = () => {
         <div className="container mx-auto px-4 xl:px-20">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-x-space">
             <Link
-              href="#!"
-              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200">
+              to="#!"
+              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200"
+            >
               <div className="card-body">
                 <div className="flex items-center justify-center mx-auto mb-5 bg-white rounded-full size-16 dark:bg-dark-850 text-sky-500">
                   <Microscope className="fill-sky-500/10 size-6" />
@@ -30,8 +29,9 @@ const AvailableFacilities: React.FC = () => {
               </div>
             </Link>
             <Link
-              href="#!"
-              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200">
+              to="#!"
+              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200"
+            >
               <div className="card-body">
                 <div className="flex items-center justify-center mx-auto mb-5 bg-white rounded-full size-16 dark:bg-dark-850 text-sky-500">
                   <HeartPulse className="fill-sky-500/10 size-6" />
@@ -40,8 +40,9 @@ const AvailableFacilities: React.FC = () => {
               </div>
             </Link>
             <Link
-              href="#!"
-              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200">
+              to="#!"
+              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200"
+            >
               <div className="card-body">
                 <div className="flex items-center justify-center mx-auto mb-5 bg-white rounded-full size-16 dark:bg-dark-850 text-sky-500">
                   <Brain className="fill-sky-500/10 size-6" />
@@ -50,8 +51,9 @@ const AvailableFacilities: React.FC = () => {
               </div>
             </Link>
             <Link
-              href="#!"
-              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200">
+              to="#!"
+              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200"
+            >
               <div className="card-body">
                 <div className="flex items-center justify-center mx-auto mb-5 bg-white rounded-full size-16 dark:bg-dark-850 text-sky-500">
                   <Siren className="fill-sky-500/10 size-6" />
@@ -60,8 +62,9 @@ const AvailableFacilities: React.FC = () => {
               </div>
             </Link>
             <Link
-              href="#!"
-              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200">
+              to="#!"
+              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200"
+            >
               <div className="card-body">
                 <div className="flex items-center justify-center mx-auto mb-5 bg-white rounded-full size-16 dark:bg-dark-850 text-sky-500">
                   <Fingerprint className="fill-sky-500/10 size-6" />
@@ -70,8 +73,9 @@ const AvailableFacilities: React.FC = () => {
               </div>
             </Link>
             <Link
-              href="#!"
-              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200">
+              to="#!"
+              className="block text-center card bg-sky-100 dark:bg-sky-500/10 dark:border-sky-500/20 border-sky-200"
+            >
               <div className="card-body">
                 <div className="flex items-center justify-center mx-auto mb-5 bg-white rounded-full size-16 dark:bg-dark-850 text-sky-500">
                   <Syringe className="fill-sky-500/10 size-6" />
@@ -83,7 +87,7 @@ const AvailableFacilities: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default AvailableFacilities
+export default AvailableFacilities;

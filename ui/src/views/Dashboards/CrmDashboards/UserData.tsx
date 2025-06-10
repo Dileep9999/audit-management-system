@@ -1,54 +1,52 @@
-'use client'
-
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-
-import Link from 'next/link'
-
-import Pagination from '@src/components/common/Pagination'
-import TableContainer from '@src/components/custom/table/table'
-import { leadsList1 } from '@src/data/index'
-import { NextPageWithLayout } from '@src/dtos'
-import { CirclePlus, Search } from 'lucide-react'
+import Pagination from "@src/components/common/pagination";
+import TableContainer from "@src/components/custom/table/Table";
+import { leadsList1 } from "@data/index";
+import { NextPageWithLayout } from "@dtos/layout";
+import { CirclePlus, Search } from "lucide-react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { Link } from "react-router-dom";
 
 type Campaign = {
-  leadName: string
-  rating: string
-  date: string
-  contact: string
-  leadSource: string
-  leadStatus: string
-  totalBalance: string
-}
+  leadName: string;
+  rating: string;
+  date: string;
+  contact: string;
+  leadSource: string;
+  leadStatus: string;
+  totalBalance: string;
+};
 
 const UserData: NextPageWithLayout = () => {
-  const [campaigns] = useState<Campaign[]>(leadsList1)
-  const [filterCampaigns, setFilterCampaigns] = useState<Campaign[]>(leadsList1)
-  const [searchTerm, setSearchTerm] = useState<string>('')
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const itemsPerPage = 8
+  const campaigns: Campaign[] = leadsList1;
+
+  const [filterCampaigns, setFilterCampaigns] =
+    useState<Campaign[]>(leadsList1);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 8;
 
   const filterCampaignsBySearch = useCallback(() => {
     const filtered = campaigns.filter((campaign) =>
       Object.values(campaign).some((value) =>
-        value.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    )
-    setFilterCampaigns(filtered)
-  }, [campaigns, searchTerm])
+        value.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    );
+    setFilterCampaigns(filtered);
+  }, [campaigns, searchTerm]);
 
   useEffect(() => {
-    filterCampaignsBySearch()
-  }, [filterCampaignsBySearch])
+    filterCampaignsBySearch();
+  }, [filterCampaignsBySearch]);
   const columns = useMemo(
     () => [
       {
-        header: 'Lead Name',
-        accessorKey: 'leadName',
+        header: "Lead Name",
+        accessorKey: "leadName",
       },
       {
-        header: 'Rating',
-        accessorKey: 'rating',
-        cell: ({ row }: { row: { original: Campaign } }) => (
+        header: "Rating",
+        accessorKey: "rating",
+        cell: ({ row }: any) => (
           <>
             <i className="text-yellow-500 align-baseline ri-star-fill"></i> (
             <span>{row.original.rating}</span>)
@@ -56,60 +54,51 @@ const UserData: NextPageWithLayout = () => {
         ),
       },
       {
-        header: 'Date',
-        accessorKey: 'date',
+        header: "Date",
+        accessorKey: "date",
       },
       {
-        header: 'Contact',
-        accessorKey: 'contact',
+        header: "Contact",
+        accessorKey: "contact",
       },
       {
-        header: 'Lead Source',
-        accessorKey: 'leadSource',
-        cell: ({ row }) => (
+        header: "Lead Source",
+        accessorKey: "leadSource",
+        cell: ({ row }: any) => (
           <>
             <span className="badge badge-gray">{row.original.leadSource}</span>
           </>
         ),
       },
       {
-        header: 'Lead Status',
-        accessorKey: 'leadStatus',
-        cell: ({ row }) => (
+        header: "Lead Status",
+        accessorKey: "leadStatus",
+        cell: ({ row }: any) => (
           <>
             <span
-              className={`${
-                row.original.leadStatus == 'New'
-                  ? 'badge badge-sky'
-                  : row.original.leadStatus == 'Contacted'
-                    ? 'badge badge-green'
-                    : row.original.leadStatus == 'Interested'
-                      ? 'badge badge-yellow'
-                      : row.original.leadStatus == 'Closed'
-                        ? 'badge badge-red'
-                        : 'badge badge-purple'
-              }`}>
+              className={`${row.original.leadStatus == "New" ? "badge badge-sky" : row.original.leadStatus == "Contacted" ? "badge badge-green" : row.original.leadStatus == "Interested" ? "badge badge-yellow" : row.original.leadStatus == "Closed" ? "badge badge-red" : "badge badge-purple"}`}
+            >
               {row.original.leadStatus}
             </span>
           </>
         ),
       },
       {
-        header: 'Total Balance',
-        accessorKey: 'totalBalance',
+        header: "Total Balance",
+        accessorKey: "totalBalance",
       },
     ],
-    []
-  )
+    [],
+  );
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-  }
-  const startIndex = (currentPage - 1) * itemsPerPage
+    setCurrentPage(page);
+  };
+  const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedEvents = filterCampaigns.slice(
     startIndex,
-    startIndex + itemsPerPage
-  )
+    startIndex + itemsPerPage,
+  );
   return (
     <div className="col-span-12 card">
       <div className="grid grid-cols-12 lg:items-center card-header gap-space">
@@ -126,13 +115,13 @@ const UserData: NextPageWithLayout = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <button className="absolute inset-y-0 flex items-center text-gray-500 dark:text-dark-500 left-3 group-[&.right]/form:right-3 group-[&.right]/form:left-auto focus:outline-hidden">
+              <button className="absolute inset-y-0 flex items-center text-gray-500 dark:text-dark-500 left-3 group-[&.right]/form:right-3 group-[&.right]/form:left-auto focus:outline-none">
                 <Search className="size-4" />
               </button>
             </div>
             <button type="button" className="btn btn-primary shrink-0">
-              <CirclePlus className="inline-block ltr:mr-1 rtl:ml-1 size-4" />
-              <Link href="/apps/crm/lead">Add Lead</Link>
+              <CirclePlus className="inline-block ltr:mr-1 rtl:ml-1 size-4" />{" "}
+              <Link to="/apps/crm/lead">Add Lead</Link>
             </button>
           </div>
         </div>
@@ -143,11 +132,11 @@ const UserData: NextPageWithLayout = () => {
           isPagination={false}
           columns={columns}
           data={paginatedEvents}
-          divClass="overflow-x-auto table-box"
-          tableClass="table whitespace-nowrap"
-          thClass="text-gray-500 bg-gray-100 dark:bg-dark-850 dark:text-dark-500 cursor-pointer"
-          tbodyClass="pt-0"
-          isTableFooter={false}
+          divClassName="overflow-x-auto table-box"
+          tableClassName="table whitespace-nowrap"
+          thClassName="text-gray-500 bg-gray-100 dark:bg-dark-850 dark:text-dark-500 cursor-pointer"
+          tBodyClassName="pt-0"
+          isTFooter={false}
         />
         {filterCampaigns.length >= 0 && (
           <Pagination
@@ -159,7 +148,7 @@ const UserData: NextPageWithLayout = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default UserData
+export default UserData;

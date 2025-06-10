@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import { MoveLeft, MoveRight } from 'lucide-react'
+import { MoveLeft, MoveRight } from "lucide-react";
+import React from "react";
 
 const ApplicationOverviewTab = () => {
   return (
@@ -67,7 +64,7 @@ const ApplicationOverviewTab = () => {
         </div>
       </form>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ApplicationOverviewTab
+export default ApplicationOverviewTab;

@@ -1,20 +1,18 @@
-'use client'
+import React, { useEffect } from "react";
 
-import React, { useEffect } from 'react'
+import { Link } from "react-router-dom";
 
-import Link from 'next/link'
-
-import AOS from 'aos'
-import 'aos/dist/aos.css'
-import { CornerDownRight, X } from 'lucide-react'
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { CornerDownRight, X } from "lucide-react";
 
 const OurBestPlans: React.FC = () => {
   useEffect(() => {
     AOS.init({
       duration: 2000,
       once: true,
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <React.Fragment>
@@ -50,7 +48,8 @@ const OurBestPlans: React.FC = () => {
                 <Link
                   href="/page/pricing"
                   type="button"
-                  className="w-full btn btn-sub-gray">
+                  className="w-full btn btn-sub-gray"
+                >
                   Get Started for free
                 </Link>
                 <ul className="flex flex-col gap-4 *:flex *:items-center *:gap-2 mt-7">
@@ -88,7 +87,8 @@ const OurBestPlans: React.FC = () => {
             <div
               className="relative overflow-hidden card active group"
               data-aos="fade-up"
-              data-aos-duration="2000">
+              data-aos-duration="2000"
+            >
               <div className="absolute border-[40px] border-gray-100 dark:border-dark-850 size-64 -bottom-16 -right-16 rounded-creative"></div>
               <div className="relative lg:p-8 card-body">
                 <div className="absolute right-5 top-5 badge badge-pink">
@@ -106,7 +106,8 @@ const OurBestPlans: React.FC = () => {
                 <Link
                   href="/page/pricing"
                   type="button"
-                  className="w-full btn btn-primary">
+                  className="w-full btn btn-primary"
+                >
                   Get Started
                 </Link>
                 <ul className="flex flex-col gap-4 *:flex *:items-center *:gap-2 mt-7">
@@ -144,7 +145,8 @@ const OurBestPlans: React.FC = () => {
             <div
               className="relative overflow-hidden card"
               data-aos="fade-up"
-              data-aos-duration="2000">
+              data-aos-duration="2000"
+            >
               <div className="absolute border-[40px] border-gray-100 dark:border-dark-850 size-64 -bottom-16 -right-16 rounded-creative"></div>
               <div className="relative lg:p-8 card-body">
                 <div className="mb-8 text-center">
@@ -157,7 +159,8 @@ const OurBestPlans: React.FC = () => {
                 <Link
                   href="/page/contact-us"
                   type="button"
-                  className="w-full btn btn-sub-gray">
+                  className="w-full btn btn-sub-gray"
+                >
                   Contact Us
                 </Link>
                 <ul className="flex flex-col gap-4 *:flex *:items-center *:gap-2 mt-7">
@@ -196,7 +199,7 @@ const OurBestPlans: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default OurBestPlans
+export default OurBestPlans;

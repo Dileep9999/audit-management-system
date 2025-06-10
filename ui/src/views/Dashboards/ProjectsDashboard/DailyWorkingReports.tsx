@@ -1,21 +1,16 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
+import React, { useState } from "react";
+import { PatternDonutApp } from "./projectCharts";
+import { Ellipsis } from "lucide-react";
+import { NextPageWithLayout } from "@dtos/layout";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-import { Ellipsis } from 'lucide-react'
-
-import { PatternDonutApp } from './ProjectCharts'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
 
 const DailyWorkingReports: NextPageWithLayout = () => {
-  const [timeFrame, setTimeFrame] = useState<string>('Weekly')
+  const [timeFrame, setTimeFrame] = useState<string>("Weekly");
   return (
     <React.Fragment>
       <div className="order-3 col-span-12 lg:col-span-6 2xl:col-span-4 card">
@@ -27,22 +22,25 @@ const DailyWorkingReports: NextPageWithLayout = () => {
             </DropdownButton>
             <DropdownMenu>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Weekly')}>
+                onClick={() => setTimeFrame("Weekly")}
+              >
                 <span>Weekly</span>
               </Link>
 
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Monthly')}>
+                onClick={() => setTimeFrame("Monthly")}
+              >
                 <span>Monthly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => setTimeFrame('Yearly')}>
+                onClick={() => setTimeFrame("Yearly")}
+              >
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
@@ -51,17 +49,17 @@ const DailyWorkingReports: NextPageWithLayout = () => {
         <div className="card-body">
           <PatternDonutApp
             chartColors="[bg-primary-500, bg-purple-500, bg-green-500]"
-            chartDarkColors={''}
+            chartDarkColors={""}
             chartId="patternDonutChart"
             timeFrame={timeFrame}
           />
           <div className="grid grid-cols-12">
             <div className="col-span-4">
-              <Link href="#!" className="flex items-center gap-2">
+              <Link to="#!" className="flex items-center gap-2">
                 <i className="text-xs align-baseline ri-circle-fill text-primary-500 shrink-0"></i>
                 <div className="grow">
                   <h6 className="font-normal">
-                    Afternoon{' '}
+                    Afternoon{" "}
                     <span className="text-gray-500 dark:text-dark-500">
                       (54%)
                     </span>
@@ -70,11 +68,11 @@ const DailyWorkingReports: NextPageWithLayout = () => {
               </Link>
             </div>
             <div className="col-span-4">
-              <Link href="#!" className="flex items-center gap-2">
+              <Link to="#!" className="flex items-center gap-2">
                 <i className="text-xs text-purple-500 align-baseline ri-circle-fill shrink-0"></i>
                 <div className="grow">
                   <h6 className="font-normal">
-                    Evening{' '}
+                    Evening{" "}
                     <span className="text-gray-500 dark:text-dark-500">
                       (19%)
                     </span>
@@ -83,11 +81,11 @@ const DailyWorkingReports: NextPageWithLayout = () => {
               </Link>
             </div>
             <div className="col-span-4">
-              <Link href="#!" className="flex items-center gap-2">
+              <Link to="#!" className="flex items-center gap-2">
                 <i className="text-xs text-green-500 align-baseline ri-circle-fill shrink-0"></i>
                 <div className="grow">
                   <h6 className="font-normal">
-                    Morning{' '}
+                    Morning{" "}
                     <span className="text-gray-500 dark:text-dark-500">
                       (27%)
                     </span>
@@ -99,6 +97,6 @@ const DailyWorkingReports: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default DailyWorkingReports
+  );
+};
+export default DailyWorkingReports;

@@ -1,26 +1,17 @@
-'use client'
+import React, { useState } from "react";
+import { Modal } from "@src/components/custom/modal/modal";
+import { Mic, MicOff, Pause, Disc, Phone, Settings } from "lucide-react"; // Ensure you have the icons imported
 
-import React, { useState } from 'react'
+const CallPatientsModal = ({ show, patients, handleHide }: any) => {
+  const [isMuted, setIsMuted] = useState(false);
+  const isCalling = true;
+  const callDuration = 0; // Example duration, replace with actual duration or state
+  const formatDuration = (duration: any) => `${duration} sec`;
 
-// Ensure you have the icons imported
-import Image from 'next/image'
-
-import { Modal } from '@src/components/custom/modal/modal'
-import { CallPatientsModalProps } from '@src/dtos/apps/appointmentsList'
-import { Disc, Mic, MicOff, Pause, Phone, Settings } from 'lucide-react'
-
-const CallPatientsModal: React.FC<CallPatientsModalProps> = ({
-  show,
-  patients,
-  handleHide,
-}) => {
-  const [isMuted, setIsMuted] = useState(false)
-  const [isCalling] = useState(true)
-  const callDuration = 0
-  const formatDuration = (duration: number) => `${duration} sec`
+  // Function to toggle mute state
   const toggleMute = () => {
-    setIsMuted((prev) => !prev)
-  }
+    setIsMuted((prev) => !prev);
+  };
 
   return (
     <React.Fragment>
@@ -35,9 +26,7 @@ const CallPatientsModal: React.FC<CallPatientsModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <div className="relative items-center justify-center overflow-hidden text-gray-500 bg-gray-100 rounded-full dark:bg-dark-850 dark:text-dark-500 size-12 shrink-0">
-                  {patients.image && (
-                    <Image src={patients.image} alt="patientsImg" />
-                  )}
+                  <img src={patients.image} alt="patientsImg" />
                   {!patients.image && (
                     <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-gray-500 bg-gray-100 rounded-full dark:bg-dark-850 dark:text-dark-500">
                       {patients.avatarText}
@@ -47,7 +36,7 @@ const CallPatientsModal: React.FC<CallPatientsModalProps> = ({
                 <div>
                   <h6>{patients.patientName}</h6>
                   <p className="text-sm text-gray-500 dark:text-dark-500">
-                    {isCalling ? 'Calling ...' : formatDuration(callDuration)}
+                    {isCalling ? "Calling ..." : formatDuration(callDuration)}
                   </p>
                 </div>
               </div>
@@ -55,7 +44,8 @@ const CallPatientsModal: React.FC<CallPatientsModalProps> = ({
                 <button
                   type="button"
                   className="btn btn-active-gray shrink-0 btn-icon-text btn-icon"
-                  onClick={toggleMute}>
+                  onClick={toggleMute}
+                >
                   {isMuted ? (
                     <MicOff className="size-5" />
                   ) : (
@@ -64,23 +54,28 @@ const CallPatientsModal: React.FC<CallPatientsModalProps> = ({
                 </button>
                 <button
                   type="button"
-                  className="btn btn-active-gray shrink-0 btn-icon-text btn-icon">
+                  className="btn btn-active-gray shrink-0 btn-icon-text btn-icon"
+                >
                   <Pause className="size-5" />
                 </button>
                 <button
                   type="button"
-                  className="btn btn-active-gray shrink-0 btn-icon-text btn-icon">
+                  className="btn btn-active-gray shrink-0 btn-icon-text btn-icon"
+                >
                   <Disc className="size-5" />
                 </button>
                 <button
                   type="button"
                   className="btn btn-active-red shrink-0 btn-icon-text btn-icon"
-                  onClick={onClose}>
+                  onClick={onClose}
+                >
                   <Phone className="size-5" />
                 </button>
                 <button
                   type="button"
-                  className="btn btn-active-gray shrink-0 btn-icon-text btn-icon">
+                  onClick={onClose}
+                  className="btn btn-active-gray shrink-0 btn-icon-text btn-icon"
+                >
                   <Settings className="size-5" />
                 </button>
               </div>
@@ -89,7 +84,7 @@ const CallPatientsModal: React.FC<CallPatientsModalProps> = ({
         )}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default CallPatientsModal
+export default CallPatientsModal;

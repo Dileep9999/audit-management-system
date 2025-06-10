@@ -1,38 +1,29 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface RadialChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
-const SemiGaugeRadialbarChart = ({
+const SemiGaugeRadialBarChart = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: RadialChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const series = [76]
-  const labels = ['Average Results']
+  const series = [76];
+  const labels = ["Average Results"];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'radialBar',
+      type: "radialBar",
       offsetY: -20,
       sparkline: {
         enabled: true,
@@ -43,8 +34,8 @@ const SemiGaugeRadialbarChart = ({
         startAngle: -90,
         endAngle: 90,
         track: {
-          background: '#e7e7e7',
-          strokeWidth: '97%',
+          background: "#e7e7e7",
+          strokeWidth: "97%",
           margin: 5, // margin is in pixels
         },
         dataLabels: {
@@ -53,7 +44,7 @@ const SemiGaugeRadialbarChart = ({
           },
           value: {
             offsetY: -2,
-            fontSize: '22px',
+            fontSize: "22px",
           },
         },
       },
@@ -65,9 +56,9 @@ const SemiGaugeRadialbarChart = ({
       },
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        shade: 'light',
+        shade: "light",
         shadeIntensity: 0.4,
         inverseColors: false,
         opacityFrom: 1,
@@ -76,7 +67,7 @@ const SemiGaugeRadialbarChart = ({
       },
     },
     labels: labels,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -86,12 +77,12 @@ const SemiGaugeRadialbarChart = ({
         series={series}
         type="radialBar"
         data-chart-colors="[bg-sky-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default SemiGaugeRadialbarChart
+export default SemiGaugeRadialBarChart;

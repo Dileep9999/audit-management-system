@@ -1,47 +1,56 @@
-'use client'
-
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
-
-import Image from 'next/image'
-
-import { videoGroupChat } from '@src/data'
-import { GroupVideoCallChatRecord } from '@src/dtos'
-import { SendHorizontal } from 'lucide-react'
-import SimpleBar from 'simplebar-react'
+import { SendHorizontal } from "lucide-react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import SimpleBar from "simplebar-react";
+import { videoGroupChat } from "@src/data";
+import { GroupVideoCallChatRecord } from "@src/dtos";
 
 const GroupVideoChat: React.FC = () => {
   const [chatMessageList, setChatMessageList] = useState<
     GroupVideoCallChatRecord[]
-  >([])
-  const [newMessage, setNewMessage] = useState<string>('')
-  const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  >([]);
+  const [newMessage, setNewMessage] = useState<string>("");
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (videoGroupChat) {
-      setChatMessageList(videoGroupChat)
+      setChatMessageList(videoGroupChat);
     }
-  }, [])
+  }, []);
 
   // Send message
   const handleSendMessage = () => {
-    if (newMessage.trim() === '') return
+    if (newMessage.trim() === "") return;
     const newChatMessage: GroupVideoCallChatRecord = {
-      id:
+      _id:
         chatMessageList && chatMessageList.length > 0
           ? chatMessageList.length + 1
           : 1,
       roomId: 3,
-      avatar: '/assets/images/avatar/user-17.png',
-      name: 'Sophia Mia',
+      avatar:
+        "https://images.kcubeinfotech.com/domiex/images/avatar/user-17.png",
+      name: "Sophia Mia",
       message: newMessage,
       time: new Date().toLocaleTimeString([], {
-        minute: '2-digit',
-        second: '2-digit',
+        minute: "2-digit",
+        second: "2-digit",
       }),
-    }
-    setChatMessageList([...chatMessageList, newChatMessage])
-    setNewMessage('')
-  }
+    };
+    setChatMessageList([...chatMessageList, newChatMessage]);
+    setNewMessage("");
+  };
+
+  // Scroll to bottom function
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 200);
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessageList]);
 
   return (
     <React.Fragment>
@@ -58,7 +67,7 @@ const GroupVideoChat: React.FC = () => {
                   (message: GroupVideoCallChatRecord, index: number) => (
                     <div className="flex gap-2" key={index}>
                       <div className="relative flex items-center justify-center font-semibold transition duration-200 ease-linear bg-gray-100 dark:bg-dark-850 rounded-full size-10 shrink-0 group-[&.right]/chat:order-2">
-                        <Image
+                        <img
                           src={message.avatar}
                           alt="avatar"
                           className="rounded-full"
@@ -76,7 +85,7 @@ const GroupVideoChat: React.FC = () => {
                         {message.time}
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               <div ref={messagesEndRef} />
             </div>
@@ -95,18 +104,19 @@ const GroupVideoChat: React.FC = () => {
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setNewMessage(e.target.value)
             }
-            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+            onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
           />
           <button
             title="send btn"
             className="btn btn-primary btn-icon shrink-0"
-            onClick={handleSendMessage}>
+            onClick={handleSendMessage}
+          >
             <SendHorizontal className="size-4" />
           </button>
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default GroupVideoChat
+export default GroupVideoChat;

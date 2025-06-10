@@ -1,22 +1,17 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
+import { Coins, Ellipsis } from "lucide-react";
+import React, { useState } from "react";
+import { ProjectStatusApp } from "./projectCharts";
+import { NextPageWithLayout } from "@dtos/layout";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-import { Coins, Ellipsis } from 'lucide-react'
-
-import AnimatedCounter from '../AnalyticsDashboards/Counter'
-import { ProjectStatusApp } from './ProjectCharts'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
+import AnimatedCounter from "../analyticsDashboards/counter";
 
 const ProjectStatus: NextPageWithLayout = () => {
-  const [timeFrame, setTimeFrame] = useState<string>('Weekly')
+  const [timeFrame, setTimeFrame] = useState<string>("Weekly");
   return (
     <React.Fragment>
       <div className="order-2 col-span-12 2xl:order-1 lg:col-span-6 2xl:col-span-4 card">
@@ -28,22 +23,25 @@ const ProjectStatus: NextPageWithLayout = () => {
             </DropdownButton>
             <DropdownMenu>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Weekly')}>
+                onClick={() => setTimeFrame("Weekly")}
+              >
                 <span>Weekly</span>
               </Link>
 
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Monthly')}>
+                onClick={() => setTimeFrame("Monthly")}
+              >
                 <span>Monthly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => setTimeFrame('Yearly')}>
+                onClick={() => setTimeFrame("Yearly")}
+              >
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
@@ -68,7 +66,7 @@ const ProjectStatus: NextPageWithLayout = () => {
           </div>
           <ProjectStatusApp
             chartColors="[bg-primary-500]"
-            chartDarkColors={''}
+            chartDarkColors={""}
             chartId="projectStatusChart"
             timeFrame={timeFrame}
           />
@@ -89,6 +87,6 @@ const ProjectStatus: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default ProjectStatus
+  );
+};
+export default ProjectStatus;

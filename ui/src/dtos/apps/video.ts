@@ -1,23 +1,21 @@
-import { StaticImageData } from 'next/image'
-
 export interface GroupVideoCallMemberRecord {
-  id: number
-  name: string
-  image: string
-  isActive: boolean
+  _id: any;
+  name: string;
+  image: string;
+  isActive: boolean;
 }
 
 export interface GroupKeyWordRecord {
-  id: number
-  time: string
-  text: string
+  _id: any;
+  time: string;
+  text: string;
 }
 
 export interface GroupVideoCallChatRecord {
-  id: number
-  roomId: number
-  avatar: string | StaticImageData
-  name: string
-  message: string
-  time: string
+  _id: any;
+  roomId: number;
+  avatar: string;
+  name: string;
+  message: string;
+  time: string;
 }

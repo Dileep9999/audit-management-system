@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface ColumnChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const StackedColumnChart = ({
@@ -24,39 +15,39 @@ const StackedColumnChart = ({
   chartId,
 }: ColumnChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'PRODUCT A',
+      name: "PRODUCT A",
       data: [44, 55, 41, 67, 22, 43],
     },
     {
-      name: 'PRODUCT B',
+      name: "PRODUCT B",
       data: [13, 23, 20, 8, 13, 27],
     },
     {
-      name: 'PRODUCT C',
+      name: "PRODUCT C",
       data: [11, 17, 15, 15, 21, 14],
     },
     {
-      name: 'PRODUCT D',
+      name: "PRODUCT D",
       data: [21, 7, 25, 13, 22, 8],
     },
-  ]
+  ];
   const labels = [
-    '01/01/2024 GMT',
-    '01/02/2024 GMT',
-    '01/03/2024 GMT',
-    '01/04/2024 GMT',
-    '01/05/2024 GMT',
-    '01/06/2024 GMT',
-  ]
+    "01/01/2024 GMT",
+    "01/02/2024 GMT",
+    "01/03/2024 GMT",
+    "01/04/2024 GMT",
+    "01/05/2024 GMT",
+    "01/06/2024 GMT",
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
       stacked: true,
       toolbar: {
         show: true,
@@ -70,7 +61,7 @@ const StackedColumnChart = ({
         breakpoint: 480,
         options: {
           legend: {
-            position: 'bottom',
+            position: "bottom",
             offsetX: -10,
             offsetY: 0,
           },
@@ -86,7 +77,7 @@ const StackedColumnChart = ({
           total: {
             enabled: true,
             style: {
-              fontSize: '13px',
+              fontSize: "13px",
               fontWeight: 900,
             },
           },
@@ -96,16 +87,16 @@ const StackedColumnChart = ({
 
     xaxis: {
       categories: labels,
-      type: 'datetime',
+      type: "datetime",
     },
     legend: {
-      position: 'right',
+      position: "right",
       offsetY: 40,
     },
     fill: {
       opacity: 1,
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -115,12 +106,12 @@ const StackedColumnChart = ({
         series={series}
         type="bar"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-red-500, bg-yellow-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default StackedColumnChart
+export default StackedColumnChart;

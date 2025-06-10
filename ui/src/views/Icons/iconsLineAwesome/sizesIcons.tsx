@@ -1,6 +1,4 @@
-'use client'
-
-import React from 'react'
+import React from "react";
 
 const SizesIcons = () => {
   return (
@@ -51,6 +49,6 @@ const SizesIcons = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default SizesIcons
+  );
+};
+export default SizesIcons;

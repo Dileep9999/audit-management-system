@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
+import useChartColors from "@hooks/useChartColors";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const TotalSalesChart = ({
@@ -24,45 +15,44 @@ const TotalSalesChart = ({
   chartId,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
-
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
   const series = [
     {
-      name: 'Inflation',
+      name: "Inflation",
       data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 1.3, 1.9, 2.8],
     },
-  ]
+  ];
 
   const labels = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 268,
-      type: 'bar',
+      type: "bar",
       toolbar: {
         show: false,
       },
     },
     plotOptions: {
       bar: {
-        columnWidth: '60%',
+        columnWidth: "60%",
         borderRadius: 5,
         dataLabels: {
-          position: 'top', // top, center, bottom
+          position: "top", // top, center, bottom
         },
       },
     },
@@ -89,7 +79,7 @@ const TotalSalesChart = ({
       labels: {
         show: true,
         formatter: function (val) {
-          return val + '%'
+          return val + "%";
         },
       },
     },
@@ -112,7 +102,7 @@ const TotalSalesChart = ({
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -128,7 +118,7 @@ const TotalSalesChart = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TotalSalesChart
+export default TotalSalesChart;

@@ -1,14 +1,9 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import whiteLogo from '@assets/images/logo-white.png'
-import mainLogo from '@assets/images/main-logo.png'
-import creative from '@assets/images/others/auth-creative.png'
-import { CircleCheckBig, MoveRight } from 'lucide-react'
+import React from "react";
+import mainLogo from "@assets/images/main-logo.png";
+import whiteLogo from "@assets/images/logo-white.png";
+import creative from "@assets/images/others/auth-creative.png";
+import { CircleCheckBig, MoveRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const SuccessfulPasswordCreative = () => {
   return (
@@ -18,15 +13,15 @@ const SuccessfulPasswordCreative = () => {
           <div className="relative col-span-12 py-8 overflow-hidden bg-gray-100 dark:bg-dark-850 lg:min-h-screen lg:col-span-6 md:p-9 xl:p-12">
             <div className="absolute bottom-0 w-32 -rotate-45 -top-64 -right-8 bg-gray-200/20 dark:bg-dark-800/20"></div>
             <div className="p-4">
-              <Link href="/">
-                <Image
+              <Link to="/">
+                <img
                   src={mainLogo}
                   alt="mainLogo"
                   className="h-8 mx-auto dark:hidden inline-block"
                   width={175}
                   height={32}
                 />
-                <Image
+                <img
                   src={whiteLogo}
                   alt="whiteLogo"
                   className="hidden h-8 mx-auto dark:inline-block"
@@ -38,7 +33,7 @@ const SuccessfulPasswordCreative = () => {
                 The most straightforward way to manage your projects
               </h1>
 
-              <Image
+              <img
                 src={creative}
                 alt="creative"
                 className="mt-9 xl:mt-0 relative xl:absolute xl:scale-110 rounded-lg shadow-lg xl:top-[315px] xl:left-[115px]"
@@ -62,9 +57,9 @@ const SuccessfulPasswordCreative = () => {
                     continue accessing your account.
                   </p>
                   <div className="text-center">
-                    <Link href="/auth/signin-basic" className="btn btn-primary">
+                    <Link to="/auth/signin-basic" className="btn btn-primary">
                       <span className="align-middle">Return to SignIn </span>
-                      <MoveRight className="inline-block size-4 ml-0.5" />
+                      <MoveRight className="inline-block size-4 ml-0.5" />{" "}
                     </Link>
                   </div>
                 </div>
@@ -74,6 +69,6 @@ const SuccessfulPasswordCreative = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default SuccessfulPasswordCreative
+  );
+};
+export default SuccessfulPasswordCreative;

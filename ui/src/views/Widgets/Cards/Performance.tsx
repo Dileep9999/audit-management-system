@@ -1,13 +1,8 @@
-'use client'
+import React from "react";
+import { performance } from "@data/index";
+import { Link } from "react-router-dom";
 
-import React from 'react'
-
-import Link from 'next/link'
-
-import { performance } from '@src/data/index'
-import 'lucide-react'
-
-const Performance = () => {
+const PerformanceComponent = () => {
   return (
     <React.Fragment>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-space">
@@ -15,7 +10,7 @@ const Performance = () => {
           <div className="card" key={index}>
             <div className="flex items-center gap-3 card-header">
               <h6 className="card-title grow">{item.title}</h6>
-              <Link href="#!" className={item.badge.className}>
+              <Link to="#!" className={item.badge.className}>
                 <item.badge.icon
                   className={`inline-block ${item.badge.iconSize}`}
                 />
@@ -38,7 +33,7 @@ const Performance = () => {
         ))}
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Performance
+export default PerformanceComponent;

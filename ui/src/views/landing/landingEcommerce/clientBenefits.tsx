@@ -1,8 +1,6 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import { CreditCard, Handshake, Headset, Truck } from 'lucide-react'
+import { CreditCard, Handshake, Headset, Truck } from "lucide-react";
 
 const ClientBenefits: React.FC = () => {
   return (
@@ -72,7 +70,7 @@ const ClientBenefits: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ClientBenefits
+export default ClientBenefits;

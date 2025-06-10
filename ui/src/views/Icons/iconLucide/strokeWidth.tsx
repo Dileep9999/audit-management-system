@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import { Box } from 'lucide-react'
+import { Box } from "lucide-react";
+import React from "react";
 
 const StrokeWidth = () => {
   return (
@@ -29,6 +26,6 @@ const StrokeWidth = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default StrokeWidth
+  );
+};
+export default StrokeWidth;

@@ -1,11 +1,7 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
-import { NextPageWithLayout } from '@src/dtos'
-import { MoveLeft, MoveRight } from 'lucide-react'
+import { NextPageWithLayout } from "@dtos/layout";
+import { MoveLeft, MoveRight } from "lucide-react";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Videos: NextPageWithLayout = () => {
   return (
@@ -13,7 +9,7 @@ const Videos: NextPageWithLayout = () => {
       <div className="order-12 col-span-12 xl:col-span-8 2xl:col-span-9 card">
         <div className="card-header">
           <h6 className="card-title">
-            Continue Watching{' '}
+            Continue Watching{" "}
             <MoveRight className="ml-1 ltr:inline-block rtl:hidden size-4" />
             <MoveLeft className="mr-1 rtl:inline-block ltr:hidden size-4" />
           </h6>
@@ -29,11 +25,12 @@ const Videos: NextPageWithLayout = () => {
                   frameBorder={0}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen></iframe>
+                  allowFullScreen
+                ></iframe>
               </div>
               <div className="mt-3">
                 <h6 className="mb-1 truncate">
-                  <Link href="#!">
+                  <Link to="#!">
                     Domiex - Admin & Dashboard Template Introduction
                   </Link>
                 </h6>
@@ -51,11 +48,12 @@ const Videos: NextPageWithLayout = () => {
                   frameBorder={0}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen></iframe>
+                  allowFullScreen
+                ></iframe>
               </div>
               <div className="mt-3">
                 <h6 className="mb-1 truncate">
-                  <Link href="#!">What&apos;s new in Tailwind CSS v3.0?</Link>
+                  <Link to="#!">What's new in Tailwind CSS v3.0?</Link>
                 </h6>
                 <p className="text-xs text-gray-500 dark:text-dark-500">
                   TailwindCSS
@@ -71,11 +69,12 @@ const Videos: NextPageWithLayout = () => {
                   frameBorder={0}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen></iframe>
+                  allowFullScreen
+                ></iframe>
               </div>
               <div className="mt-3">
                 <h6 className="mb-1 truncate">
-                  <Link href="#!">
+                  <Link to="#!">
                     Controlling Stacking Contexts with Isolation Utilities
                   </Link>
                 </h6>
@@ -88,6 +87,6 @@ const Videos: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default Videos
+  );
+};
+export default Videos;

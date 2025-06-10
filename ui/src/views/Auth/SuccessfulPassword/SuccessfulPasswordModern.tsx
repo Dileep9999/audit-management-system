@@ -1,18 +1,15 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
-import backgroundImg from '@assets/images/others/auth.jpg'
-import { CircleCheckBig, MoveRight } from 'lucide-react'
+import { CircleCheckBig, MoveRight } from "lucide-react";
+import React from "react";
+import { Link } from "react-router-dom";
+import backgroundImg from "@assets/images/others/auth.jpg";
 
 const SuccessfulPasswordModern = () => {
   return (
     <React.Fragment>
       <div
-        className="relative flex items-center justify-center min-h-screen py-12 bg-center bg-cover bg-auth"
-        style={{ backgroundImage: `url(${backgroundImg.src})` }}>
+        className="relative flex items-center justify-center min-h-screen py-12 bg-center bg-cover "
+        style={{ backgroundImage: `url(${backgroundImg})` }}
+      >
         <div className="absolute inset-0 bg-gray-950/50"></div>
         <div className="container relative">
           <div className="grid grid-cols-12">
@@ -31,7 +28,7 @@ const SuccessfulPasswordModern = () => {
                   continue accessing your account.
                 </p>
                 <div className="text-center">
-                  <Link href="/auth/signin-modern" className="btn btn-primary">
+                  <Link to="/auth/signin-modern" className="btn btn-primary">
                     <span className="align-middle">Return to SignIn</span>
                     <MoveRight className="inline-block size-4 ml-0.5" />
                   </Link>
@@ -42,6 +39,6 @@ const SuccessfulPasswordModern = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default SuccessfulPasswordModern
+  );
+};
+export default SuccessfulPasswordModern;

@@ -1,142 +1,128 @@
-import { WishListProduct } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
-import {
-  LocalStorageRecord,
-  addLocalStorageRecord,
-  createLocalStorage,
-  deleteLocalStorageRecord,
-  getLocalStorage,
-  updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_WISHLIST_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
-
+import { AppDispatch } from "@src/slices/reducer";
 import {
   addWishListProduct,
   getWishListData,
   modifyWishListProductQuantity,
   removeWishListProduct,
-} from './reducer'
+} from "./reducer";
+import api from "@src/utils/axios_api";
+import { WishListProduct } from "@src/dtos";
+import { REACT_APP_WISHLIST_API } from "@src/utils/url_helper";
+import {
+  addLocalStorageRecord,
+  createLocalStorage,
+  deleteLocalStorageRecord,
+  getLocalStorage,
+  updateLocalStorageRecord,
+} from "@src/utils/crud_functions";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-const USER_WISHLIST_API = NEXT_PUBLIC_WISHLIST_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const USER_WISHLIST_API = REACT_APP_WISHLIST_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 //  get wishlist data
 export const getWishList = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = (await getLocalStorage('d-wishlist')) as
-        | WishListProduct[]
-        | null
-      if (!responseData || !Array.isArray(responseData)) {
-        const response = await api.get(USER_WISHLIST_API)
-        const { data } = response
-        createLocalStorage('d-wishlist', data)
-        dispatch(getWishListData(data))
+      const responseData = await getLocalStorage("d-wishlist");
+      if (!responseData) {
+        const response = await api.get(USER_WISHLIST_API);
+        createLocalStorage("d-wishlist", response);
+        dispatch(getWishListData(response));
       } else {
-        dispatch(getWishListData(responseData))
+        dispatch(getWishListData(responseData));
       }
     } else {
-      const response = await api.get(USER_WISHLIST_API)
-      const { data } = response
-      dispatch(getWishListData(data))
+      const response = await api.get(USER_WISHLIST_API);
+      dispatch(getWishListData(response));
     }
-  } catch (error) {
-    let errorMessage = 'Error fetching whish list data'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-      toast.error(errorMessage, { autoClose: 3000 })
-    }
-    console.error('Error fetching whish list data:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message || error.message || "Wishlist Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching whish list data:", error);
   }
-}
+};
 
 // add customer record
 export const addWishListProductRecord =
   (newRecord: WishListProduct) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(
+      const response = await api.post(
         USER_WISHLIST_API,
         newRecord,
-        'wishlist record'
-      )
-      const { data, message } = response
-      toast.success(message || 'wishlist record added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-wishlist', { ...data })
-      dispatch(addWishListProduct(data))
-    } catch (error) {
-      let errorMessage = 'Error adding record'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Error adding record:', error)
+        "Wishlist record",
+      );
+      const { message } = response;
+      AddToast(message || "Wishlist record added successfully");
+      addLocalStorageRecord("d-wishlist", newRecord);
+      dispatch(addWishListProduct(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Wishlist record addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding whish list record:", error);
     }
-  }
+  };
 
 // update wishlist record
 export const updateWishListProductQuantity =
-  (wishListRecord: WishListProduct) => async (dispatch: AppDispatch) => {
+  (product: WishListProduct) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(
+      const response = await api.put(
         USER_WISHLIST_API,
-        wishListRecord,
-        'wishlist record'
-      )
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-wishlist',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(modifyWishListProductQuantity(data))
-    } catch (error) {
-      let errorMessage = 'wishlist record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('wishlist record updation failed:', error)
+        product,
+        "Wishlist record",
+      );
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Wishlist record updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-wishlist", product);
+      dispatch(modifyWishListProductQuantity(product));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Wishlist record updation failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating whish list record:", error);
     }
-  }
+  };
 
 // delete wishlist record from wishlist
 export const deleteWishListProduct =
-  (wishListRecords: number[]) => async (dispatch: AppDispatch) => {
+  (whishlist: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = wishListRecords.map(async (id) => {
-        const response = await customDelete(
+      const deletePromises = whishlist.map(async (id) => {
+        const response = await api.delete(
           USER_WISHLIST_API,
           id,
-          'wishlist record'
-        )
-        const { message, data } = response
-        toast.success(message || 'wishlist record deleted successfully', {
-          autoClose: 3000,
-        })
-        return data
-      })
-      const deletedWishList = await Promise.all(deletePromises)
-      dispatch(removeWishListProduct(deletedWishList))
+          "Wishlist record",
+        );
+        const { message } = response;
+        DeleteToast(message || "Product deleted successfully");
+        return id;
+      });
+
+      const deletedWishlist = await Promise.all(deletePromises);
+      dispatch(removeWishListProduct(deletedWishlist));
       deleteLocalStorageRecord({
-        key: 'd-wishlist',
-        listRecord: wishListRecords,
+        key: "d-shop-cart-list",
+        listRecord: whishlist,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'wishlist record deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('wishlist record deletion failed:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "wishlist record deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting whish list: ", error);
     }
-  }
+  };

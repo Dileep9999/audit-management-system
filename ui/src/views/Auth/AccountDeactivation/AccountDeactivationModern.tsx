@@ -1,30 +1,26 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import mainlogo from '@assets/images/logo-white.png'
-import backgroundImg from '@assets/images/others/auth.jpg'
-import { EyeOff, Trash2 } from 'lucide-react'
+import React from "react";
+import mainLogo from "@assets/images/logo-white.png";
+import { EyeOff, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import backgroundImg from "@assets/images/others/auth.jpg";
 
 const AccountDeactivationModern = () => {
   return (
     <React.Fragment>
       <div
-        className="relative flex items-center justify-center min-h-screen py-12 bg-center bg-cover"
-        style={{ backgroundImage: `url(${backgroundImg.src})` }}>
+        className="relative flex items-center justify-center min-h-screen py-12 bg-center bg-cover "
+        style={{ backgroundImage: `url(${backgroundImg})` }}
+      >
         <div className="absolute inset-0 bg-gray-950/50"></div>
         <div className="container relative">
           <div className="grid grid-cols-12">
             <div className="col-span-12 mb-0 border-none shadow-none md:col-span-10 lg:col-span-6 xl:col-span-4 md:col-start-2 lg:col-start-4 xl:col-start-5 card bg-white/10 backdrop-blur-md">
               <div className="md:p-10 card-body">
                 <div className="mb-5 text-center">
-                  <Link href="/">
-                    <Image
-                      src={mainlogo}
-                      alt="mainlogo"
+                  <Link to="/">
+                    <img
+                      src={mainLogo}
+                      alt="mainLogo"
                       className="h-8 mx-auto"
                       width={148}
                       height={32}
@@ -45,9 +41,9 @@ const AccountDeactivationModern = () => {
                     <h6 className="mb-1 text-white">Temporary Disable</h6>
                     <p className="text-white/60">
                       The customer is very important and will be followed up
-                      with care. Everyone&apos;s needs are expected to be met.
-                      It is not just about the process, but about benefiting
-                      everyone, with an emphasis on ecological mindfulness.
+                      with care. Everyone's needs are expected to be met. It is
+                      not just about the process, but about benefiting everyone,
+                      with an emphasis on ecological mindfulness.
                     </p>
                   </div>
                 </div>
@@ -59,17 +55,17 @@ const AccountDeactivationModern = () => {
                     <h6 className="mb-1 text-white">Permanent Delete</h6>
                     <p className="text-white/60">
                       The customer is very important and will receive dedicated
-                      attention. Everyone&apos;s needs and expectations are
+                      attention. Everyone's needs and expectations are
                       considered. This process is undertaken for the benefit of
                       all, with a focus on ecological responsibility.
                     </p>
                   </div>
                 </div>
                 <div className="sm:flex justify-center gap-2 mt-6">
-                  <Link href="#!" className="btn btn-primary">
+                  <Link to="#!" className="btn btn-primary">
                     Temporary Disable
                   </Link>
-                  <Link href="#!" className="btn btn-red mt-2.5 sm:mt-0">
+                  <Link to="#!" className="btn btn-red mt-2.5 sm:mt-0">
                     Permanent Delete
                   </Link>
                 </div>
@@ -79,6 +75,6 @@ const AccountDeactivationModern = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default AccountDeactivationModern
+  );
+};
+export default AccountDeactivationModern;

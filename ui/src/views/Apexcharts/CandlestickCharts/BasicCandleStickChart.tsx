@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface CandleChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const BasicCandleStickChart = ({
@@ -24,7 +15,7 @@ const BasicCandleStickChart = ({
   chartId,
 }: CandleChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
@@ -271,18 +262,18 @@ const BasicCandleStickChart = ({
         },
       ],
     },
-  ]
+  ];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'candlestick',
+      type: "candlestick",
     },
     title: {
-      text: 'CandleStick Chart',
-      align: 'left',
+      text: "CandleStick Chart",
+      align: "left",
     },
     xaxis: {
-      type: 'datetime',
+      type: "datetime",
     },
     colors: chartsColor,
     yaxis: {
@@ -297,7 +288,7 @@ const BasicCandleStickChart = ({
         bottom: 0,
       },
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -307,12 +298,12 @@ const BasicCandleStickChart = ({
         series={series}
         data-chart-colors="[bg-green-500, bg-red-500]"
         type="candlestick"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default BasicCandleStickChart
+export default BasicCandleStickChart;

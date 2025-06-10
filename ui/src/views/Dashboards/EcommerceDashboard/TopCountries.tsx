@@ -1,28 +1,26 @@
-'use client'
-
-import { useState } from 'react'
-
-import Link from 'next/link'
-
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
+} from "@src/components/custom/dropdown/dropdown";
+import { NextPageWithLayout } from "@dtos/layout";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-type Period = 'Recent' | 'Weekly' | 'Monthly' | 'Yearly'
+type Period = "Recent" | "Weekly" | "Monthly" | "Yearly";
+
 interface Country {
-  name: string
-  color: string
+  name: string;
+  color: string;
 }
+
 const TopCountries: NextPageWithLayout = () => {
-  const [open, setOpen] = useState<boolean>(false)
-  const [selectedPeriod, setSelectedPeriod] = useState<Period>('Recent') // Default to Weekly
+  const [open, setOpen] = useState<boolean>(false);
+  const [selectedPeriod, setSelectedPeriod] = useState<Period>("Recent"); // Default to Weekly
 
   const toggle = () => {
-    setOpen(!open)
-  }
+    setOpen(!open);
+  };
 
   // Percentage data for each period
   const percentageData: Record<Period, number[]> = {
@@ -30,26 +28,26 @@ const TopCountries: NextPageWithLayout = () => {
     Weekly: [40, 50, 70, 20, 40, 90, 20],
     Monthly: [85, 72, 45, 50, 45, 10, 22],
     Yearly: [78, 69, 57, 85, 42, 53, 25],
-  }
+  };
 
   // List of countries (static)
   const countries: Country[] = [
-    { name: 'Brazil', color: 'bg-primary-500' },
-    { name: 'Russia', color: 'bg-green-500' },
-    { name: 'China', color: 'bg-purple-500' },
-    { name: 'Turkey', color: 'bg-orange-500' },
-    { name: 'Philippines', color: 'bg-yellow-500' },
-    { name: 'Denmark', color: 'bg-sky-500' },
-    { name: 'New Zealand', color: 'bg-red-500' },
-  ]
+    { name: "Brazil", color: "bg-primary-500" },
+    { name: "Russia", color: "bg-green-500" },
+    { name: "China", color: "bg-purple-500" },
+    { name: "Turkey", color: "bg-orange-500" },
+    { name: "Philippines", color: "bg-yellow-500" },
+    { name: "Denmark", color: "bg-sky-500" },
+    { name: "New Zealand", color: "bg-red-500" },
+  ];
 
   // Function to handle period change
   const handlePeriodChange = (period: Period) => {
-    setSelectedPeriod(period)
-  }
+    setSelectedPeriod(period);
+  };
 
   return (
-    <>
+    <React.Fragment>
       <div className="order-11 col-span-12 2xl:col-span-4 card">
         <div className="flex items-center gap-3 card-header">
           <h6 className="card-title grow">Top Countries</h6>
@@ -58,9 +56,10 @@ const TopCountries: NextPageWithLayout = () => {
               {selectedPeriod}
               <svg
                 onClick={toggle}
-                className={`transition-transform duration-300 ltr:ml-1 rtl:mr-1 size-4 ${open ? 'transform rotate-180' : ''}`}
+                className={`transition-transform duration-300 ltr:ml-1 rtl:mr-1 size-4 ${open ? "transform rotate-180" : ""}`}
                 viewBox="0 0 20 20"
-                fill="currentColor">
+                fill="currentColor"
+              >
                 <path
                   fillRule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -70,27 +69,31 @@ const TopCountries: NextPageWithLayout = () => {
             </DropdownButton>
             <DropdownMenu>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => handlePeriodChange('Recent')}>
+                onClick={() => handlePeriodChange("Recent")}
+              >
                 <span>Recent</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => handlePeriodChange('Weekly')}>
+                onClick={() => handlePeriodChange("Weekly")}
+              >
                 <span>Weekly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => handlePeriodChange('Monthly')}>
+                onClick={() => handlePeriodChange("Monthly")}
+              >
                 <span>Monthly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => handlePeriodChange('Yearly')}>
+                onClick={() => handlePeriodChange("Yearly")}
+              >
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
@@ -111,15 +114,16 @@ const TopCountries: NextPageWithLayout = () => {
                     className={`text-white progress-bar-wrap ${country.color}`}
                     style={{
                       width: `${percentageData[selectedPeriod][index]}%`,
-                    }}></div>
+                    }}
+                  ></div>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-    </>
-  )
-}
+    </React.Fragment>
+  );
+};
 
-export default TopCountries
+export default TopCountries;

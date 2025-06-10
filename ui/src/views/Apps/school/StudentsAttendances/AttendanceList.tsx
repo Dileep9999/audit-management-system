@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import studentsAttendances from '@src/data/school/students-attendances'
+import React from "react";
+import studentsAttendances from "@src/data/school/students-attendances";
 
 const AttendanceList = () => {
   return (
@@ -12,11 +9,12 @@ const AttendanceList = () => {
         {studentsAttendances.map((attendance, index) => (
           <div
             key={index}
-            className={`col-span-12 border-t-2 md:col-span-6 lg:col-span-4 card ${attendance.statusBadge}`}>
+            className={`col-span-12 border-t-2 md:col-span-6 lg:col-span-4 card ${attendance.statusBadge}`}
+          >
             <div className="card-body">
               <div className="flex items-center gap-3">
                 <h6 className="grow">{attendance.date}</h6>
-                <span className={`badge shrink-0 ${attendance.statusBadge}`}>
+                <span className={`badge shrink-0 ${attendance.badge}`}>
                   {attendance.status}
                 </span>
               </div>
@@ -49,7 +47,7 @@ const AttendanceList = () => {
         ))}
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default AttendanceList
+export default AttendanceList;

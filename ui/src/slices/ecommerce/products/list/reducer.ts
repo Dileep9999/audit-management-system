@@ -1,78 +1,83 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { ProductListItem } from '@src/dtos'
-import { initStore } from '@src/utils/init_store'
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import LoadingToast from "@src/components/custom/toast/loadingToast";
+import { ProductListItem } from "@src/dtos";
+import { initStore } from "@src/utils/init_store";
 
 interface ListState {
-  productList: ProductListItem[]
-  currentProduct: ProductListItem | null
-  isLoading: boolean
-  editMode: boolean
+  productList: ProductListItem[];
+  currentProduct: ProductListItem | null;
+  isLoading: boolean;
+  editMode: boolean;
 }
 
 const initialState: ListState = {
-  productList: initStore('d-product-list') as ProductListItem[],
+  productList: initStore("d-product-list"),
   currentProduct: null,
   isLoading: false,
   editMode: false,
-}
+};
 
 const ListSlice = createSlice({
-  name: 'product_list',
+  name: "product_list",
   initialState,
   reducers: {
     // get product list data
     getProductList(state, action: PayloadAction<ProductListItem[]>) {
-      state.productList = action.payload
+      state.productList = action.payload;
     },
 
     // set current product record
     setCurrentProduct(state, action: PayloadAction<ProductListItem>) {
-      state.currentProduct = action.payload
+      state.currentProduct = action.payload;
     },
 
     // set current edit mode
     setCurrentEditMode(state, action: PayloadAction<boolean>) {
-      state.editMode = action.payload
+      state.editMode = action.payload;
     },
 
     // update product list record status
     changeStatusProductList(state, action: PayloadAction<ProductListItem>) {
       const productIndex = state.productList?.findIndex(
-        (productItem: ProductListItem) => productItem.id === action.payload.id
-      )
+        (productItem: ProductListItem) =>
+          productItem._id === action.payload._id,
+      );
       const activeProduct = state.productList?.find(
-        (productItem: ProductListItem) => productItem.id === action.payload.id
-      )
+        (productItem: ProductListItem) =>
+          productItem._id === action.payload._id,
+      );
       if (productIndex !== -1 && activeProduct) {
         if (state.productList) {
           if (activeProduct) {
             activeProduct.status =
-              action.payload.status === 'Published' ? 'Inactive' : 'Published'
-            state.productList![productIndex!] = activeProduct
+              action.payload.status === "Published" ? "Inactive" : "Published";
+            state.productList![productIndex!] = activeProduct;
           }
         }
+        LoadingToast();
       }
     },
 
     // add new product list record
     addProductList(state, action: PayloadAction<ProductListItem>) {
       if (state.productList !== null) {
-        state.productList.unshift(action.payload)
+        state.productList.unshift(action.payload);
       } else {
-        state.productList = [action.payload]
+        state.productList = [action.payload];
       }
     },
 
     // update product list record
     editProductList(state, action: PayloadAction<ProductListItem>) {
-      const updatedProduct = action.payload
+      const updatedProduct = action.payload;
       if (state.productList !== null) {
         const existingProductIndex = state.productList.findIndex(
-          (productItem: ProductListItem) => productItem.id === updatedProduct.id
-        )
+          (productItem: ProductListItem) =>
+            productItem._id === updatedProduct._id,
+        );
         if (existingProductIndex !== -1) {
-          state.productList[existingProductIndex] = updatedProduct
-          state.currentProduct = updatedProduct
+          state.productList[existingProductIndex] = updatedProduct;
+          state.currentProduct = updatedProduct;
         }
       }
     },
@@ -81,12 +86,12 @@ const ListSlice = createSlice({
     deleteProductList(state, action: PayloadAction<number[]>) {
       if (state.productList !== null) {
         state.productList = state.productList.filter(
-          (item) => !action.payload.includes(item.id)
-        )
+          (item) => !action.payload.includes(item._id),
+        );
       }
     },
   },
-})
+});
 
 export const {
   getProductList,
@@ -96,5 +101,5 @@ export const {
   addProductList,
   editProductList,
   deleteProductList,
-} = ListSlice.actions
-export default ListSlice.reducer
+} = ListSlice.actions;
+export default ListSlice.reducer;

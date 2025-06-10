@@ -1,13 +1,11 @@
-'use client'
-
-import React from 'react'
+import React from "react";
 
 import {
   CalendarDays,
   PanelBottomDashed,
   PencilRuler,
   Route,
-} from 'lucide-react'
+} from "lucide-react";
 
 const Freelancers: React.FC = () => {
   return (
@@ -17,7 +15,7 @@ const Freelancers: React.FC = () => {
           <div className="grid items-center grid-cols-12 mb-10">
             <div className="col-span-12 text-center md:col-span-8 md:col-start-3">
               <h2 className="mb-2 text-3xl capitalize md:leading-normal md:text-4xl">
-                Modern{' '}
+                Modern{" "}
                 <span className="font-bold text-purple-500">Invoicing</span> for
                 small businesses & Freelancers
               </h2>
@@ -93,7 +91,7 @@ const Freelancers: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Freelancers
+export default Freelancers;

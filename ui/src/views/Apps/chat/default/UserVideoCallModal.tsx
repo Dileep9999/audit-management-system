@@ -1,21 +1,22 @@
-'use client'
+import { Modal } from "@src/components/custom/modal/modal";
+import { UserChatRecord } from "@src/dtos";
+import { Mic, MicOff, PhoneMissed, Video, VideoOff } from "lucide-react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-import React, { useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { Modal } from '@src/components/custom/modal/modal'
-import { UserVideoCallModalProps } from '@src/dtos/apps/chat'
-import { Mic, MicOff, PhoneMissed, Video, VideoOff } from 'lucide-react'
+interface UserVideoCallModalProps {
+  open: boolean;
+  closeModal: () => void;
+  currentContact: UserChatRecord;
+}
 
 const UserVideoCallModal: React.FC<UserVideoCallModalProps> = ({
   open,
   closeModal,
   currentContact,
 }) => {
-  const [isMuted, setIsMuted] = useState(false)
-  const [isVideoOff, setIsVideoOff] = useState(false)
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
 
   return (
     <React.Fragment>
@@ -33,20 +34,22 @@ const UserVideoCallModal: React.FC<UserVideoCallModalProps> = ({
                 <div className="relative overflow-hidden rounded-md">
                   {/* main image */}
                   {currentContact.receiverImage ? (
-                    <Image
+                    <img
                       src={
                         currentContact.receiverImage ||
-                        '/assets/images/chat/video-dummy.png'
+                        "https://images.kcubeinfotech.com/domiex/images/chat/video-dummy.png"
                       }
-                      alt="userImg"
+                      alt="receiverImage"
                       className="main-image"
                       width={600}
                       height={400}
                     />
                   ) : (
-                    <Image
-                      src={'/assets/images/chat/video-1.png'}
-                      alt="userImg"
+                    <img
+                      src={
+                        "https://images.kcubeinfotech.com/domiex/images/chat/video-1.png"
+                      }
+                      alt="receiverImage"
                       className="main-image"
                       width={600}
                       height={400}
@@ -55,21 +58,24 @@ const UserVideoCallModal: React.FC<UserVideoCallModalProps> = ({
 
                   {/* profile image */}
                   <Link
-                    href="#!"
-                    className="absolute inline-block right-5 bottom-5">
+                    to="#!"
+                    className="absolute inline-block right-5 bottom-5"
+                  >
                     {isVideoOff ? (
-                      <Image
-                        src={'/assets/images/chat/video-dummy.png'}
-                        alt="userImg"
+                      <img
+                        src={
+                          "https://images.kcubeinfotech.com/domiex/images/chat/video-dummy.png"
+                        }
+                        alt="video-dummy"
                         className="h-24 rounded-md"
                         width={144}
                         height={96}
                       />
                     ) : (
-                      <Image
+                      <img
                         src={
                           currentContact.senderImage ||
-                          '/assets/images/avatar/user-6.png'
+                          "https://images.kcubeinfotech.com/domiex/images/avatar/user-6.png"
                         }
                         alt="userImg"
                         className="h-24 rounded-md"
@@ -83,7 +89,8 @@ const UserVideoCallModal: React.FC<UserVideoCallModalProps> = ({
                 <div className="flex items-center justify-center gap-2 pt-5">
                   <button
                     className="btn btn-sub-gray btn-icon"
-                    onClick={() => setIsMuted(!isMuted)}>
+                    onClick={() => setIsMuted(!isMuted)}
+                  >
                     {isMuted ? (
                       <MicOff className="size-5" />
                     ) : (
@@ -96,9 +103,10 @@ const UserVideoCallModal: React.FC<UserVideoCallModalProps> = ({
                   <button
                     className="btn btn-sub-gray btn-icon"
                     onClick={() => {
-                      setIsVideoOff(!isVideoOff)
-                      onClose()
-                    }}>
+                      setIsVideoOff(!isVideoOff);
+                      onClose();
+                    }}
+                  >
                     {isVideoOff ? (
                       <VideoOff className="size-5" />
                     ) : (
@@ -112,7 +120,7 @@ const UserVideoCallModal: React.FC<UserVideoCallModalProps> = ({
         )}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default UserVideoCallModal
+export default UserVideoCallModal;

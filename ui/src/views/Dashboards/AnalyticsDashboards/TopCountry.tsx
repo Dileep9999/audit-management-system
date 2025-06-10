@@ -1,31 +1,25 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import de from '@assets/images/flag/de.svg'
-import it from '@assets/images/flag/it.svg'
-import us from '@assets/images/flag/us.svg'
+import React, { useState } from "react";
+import us from "@assets/images/flag/us.svg";
+import de from "@assets/images/flag/de.svg";
+import it from "@assets/images/flag/it.svg";
+import { Ellipsis } from "lucide-react";
+import AnimatedCounter from "./counter";
+import { NextPageWithLayout } from "@dtos/layout";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-import { Ellipsis } from 'lucide-react'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
 
-import AnimatedCounter from './Counter'
-
-type Period = 'Weekly' | 'Monthly' | 'Yearly'
+type Period = "Weekly" | "Monthly" | "Yearly";
 
 const dataByPeriod: Record<
   Period,
   {
-    visits: number
-    percentageChange: number
-    countries: { US: number; Germany: number; Italy: number }
+    visits: number;
+    percentageChange: number;
+    countries: { US: number; Germany: number; Italy: number };
   }
 > = {
   Weekly: {
@@ -55,31 +49,33 @@ const dataByPeriod: Record<
       Italy: 20,
     },
   },
-}
+};
 
 const TopCountry: NextPageWithLayout = () => {
-  const [currentPeriod, setCurrentPeriod] = useState<Period>('Weekly')
-  const currentData = dataByPeriod[currentPeriod]
+  const [currentPeriod, setCurrentPeriod] = useState<Period>("Weekly");
+  const currentData = dataByPeriod[currentPeriod];
 
   return (
     <React.Fragment>
       <div className="col-span-12 md:col-span-6 2xl:col-span-3 card">
         <div className="flex items-center gap-3 card-header">
-          <h6 className="card-title grow">Top Countries</h6>
+          <h6 className="card-title grow">Top Country</h6>
           <Dropdown
             position="right"
             trigger="click"
-            dropdownClassName="dropdown">
+            dropdownClassName="dropdown"
+          >
             <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
               <Ellipsis className="size-5" />
             </DropdownButton>
             <DropdownMenu>
-              {(['Weekly', 'Monthly', 'Yearly'] as Period[]).map((period) => (
+              {(["Weekly", "Monthly", "Yearly"] as Period[]).map((period) => (
                 <Link
-                  href="#!"
+                  to="#!"
                   key={period}
                   className="dropdown-item"
-                  onClick={() => setCurrentPeriod(period)}>
+                  onClick={() => setCurrentPeriod(period)}
+                >
                   <span>{period}</span>
                 </Link>
               ))}
@@ -97,15 +93,15 @@ const TopCountry: NextPageWithLayout = () => {
               end={currentData.visits}
               duration={3000}
             />
-            +
+            +{" "}
             <span className="text-xs text-green-500">
-              <i className="align-baseline ri-arrow-up-line"></i>{' '}
+              <i className="align-baseline ri-arrow-up-line"></i>{" "}
               {currentData.percentageChange}%
             </span>
           </h5>
-          <div className="flex flex-col gap-2">
+          <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Image
+              <img
                 src={us}
                 alt="US Flag"
                 className="object-cover rounded-full size-5 shrink-0"
@@ -114,7 +110,7 @@ const TopCountry: NextPageWithLayout = () => {
               <p className="shrink-0">{currentData.countries.US}%</p>
             </div>
             <div className="flex items-center gap-2">
-              <Image
+              <img
                 src={de}
                 alt="Germany Flag"
                 className="object-cover rounded-full size-5 shrink-0"
@@ -123,7 +119,7 @@ const TopCountry: NextPageWithLayout = () => {
               <p className="shrink-0">{currentData.countries.Germany}%</p>
             </div>
             <div className="flex items-center gap-2">
-              <Image
+              <img
                 src={it}
                 alt="Italy Flag"
                 className="object-cover rounded-full size-5 shrink-0"
@@ -135,7 +131,7 @@ const TopCountry: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TopCountry
+export default TopCountry;

@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
+import useChartColors from "@hooks/useChartColors";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const ViewPerformanceChart = ({
@@ -23,13 +14,13 @@ const ViewPerformanceChart = ({
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
-  const series = [48, 98]
-
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
+  const series = [48, 98];
   const options: ApexOptions = {
     chart: {
-      height: 200,
-      type: 'donut',
+      height: 280,
+      width: "100%",
+      type: "donut",
     },
     dataLabels: {
       enabled: false,
@@ -51,7 +42,7 @@ const ViewPerformanceChart = ({
         bottom: -80,
       },
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -67,7 +58,7 @@ const ViewPerformanceChart = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ViewPerformanceChart
+export default ViewPerformanceChart;

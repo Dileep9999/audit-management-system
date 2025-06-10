@@ -1,55 +1,47 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-// Dynamically import the ReactApexChart component
-const ReactEcharts = dynamic(() => import('echarts-for-react'), {
-  ssr: false,
-})
+import React from "react";
+import ReactEcharts from "echarts-for-react";
 
 const StyleLineChart = () => {
   const option = {
     xAxis: {
-      type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      type: "category",
+      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     },
     yAxis: {
-      type: 'value',
+      type: "value",
     },
     grid: {
-      top: '4%',
-      left: '2%',
-      right: '1%',
-      bottom: '1%',
+      top: "4%",
+      left: "2%",
+      right: "1%",
+      bottom: "1%",
       containLabel: true,
     },
     series: [
       {
         data: [120, 200, 150, 80, 70, 110, 130],
-        type: 'line',
-        symbol: 'triangle',
+        type: "line",
+        symbol: "triangle",
         symbolSize: 20,
         lineStyle: {
-          color: '#5470C6',
+          color: "#5470C6",
           width: 4,
-          type: 'dashed',
+          type: "dashed",
         },
         itemStyle: {
           borderWidth: 3,
-          borderColor: '#EE6666',
-          color: 'yellow',
+          borderColor: "#EE6666",
+          color: "yellow",
         },
       },
     ],
-  }
+  };
 
   return (
     <React.Fragment>
-      <ReactEcharts style={{ height: '350px' }} option={option} />
+      <ReactEcharts style={{ height: "350px" }} option={option} />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default StyleLineChart
+export default StyleLineChart;

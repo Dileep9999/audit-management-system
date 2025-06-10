@@ -1,67 +1,58 @@
-'use client'
-
-import React, { useEffect, useMemo, useState } from 'react'
-
-import TableContainer from '@src/components/custom/table/table'
-import { EmployData } from '@src/data/dataTables/employe-data'
+import TableContainer from "@src/components/custom/table/Table";
+import { employeData } from "@src/data/dataTables/employe-data";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface GroupedRow {
-  groupTitle?: string
-  Name?: string
-  Position?: string
-  Office?: string
-  Age?: number
-  StartDate?: string
-  Salary?: string
+  groupTitle?: string;
+  Name?: string;
+  Position?: string;
+  Office?: string;
+  Age?: number;
+  StartDate?: string;
+  Salary?: string;
 }
 
-const DatatablesRowGrouping: React.FC = () => {
-  const [groupedData, setGroupedData] = useState<GroupedRow[]>([])
+const DataTablesRowGrouping: React.FC = () => {
+  const [groupedData, setGroupedData] = useState<GroupedRow[]>([]);
 
   const columns = useMemo(
     () => [
-      { accessorKey: 'Name', header: 'Name' },
-      { accessorKey: 'Position', header: 'Position' },
-      { accessorKey: 'Age', header: 'Age' },
-      { accessorKey: 'StartDate', header: 'Start date' },
-      { accessorKey: 'Salary', header: 'Salary' },
+      { accessorKey: "Name", header: "Name" },
+      { accessorKey: "Position", header: "Position" },
+      { accessorKey: "Age", header: "Age" },
+      { accessorKey: "StartDate", header: "Start date" },
+      { accessorKey: "Salary", header: "Salary" },
     ],
-    []
-  )
+    [],
+  );
 
   useEffect(() => {
-    const groupBy = (array: GroupedRow[], key: keyof GroupedRow) => {
-      return array.reduce(
-        (result: Record<string, GroupedRow[]>, currentValue) => {
-          const groupKey = currentValue[key] as string | undefined
-          if (groupKey) {
-            if (!result[groupKey]) {
-              result[groupKey] = []
-            }
-            result[groupKey].push(currentValue)
-          }
-          return result
-        },
-        {}
-      )
-    }
+    const groupBy = (array: any[], key: string) => {
+      return array.reduce((result: any, currentValue) => {
+        if (!result[currentValue[key]]) {
+          result[currentValue[key]] = [];
+        }
+        result[currentValue[key]].push(currentValue);
+        return result;
+      }, {});
+    };
 
-    const grouped = groupBy(EmployData, 'Office')
+    const grouped = groupBy(employeData, "Office");
 
-    const groupedRows: GroupedRow[] = []
+    const groupedRows: GroupedRow[] = [];
     Object.keys(grouped).forEach((groupKey) => {
       groupedRows.push({
         Name: groupKey,
-      })
+      });
       groupedRows.push(
-        ...grouped[groupKey].map((item: GroupedRow) => ({
+        ...grouped[groupKey].map((item: any) => ({
           ...item,
-        }))
-      )
-    })
+        })),
+      );
+    });
 
-    setGroupedData(groupedRows)
-  }, [])
+    setGroupedData(groupedRows);
+  }, []);
 
   return (
     <React.Fragment>
@@ -69,22 +60,22 @@ const DatatablesRowGrouping: React.FC = () => {
         <TableContainer
           columns={columns}
           data={groupedData}
-          divClass="overflow-x-auto"
-          tableClass="display table whitespace-nowrap dtr-inline"
+          divClassName="overflow-x-auto"
+          tableClassName="display table whitespace-nowrap dtr-inline"
           isPagination={true}
           PaginationClassName="pagination-container"
-          thtrClass="bg-gray-100 dark:bg-dark-850 dt-orderable-asc dt-orderable-desc dt-ordering-desc"
-          trClass={`${groupedData.map((item) =>
+          thTrClassName="bg-gray-100 dark:bg-dark-850 dt-orderable-asc dt-orderable-desc dt-ordering-desc"
+          trclassName={`${groupedData.map((item) =>
             Object.keys(item).length === 0
-              ? 'group bg-gray-50 border-y' // Group header class
-              : ''
+              ? "group bg-gray-50 border-y" // Group header class
+              : "",
           )}`}
           isSearch={true}
-          classStyle="100%"
+          clasStyle="100%"
         />
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DatatablesRowGrouping
+export default DataTablesRowGrouping;

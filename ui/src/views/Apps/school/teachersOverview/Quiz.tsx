@@ -1,21 +1,17 @@
-'use client'
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-import React, { useEffect, useState } from 'react'
-
-import Link from 'next/link'
-
-const CircleProgress = ({ initialPercent }: { initialPercent: number }) => {
-  const [percent, setPercent] = useState(initialPercent)
-  const circumference = 2 * Math.PI * 16 // Based on r=16 from SVG circle
-  const progress = circumference - (percent / 100) * circumference
+const CircleProgress = ({ initialPercent }: any) => {
+  const [percent, setPercent] = useState(initialPercent);
+  const circumference = 2 * Math.PI * 16; // Based on r=16 from SVG circle
+  const progress = circumference - (percent / 100) * circumference;
 
   useEffect(() => {
-    // Simulate the progress animation (if required)
     const timer = setTimeout(() => {
-      setPercent(initialPercent) // Keeps the same percent, but you could animate this value here
-    }, 100)
-    return () => clearTimeout(timer) // Clean up timeout
-  }, [initialPercent])
+      setPercent(initialPercent); // Keeps the same percent, but you could animate this value here
+    }, 100);
+    return () => clearTimeout(timer); // Clean up timeout
+  }, [initialPercent]);
 
   return (
     <div className="relative size-12 shrink-0" dir="ltr">
@@ -24,14 +20,16 @@ const CircleProgress = ({ initialPercent }: { initialPercent: number }) => {
         width="36"
         height="36"
         viewBox="0 0 36 36"
-        xmlns="http://www.w3.org/2000/svg">
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <circle
           cx="18"
           cy="18"
           r="16"
           fill="none"
           className="stroke-current text-sky-500/10"
-          strokeWidth="3"></circle>
+          strokeWidth="3"
+        ></circle>
         <g className="origin-center transform -rotate-90">
           <circle
             cx="18"
@@ -42,15 +40,16 @@ const CircleProgress = ({ initialPercent }: { initialPercent: number }) => {
             strokeWidth="3"
             strokeDasharray="100"
             strokeDashoffset={progress}
-            style={{ transition: 'stroke-dashoffset 1s ease-out' }}></circle>
+            style={{ transition: "stroke-dashoffset 1s ease-out" }}
+          ></circle>
         </g>
       </svg>
       <div className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 start-1/2">
         <span className="text-xs font-bold text-center text-gray-800 dark:text-dark-50">{`${percent}%`}</span>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const Quiz = () => {
   return (
@@ -60,12 +59,12 @@ const Quiz = () => {
           <h6 className="card-title">Create Quiz</h6>
         </div>
         <div className="card-body">
-          <div className="flex flex-col gap-4">
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
               <CircleProgress initialPercent={32} />
               <div className="overflow-hidden grow">
                 <h6 className="mb-1 truncate">
-                  <Link href="#!">Trivia Time: Fun Facts and Figures</Link>
+                  <Link to="#!">Trivia Time: Fun Facts and Figures</Link>
                 </h6>
                 <div className="flex items-center gap-3">
                   <p className="text-gray-500 dark:text-dark-500 grow">
@@ -76,7 +75,8 @@ const Quiz = () => {
                   </p>
                   <button
                     type="button"
-                    className="btn btn-green px-2 py-1 text-11">
+                    className="btn btn-green px-2 py-0.5 text-11"
+                  >
                     <i className="ri-play-line"></i> Start
                   </button>
                 </div>
@@ -86,7 +86,7 @@ const Quiz = () => {
               <CircleProgress initialPercent={52} />
               <div className="overflow-hidden grow">
                 <h6 className="mb-1 truncate">
-                  <Link href="#!">Chemistry Conundrums: Elemental Quiz</Link>
+                  <Link to="#!">Chemistry Conundrums: Elemental Quiz</Link>
                 </h6>
                 <div className="flex items-center gap-3">
                   <p className="text-gray-500 dark:text-dark-500 grow">
@@ -97,7 +97,8 @@ const Quiz = () => {
                   </p>
                   <button
                     type="button"
-                    className="btn btn-green px-2 py-1 text-11">
+                    className="btn btn-green px-2 py-0.5 text-11"
+                  >
                     <i className="ri-play-line"></i> Start
                   </button>
                 </div>
@@ -107,7 +108,7 @@ const Quiz = () => {
               <CircleProgress initialPercent={10} />
               <div className="overflow-hidden grow">
                 <h6 className="mb-1 truncate">
-                  <Link href="#!">A Mathematics Challenge</Link>
+                  <Link to="#!">A Mathematics Challenge</Link>
                 </h6>
                 <div className="flex items-center gap-3">
                   <p className="text-gray-500 dark:text-dark-500 grow">
@@ -118,7 +119,8 @@ const Quiz = () => {
                   </p>
                   <button
                     type="button"
-                    className="btn btn-green px-2 py-1 text-11">
+                    className="btn btn-green px-2 py-0.5 text-11"
+                  >
                     <i className="ri-play-line"></i> Start
                   </button>
                 </div>
@@ -128,7 +130,7 @@ const Quiz = () => {
               <CircleProgress initialPercent={95} />
               <div className="overflow-hidden grow">
                 <h6 className="mb-1 truncate">
-                  <Link href="#!">The Digital World Quiz</Link>
+                  <Link to="#!">The Digital World Quiz</Link>
                 </h6>
                 <div className="flex items-center gap-3">
                   <p className="text-gray-500 dark:text-dark-500 grow">
@@ -139,7 +141,8 @@ const Quiz = () => {
                   </p>
                   <button
                     type="button"
-                    className="btn btn-green px-2 py-1 text-11">
+                    className="btn btn-green px-2 py-0.5 text-11"
+                  >
                     <i className="ri-play-line"></i> Start
                   </button>
                 </div>
@@ -149,7 +152,7 @@ const Quiz = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Quiz
+export default Quiz;

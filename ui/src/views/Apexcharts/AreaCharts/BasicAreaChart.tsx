@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const BasicAreaChart = ({
@@ -24,20 +15,20 @@ const BasicAreaChart = ({
   chartId,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'series1',
+      name: "series1",
       data: [31, 40, 28, 51, 42, 109, 100],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 300,
-      type: 'area',
+      type: "area",
       zoom: {
         enabled: false,
       },
@@ -47,21 +38,21 @@ const BasicAreaChart = ({
     },
     stroke: {
       width: [5, 7, 5],
-      curve: 'straight',
+      curve: "straight",
       dashArray: [0, 8, 5],
     },
     title: {
-      text: 'Page Statistics',
-      align: 'left',
+      text: "Page Statistics",
+      align: "left",
     },
     legend: {
-      tooltipHoverFormatter: function (val: string, opts) {
+      tooltipHoverFormatter: function (val: string, opts: any) {
         return (
           val +
-          ' - <strong>' +
+          " - <strong>" +
           opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] +
-          '</strong>'
-        )
+          "</strong>"
+        );
       },
     },
     markers: {
@@ -82,28 +73,28 @@ const BasicAreaChart = ({
         {
           title: {
             formatter: function (val: string) {
-              return val + ' (mins)'
+              return val + " (mins)";
             },
           },
         },
         {
           title: {
             formatter: function (val: string) {
-              return val + ' per session'
+              return val + " per session";
             },
           },
         },
         {
           title: {
             formatter: function (val: string) {
-              return val
+              return val;
             },
           },
         },
       ],
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -114,12 +105,12 @@ const BasicAreaChart = ({
         series={series}
         data-chart-colors="[bg-primary-500]"
         type="area"
-        chartId={chartId}
+        id={chartId}
         height={380}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default BasicAreaChart
+export default BasicAreaChart;

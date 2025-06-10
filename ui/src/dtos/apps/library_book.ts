@@ -1,12 +1,10 @@
-import { StaticImageData } from 'next/image'
-
 export interface LibraryBook {
-  id: number
-  title: string
-  author: string
-  price: string
-  image: string | StaticImageData
-  rating: number
-  reviewCount: string // Change from string to number
-  type: string
+  _id: any;
+  title: string;
+  author: string;
+  price: string;
+  image: string;
+  rating: number;
+  reviewCount: string; // Change from string to number
+  type: string;
 }

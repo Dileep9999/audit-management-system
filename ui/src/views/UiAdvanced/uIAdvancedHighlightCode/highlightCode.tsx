@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import PrismCode from '@src/components/common/Prism'
+import PrismCode from "@src/components/common/prism";
+import React from "react";
 
 const Allcode = `
 import Button from '@src/components/custom/Buttons/Button';
@@ -34,7 +31,7 @@ const BaseButtons = () => {
                     {baseButtons.map((button, index) => (
                         <Button
                             key={index}
-                            custome="btn"
+                            custom="btn"
                             text={button.text}
                             color={button.color}
                         />
@@ -46,7 +43,7 @@ const BaseButtons = () => {
 };
 
 export default BaseButtons;
-`
+`;
 
 const HighlightCode = () => {
   return (
@@ -62,7 +59,7 @@ const HighlightCode = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default HighlightCode
+export default HighlightCode;

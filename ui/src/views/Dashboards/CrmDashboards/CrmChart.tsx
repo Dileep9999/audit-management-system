@@ -1,20 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
+import useChartColors from "@hooks/useChartColors";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const EmailCampaignChart = ({
@@ -22,48 +14,47 @@ const EmailCampaignChart = ({
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Visitor',
+      name: "Visitor",
       data: [154, 137, 41, 67, 43, 20, 41, 67, 20, 41, 32, 98],
     },
     {
-      name: 'Add Cart',
+      name: "Add Cart",
       data: [13, 23, 20, 35, 27, 16, 8, 13, 20, 41, 44, 67],
     },
     {
-      name: 'Check Out',
+      name: "Check Out",
       data: [11, 54, 15, 21, 14, 24, 15, 21, 20, 41, 54, 35],
     },
     {
-      name: 'Favorite',
+      name: "Favorite",
       data: [21, 19, 25, 22, 8, 19, 13, 22, 20, 41, 49, 33],
     },
-  ]
+  ];
 
   const labels = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
       stacked: true,
       toolbar: {
         show: false,
@@ -78,7 +69,7 @@ const EmailCampaignChart = ({
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '35%',
+        columnWidth: "35%",
       },
     },
 
@@ -89,15 +80,15 @@ const EmailCampaignChart = ({
       },
     },
     legend: {
-      position: 'top',
-      horizontalAlign: 'right',
+      position: "top",
+      horizontalAlign: "right",
       offsetY: -5,
     },
     grid: {
       show: true,
-      borderColor: '#90A4AE',
+      borderColor: "#90A4AE",
       strokeDashArray: 2,
-      position: 'back',
+      position: "back",
       padding: {
         top: 10,
         right: 0,
@@ -117,7 +108,7 @@ const EmailCampaignChart = ({
       opacity: 1,
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -133,31 +124,30 @@ const EmailCampaignChart = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-const BasicRadialApp = ({
+const BasicRadialBarApp = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const series = [87.6]
+  const series = [87.6];
 
-  const labels = ['This Month']
+  const labels = ["This Month"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
-      height: 300,
-      type: 'radialBar',
+      height: 180,
+      type: "radialBar",
     },
     plotOptions: {
       radialBar: {
         hollow: {
-          size: '60%',
+          size: "60%",
         },
         track: {
           dropShadow: {
@@ -170,22 +160,22 @@ const BasicRadialApp = ({
         },
         dataLabels: {
           name: {
-            fontSize: '15px',
+            fontSize: "15px",
           },
           value: {
             show: true,
-            fontSize: '14px',
+            fontSize: "14px",
             fontWeight: 700,
             offsetY: 10,
             formatter: function (val) {
-              return '$' + val + 'k'
+              return "$" + val + "k";
             },
           },
         },
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -197,11 +187,11 @@ const BasicRadialApp = ({
         data-chart-colors="[bg-slate-600, bg-slate-100]"
         type="radialBar"
         id={chartId}
-        height={300}
+        height={180}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export { EmailCampaignChart, BasicRadialApp }
+export { EmailCampaignChart, BasicRadialBarApp };

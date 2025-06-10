@@ -1,156 +1,148 @@
-import { Patients } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
+import { AppDispatch } from "@src/slices/reducer";
+import { Patients } from "@src/dtos";
+import api from "@src/utils/axios_api";
 import {
-  LocalStorageRecord,
+  getPatients,
+  addPatients,
+  editPatients,
+  deletePatients,
+  setCurrentPatients,
+} from "./reducer";
+import {
   addLocalStorageRecord,
   createLocalStorage,
   deleteLocalStorageRecord,
   getLocalStorage,
   updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_HOSPITAL_PATIENTS_LIST_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
+} from "@src/utils/crud_functions";
+import { REACT_APP_HOSPITAL_PATIENTS_LIST_API } from "@src/utils/url_helper";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-import {
-  addPatients,
-  deletePatients,
-  editPatients,
-  getPatients,
-  setCurrentPatients,
-} from './reducer'
-
-const HOSPITAL_PATINETS_API = NEXT_PUBLIC_HOSPITAL_PATIENTS_LIST_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const HOSPITAL_PATIENTS_API = REACT_APP_HOSPITAL_PATIENTS_LIST_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get patients data
 export const getPatientsData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = (await getLocalStorage(
-        'd-hospital-patients-list'
-      )) as Patients[] | null
+      const responseData = await getLocalStorage("d-hospital-patients-list");
       if (!responseData) {
-        const response = await api.get(HOSPITAL_PATINETS_API)
-        const { data } = response
-        createLocalStorage('d-hospital-patients-list', data)
-        dispatch(getPatients(data))
+        const response = await api.get(HOSPITAL_PATIENTS_API);
+        createLocalStorage("d-hospital-patients-list", response);
+        dispatch(getPatients(response));
       } else {
-        dispatch(getPatients(responseData || []))
+        dispatch(getPatients(responseData));
       }
     } else {
-      const response = await api.get(HOSPITAL_PATINETS_API)
-      const { data } = response
-      dispatch(getPatients(data))
+      const response = await api.get(HOSPITAL_PATIENTS_API);
+      dispatch(getPatients(response));
     }
-  } catch (error) {
-    let errorMessage = 'patients List Fetch Failed'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-    }
-    toast.error(errorMessage, { autoClose: 3000 })
-    console.error('patients List Fetch Failed:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Patients List Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching patients data:", error);
   }
-}
+};
+
 // add new patients
 export const addPatientsData =
   (newRecord: Patients) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(
-        HOSPITAL_PATINETS_API,
+      const response = await api.post(
+        HOSPITAL_PATIENTS_API,
         newRecord,
-        'patients'
-      )
-      const { data, message } = response
-      toast.success(message || 'patients record added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-hospital-patients-list', { ...data })
-      dispatch(addPatients(data))
-    } catch (error) {
-      let errorMessage = 'patients addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('patients addition failed:', error)
+        "Patients",
+      );
+      const { message } = response;
+      AddToast(message || "Patients record added successfully");
+      addLocalStorageRecord("d-hospital-patients-list", newRecord);
+      dispatch(addPatients(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Patients addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error in patients adding record:", error);
     }
-  }
+  };
 
 // edit patients
 export const editPatientsData =
-  (patient: Patients) => async (dispatch: AppDispatch) => {
+  (appointment: Patients) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(
-        HOSPITAL_PATINETS_API,
-        patient,
-        'patient'
-      )
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-hospital-patients-list',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editPatients(data))
-    } catch (error) {
-      let errorMessage = 'patient record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('patient record updation failed:', error)
+      const response = await api.put(
+        HOSPITAL_PATIENTS_API,
+        appointment,
+        "Patient",
+      );
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Patient updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-hospital-patients-list", appointment);
+      dispatch(editPatients(appointment));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Patient update failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating patient record:", error);
     }
-  }
+  };
 
 // delete patients
 export const deletePatientsData =
-  (patient: number[]) => async (dispatch: AppDispatch) => {
+  (question: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = patient.map(async (id) => {
-        const response = await customDelete(
-          HOSPITAL_PATINETS_API,
-          id,
-          'patient'
-        )
-        const { message } = response
-        toast.success(message || 'patient deleted successfully', {
-          autoClose: 3000,
-        })
-        return response.data
-      })
-      const deletedProducts = await Promise.all(deletePromises)
-      dispatch(deletePatients(deletedProducts))
+      const deletePromises = question.map(async (_id) => {
+        const response = await api.delete(
+          HOSPITAL_PATIENTS_API,
+          _id,
+          "Patient",
+        );
+        const { message } = response;
+        DeleteToast(message || "Patient deleted successfully");
+        return _id;
+      });
+
+      const deletedPatients = await Promise.all(deletePromises);
+      dispatch(deletePatients(deletedPatients));
       deleteLocalStorageRecord({
-        key: 'd-hospital-patients-list',
-        listRecord: patient,
+        key: "d-hospital-patients-list",
+        listRecord: question,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'patient deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('patient deletion failed:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Patient deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in patient: ", error);
     }
-  }
+  };
 
 // update current patients
 export const modifyCurrentPatients =
   (modifyPatint: Patients, patientMode: boolean) =>
   async (dispatch: AppDispatch) => {
     try {
-      const response = { data: modifyPatint, editeMode: patientMode }
+      const response = { data: modifyPatint, editMode: patientMode };
       dispatch(
-        setCurrentPatients({ patient: response.data, mode: response.editeMode })
-      )
+        setCurrentPatients({
+          patient: response.data,
+          mode: response.editMode,
+        }),
+      );
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };

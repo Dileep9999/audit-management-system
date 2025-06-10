@@ -1,5 +1,5 @@
 /* data-nav-type="boxed" */
-[data-nav-type='boxed'] {
+[data-nav-type="boxed"] {
   .main-topbar {
     @apply m-3 [&.nav-sticky]:mt-0;
 
@@ -14,14 +14,14 @@
 }
 
 /* data-nav-type="floating" */
-[data-nav-type='floating'] {
+[data-nav-type="floating"] {
   .main-topbar {
     @apply absolute;
   }
 }
 
 /* data-nav-type="pattern" */
-[data-nav-type='pattern'] {
+[data-nav-type="pattern"] {
   .main-topbar {
     .main-topbar-wrapper {
       @apply bg-transparent;

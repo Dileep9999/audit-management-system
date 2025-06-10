@@ -1,12 +1,7 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { TrackRecord } from '@src/data'
-import { NextPageWithLayout } from '@src/dtos'
+import { TrackRecord } from "@data/index";
+import { NextPageWithLayout } from "@dtos/layout";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const TopTrack: NextPageWithLayout = () => {
   return (
@@ -14,8 +9,8 @@ const TopTrack: NextPageWithLayout = () => {
       <div className="col-span-12">
         <div className="mb-space">
           <div className="flex items-center mb-5">
-            <h6 className="text-15 grow">Weekly Top Tracks</h6>
-            <Link href="#!" className="btn btn-primary">
+            <h6 className="text-15 grow">Weekly Top Track</h6>
+            <Link to="#!" className="btn btn-primary">
               <i className="ri-add-circle-line ltr:mr-1 rtl:ml-1"></i> Add Track
             </Link>
           </div>
@@ -24,17 +19,15 @@ const TopTrack: NextPageWithLayout = () => {
             {TrackRecord.map((items, index) => {
               return (
                 <div key={index} className="relative">
-                  <Image
+                  <img
                     src={items.image}
-                    alt="recoardImg"
+                    alt="TrackRecordImg"
                     className="rounded-xl"
                   />
                   <div className="mt-3 text-center">
                     <h6 className="mb-1">
-                      <Link
-                        href="#!"
-                        className="before:absolute before:inset-0">
-                        {items.musicName}
+                      <Link to="#!" className="before:absolute before:inset-0">
+                        {items.musicname}
                       </Link>
                     </h6>
                     <p className="text-gray-500 dark:text-dark-500">
@@ -42,12 +35,12 @@ const TopTrack: NextPageWithLayout = () => {
                     </p>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default TopTrack
+  );
+};
+export default TopTrack;

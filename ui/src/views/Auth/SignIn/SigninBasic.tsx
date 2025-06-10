@@ -1,79 +1,95 @@
-'use client'
+import { useState } from "react";
+import LogoMain from "@assets/images/main-logo.png";
+import logoWhite from "@assets/images/logo-white.png";
+import Google from "@assets/images/others/google.png";
+import { Eye, EyeOff } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
-import { useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import whiteLogo from '@assets/images/logo-white.png'
-import LogoMain from '@assets/images/main-logo.png'
-import { Eye, EyeOff } from 'lucide-react'
-import { signIn } from 'next-auth/react'
-import { toast } from 'react-toastify'
+type AlertType = "bg-red-100 text-red-500" | "bg-green-100 text-green-500";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const router = useRouter()
+const SignInBasic = () => {
+  const [formData, setFormData] = useState<{ email: string; password: string }>(
+    {
+      email: "",
+      password: "",
+    },
+  );
 
-  const adminEmail = 'admin@example.com'
-  const adminPassword = 'admin@123'
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const [alert, setAlert] = useState<{
+    isVisible: boolean;
+    message: string;
+    type: AlertType;
+  }>({
+    isVisible: false,
+    message: "",
+    type: "bg-red-100 text-red-500",
+  });
 
-    if (!email || !password || !email.trim() || !password.trim()) {
-      toast.error('Email and password are required.')
-      return
+  const navigate = useNavigate();
+
+  const allowedCredentials = {
+    adminEmail: "admin@example.com",
+    adminPassword: "admin@123",
+    userEmail: "user@example.com",
+    userPassword: "user@123",
+  };
+
+  const showAlert = (message: string, type: AlertType) => {
+    setAlert({ isVisible: true, message, type });
+  };
+
+  const validateForm = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAlert({ ...alert, isVisible: false, message: "" });
+
+    // Check if the form data matches either the admin or user credentials
+    const isAdminValid =
+      formData.email === allowedCredentials.adminEmail &&
+      formData.password === allowedCredentials.adminPassword;
+    const isUserValid =
+      formData.email === allowedCredentials.userEmail &&
+      formData.password === allowedCredentials.userPassword;
+
+    if (!isAdminValid && !isUserValid) {
+      // Show an alert if neither admin nor user credentials are correct
+      showAlert("Invalid email or password", "bg-red-100 text-red-500");
+      return;
     }
 
-    if (email !== adminEmail || password !== adminPassword) {
-      toast.error('Invalid credentials. Please use the admin credentials shown below.')
-      return
-    }
+    // If either the admin or user credentials are correct
+    showAlert(
+      `You've successfully signed in to Domiex!`,
+      "bg-green-100 text-green-500",
+    );
 
-    try {
-      const result = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-        callbackUrl: '/dashboards/ecommerce',
-      })
+    // Redirect to the dashboard after a short delay
+    setTimeout(() => {
+      localStorage.setItem("wasLoggedIn", "true");
+      navigate("/dashboards/ecommerce");
+    }, 500);
+  };
 
-      if (result?.ok) {
-        router.push(result.url || '/dashboards/ecommerce')
-      } else {
-        toast.error('Login failed! Please try again.')
-      }
-    } catch (error) {
-      console.error('Login failed', error)
-      toast.error('An error occurred during login.')
-    }
-  }
+  // handle admin login
+  const handleAdminLogin = () => {
+    setFormData({ email: "admin@example.com", password: "admin@123" });
+    localStorage.setItem("wasLoggedIn", "true");
+    navigate("/dashboards/ecommerce");
+  };
 
-  const handleAdminLogin = async () => {
-    setEmail(adminEmail)
-    setPassword(adminPassword)
+  // handle user login
+  const handleGuestLogin = () => {
+    setFormData({ email: "user@example.com", password: "user@123" });
+    localStorage.setItem("wasLoggedIn", "true");
+    navigate("/dashboards/ecommerce");
+  };
 
-    try {
-      const result = await signIn('credentials', {
-        redirect: false,
-        email: adminEmail,
-        password: adminPassword,
-        callbackUrl: '/dashboards/ecommerce',
-      })
-
-      if (result?.ok) {
-        router.push(result.url || '/dashboards/ecommerce')
-      } else {
-        toast.error('Admin login failed! Please try again.')
-      }
-    } catch (error) {
-      console.error('Admin login failed', error)
-      toast.error('An error occurred during login.')
-    }
-  }
+  // handle input
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
 
   return (
     <div className="relative flex items-center justify-center min-h-screen py-12 from-sky-100 dark:from-sky-500/15 ltr:bg-gradient-to-l rtl:bg-gradient-to-r via-green-50 dark:via-green-500/10 to-pink-50 dark:to-pink-500/10">
@@ -82,39 +98,59 @@ export default function LoginPage() {
           <div className="col-span-12 mb-0 md:col-span-10 lg:col-span-6 xl:col-span-4 md:col-start-2 lg:col-start-4 xl:col-start-5 card">
             <div className="md:p-10 card-body">
               <div className="mb-5 text-center">
-                <Link href="#">
-                  <Image
+                <Link to="#">
+                  <img
                     src={LogoMain}
                     alt="LogoMain"
                     className="h-8 mx-auto dark:hidden"
                     width={175}
                     height={32}
                   />
-                  <Image
-                    src={whiteLogo}
-                    alt="whiteLogo"
+                  <img
+                    src={logoWhite}
+                    alt="logoWhite"
                     className="hidden h-8 mx-auto dark:inline-block"
-                    width={175}
-                    height={32}
                   />
                 </Link>
               </div>
-              <h4 className="mb-5 text-xl font-bold text-center">
-                Admin Login
+              <h4 className="mb-2 font-bold leading-relaxed text-center text-transparent drop-shadow-lg ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary-500 vie-purple-500 to-pink-500 bg-clip-text">
+                Welcome Back, Sofia!
               </h4>
-              <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-12 gap-5 mb-5">
+              <p className="mb-5 text-center text-gray-500 dark:text-dark-500">
+                Don't have an account?{" "}
+                <Link
+                  to="/auth/signup-basic"
+                  className="font-medium link link-primary"
+                >
+                  Sign Up
+                </Link>
+              </p>
+              {alert.isVisible && (
+                <div
+                  className={`relative py-3 text-sm rounded-md ltr:pl-5 rtl:pr-5 ltr:pr-7 rtl:pl-7 ${alert.type}`}
+                >
+                  <span>{alert.message}</span>
+                  <button
+                    onClick={() => setAlert({ ...alert, isVisible: false })}
+                    className="absolute text-lg transition duration-200 ease-linear ltr:right-5 rtl:left-5 top-2"
+                  >
+                    <i className="ri-close-fill"></i>
+                  </button>
+                </div>
+              )}
+              <form onSubmit={validateForm}>
+                <div className="grid grid-cols-12 gap-5 mt-5">
                   <div className="col-span-12">
                     <label htmlFor="emailOrUsername" className="form-label">
-                      Email
+                      Email Or Username
                     </label>
                     <input
                       type="text"
-                      id="emailOrUsername"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
                       className="w-full form-input"
-                      placeholder="Enter admin email"
+                      placeholder="Enter your email or username"
                     />
                   </div>
                   <div className="col-span-12">
@@ -123,23 +159,47 @@ export default function LoginPage() {
                     </label>
                     <div className="relative">
                       <input
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={formData.password}
+                        onChange={handleInputChange}
                         className="w-full ltr:pr-8 rtl:pl-8 form-input"
-                        placeholder="Enter admin password"
+                        placeholder="Enter your password"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="absolute inset-y-0 flex items-center text-gray-500 ltr:right-3 rtl:left-3 focus:outline-hidden dark:text-dark-500">
+                        className="absolute inset-y-0 flex items-center text-gray-500 ltr:right-3 rtl:left-3 focus:outline-none dark:text-dark-500"
+                      >
                         {showPassword ? (
                           <Eye className="size-5" />
                         ) : (
                           <EyeOff className="size-5" />
                         )}
                       </button>
+                    </div>
+                  </div>
+                  <div className="col-span-12">
+                    <div className="flex items-center">
+                      <div className="input-check-group grow">
+                        <input
+                          id="checkboxBasic1"
+                          className="input-check input-check-primary"
+                          type="checkbox"
+                        />
+                        <label
+                          htmlFor="checkboxBasic1"
+                          className="input-check-label"
+                        >
+                          Remember me
+                        </label>
+                      </div>
+                      <Link
+                        to="/auth/forgot-password-basic"
+                        className="block text-sm font-medium underline transition duration-300 ease-linear ltr:text-right rtl:text-left shrink-0 text-primary-500 hover:text-primary-600"
+                      >
+                        Forgot Password?
+                      </Link>
                     </div>
                   </div>
                   <div className="col-span-12">
@@ -150,18 +210,68 @@ export default function LoginPage() {
                 </div>
               </form>
 
-              <div className="mt-5 p-4 bg-gray-50 dark:bg-dark-900 rounded-lg">
-                <h6 className="mb-2 font-semibold">Admin Credentials</h6>
-                <p className="text-gray-500 dark:text-dark-500 mb-1">
-                  Email: {adminEmail}
+              {/* <div className="relative my-5 text-center text-gray-500 dark:text-dark-500 before:absolute before:border-gray-200 dark:before:border-dark-800 before:border-dashed before:w-full ltr:before:left-0 rtl:before:right-0 before:top-2.5 before:border-b">
+                <p className="relative inline-block px-2 bg-white dark:bg-dark-900">
+                  OR
                 </p>
-                <p className="text-gray-500 dark:text-dark-500 mb-3">
-                  Password: {adminPassword}
-                </p>
+              </div> */}
+
+              {/* <div className="space-y-2">
                 <button
-                  className="w-full btn btn-sub-gray"
-                  onClick={handleAdminLogin}>
-                  Quick Admin Login
+                  type="button"
+                  className="w-full border-gray-200 btn hover:bg-gray-50 dark:border-dark-800 dark:hover:bg-dark-850 hover:text-primary-500"
+                >
+                  <img
+                    src={Google}
+                    alt="logo"
+                    className="inline-block h-4 ltr:mr-1 rtl:ml-1"
+                    width={16}
+                    height={16}
+                  />{" "}
+                  Sign In Via Google
+                </button>
+                <button
+                  type="button"
+                  className="w-full border-gray-200 btn hover:bg-gray-50 dark:border-dark-800 dark:hover:bg-dark-850 hover:text-primary-500"
+                >
+                  <i className="ri-facebook-fill text-[20px] inline-block ltr:mr-1 rtl:ml-1 size-4 text-primary-500"></i>{" "}
+                  Sign In Via Facebook
+                </button>
+              </div> */}
+
+              <div className="flex items-center gap-3 mt-5">
+                <div className="grow">
+                  <h6 className="mb-1">Admin</h6>
+                  <p className="text-gray-500 dark:text-dark-500">
+                    Email: admin@example.com
+                  </p>
+                  <p className="text-gray-500 dark:text-dark-500">
+                    Password: admin@123
+                  </p>
+                </div>
+                <button
+                  className="shrink-0 btn btn-sub-gray"
+                  onClick={handleAdminLogin}
+                >
+                  Login
+                </button>
+              </div>
+
+              <div className="flex items-center gap-3 mt-3">
+                <div className="grow">
+                  <h6 className="mb-1">Users</h6>
+                  <p className="text-gray-500 dark:text-dark-500">
+                    Email: user@example.com
+                  </p>
+                  <p className="text-gray-500 dark:text-dark-500">
+                    Password: user@123
+                  </p>
+                </div>
+                <button
+                  className="shrink-0 btn btn-sub-gray"
+                  onClick={handleGuestLogin}
+                >
+                  Login
                 </button>
               </div>
             </div>
@@ -169,5 +279,7 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default SignInBasic;

@@ -1,37 +1,28 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface RadialChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
-const StrokedGaugeRadialbarChart = ({
+const StrokedGaugeRadialBarChart = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: RadialChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const series = [75]
-  const labels = ['Median Ratio']
+  const series = [75];
+  const labels = ["Median Ratio"];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'radialBar',
+      type: "radialBar",
       offsetY: -10,
     },
     plotOptions: {
@@ -40,16 +31,16 @@ const StrokedGaugeRadialbarChart = ({
         endAngle: 135,
         dataLabels: {
           name: {
-            fontSize: '16px',
+            fontSize: "16px",
             color: undefined,
             offsetY: 120,
           },
           value: {
             offsetY: 76,
-            fontSize: '22px',
+            fontSize: "22px",
             color: undefined,
             formatter: function (val) {
-              return val + '%'
+              return val + "%";
             },
           },
         },
@@ -57,9 +48,9 @@ const StrokedGaugeRadialbarChart = ({
     },
     colors: chartsColor,
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        shade: 'dark',
+        shade: "dark",
         shadeIntensity: 0.15,
         inverseColors: false,
         opacityFrom: 1,
@@ -71,7 +62,7 @@ const StrokedGaugeRadialbarChart = ({
       dashArray: 4,
     },
     labels: labels,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -81,12 +72,12 @@ const StrokedGaugeRadialbarChart = ({
         series={series}
         type="radialBar"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-yellow-500, bg-purple-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default StrokedGaugeRadialbarChart
+export default StrokedGaugeRadialBarChart;

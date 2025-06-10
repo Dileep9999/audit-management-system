@@ -1,8 +1,6 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Link from 'next/link'
+import { Link } from "react-router-dom";
 
 const InformationAlert: React.FC = () => {
   return (
@@ -12,15 +10,16 @@ const InformationAlert: React.FC = () => {
           <p>
             Join new friends and embark on a New Year learning experience.
             <Link
-              href="#!"
-              className="underline transition duration-300 ease-linear hover:text-white">
+              to="#!"
+              className="underline transition duration-300 ease-linear hover:text-white"
+            >
               Click on the student list!
             </Link>
           </p>
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default InformationAlert
+export default InformationAlert;

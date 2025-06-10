@@ -1,23 +1,15 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import user13 from '@assets/images/avatar/user-13.png'
+import React from "react";
+import AnimatedCounter from "./counter";
+import user13 from "@assets/images/avatar/user-13.png";
+import { OnlineSalesChart, OnlineWeeklyApp } from "./chart";
+import { Ellipsis, MoveUp } from "lucide-react";
+import { NextPageWithLayout } from "@dtos/layout";
+import { Tab, Tabs } from "@src/components/custom/tabs/tab";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { Tab, Tabs } from '@src/components/custom/tabs/tab'
-import { NextPageWithLayout } from '@src/dtos'
-import { Ellipsis, MoveUp } from 'lucide-react'
-
-import { OnlineSalesChart, OnlineWeeklyApp } from './Chart'
-import AnimatedCounter from './Counter'
-
+} from "@src/components/custom/dropdown/dropdown";
 const Performance: NextPageWithLayout = () => {
   return (
     <React.Fragment>
@@ -28,20 +20,21 @@ const Performance: NextPageWithLayout = () => {
             <Dropdown
               position="right"
               trigger="click"
-              dropdownClassName="dropdown">
+              dropdownClassName="dropdown"
+            >
               <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
                 <Ellipsis className="size-5" />
               </DropdownButton>
               <DropdownMenu>
-                <Link href="#!" className="dropdown-item">
+                <a href="#!" className="dropdown-item">
                   <span>Weekly</span>
-                </Link>
-                <Link href="#!" className="dropdown-item">
+                </a>
+                <a href="#!" className="dropdown-item">
                   <span>Monthly</span>
-                </Link>
-                <Link href="#!" className="dropdown-item">
+                </a>
+                <a href="#!" className="dropdown-item">
                   <span>Yearly</span>
-                </Link>
+                </a>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -52,16 +45,17 @@ const Performance: NextPageWithLayout = () => {
             activeTabClass="bg-white text-gray-800 dark:bg-dark-900 dark:text-dark-50"
             inactiveTabClass="hover:text-gray-800 dark:hover:text-dark-50"
             otherClass="relative block px-2 py-1 font-medium text-center rounded-full link text-13"
-            contentProps="w-full mt-4">
+            contentProps="w-full mt-4"
+          >
             <Tab label="New Users">
               <div>
                 <div className="card">
                   <div className="card-body">
                     <div className="flex items-center gap-2">
                       <div className="rounded-full size-24">
-                        <Image
+                        <img
                           src={user13}
-                          alt="userImg"
+                          alt="user13Img"
                           className="rounded-full"
                         />
                       </div>
@@ -71,7 +65,7 @@ const Performance: NextPageWithLayout = () => {
                         </p>
                         <h6 className="mb-2">Jabari Mayer</h6>
                         <p className="mb-1 text-gray-500 dark:text-dark-500 text-13">
-                          Daily Visits
+                          Daily Visit
                         </p>
                         <h6>244 Clicks</h6>
                       </div>
@@ -102,7 +96,7 @@ const Performance: NextPageWithLayout = () => {
                   </div>
                 </div>
                 <p className="text-center text-gray-500 dark:text-dark-500">
-                  Increase your email marketing by{' '}
+                  Increase your email marketing by{" "}
                   <span className="text-primary-500">41%</span> to reach your
                   user acquisition and monthly targets.
                 </p>
@@ -139,13 +133,13 @@ const Performance: NextPageWithLayout = () => {
                 </h5>
                 <OnlineSalesChart
                   chartColors="[bg-sky-500]"
-                  chartDarkColors={''}
+                  chartDarkColors={""}
                   chartId="averageOnlineSalesChart"
                 />
               </div>
             </Tab>
 
-            <Tab label="Daily Sales">
+            <Tab label="Daily Sale">
               <div>
                 <div className="grid grid-cols-12 gap-space">
                   <div className="col-span-6 p-3 text-center border border-gray-200 border-dashed rounded-md dark:border-dark-800">
@@ -173,7 +167,7 @@ const Performance: NextPageWithLayout = () => {
                 </h5>
                 <OnlineWeeklyApp
                   chartColors="[bg-sky-500]"
-                  chartDarkColors={''}
+                  chartDarkColors={""}
                   chartId="averageOnlineWeeklyChart"
                 />
               </div>
@@ -182,6 +176,6 @@ const Performance: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default Performance
+  );
+};
+export default Performance;

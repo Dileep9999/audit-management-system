@@ -1,6 +1,4 @@
-'use client'
-
-import React from 'react'
+import React from "react";
 
 const OutlineSolidIcons = () => {
   return (
@@ -18,7 +16,8 @@ const OutlineSolidIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-6">
+                className="size-6"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -33,7 +32,8 @@ const OutlineSolidIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-6 text-primary-500">
+                className="size-6 text-primary-500"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -48,7 +48,8 @@ const OutlineSolidIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="text-purple-500 size-6">
+                className="text-purple-500 size-6"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -63,7 +64,8 @@ const OutlineSolidIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="text-green-500 size-6">
+                className="text-green-500 size-6"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -78,7 +80,8 @@ const OutlineSolidIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="text-yellow-500 size-6">
+                className="text-yellow-500 size-6"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -93,7 +96,8 @@ const OutlineSolidIcons = () => {
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="text-red-500 size-6">
+                className="text-red-500 size-6"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -106,7 +110,8 @@ const OutlineSolidIcons = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="size-6 text-sky-500">
+                className="size-6 text-sky-500"
+              >
                 <path d="M12.378 1.602a.75.75 0 0 0-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03ZM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 0 0 .372-.648V7.93ZM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 0 0 .372.648l8.628 5.033Z" />
               </svg>
             </div>
@@ -115,7 +120,8 @@ const OutlineSolidIcons = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="text-pink-500 size-6">
+                className="text-pink-500 size-6"
+              >
                 <path d="M19.5 22.5a3 3 0 0 0 3-3v-8.174l-6.879 4.022 3.485 1.876a.75.75 0 1 1-.712 1.321l-5.683-3.06a1.5 1.5 0 0 0-1.422 0l-5.683 3.06a.75.75 0 0 1-.712-1.32l3.485-1.877L1.5 11.326V19.5a3 3 0 0 0 3 3h15Z" />
                 <path d="M1.5 9.589v-.745a3 3 0 0 1 1.578-2.642l7.5-4.038a3 3 0 0 1 2.844 0l7.5 4.038A3 3 0 0 1 22.5 8.844v.745l-8.426 4.926-.652-.351a3 3 0 0 0-2.844 0l-.652.351L1.5 9.589Z" />
               </svg>
@@ -124,6 +130,6 @@ const OutlineSolidIcons = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default OutlineSolidIcons
+  );
+};
+export default OutlineSolidIcons;

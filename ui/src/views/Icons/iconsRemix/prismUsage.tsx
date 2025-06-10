@@ -1,12 +1,8 @@
-'use client'
-
-import React from 'react'
-
-import PrismCode from '@src/components/common/Prism'
+import PrismCode from "@src/components/common/prism";
 
 const installation = `<i className="ri-admin-line"></i>
-<i className="ri-admin-fill"></i>`
+<i className="ri-admin-fill"></i>`;
 
-const Usage = () => <PrismCode language="javascript" code={installation} />
+const Usage = () => <PrismCode language="javascript" code={installation} />;
 
-export { Usage }
+export { Usage };

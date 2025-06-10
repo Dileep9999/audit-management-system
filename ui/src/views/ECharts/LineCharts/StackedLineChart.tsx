@@ -1,27 +1,19 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-// Dynamically import the ReactApexChart component
-const ReactEcharts = dynamic(() => import('echarts-for-react'), {
-  ssr: false,
-})
+import React from "react";
+import ReactEcharts from "echarts-for-react";
 
 const StackedLineChart = () => {
   const option = {
     tooltip: {
-      trigger: 'axis',
+      trigger: "axis",
     },
     legend: {
-      data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine'],
+      data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
     },
     grid: {
-      top: '12%',
-      left: '2%',
-      right: '0%',
-      bottom: '3%',
+      top: "12%",
+      left: "2%",
+      right: "0%",
+      bottom: "3%",
       containLabel: true,
     },
     toolbox: {
@@ -30,52 +22,52 @@ const StackedLineChart = () => {
       },
     },
     xAxis: {
-      type: 'category',
+      type: "category",
       boundaryGap: false,
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     },
     yAxis: {
-      type: 'value',
+      type: "value",
     },
     series: [
       {
-        name: 'Email',
-        type: 'line',
-        stack: 'Total',
+        name: "Email",
+        type: "line",
+        stack: "Total",
         data: [120, 132, 101, 134, 90, 230, 210],
       },
       {
-        name: 'Union Ads',
-        type: 'line',
-        stack: 'Total',
+        name: "Union Ads",
+        type: "line",
+        stack: "Total",
         data: [220, 182, 191, 234, 290, 330, 310],
       },
       {
-        name: 'Video Ads',
-        type: 'line',
-        stack: 'Total',
+        name: "Video Ads",
+        type: "line",
+        stack: "Total",
         data: [150, 232, 201, 154, 190, 330, 410],
       },
       {
-        name: 'Direct',
-        type: 'line',
-        stack: 'Total',
+        name: "Direct",
+        type: "line",
+        stack: "Total",
         data: [320, 332, 301, 334, 390, 330, 320],
       },
       {
-        name: 'Search Engine',
-        type: 'line',
-        stack: 'Total',
+        name: "Search Engine",
+        type: "line",
+        stack: "Total",
         data: [820, 932, 901, 934, 1290, 1330, 1320],
       },
     ],
-  }
+  };
 
   return (
     <React.Fragment>
-      <ReactEcharts style={{ height: '350px' }} option={option} />
+      <ReactEcharts style={{ height: "350px" }} option={option} />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default StackedLineChart
+export default StackedLineChart;

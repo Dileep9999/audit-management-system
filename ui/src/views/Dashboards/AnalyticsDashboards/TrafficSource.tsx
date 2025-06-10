@@ -1,21 +1,16 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
+import { Ellipsis } from "lucide-react";
+import React, { useState } from "react";
+import { TrafficSourceApp } from "./chart";
+import { NextPageWithLayout } from "@dtos/layout";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-import { Ellipsis } from 'lucide-react'
-
-import { TrafficSourceApp } from './Chart'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
 
 const TrafficSource: NextPageWithLayout = () => {
-  const [timeFrame, setTimeFrame] = useState('Weekly')
+  const [timeFrame, setTimeFrame] = useState("Weekly");
   return (
     <React.Fragment>
       <div className="col-span-12 md:col-span-6 2xl:col-span-4 card">
@@ -25,27 +20,32 @@ const TrafficSource: NextPageWithLayout = () => {
           <Dropdown
             position="right"
             trigger="click"
-            dropdownClassName="dropdown">
+            dropdownClassName="dropdown"
+          >
             <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
+              {" "}
               <Ellipsis className="size-5" />
             </DropdownButton>
             <DropdownMenu>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Weekly')}>
+                onClick={() => setTimeFrame("Weekly")}
+              >
                 <span>Weekly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Monthly')}>
+                onClick={() => setTimeFrame("Monthly")}
+              >
                 <span>Monthly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => setTimeFrame('Yearly')}>
+                onClick={() => setTimeFrame("Yearly")}
+              >
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
@@ -54,13 +54,13 @@ const TrafficSource: NextPageWithLayout = () => {
         <div className="card-body">
           <TrafficSourceApp
             chartColors="[bg-primary-500, bg-gray-200]"
-            chartDarkColors={''}
+            chartDarkColors={""}
             chartId="trafficSourceChart"
             timeFrame={timeFrame}
           />
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default TrafficSource
+  );
+};
+export default TrafficSource;

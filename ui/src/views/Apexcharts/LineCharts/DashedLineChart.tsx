@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface LineChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const DashedLineChart = ({
@@ -24,27 +15,28 @@ const DashedLineChart = ({
   chartId,
 }: LineChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Session Duration',
+      name: "Session Duration",
       data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10],
     },
     {
-      name: 'Page Views',
+      name: "Page Views",
       data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35],
     },
     {
-      name: 'Total Visits',
+      name: "Total Visits",
       data: [87, 57, 74, 99, 75, 38, 62, 47, 82, 56, 45, 47],
     },
-  ]
+  ];
+
   const options: ApexOptions = {
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 300,
-      type: 'line',
+      type: "line",
       zoom: {
         enabled: false,
       },
@@ -54,21 +46,21 @@ const DashedLineChart = ({
     },
     stroke: {
       width: [5, 7, 5],
-      curve: 'straight',
+      curve: "straight",
       dashArray: [0, 8, 5],
     },
     title: {
-      text: 'Page Statistics',
-      align: 'left',
+      text: "Page Statistics",
+      align: "left",
     },
     legend: {
       tooltipHoverFormatter: function (val, opts) {
         return (
           val +
-          ' - <strong>' +
+          " - <strong>" +
           opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] +
-          '</strong>'
-        )
+          "</strong>"
+        );
       },
     },
     markers: {
@@ -89,28 +81,28 @@ const DashedLineChart = ({
         {
           title: {
             formatter: function (val) {
-              return val + ' (mins)'
+              return val + " (mins)";
             },
           },
         },
         {
           title: {
             formatter: function (val) {
-              return val + ' per session'
+              return val + " per session";
             },
           },
         },
         {
           title: {
             formatter: function (val) {
-              return val
+              return val;
             },
           },
         },
       ],
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -120,12 +112,12 @@ const DashedLineChart = ({
         series={series}
         type="line"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-gray-200]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DashedLineChart
+export default DashedLineChart;

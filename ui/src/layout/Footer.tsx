@@ -1,11 +1,8 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
-  const brandName = process.env.NEXT_PUBLIC_BRAND_NAME || 'Brand'
+  const brandName = import.meta.env.VITE_REACT_APP_BRAND_NAME;
 
   return (
     <React.Fragment>
@@ -16,22 +13,25 @@ const Footer = () => {
               <ul className="flex items-center gap-4">
                 <li>
                   <Link
-                    href="#!"
-                    className="font-medium text-gray-500 transition duration-300 ease-linear dark:text-dark-500 hover:text-primary-500 dark:hover:text-primary-500">
+                    to="#!"
+                    className="font-medium text-gray-500 transition duration-300 ease-linear dark:text-dark-500 hover:text-primary-500 dark:hover:text-primary-500"
+                  >
                     About
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="font-medium text-gray-500 transition duration-300 ease-linear dark:text-dark-500 hover:text-primary-500 dark:hover:text-primary-500">
+                    to="#!"
+                    className="font-medium text-gray-500 transition duration-300 ease-linear dark:text-dark-500 hover:text-primary-500 dark:hover:text-primary-500"
+                  >
                     Support
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="font-medium text-gray-500 transition duration-300 ease-linear dark:text-dark-500 hover:text-primary-500 dark:hover:text-primary-500">
+                    to="#!"
+                    className="font-medium text-gray-500 transition duration-300 ease-linear dark:text-dark-500 hover:text-primary-500 dark:hover:text-primary-500"
+                  >
                     Purchase Now
                   </Link>
                 </li>
@@ -40,7 +40,7 @@ const Footer = () => {
             <div className="text-center text-gray-500 dark:text-dark-500 ltr:lg:text-right rtl:lg:text-left">
               <div>
                 &copy; {new Date().getFullYear()} Domiex. Crafted by
-                <Link href="#!" className="ml-1 font-semibold">
+                <Link to="#!" className="ml-1 font-semibold">
                   {brandName}
                 </Link>
               </div>
@@ -49,7 +49,7 @@ const Footer = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

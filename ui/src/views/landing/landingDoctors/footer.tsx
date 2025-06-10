@@ -1,30 +1,27 @@
-'use client'
+import React from "react";
 
-import React from 'react'
+import { Link } from "react-router-dom";
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import logoWhite from '@assets/images/logo-white.png'
-import mainLogo from '@assets/images/main-logo.png'
+import logoWhite from "@assets/images/logo-white.png";
+import mainLogo from "@assets/images/main-logo.png";
 
 const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
   return (
     <React.Fragment>
       <footer className="pb-8 pt-36 bg-slate-50 dark:bg-dark-900/30">
         <div className="container mx-auto px-4 xl:px-20">
           <div className="grid grid-cols-12 gap-space">
             <div className="col-span-12 xl:col-span-4">
-              <Link href="/" title="logo">
-                <Image
+              <Link to="/" title="logo">
+                <img
                   src={mainLogo}
                   alt="logo"
                   className="inline-block h-8 dark:hidden"
                   width={175}
                   height={32}
                 />
-                <Image
+                <img
                   src={logoWhite}
                   alt="logo"
                   className="hidden h-8 dark:inline-block"
@@ -38,27 +35,31 @@ const Footer: React.FC = () => {
               </p>
               <div className="flex items-center gap-3">
                 <Link
-                  href="#!"
+                  to="#!"
                   title="facebook"
-                  className="inline-flex items-center justify-center bg-white rounded-lg shadow-lg dark:bg-dark-900 shadow-slate-200 dark:shadow-dark-850 size-12 link link-primary">
+                  className="inline-flex items-center justify-center bg-white rounded-lg shadow-lg dark:bg-dark-900 shadow-slate-200 dark:shadow-dark-850 size-12 link link-primary"
+                >
                   <i className="ri-facebook-fill text-[20px]"></i>
                 </Link>
                 <Link
-                  href="#!"
+                  to="#!"
                   title="twitch"
-                  className="inline-flex items-center justify-center bg-white rounded-lg shadow-lg dark:bg-dark-900 shadow-slate-200 dark:shadow-dark-850 size-12 link link-purple">
+                  className="inline-flex items-center justify-center bg-white rounded-lg shadow-lg dark:bg-dark-900 shadow-slate-200 dark:shadow-dark-850 size-12 link link-purple"
+                >
                   <i className="ri-twitch-line text-[20px]"></i>
                 </Link>
                 <Link
-                  href="#!"
+                  to="#!"
                   title="twitter"
-                  className="inline-flex items-center justify-center bg-white rounded-lg shadow-lg dark:bg-dark-900 shadow-slate-200 dark:shadow-dark-850 size-12 link link-sky">
+                  className="inline-flex items-center justify-center bg-white rounded-lg shadow-lg dark:bg-dark-900 shadow-slate-200 dark:shadow-dark-850 size-12 link link-sky"
+                >
                   <i className="ri-twitter-line text-[20px]"></i>
                 </Link>
                 <Link
-                  href="#!"
+                  to="#!"
                   title="instagram"
-                  className="inline-flex items-center justify-center bg-white rounded-lg shadow-lg dark:bg-dark-900 shadow-slate-200 dark:shadow-dark-850 size-12 link link-pink">
+                  className="inline-flex items-center justify-center bg-white rounded-lg shadow-lg dark:bg-dark-900 shadow-slate-200 dark:shadow-dark-850 size-12 link link-pink"
+                >
                   <i className="ri-instagram-line text-[20px]"></i>
                 </Link>
               </div>
@@ -68,43 +69,49 @@ const Footer: React.FC = () => {
               <ul className="mt-8 flex flex-col gap-5 text-16">
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     About Us
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Blog
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Services
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Careers
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Help Center
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Contacts Us
                   </Link>
                 </li>
@@ -115,36 +122,41 @@ const Footer: React.FC = () => {
               <ul className="mt-8 flex flex-col gap-5 text-16">
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Insta by Domiex
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Domiex Profile
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Domiex Reach
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Domiex Drive
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Domiex Bot
                   </Link>
                 </li>
@@ -155,36 +167,41 @@ const Footer: React.FC = () => {
               <ul className="mt-8 flex flex-col gap-5 text-16">
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Video Tutorial
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Partnership
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Cookie Setting
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="#!"
-                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full">
+                    to="#!"
+                    className="relative inline-block link link-sky before:absolute before:bg-sky-500 before:h-[1px] before:bottom-0 before:transition-all before:duration-300 before:w-0 hover:before:w-full"
+                  >
                     Healthcare Directory
                   </Link>
                 </li>
@@ -195,14 +212,14 @@ const Footer: React.FC = () => {
         <div className="container mx-auto mt-12 text-center xl:px-20">
           <p className="text-gray-500 dark:text-dark-500 text-16">
             &copy; <span>{currentYear}</span> Domiex. Crafted & Design by
-            <Link href="#!" className="ml-1 font-semibold link link-sky">
+            <Link to="#!" className="ml-1 font-semibold link link-sky">
               SRBThemes
             </Link>
           </p>
         </div>
       </footer>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

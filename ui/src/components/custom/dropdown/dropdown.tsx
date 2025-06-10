@@ -1,48 +1,45 @@
 import React, {
-  ReactNode,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
   useState,
-} from 'react'
+  createContext,
+  useContext,
+  useRef,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from "react";
+import { LAYOUT_TYPES, SIDEBAR_SIZE } from "@constants/layout";
+import { useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
+import { RootState } from "@src/slices/reducer";
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-
-import { LAYOUT_TYPES, SIDEBAR_SIZE } from '@src/components/constants/layout'
-import { RootState } from '@src/slices/reducer'
-import { useSelector } from 'react-redux'
-
-export type DropdownPosition = '' | 'right' | 'top-right' | 'top-left'
+export type DropdownPosition = "" | "right" | "top-right" | "top-left";
 interface DropdownProps {
-  position?: DropdownPosition
-  trigger?: 'click' | 'hover'
-  children: ReactNode
-  dropdownClassName?: string
-  closeOnOutsideClick?: boolean
-  closeOnOutsideClickSidebar?: boolean
-  toggleSidebar?: () => void
-  isActive?: boolean | null
+  position?: DropdownPosition;
+  trigger?: "click" | "hover";
+  children: ReactNode;
+  dropdownClassName?: string;
+  closeOnOutsideClick?: boolean;
+  closeOnOutsideClickSidebar?: boolean;
+  isActive?: boolean | null;
+  toggleSidebar?: () => void;
 }
 
 interface DropdownContextProps {
-  isOpen: boolean
-  setIsOpen: (isOpen: boolean) => void
-  position: string
-  trigger: string
-  close: () => void
-  menuRef: React.RefObject<HTMLDivElement> | null
-  calculatePosition: () => void
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  position: string;
+  trigger: string;
+  close: () => void;
+  calculatePosition: () => void;
+  menuRef?: React.RefObject<HTMLDivElement> | null | undefined;
 }
-let openDropdowns: React.RefObject<HTMLDivElement>[] = []
+let openDropdowns: any = [];
 const DropdownContext = createContext<DropdownContextProps | undefined>(
-  undefined
-)
+  undefined,
+);
 const Dropdown: React.FC<DropdownProps> = ({
-  position = 'bottom',
-  trigger = 'click',
+  position = "bottom",
+  trigger = "click",
   children,
   dropdownClassName,
   isActive,
@@ -51,61 +48,57 @@ const Dropdown: React.FC<DropdownProps> = ({
   toggleSidebar,
 }) => {
   const { layoutType, layoutSidebar } = useSelector(
-    (state: RootState) => state.Layout
-  )
-  const [isOpen, setIsOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement | null>(null)
-  const menuRef = useRef<HTMLDivElement | null>(null)
-  const pathname = usePathname()
+    (state: RootState) => state.Layout,
+  );
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null!);
+  const { pathname } = useLocation();
 
   const handleToggle = useCallback(() => {
-    // if horizontal
+    // if horizontall
     if (
       layoutType === LAYOUT_TYPES.HORIZONTAL ||
       layoutSidebar === SIDEBAR_SIZE.SMALL
     ) {
-      if (!dropdownRef?.current?.closest('.dropdown-menu')) openDropdowns = []
+      if (!dropdownRef?.current?.closest(".dropdown-menu")) openDropdowns = [];
 
-      openDropdowns.push(dropdownRef)
-      let count = 0
+      openDropdowns.push(dropdownRef);
+      let count = 0;
       if (openDropdowns.length > 2) {
-        openDropdowns = openDropdowns.filter(
-          (item: React.RefObject<HTMLDivElement>) => {
-            count++
-            if (count === 2) {
-              if (item.current) {
-                item.current.click()
-              }
-              return false // Remove this item from the array
-            }
-            return true // Keep the rest
+        openDropdowns = openDropdowns.filter((item: any) => {
+          count++;
+          if (count === 2) {
+            item.current.click();
+            return false; // Remove this item from the array
           }
-        )
+          return true; // Keep the rest
+        });
       }
     }
 
-    if (trigger === 'click') {
-      setIsOpen((prev) => !prev)
+    if (trigger === "click") {
+      setIsOpen((prev) => !prev);
     }
-  }, [trigger, layoutSidebar, layoutType])
+  }, [trigger, layoutSidebar, layoutType]);
 
   const handleMouseEnter = useCallback(() => {
-    if (trigger === 'hover') {
-      setIsOpen(true)
+    if (trigger === "hover") {
+      setIsOpen(true);
     }
-  }, [trigger])
+  }, [trigger]);
 
   const handleMouseLeave = useCallback(() => {
-    if (trigger === 'hover') {
-      setIsOpen(false)
+    if (trigger === "hover") {
+      setIsOpen(false);
     }
-  }, [trigger])
+  }, [trigger]);
 
-  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      setIsOpen(false)
+  const handleKeyDown = useCallback((event: any) => {
+    if (event.key === "Escape") {
+      setIsOpen(false);
     }
-  }, [])
+  }, []);
 
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
@@ -114,15 +107,22 @@ const Dropdown: React.FC<DropdownProps> = ({
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
     },
-    [closeOnOutsideClick]
-  )
+    [closeOnOutsideClick],
+  );
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  });
 
   const handleClickOutsideSidebar = useCallback(
     (event: MouseEvent) => {
-      const sidebar = document.querySelector('#main-sidebar')
+      const sidebar = document.querySelector("#main-sidebar");
 
       if (
         closeOnOutsideClickSidebar &&
@@ -131,199 +131,178 @@ const Dropdown: React.FC<DropdownProps> = ({
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
     },
-    [closeOnOutsideClickSidebar]
-  )
+    [closeOnOutsideClickSidebar],
+  );
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside)
+    document.addEventListener("click", handleClickOutsideSidebar);
     return () => {
-      document.removeEventListener('click', handleClickOutside)
-    }
-  }, [handleClickOutside])
-
-  useEffect(() => {
-    document.addEventListener('click', handleClickOutsideSidebar)
-    return () => {
-      document.removeEventListener('click', handleClickOutsideSidebar)
-    }
-  }, [handleClickOutsideSidebar])
-  useEffect(() => {
-    if (position === 'top-right' || position === 'right') {
-      setIsOpen(isActive ? isActive : false)
-    } else {
-      setIsOpen(false)
-    }
-  }, [position, trigger, isActive])
-
-  const close = useCallback(() => {
-    setIsOpen(false)
-  }, [])
-
-  const isOpenRef = useRef(isOpen)
-  const layoutSidebarRef = useRef(layoutSidebar)
-  const layoutTypeRef = useRef(layoutType)
-  const toggleSidebarRef = useRef(toggleSidebar)
-
-  // Update the refs whenever the dependencies change
-  useEffect(() => {
-    isOpenRef.current = isOpen
-    layoutSidebarRef.current = layoutSidebar
-    layoutTypeRef.current = layoutType
-    toggleSidebarRef.current = toggleSidebar
-  }, [isOpen, layoutSidebar, layoutType, toggleSidebar])
-
-  // Effect that only runs when `pathname` changes
+      document.removeEventListener("click", handleClickOutsideSidebar);
+    };
+  }, [handleClickOutsideSidebar]);
   useEffect(() => {
     if (
-      layoutTypeRef.current === LAYOUT_TYPES.HORIZONTAL ||
-      layoutSidebarRef.current === SIDEBAR_SIZE.SMALL
+      layoutType === LAYOUT_TYPES.HORIZONTAL ||
+      layoutSidebar === SIDEBAR_SIZE.SMALL
     ) {
-      setIsOpen(false)
+      setIsOpen(false);
     }
-
-    const screenSize = window.innerWidth <= 768
-    if (screenSize && toggleSidebarRef.current && isOpenRef.current) {
-      toggleSidebarRef.current()
-      setIsOpen(false)
+    const Screensize = window.innerWidth <= 768;
+    if (Screensize && toggleSidebar && isOpen) {
+      toggleSidebar();
+      setIsOpen(false);
     }
-  }, [pathname])
+  }, [pathname]);
   //function
   const getDefault = (buttonRect: DOMRect, dropdown: HTMLElement) => {
-    const data = { left: 0, top: 0 }
-    const dropdownWidth = dropdown.offsetWidth
-    const dropdownHeight = dropdown.offsetHeight
+    let data = { left: 0, top: 0 };
+    const dropdownWidth = dropdown.offsetWidth;
+    const dropdownHeight = dropdown.offsetHeight;
 
-    const yTSpace = buttonRect.top
-    const yBSpace = window.innerHeight - buttonRect.bottom
-    const xRSpace = window.innerWidth - buttonRect.left
-    const xLSpace = buttonRect.left
+    const yTSpace = buttonRect.top;
+    const yBSpace = window.innerHeight - buttonRect.bottom;
+    const xRSpace = window.innerWidth - buttonRect.left;
+    const xLSpace = buttonRect.left;
     data.left =
       xRSpace >= dropdownWidth
         ? buttonRect.left
-        : buttonRect.right - dropdownWidth
+        : buttonRect.right - dropdownWidth;
 
     if (yBSpace >= dropdownHeight) {
-      data.top = buttonRect.bottom
+      data.top = buttonRect.bottom;
     } else if (yTSpace >= dropdownHeight) {
-      data.top = buttonRect.top - dropdown.offsetHeight
+      data.top = buttonRect.top - dropdown.offsetHeight;
     } else {
-      data.top = buttonRect.top
+      data.top = buttonRect.top;
       if (xRSpace >= dropdownWidth) {
-        data.left = buttonRect.right
+        data.left = buttonRect.right;
       } else if (xLSpace >= dropdownWidth) {
-        data.left = buttonRect.left - dropdown.offsetWidth
+        data.left = buttonRect.left - dropdown.offsetWidth;
       } else {
-        data.left = buttonRect.right
+        data.left = buttonRect.right;
       }
     }
-    return data
-  }
+    return data;
+  };
 
   const getRight = (buttonRect: DOMRect, dropdown: HTMLElement) => {
-    const data = { left: 0, top: 0 }
-    const dropdownWidth = dropdown.offsetWidth
-    const dropdownHeight = dropdown.offsetHeight
+    let data = { left: 0, top: 0 };
+    const dropdownWidth = dropdown.offsetWidth;
+    const dropdownHeight = dropdown.offsetHeight;
 
-    const yTSpace = buttonRect.top
-    const yBSpace = window.innerHeight - buttonRect.bottom
-    const xLSpace = buttonRect.right
+    const yTSpace = buttonRect.top;
+    const yBSpace = window.innerHeight - buttonRect.bottom;
+    const xLSpace = buttonRect.right;
     data.left =
       xLSpace < dropdownWidth
         ? buttonRect.left
-        : buttonRect.right - dropdownWidth
+        : buttonRect.right - dropdownWidth;
 
     if (yBSpace >= dropdownHeight) {
-      data.top = buttonRect.bottom
+      data.top = buttonRect.bottom;
     } else if (yTSpace >= dropdownHeight) {
-      data.top = buttonRect.top - dropdown.offsetHeight
+      data.top = buttonRect.top - dropdown.offsetHeight;
     } else {
-      data.top = buttonRect.top
+      data.top = buttonRect.top;
       if (xLSpace - buttonRect.width > dropdownWidth) {
-        data.left = buttonRect.left - dropdown.offsetWidth
+        data.left = buttonRect.left - dropdown.offsetWidth;
       } else {
-        data.left = buttonRect.right
+        data.left = buttonRect.right;
       }
     }
-    return data
-  }
+    return data;
+  };
 
   const getTopRight = (buttonRect: DOMRect, dropdown: HTMLElement) => {
-    const data = { left: 0, top: 0 }
-    const dropdownWidth = dropdown.offsetWidth
-    const dropdownHeight = dropdown.offsetHeight
+    let data = { left: 0, top: 0 };
+    const dropdownWidth = dropdown.offsetWidth;
+    const dropdownHeight = dropdown.offsetHeight;
 
-    const yTSpace = buttonRect.bottom
-    const yBSpace = window.innerHeight - buttonRect.top
-    const xRSpace = window.innerWidth - buttonRect.right
-    const xLSpace = buttonRect.left
+    const yTSpace = buttonRect.bottom;
+    const yBSpace = window.innerHeight - buttonRect.top;
+    const xRSpace = window.innerWidth - buttonRect.right;
+    const xLSpace = buttonRect.left;
 
     if (yBSpace >= dropdownHeight) {
-      data.top = buttonRect.top
+      data.top = buttonRect.top;
     } else if (yTSpace >= dropdownHeight) {
-      data.top = buttonRect.bottom - dropdown.offsetHeight
+      data.top = buttonRect.bottom - dropdown.offsetHeight;
     } else {
-      data.top = buttonRect.top
+      data.top = buttonRect.top;
     }
     if (xRSpace >= dropdownWidth) {
-      data.left = buttonRect.right
+      data.left = buttonRect.right;
     } else if (xLSpace >= dropdownWidth) {
-      data.left = buttonRect.left - dropdown.offsetWidth
+      data.left = buttonRect.left - dropdown.offsetWidth;
     } else {
-      data.left = buttonRect.right
+      data.left = buttonRect.right;
     }
 
-    return data
-  }
+    return data;
+  };
 
   const getRightLeft = (buttonRect: DOMRect, dropdown: HTMLElement) => {
-    const data = {
+    let data = {
       left: 0,
       top: 0,
-    }
+    };
     if (buttonRect.x - dropdown.offsetWidth < 0) {
-      data.top = buttonRect.bottom
-      data.left = buttonRect.left
+      data.top = buttonRect.bottom;
+      data.left = buttonRect.left;
     }
     if (window.innerHeight < buttonRect.top + dropdown.offsetHeight) {
-      data.top = buttonRect.top - dropdown.offsetHeight
-      data.left = buttonRect.left
+      data.top = buttonRect.top - dropdown.offsetHeight;
+      data.left = buttonRect.left;
     }
-    return data
-  }
+    return data;
+  };
+
+  useEffect(() => {
+    if (position === "top-right" || position === "right") {
+      setIsOpen(isActive ? isActive : false);
+    } else {
+      setIsOpen(false);
+    }
+  }, [position, trigger, isActive]);
 
   const calculatePosition = useCallback(() => {
     if (!dropdownRef.current || !menuRef.current) {
-      return
+      return;
     }
 
     const buttonRect =
       dropdownRef.current.getBoundingClientRect() ||
-      dropdownRef.current.closest('.dropdown')?.getBoundingClientRect()
-    let dropdownPosition = { left: 0, top: 0 }
+      dropdownRef.current.closest(".dropdown")?.getBoundingClientRect();
+    let dropdownPosition = { left: 0, top: 0 };
     switch (position) {
-      case 'right':
-        dropdownPosition = getRight(buttonRect, menuRef.current)
-        break
-      case 'top-right':
-        dropdownPosition = getTopRight(buttonRect, menuRef.current)
-        break
-      case 'top-left':
-        dropdownPosition = getRightLeft(buttonRect, menuRef.current)
-        break
+      case "right":
+        dropdownPosition = getRight(buttonRect, menuRef.current);
+        break;
+      case "top-right":
+        dropdownPosition = getTopRight(buttonRect, menuRef.current);
+        break;
+      case "top-left":
+        dropdownPosition = getRightLeft(buttonRect, menuRef.current);
+        break;
       default:
-        dropdownPosition = getDefault(buttonRect, menuRef.current)
-        break
+        dropdownPosition = getDefault(buttonRect, menuRef.current);
+        break;
     }
 
-    menuRef.current.style.left = `${Math.max(0, dropdownPosition.left)}px`
-    menuRef.current.style.top = `${Math.max(0, dropdownPosition.top)}px`
-  }, [position])
+    menuRef.current.style.left = `${Math.max(0, dropdownPosition.left)}px`;
+    menuRef.current.style.top = `${Math.max(0, dropdownPosition.top)}px`;
+  }, [position]);
+
   useEffect(() => {
-    calculatePosition()
-  }, [isOpen, calculatePosition])
+    calculatePosition();
+  }, [isOpen, calculatePosition]);
+
+  const close = useCallback(() => {
+    setIsOpen(false);
+  }, []);
 
   return (
     <DropdownContext.Provider
@@ -333,48 +312,51 @@ const Dropdown: React.FC<DropdownProps> = ({
         position,
         trigger,
         close,
-        menuRef,
         calculatePosition,
-      }}>
+        menuRef,
+      }}
+    >
       <div
         ref={dropdownRef}
         className={`${dropdownClassName}`}
         onClick={handleToggle}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onKeyDown={handleKeyDown}>
+        onKeyDown={handleKeyDown}
+      >
         {children}
       </div>
     </DropdownContext.Provider>
-  )
-}
+  );
+};
 interface DropdownButtonProps {
-  children: React.ReactNode
-  colorClass?: string
-  arrow?: boolean
-  isActive?: boolean
+  children: React.ReactNode;
+  colorClass?: string;
+  arrow?: boolean;
+  isActive?: boolean;
 }
 const DropdownButton: React.FC<DropdownButtonProps> = ({
   children,
   colorClass,
   arrow,
 }) => {
-  const context = useContext(DropdownContext)
+  const context = useContext(DropdownContext);
 
   if (!context) {
-    throw new Error('DropdownButton must be used within a Dropdown')
+    throw new Error("DropdownButton must be used within a Dropdown");
   }
 
-  const { isOpen } = context
+  const { isOpen } = context;
 
   return (
     <button className={`${colorClass}`} type="button">
       {children}
       {arrow && (
         <svg
-          className={`size-5 arrow ${isOpen ? 'transform rotate-180' : ''}`}
+          className={`size-5 arrow ${isOpen ? "transform rotate-180" : ""}`}
           viewBox="0 0 20 20"
-          fill="currentColor">
+          fill="currentColor"
+        >
           <path
             fillRule="evenodd"
             d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -383,47 +365,44 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
         </svg>
       )}
     </button>
-  )
-}
-
+  );
+};
 interface DropdownMenuProps {
-  children: React.ReactNode
-  menuClass?: string
-  handleMenuClick?: (event: React.MouseEvent) => void
-  sidebar?: boolean
+  children: React.ReactNode;
+  menuclass?: any;
+  handleMenuClick?: (event: React.MouseEvent) => void;
+  sidebar?: boolean;
 }
-
 const DropdownMenu: React.FC<DropdownMenuProps> = ({
   children,
-  menuClass,
+  menuclass,
   handleMenuClick,
   sidebar,
 }) => {
-  const context = useContext(DropdownContext)
+  const context = useContext(DropdownContext);
 
   if (!context) {
-    throw new Error('DropdownMenu must be used within a Dropdown')
+    throw new Error("DropdownMenu must be used within a Dropdown");
   }
-  const { isOpen, menuRef } = context
+  const { isOpen, menuRef } = context;
   return (
     isOpen && (
       <div
         ref={menuRef}
-        className={`${sidebar ? '' : '!fixed'} dropdown-menu ${menuClass}`}
-        style={{ transition: 'opacity 0.2s' }}
-        onClick={handleMenuClick}>
+        className={`${sidebar ? "" : "!fixed"} dropdown-menu ${menuclass}`}
+        style={{ transition: "opacity 0.2s" }}
+        onClick={handleMenuClick}
+      >
         {children}
       </div>
     )
-  )
-}
-
+  );
+};
 interface DropdownItemProps {
-  children: React.ReactNode
-  href?: string
-  className?: string
+  children: React.ReactNode;
+  href?: string;
+  className?: string;
 }
-
 const DropdownItem: React.FC<DropdownItemProps> = ({
   children,
   href,
@@ -431,11 +410,17 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
 }) => {
   return (
     <li>
-      <Link href={href || '#'} className={`dropdown-item ${className}`}>
+      <Link to={href || "#"} className={`dropdown-item ${className}`}>
         {children}
       </Link>
     </li>
-  )
-}
+  );
+};
 
-export { Dropdown, DropdownButton, DropdownMenu, DropdownItem, DropdownContext }
+export {
+  Dropdown,
+  DropdownButton,
+  DropdownMenu,
+  DropdownItem,
+  DropdownContext,
+};

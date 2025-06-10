@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface ColumnChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const DataLabelsColumnChart = ({
@@ -24,57 +15,57 @@ const DataLabelsColumnChart = ({
   chartId,
 }: ColumnChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Inflation',
+      name: "Inflation",
       data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2],
     },
-  ]
+  ];
   const labels = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
     },
     plotOptions: {
       bar: {
         borderRadius: 10,
         dataLabels: {
-          position: 'top', // top, center, bottom
+          position: "top", // top, center, bottom
         },
       },
     },
     dataLabels: {
       enabled: true,
       formatter: function (val) {
-        return val + '%'
+        return val + "%";
       },
       offsetY: -20,
       style: {
-        fontSize: '12px',
-        colors: ['#304758'],
+        fontSize: "12px",
+        colors: ["#304758"],
       },
     },
 
     xaxis: {
       categories: labels,
-      position: 'top',
+      position: "top",
       axisBorder: {
         show: false,
       },
@@ -83,10 +74,10 @@ const DataLabelsColumnChart = ({
       },
       crosshairs: {
         fill: {
-          type: 'gradient',
+          type: "gradient",
           gradient: {
-            colorFrom: '#D8E3F0',
-            colorTo: '#BED1E6',
+            colorFrom: "#D8E3F0",
+            colorTo: "#BED1E6",
             stops: [0, 100],
             opacityFrom: 0.4,
             opacityTo: 0.5,
@@ -107,21 +98,21 @@ const DataLabelsColumnChart = ({
       labels: {
         show: false,
         formatter: function (val) {
-          return val + '%'
+          return val + "%";
         },
       },
     },
     colors: chartsColor,
     title: {
-      text: 'Monthly Inflation in Argentina, 2002',
+      text: "Monthly Inflation in Argentina, 2002",
       floating: true,
       offsetY: 330,
-      align: 'center',
+      align: "center",
       style: {
-        color: '#444',
+        color: "#444",
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -130,12 +121,12 @@ const DataLabelsColumnChart = ({
         series={series}
         type="bar"
         data-chart-colors="[bg-primary-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DataLabelsColumnChart
+export default DataLabelsColumnChart;

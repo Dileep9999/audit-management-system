@@ -1,6 +1,4 @@
-'use client'
-
-import React from 'react'
+import React from "react";
 
 import {
   CalendarClock,
@@ -9,7 +7,7 @@ import {
   HandMetal,
   UserRound,
   Users,
-} from 'lucide-react'
+} from "lucide-react";
 
 const HowToStart: React.FC = () => {
   return (
@@ -128,7 +126,7 @@ const HowToStart: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default HowToStart
+export default HowToStart;

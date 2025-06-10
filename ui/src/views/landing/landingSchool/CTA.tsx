@@ -1,8 +1,6 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Link from 'next/link'
+import { Link } from "react-router-dom";
 
 const CTA: React.FC = () => {
   return (
@@ -13,14 +11,14 @@ const CTA: React.FC = () => {
             <h1 className="mb-5 leading-normal capitalize text-primary-50">
               Come join Us and Achieve your dreams Here at the best School
             </h1>
-            <Link href="#!" className="rounded-full btn btn-orange">
+            <Link to="#!" className="rounded-full btn btn-orange">
               Get Started
             </Link>
           </div>
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default CTA
+export default CTA;

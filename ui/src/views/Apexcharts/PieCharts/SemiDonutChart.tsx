@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface PieChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const SemiDonutChart = ({
@@ -24,13 +15,13 @@ const SemiDonutChart = ({
   chartId,
 }: PieChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const series = [44, 55, 41, 17, 15]
+  const series = [44, 55, 41, 17, 15];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'donut',
+      type: "donut",
     },
     plotOptions: {
       pie: {
@@ -53,12 +44,12 @@ const SemiDonutChart = ({
             width: 200,
           },
           legend: {
-            position: 'bottom',
+            position: "bottom",
           },
         },
       },
     ],
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -67,12 +58,12 @@ const SemiDonutChart = ({
         series={series}
         type="donut"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-yellow-500, bg-purple-500, bg-red-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default SemiDonutChart
+export default SemiDonutChart;

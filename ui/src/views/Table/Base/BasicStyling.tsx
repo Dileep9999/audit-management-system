@@ -1,17 +1,56 @@
-'use client'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-import React, { useState } from 'react'
-
-import { BasicStylingData } from '@src/data/table'
-import { DataItem } from '@src/dtos/table'
-import { AlertTriangle, CheckCircle, Eye, Trash2 } from 'lucide-react'
+interface DataItem {
+  name: string;
+  age: number;
+  date: string;
+  address: string;
+  salary: string;
+}
 
 const BasicStyling: React.FC = () => {
-  const [data, setData] = useState<DataItem[]>(BasicStylingData)
+  const [data, setData] = useState<DataItem[]>([
+    {
+      name: "Jeremy McMullen",
+      age: 37,
+      date: "21 Jan, 2024",
+      address: "United States",
+      salary: "$15,236",
+    },
+    {
+      name: "Charles Fischer",
+      age: 29,
+      date: "28 Jan, 2024",
+      address: "Romania",
+      salary: "$8,563",
+    },
+    {
+      name: "Louise Harms",
+      age: 32,
+      date: "02 Feb, 2024",
+      address: "Canada",
+      salary: "$7,986",
+    },
+    {
+      name: "Henry Boyle",
+      age: 34,
+      date: "11 Feb, 2024",
+      address: "Germany",
+      salary: "$36,322",
+    },
+    {
+      name: "John Brown",
+      age: 26,
+      date: "20 Feb, 2024",
+      address: "Mexico",
+      salary: "$11,741",
+    },
+  ]);
 
   const handleDelete = (index: number) => {
-    setData(data.filter((_, i) => i !== index))
-  }
+    setData(data.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="col-span-12 card">
@@ -23,51 +62,30 @@ const BasicStyling: React.FC = () => {
           <table className="table flush">
             <thead>
               <tr>
-                <th>Transition ID</th>
-                <th>Customer Name</th>
+                <th>Name</th>
+                <th>Age</th>
                 <th>Date</th>
-                <th>Amount</th>
-                <th>Status</th>
+                <th>Address</th>
+                <th>Salary</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {data.map((item, index) => (
                 <tr key={index} className="*:px-3 *:py-2.5">
-                  <td>{item.id}</td>
                   <td>{item.name}</td>
+                  <td>{item.age}</td>
                   <td>{item.date}</td>
+                  <td>{item.address}</td>
+                  <td>{item.salary}</td>
                   <td>
-                    <span
-                      className={`badge inline-flex items-center gap-1 ${
-                        item.status === 'Completed'
-                          ? 'badge-green'
-                          : 'badge-yellow'
-                      }`}>
-                      {item.status === 'Pending' ? (
-                        <AlertTriangle size={14} />
-                      ) : (
-                        <CheckCircle size={14} />
-                      )}
-                      {item.status}
-                    </span>
-                  </td>{' '}
-                  <td>{item.amount}</td>
-                  <td>
-                    <div className="flex items-center gap-2">
-                      <a
-                        href="#!"
-                        className="btn btn-icon !size-8 btn-sub-primary">
-                        {' '}
-                        <Eye className="size-3.5" />
-                      </a>
-                      <a
-                        href="#!"
-                        className="btn btn-icon !size-8 btn-sub-red"
-                        onClick={() => handleDelete(index)}>
-                        <Trash2 className="size-3.5" />
-                      </a>
-                    </div>{' '}
+                    <Link
+                      to="#!"
+                      className="text-red-500"
+                      onClick={() => handleDelete(index)}
+                    >
+                      Delete
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -76,7 +94,7 @@ const BasicStyling: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BasicStyling
+export default BasicStyling;

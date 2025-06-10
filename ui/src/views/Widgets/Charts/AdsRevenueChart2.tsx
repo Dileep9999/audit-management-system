@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
+import useChartColors from "@hooks/useChartColors";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const AdsRevenueChart2 = ({
@@ -23,24 +14,23 @@ const AdsRevenueChart2 = ({
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Total Revenue',
+      name: "Total Revenue",
       data: [31, 77, 44, 31, 63, 94, 109],
     },
-  ]
+  ];
 
-  const labels = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July']
+  const labels = ["Jan", "Feb", "March", "April", "May", "June", "July"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 140,
-      type: 'line',
+      type: "line",
       zoom: {
         enabled: false,
       },
@@ -53,17 +43,17 @@ const AdsRevenueChart2 = ({
     },
     stroke: {
       width: 3,
-      curve: 'smooth',
+      curve: "smooth",
       dashArray: [10],
     },
     legend: {
       tooltipHoverFormatter: function (val, opts) {
         return (
           val +
-          ' - <strong>' +
+          " - <strong>" +
           opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] +
-          '</strong>'
-        )
+          "</strong>"
+        );
       },
     },
     markers: {
@@ -94,7 +84,7 @@ const AdsRevenueChart2 = ({
       show: false,
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -110,7 +100,7 @@ const AdsRevenueChart2 = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default AdsRevenueChart2
+export default AdsRevenueChart2;

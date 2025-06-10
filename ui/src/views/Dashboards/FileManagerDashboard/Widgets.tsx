@@ -1,11 +1,7 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
-import { WidgetData } from '@src/data'
-import { NextPageWithLayout } from '@src/dtos'
+import { WidgetData } from "@data/index";
+import { NextPageWithLayout } from "@dtos/layout";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Widgets: NextPageWithLayout = () => {
   return (
@@ -13,15 +9,17 @@ const Widgets: NextPageWithLayout = () => {
       {WidgetData.map((widget, index) => (
         <div
           key={index}
-          className={`relative col-span-12  ${widget.cardcolor}`}>
+          className={`relative col-span-12  ${widget.cardColor}`}
+        >
           <div className="card-body">
             <div
-              className={`flex items-center justify-center mx-auto rounded-full ${widget.iconround} size-16`}>
+              className={`flex items-center justify-center mx-auto rounded-full ${widget.iconRound} size-16`}
+            >
               <widget.icon className={`${widget.color} size-7`} />
             </div>
             <div className="flex items-center gap-3 mt-4">
               <h6 className="grow">
-                <Link href="#!" className="before:absolute before:inset-0">
+                <Link to="#!" className="before:absolute before:inset-0">
                   {widget.label}
                 </Link>
               </h6>
@@ -33,6 +31,6 @@ const Widgets: NextPageWithLayout = () => {
         </div>
       ))}
     </React.Fragment>
-  )
-}
-export default Widgets
+  );
+};
+export default Widgets;

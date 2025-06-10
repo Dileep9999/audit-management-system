@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface ScatterChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: any;
 }
 
 const BasicScatterChart = ({
@@ -24,11 +15,11 @@ const BasicScatterChart = ({
   chartId,
 }: ScatterChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'SAMPLE A',
+      name: "SAMPLE A",
       data: [
         [16.4, 5.4],
         [21.7, 2],
@@ -64,7 +55,7 @@ const BasicScatterChart = ({
       ],
     },
     {
-      name: 'SAMPLE B',
+      name: "SAMPLE B",
       data: [
         [36.4, 13.4],
         [1.7, 11],
@@ -100,7 +91,7 @@ const BasicScatterChart = ({
       ],
     },
     {
-      name: 'SAMPLE C',
+      name: "SAMPLE C",
       data: [
         [21.7, 3],
         [23.6, 3.5],
@@ -135,14 +126,14 @@ const BasicScatterChart = ({
         [16.4, 0],
       ],
     },
-  ]
+  ];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'scatter',
+      type: "scatter",
       zoom: {
         enabled: true,
-        type: 'xy',
+        type: "xy",
       },
     },
     colors: chartsColor,
@@ -150,14 +141,14 @@ const BasicScatterChart = ({
       tickAmount: 10,
       labels: {
         formatter: function (val) {
-          return parseFloat(val).toFixed(1)
+          return parseFloat(val).toFixed(1);
         },
       },
     },
     yaxis: {
       tickAmount: 7,
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -167,12 +158,12 @@ const BasicScatterChart = ({
         series={series}
         type="scatter"
         data-chart-colors="[bg-primary-500, bg-yellow-500, bg-red-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default BasicScatterChart
+export default BasicScatterChart;

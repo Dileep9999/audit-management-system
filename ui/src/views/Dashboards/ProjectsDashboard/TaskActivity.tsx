@@ -1,54 +1,48 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
+import React, { useState } from "react";
+import { Ellipsis } from "lucide-react";
+import { NextPageWithLayout } from "@dtos/layout";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-import { Ellipsis } from 'lucide-react'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
 
 // Define the possible options as a union type
-type OptionType = 'Weekly' | 'Monthly' | 'Yearly'
+type OptionType = "Weekly" | "Monthly" | "Yearly";
 const TaskActivity: NextPageWithLayout = () => {
-  const [selectedOption, setSelectedOption] = useState<OptionType>('Weekly')
-
-  // Example data for different periods
+  const [selectedOption, setSelectedOption] = useState<OptionType>("Weekly");
   const data: Record<
     OptionType,
     {
-      uiDesign: number
-      development: number
-      webDesign: number
-      message: string
+      uiDesign: number;
+      development: number;
+      webDesign: number;
+      message: string;
     }
   > = {
     Weekly: {
       uiDesign: 56.8,
       development: 29.3,
       webDesign: 12,
-      message: 'This week task activity by department',
+      message: "This week task activity by department",
     },
     Monthly: {
       uiDesign: 65.0,
       development: 20.0,
       webDesign: 15.0,
-      message: 'This month task activity by department',
+      message: "This month task activity by department",
     },
     Yearly: {
       uiDesign: 70.0,
       development: 15.0,
       webDesign: 15.0,
-      message: 'This year task activity by department',
+      message: "This year task activity by department",
     },
-  }
+  };
 
   // Change the data based on the selected option
-  const { uiDesign, development, webDesign, message } = data[selectedOption]
+  const { uiDesign, development, webDesign, message } = data[selectedOption];
 
   return (
     <React.Fragment>
@@ -61,21 +55,24 @@ const TaskActivity: NextPageWithLayout = () => {
             </DropdownButton>
             <DropdownMenu>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => setSelectedOption('Weekly')}>
+                onClick={() => setSelectedOption("Weekly")}
+              >
                 <span>Weekly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => setSelectedOption('Monthly')}>
+                onClick={() => setSelectedOption("Monthly")}
+              >
                 <span>Monthly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => setSelectedOption('Yearly')}>
+                onClick={() => setSelectedOption("Yearly")}
+              >
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
@@ -83,8 +80,9 @@ const TaskActivity: NextPageWithLayout = () => {
         </div>
         <div className="card-body">
           <div
-            className="relative flex items-center justify-center h-64 gap-4"
-            dir="ltr">
+            className="relative flex items-center justify-center h-64 space-x-4"
+            dir="ltr"
+          >
             <div className="absolute left-28 top-12">
               <svg className="drop-shadow-xl size-40" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="50" className="fill-green-500/80" />
@@ -94,7 +92,8 @@ const TaskActivity: NextPageWithLayout = () => {
                   textAnchor="middle"
                   className="font-semibold fill-green-50"
                   fontSize="15px"
-                  dy=".3em">
+                  dy=".3em"
+                >
                   {uiDesign}%
                 </text>
                 <text
@@ -103,7 +102,8 @@ const TaskActivity: NextPageWithLayout = () => {
                   textAnchor="middle"
                   className="fill-green-50"
                   fontSize="10px"
-                  dy=".3em">
+                  dy=".3em"
+                >
                   UI Design
                 </text>
               </svg>
@@ -118,7 +118,8 @@ const TaskActivity: NextPageWithLayout = () => {
                   textAnchor="middle"
                   className="font-semibold fill-sky-50"
                   fontSize="15px"
-                  dy=".3em">
+                  dy=".3em"
+                >
                   {development}%
                 </text>
                 <text
@@ -127,7 +128,8 @@ const TaskActivity: NextPageWithLayout = () => {
                   textAnchor="middle"
                   className="fill-sky-50"
                   fontSize="10px"
-                  dy=".3em">
+                  dy=".3em"
+                >
                   Development
                 </text>
               </svg>
@@ -142,7 +144,8 @@ const TaskActivity: NextPageWithLayout = () => {
                   textAnchor="middle"
                   className="font-semibold fill-yellow-50"
                   fontSize="15px"
-                  dy=".3em">
+                  dy=".3em"
+                >
                   {webDesign}%
                 </text>
                 <text
@@ -151,7 +154,8 @@ const TaskActivity: NextPageWithLayout = () => {
                   textAnchor="middle"
                   className="fill-yellow-50"
                   fontSize="10px"
-                  dy=".3em">
+                  dy=".3em"
+                >
                   Web Design
                 </text>
               </svg>
@@ -177,7 +181,7 @@ const TaskActivity: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TaskActivity
+export default TaskActivity;

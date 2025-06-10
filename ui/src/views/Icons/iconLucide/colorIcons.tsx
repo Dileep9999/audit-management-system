@@ -1,8 +1,13 @@
-'use client'
-
-import React from 'react'
-
-import { Award, Bot, Box, Camera, ChefHat, FileText, Globe } from 'lucide-react'
+import {
+  Award,
+  Bot,
+  Box,
+  Camera,
+  ChefHat,
+  FileText,
+  Globe,
+} from "lucide-react";
+import React from "react";
 
 const ColorIcons = () => {
   return (
@@ -38,6 +43,6 @@ const ColorIcons = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default ColorIcons
+  );
+};
+export default ColorIcons;

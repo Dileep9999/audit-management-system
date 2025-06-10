@@ -1,12 +1,8 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import student14 from '@assets/images/avatar/user-14.png'
-import { Box, CalendarCheck, Mail, MapPin, Pencil, Phone } from 'lucide-react'
+import student14 from "@assets/images/avatar/user-14.png";
+import { Box, CalendarCheck, Mail, MapPin, Pencil, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const StudentInformation = () => {
   return (
@@ -15,33 +11,33 @@ const StudentInformation = () => {
         <div className="card">
           <div className="card-body">
             <div className="relative gap-4 mb-5 md:flex">
-              <Image
+              <img
                 src={student14}
-                alt="studentImg"
+                alt="student14Img"
                 className="rounded-md size-36 shrink-0"
               />
               <div className="mt-5 grow md:mt-0">
                 <h6 className="mb-2">Michael Johnson</h6>
                 <div className="flex flex-wrap gap-3 mb-2 whitespace-nowrap item-center">
                   <p className="text-gray-500 dark:text-dark-500">
-                    <Box className="inline-block size-4 fill-gray-100 dark:fill-dark-850" />
+                    <Box className="inline-block size-4 fill-gray-100 dark:fill-dark-850" />{" "}
                     <span className="align-bottom">ClassName: 12 (A)</span>
                   </p>
                   <p className="text-gray-500 dark:text-dark-500">
-                    <MapPin className="inline-block size-4 fill-gray-100 dark:fill-dark-850" />
+                    <MapPin className="inline-block size-4 fill-gray-100 dark:fill-dark-850" />{" "}
                     <span className="align-bottom">California</span>
                   </p>
                   <p className="text-gray-500 dark:text-dark-500">
-                    <CalendarCheck className="inline-block size-4 fill-gray-100 dark:fill-dark-850" />
+                    <CalendarCheck className="inline-block size-4 fill-gray-100 dark:fill-dark-850" />{" "}
                     <span className="align-bottom">05 Mar, 2007</span>
                   </p>
                 </div>
                 <p className="mb-2 text-gray-500 dark:text-dark-500">
-                  <Phone className="inline-block size-4 fill-gray-100 dark:fill-dark-850" />
+                  <Phone className="inline-block size-4 fill-gray-100 dark:fill-dark-850" />{" "}
                   <span className="align-bottom">+1 712 25 1525</span>
                 </p>
                 <p className="mb-3 text-gray-500 dark:text-dark-500">
-                  <Mail className="inline-block size-4 fill-gray-100 dark:fill-dark-850" />
+                  <Mail className="inline-block size-4 fill-gray-100 dark:fill-dark-850" />{" "}
                   <span className="align-bottom">michael@gmail.com</span>
                 </p>
                 <div className="flex gap-2 item-center">
@@ -52,33 +48,34 @@ const StudentInformation = () => {
               </div>
               <div className="absolute top-0 shrink-0 ltr:right-0 rtl:left-0">
                 <Link
-                  href="/apps/school/students-admission"
-                  className="btn btn-sub-gray btn-icon">
+                  to="/apps/school/students-admission"
+                  className="btn btn-sub-gray btn-icon"
+                >
                   <Pencil className="size-4" />
                 </Link>
               </div>
             </div>
-            <div className="my-5 flex flex-col gap-5 overflow-x-auto whitespace-nowrap">
+            <div className="my-5 space-y-5 overflow-x-auto whitespace-nowrap">
               <div className="flex">
-                <div className="w-[130px] md:w-[200px] flex-shrink-0">
+                <div className="w-[130px] md:w-[200px] shrink-0">
                   <p className="mb-1 text-gray-500 dark:text-dark-500">
                     Gender
                   </p>
                   <h6>Male</h6>
                 </div>
-                <div className="w-[130px] md:w-[200px] flex-shrink-0">
+                <div className="w-[130px] md:w-[200px] shrink-0">
                   <p className="mb-1 text-gray-500 dark:text-dark-500">
                     Religion
                   </p>
                   <h6>Islam</h6>
                 </div>
-                <div className="w-[130px] md:w-[200px] flex-shrink-0">
+                <div className="w-[130px] md:w-[200px] shrink-0">
                   <p className="mb-1 text-gray-500 dark:text-dark-500">
                     Father Occupation
                   </p>
                   <h6>Web Developer</h6>
                 </div>
-                <div className="w-[130px] md:w-[200px] flex-shrink-0">
+                <div className="w-[130px] md:w-[200px] shrink-0">
                   <p className="mb-1 text-gray-500 dark:text-dark-500">
                     Admission Date
                   </p>
@@ -86,31 +83,31 @@ const StudentInformation = () => {
                 </div>
               </div>
               <div className="flex ">
-                <div className="w-[130px] md:w-[200px] flex-shrink-0">
+                <div className="w-[130px] md:w-[200px] shrink-0">
                   <p className="mb-1 text-gray-500 dark:text-dark-500">
                     Roll No
                   </p>
                   <h6>8</h6>
                 </div>
-                <div className="w-[130px] md:w-[200px] flex-shrink-0">
+                <div className="w-[130px] md:w-[200px] shrink-0">
                   <p className="mb-1 text-gray-500 dark:text-dark-500">
                     Father Name
                   </p>
                   <h6>Mitchell Martin</h6>
                 </div>
-                <div className="w-[130px] md:w-[200px] flex-shrink-0">
+                <div className="w-[130px] md:w-[200px] shrink-0">
                   <p className="mb-1 text-gray-500 dark:text-dark-500">
                     Mother Name
                   </p>
                   <h6>Theresa Martin</h6>
                 </div>
-                <div className="w-[130px] md:w-[200px] flex-shrink-0">
+                <div className="w-[130px] md:w-[200px] shrink-0">
                   <p className="mb-1 text-gray-500 dark:text-dark-500">
                     Parents Number
                   </p>
                   <h6>+1 147 20 1478</h6>
                 </div>
-                <div className="w-[130px] md:w-[200px] flex-shrink-0">
+                <div className="w-[130px] md:w-[200px] shrink-0">
                   <div className="whitespace-normal">
                     <p className="mb-1 text-gray-500 dark:text-dark-500">
                       Address
@@ -127,7 +124,7 @@ const StudentInformation = () => {
               opportunities.
             </p>
             <h6 className="mb-3">Curriculum Mastery</h6>
-            <ul className="flex flex-col gap-2 list-inside list-circle">
+            <ul className="space-y-2 list-inside list-circle">
               <li className="text-gray-500 dark:text-dark-500">
                 Thoroughly understand and excel in all subjects including
                 Mathematics, Science (Physics, Chemistry, Biology), English, and
@@ -150,7 +147,7 @@ const StudentInformation = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default StudentInformation
+export default StudentInformation;

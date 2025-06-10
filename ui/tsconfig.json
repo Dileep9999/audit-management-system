@@ -1,44 +1,49 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "noImplicitAny": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
+    "target": "ESNext", // or "ES2022", based on your compatibility needs
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "lib": ["dom", "es2015"], // Specify the libraries you need
+    "jsx": "react-jsx", // Use the new JSX transform
+    "module": "ESNext", // Use ES modules
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "moduleResolution": "Bundler", // Use bundler resolution strategy
+    "allowImportingTsExtensions": true, // Allow importing .ts files without specifying .ts extension
+    "isolatedModules": true, // Ensure each file can be transpiled independently
+    "moduleDetection": "force", // Detect modules in .ts/.tsx files
+    "noEmit": true, // Do not emit output
+    "strict": true, // Enable all strict type-checking options
+    "noUnusedLocals": true, // Report errors on unused locals
+    "noUnusedParameters": true, // Report errors on unused parameters
+    "noFallthroughCasesInSwitch": true, // Report fallthrough cases in switch statements
+    "noUncheckedSideEffectImports": true, // Prevent imports that have side effects
+    "baseUrl": ".", // Set base URL for module resolution
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
+
     "paths": {
       "@src/*": ["./src/*"],
       "@assets/*": ["./src/assets/*"],
+      "@data/*": ["./src/data/*"],
       "@views/*": ["./src/views/*"],
       "@pages/*": ["./src/pages/*"],
-      "@common/*": ["./src/common/*"],
+      "@common/*": ["src/components/common/*"],
+      "@constants/*": ["src/components/constants/*"],
       "@custom/*": ["./src/components/custom/*"],
+      "@layoutComponent/*": ["./src/components/LayoutComponent/*"],
       "@dtos/*": ["./src/dtos/*"],
-      "api_ data/*": ["./src/api_data/*"],
-      "react": ["./node_modules/@types/react"]
-    },
-    "target": "ES2017",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+      "@apidata/*": ["./src/apidata/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@routing/*": ["./src/routes/*"],
+      "@layout/*": ["./src/layout/*"],
+      "@nonLayout/*": ["./src/layout/*"],
+      "@api/*": ["./src/api/*"]
+    }
   },
+  // "include": ["src/**/*"], // Include all files in the src directory
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "next-env.d.ts",
     "src/views/auth/resetPassword",
-    "src/views/widgets/data",
-    ".next/types/**/*.ts",
-    "src/app/api/auth/[...nextauth]/route.ts"
-  ],
-  "exclude": ["node_modules"]
+    "server/server.cjs"
+  ], // Include all files in the src directory
+  "exclude": ["node_modules"] // Exclude node_modules
 }

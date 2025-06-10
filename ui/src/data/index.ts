@@ -1,96 +1,96 @@
-import { faqData } from './Faq/faq'
-import { Files } from './FilemanagerDashboard/files'
-import { WidgetData } from './FilemanagerDashboard/widgets'
-import { ticketsData } from './HelpCenter/tickets'
-import { productData } from './LandingPage/ecommerce'
-import { studentReviewData } from './LandingPage/school'
-import { ActiveProjectData } from './ProjectDashboards/active-project-data'
-import { clientData } from './ProjectDashboards/client-list'
-import { tasksData } from './ProjectDashboards/tasks'
-import { TeamNumber } from './ProjectDashboards/team-number'
-import { WidgetsData } from './ProjectDashboards/widgets-data'
-import { filedata } from './Projects/filesdata'
-import { taskTable, tasksList, widgetsData } from './Projects/taskdata'
-import { userdata } from './Projects/userdata'
-import { menu } from './Sidebar/menu'
 import {
-  defaultSwiches,
-  softColoredSwitches,
+  defaultSwitches,
   softSwitches,
+  softColoredSwitches,
   solidSwitches,
-  sqaureSwitches,
-  texticonSwitches,
-  threeDSwtices,
-} from './Switches/formswitches'
+  textIconSwitches,
+  squareSwitches,
+  threeDSwitches,
+} from "./switches/form-switches";
 import {
-  client,
-  employee,
-  facility,
+  designCardData,
+  coloredCard,
+  fancyCard,
+  overlayCard,
+} from "./uiCard/ui-desigin-card";
+import { plans, addOns, pricingAdmin } from "./pricing/pricing";
+import { faqData } from "./faq/faq";
+import { colors } from "./color";
+import { accountBilling } from "./accountBillingPlan/account-billing";
+import { accountStatement } from "./accountStatements/account-statement";
+import { ticketsData } from "./helpCenter/tickets";
+import { campaignList } from "./analyticsDashboards/campaign-list";
+import { leadsList1 } from "./crmDashboards/leads-list";
+import { PatientList } from "./hospitalDashboard/patient-list";
+import { resultList } from "./schoolDashboard/result-list";
+import { productData } from "./landingPage/ecommerce";
+import { studentReviewData } from "./landingPage/school";
+import {
   information,
+  facility,
+  client,
+  widgets,
+  performance,
+  employee,
   internDoctors,
   patients,
-  performance,
-  widgets,
-} from './Widgets/card'
-import { topProducts } from './Widgets/data'
-import { InvoiceWidgets } from './Widgets/invoiceWidgets'
-import { accountBilling } from './accountBillingPlan/account-billing'
-import { accountStatement } from './accountStatements/account-statement'
-import { campaignList } from './analyticsDashboards/campaign-list'
-import { emailListData } from './analyticsDashboards/email-list'
+} from "./widgets/card";
+import { topProducts } from "./widgets/data";
+import { widgetsData, tasksList, taskTable } from "./projects/task-data";
+import { filedata } from "./projects/files-data";
+import { userdata } from "./projects/user-data";
+import { typeOptionsData, contributorOptionsData } from "./pages/User-profile";
+import { userFollowersData } from "./pages/User-followers";
+import { doctorSchedule } from "./hospital/doctorSchedule";
 import {
-  defaultGroupChatMessages,
-  groupChatMemberList,
-} from './chat/default-group-message'
+  userDocumentsMediaData,
+  userDocumentsFileData,
+  userDocumentsFolderData,
+} from "./pages/user-documents";
+import { userProjectsData } from "./pages/User-projects";
+import { countryCode } from "./countryCode/country-code";
+import { examInformation } from "./examInfo/exam-Information";
+import { orderData } from "./orderTrack/order-track";
+import { orders } from "./orderListWidget/order-list-widget";
+import { lectures } from "./school/up-coming-lecture";
+import { defaultInvoice } from "./invoice/default-Invoice";
+import { invoiceWidgets } from "./widgets/invoice-widgets";
 import {
-  CompanyMenuChatSidebar,
   defaultContactChat,
-} from './chat/default-message'
+  CompanyMenuChatSidebar,
+} from "./chat/default-message";
 import {
   groupVideoCallUserList,
   groupVideoKeyMoments,
   videoGroupChat,
-} from './chat/group-video'
-import { colors } from './color'
-import { countryCode } from './countryCode/country-code'
-import { leadsList1 } from './crmDashboards/leads-list'
-import { SellingProduct } from './ecommerceDashboard/selling-product'
-import { examInformation } from './examInfo/exam-Information'
-import { doctorSchedule } from './hospital/doctor-Schedule'
-import { PatientList } from './hospitalDashboard/patient-list'
-import { DefaultInvoice } from './invoice/default-invoice'
-import { interNationalization } from './layout/inter-nationalization'
-import { TrackRecord } from './musicDashboard/track-record'
-import { orders } from './orderListWidget/order-list-widget'
-import { orderData } from './orderTrack/order-track'
+} from "./chat/group-video";
+import { teacherInfo } from "./teacher/teacher-Info";
+import { emailListData } from "./analyticsDashboards/email-list";
+import { tasksData } from "./projectDashboards/tasks";
+import { ActiveProjectData } from "./projectDashboards/active-project-data";
+import { TeamNumber } from "./projectDashboards/team-number";
+import { changes } from "./schoolDashboard/up-coming-test";
 import {
-  userDocumentsFileData,
-  userDocumentsFolderData,
-  userDocumentsMediaData,
-} from './pages/user-documents'
-import { userFollowersData } from './pages/user-followers'
-import { contributorOptionsData, typeOptionsData } from './pages/user-profile'
-import { userProjectsData } from './pages/user-projects'
-import { addOns, plans, pricingAdmin } from './pricing/pricing'
-import { lectures } from './school/up-coming-lecture'
-import { resultList } from './schoolDashboard/resut-list'
-import { changes } from './schoolDashboard/up-coming-test'
-import { teacherInfo } from './teacher/teacher-Info'
-import {
-  coloredCard,
-  designCardData,
-  fancyCard,
-  overlayCard,
-} from './uiCard/ui-desigin-card'
+  groupChatMemberList,
+  defaultGroupChatMessages,
+} from "./chat/default-group-message";
+import { SellingProduct } from "./ecommerceDashboard/selling-product";
+import { menu } from "./sidebar/menu";
+import { clientData } from "./projectDashboards/client-list";
+import { interNationalization } from "./layout/inter-nationalization";
+import { WidgetsData } from "./projectDashboards/widgets-data";
+import { TrackRecord } from "./musicDashboard/trackrecord";
+import { Files } from "./filemanagerDashboard/files";
+import { WidgetData } from "./filemanagerDashboard/widgets";
 
 export {
-  defaultSwiches,
+  defaultSwitches,
   softSwitches,
   softColoredSwitches,
   solidSwitches,
-  texticonSwitches,
-  sqaureSwitches,
-  threeDSwtices,
+  textIconSwitches,
+  squareSwitches,
+  threeDSwitches,
   designCardData,
   coloredCard,
   overlayCard,
@@ -136,8 +136,8 @@ export {
   orderData,
   orders,
   lectures,
-  DefaultInvoice,
-  InvoiceWidgets,
+  defaultInvoice,
+  invoiceWidgets,
   defaultContactChat,
   groupVideoCallUserList,
   groupVideoKeyMoments,
@@ -159,4 +159,4 @@ export {
   TrackRecord,
   Files,
   WidgetData,
-}
+};

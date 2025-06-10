@@ -1,17 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { Ellipsis } from 'lucide-react'
-
-import ViewPerformanceChart from './ViewPerformanceChart'
+} from "@src/components/custom/dropdown/dropdown";
+import { Ellipsis } from "lucide-react";
+import React from "react";
+import { Link } from "react-router-dom";
+import ViewPerformanceChart from "./viewPerformanceChart";
 
 const TotalViewPerformance = () => {
   return (
@@ -25,14 +20,14 @@ const TotalViewPerformance = () => {
                 <Ellipsis className="size-5" />
               </DropdownButton>
               <DropdownMenu>
-                <Link href="#!" className="dropdown-item ">
+                <Link to="#!" className="dropdown-item ">
                   <span>Last Week</span>
                 </Link>
 
-                <Link href="#!" className="dropdown-item ">
+                <Link to="#!" className="dropdown-item ">
                   <span>Last Month</span>
                 </Link>
-                <Link href="#!" className="dropdown-item">
+                <Link to="#!" className="dropdown-item">
                   <span>Last Years</span>
                 </Link>
               </DropdownMenu>
@@ -42,7 +37,7 @@ const TotalViewPerformance = () => {
             <div dir="ltr">
               <ViewPerformanceChart
                 chartColors="[bg-primary-500, bg-pink-400]"
-                chartDarkColors={''}
+                chartDarkColors={""}
                 chartId="semiDonutChart"
               />
             </div>
@@ -50,23 +45,23 @@ const TotalViewPerformance = () => {
               <p className="mb-3 text-gray-500 dark:text-dark-500">
                 Ensure your information is kept updated to enhance performance.
               </p>
-              <Link href="#!" className="btn btn-primary">
-                Guide Views{' '}
+              <Link to="#!" className="btn btn-primary">
+                Guide Views{" "}
                 <i className="ml-1 align-bottom ri-arrow-right-s-line"></i>
               </Link>
             </div>
           </div>
           <div className="flex items-center justify-center gap-3 text-sm card-footer">
-            <Link href="#!" className="text-gray-500 dark:text-dark-500">
-              <i className="align-bottom ri-circle-fill text-primary-500"></i>{' '}
-              View Count:
+            <Link to="#!" className="text-gray-500 dark:text-dark-500">
+              <i className="align-bottom ri-circle-fill text-primary-500"></i>{" "}
+              View Count:{" "}
               <span className="font-medium text-gray-800 dark:text-dark-100">
                 148
               </span>
             </Link>
-            <Link href="#!" className="text-gray-500 dark:text-dark-500">
-              <i className="text-pink-400 align-bottom ri-circle-fill"></i>{' '}
-              Percentage:
+            <Link to="#!" className="text-gray-500 dark:text-dark-500">
+              <i className="text-pink-400 align-bottom ri-circle-fill"></i>{" "}
+              Percentage:{" "}
               <span className="font-medium text-gray-800 dark:text-dark-100">
                 59%
               </span>
@@ -75,7 +70,7 @@ const TotalViewPerformance = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TotalViewPerformance
+export default TotalViewPerformance;

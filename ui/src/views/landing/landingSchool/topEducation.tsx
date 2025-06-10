@@ -1,15 +1,12 @@
-'use client'
+import React from "react";
 
-import React from 'react'
+import { Link } from "react-router-dom";
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import coatch from '@assets/images/school/landing/feature/coach.png'
-import learning from '@assets/images/school/landing/feature/learning.png'
-import onlineEducation from '@assets/images/school/landing/feature/online-education.png'
-import selfImprove from '@assets/images/school/landing/feature/self-improvement.png'
-import { MoveLeft, MoveRight } from 'lucide-react'
+import coatch from "@assets/images/school/landing/feature/coach.png";
+import learning from "@assets/images/school/landing/feature/learning.png";
+import onlineEducation from "@assets/images/school/landing/feature/online-education.png";
+import selfImprove from "@assets/images/school/landing/feature/self-improvement.png";
+import { MoveLeft, MoveRight } from "lucide-react";
 
 const TopEducation: React.FC = () => {
   return (
@@ -32,7 +29,7 @@ const TopEducation: React.FC = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-space">
             <div>
               <div className="p-4 mb-3 rounded-lg bg-purple-500/10 size-20">
-                <Image
+                <img
                   src={onlineEducation}
                   alt="onlineEducation"
                   width={48}
@@ -44,15 +41,15 @@ const TopEducation: React.FC = () => {
                 An online class is a course conducted over the Internet. They
                 are generally conducted through a learning management.
               </p>
-              <Link href="#!" className="link link-orange text-16">
-                Read More{' '}
+              <Link to="#!" className="link link-orange text-16">
+                Read More{" "}
                 <MoveRight className="ml-1 ltr:inline-block rtl:hidden size-4" />
                 <MoveLeft className="mr-1 rtl:inline-block ltr:hidden size-4" />
               </Link>
             </div>
             <div>
               <div className="p-4 mb-3 rounded-lg bg-10low-500/410 size-20">
-                <Image
+                <img
                   src={selfImprove}
                   alt="selfImprove"
                   width={48}
@@ -64,15 +61,15 @@ const TopEducation: React.FC = () => {
                 These life skills include problem solving, critical thinking,
                 communication skills, decision-making, creative thinking.
               </p>
-              <Link href="#!" className="link link-orange text-16">
-                Read More{' '}
+              <Link to="#!" className="link link-orange text-16">
+                Read More{" "}
                 <MoveRight className="ml-1 ltr:inline-block rtl:hidden size-4" />
                 <MoveLeft className="mr-1 rtl:inline-block ltr:hidden size-4" />
               </Link>
             </div>
             <div>
               <div className="p-4 mb-3 rounded-lg bg-sky-500/10 size-20">
-                <Image src={coatch} alt="coatch" width={48} height={48} />
+                <img src={coatch} alt="coatch" width={48} height={48} />
               </div>
               <h5 className="mb-1">Best Trainer</h5>
               <p className="mb-3 text-gray-500 dark:text-dark-500 text-16">
@@ -80,23 +77,23 @@ const TopEducation: React.FC = () => {
                 abilities necessary to do their jobs effectively and
                 efficiently.
               </p>
-              <Link href="#!" className="link link-orange text-16">
-                Read More{' '}
+              <Link to="#!" className="link link-orange text-16">
+                Read More{" "}
                 <MoveRight className="ml-1 ltr:inline-block rtl:hidden size-4" />
                 <MoveLeft className="mr-1 rtl:inline-block ltr:hidden size-4" />
               </Link>
             </div>
             <div>
               <div className="p-4 mb-3 rounded-lg bg-emerald-500/10 size-20">
-                <Image src={learning} alt="learning" width={48} height={48} />
+                <img src={learning} alt="learning" width={48} height={48} />
               </div>
               <h5 className="mb-1">Easy to Learn</h5>
               <p className="mb-3 text-gray-500 dark:text-dark-500 text-16">
                 A fast learner is someone who embodies the skills of being a
                 strategic a good listener and applies them to learning quickly.
               </p>
-              <Link href="#!" className="link link-orange text-16">
-                Read More{' '}
+              <Link to="#!" className="link link-orange text-16">
+                Read More{" "}
                 <MoveRight className="ml-1 ltr:inline-block rtl:hidden size-4" />
                 <MoveLeft className="mr-1 rtl:inline-block ltr:hidden size-4" />
               </Link>
@@ -105,7 +102,7 @@ const TopEducation: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TopEducation
+export default TopEducation;

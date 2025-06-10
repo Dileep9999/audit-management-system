@@ -1,25 +1,3 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import blog1 from '@assets/images/school/blog/img-01.jpg'
-import blog2 from '@assets/images/school/blog/img-02.jpg'
-import blog3 from '@assets/images/school/blog/img-03.jpg'
-import blog4 from '@assets/images/school/blog/img-04.jpg'
-import blog5 from '@assets/images/school/blog/img-05.jpg'
-import blog6 from '@assets/images/school/blog/img-06.jpg'
-import blog7 from '@assets/images/school/blog/img-07.jpg'
-import blog8 from '@assets/images/school/blog/img-08.jpg'
-import holiday from '@assets/images/school/holiday.png'
-import {
-  Dropdown,
-  DropdownButton,
-  DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
 import {
   BookOpen,
   CircleDot,
@@ -30,19 +8,30 @@ import {
   Medal,
   MoveRight,
   UserRound,
-} from 'lucide-react'
-import 'swiper/css'
-import 'swiper/css/autoplay'
-import 'swiper/css/free-mode'
-import 'swiper/css/navigation'
-import 'swiper/css/thumbs'
-import { Autoplay, Navigation } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/react'
+} from "lucide-react";
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay } from "swiper/modules";
+import { Link } from "react-router-dom";
 
-// Import the Autoplay CSS if needed
-import AnimatedCounter from '../AnalyticsDashboards/Counter'
-import Calendar from './Calendar'
-import { GradientDonutApp } from './SchoolCharts'
+import holiday from "@assets/images/school/holiday.png";
+import blog1 from "@assets/images/school/blog/img-01.jpg";
+import blog2 from "@assets/images/school/blog/img-02.jpg";
+import blog3 from "@assets/images/school/blog/img-03.jpg";
+import blog4 from "@assets/images/school/blog/img-04.jpg";
+import blog5 from "@assets/images/school/blog/img-05.jpg";
+import blog6 from "@assets/images/school/blog/img-06.jpg";
+import blog7 from "@assets/images/school/blog/img-07.jpg";
+import blog8 from "@assets/images/school/blog/img-08.jpg";
+import { NextPageWithLayout } from "@dtos/layout";
+import AnimatedCounter from "../analyticsDashboards/counter";
+import { GradientDonutApp } from "./schoolCharts";
+import Calendar from "./calendar";
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownMenu,
+} from "@src/components/custom/dropdown/dropdown";
 
 const Widgets: NextPageWithLayout = () => {
   return (
@@ -93,28 +82,29 @@ const Widgets: NextPageWithLayout = () => {
             <Dropdown
               position="right"
               trigger="click"
-              dropdownClassName="dropdown">
+              dropdownClassName="dropdown"
+            >
               <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
                 <Ellipsis className="size-5" />
               </DropdownButton>
               <DropdownMenu>
-                <Link href="#!" className="dropdown-item">
+                <Link to="#!" className="dropdown-item">
                   <span>Weekly</span>
                 </Link>
-                <Link href="#!" className="dropdown-item">
+                <Link to="#!" className="dropdown-item">
                   <span>Monthly</span>
                 </Link>
-                <Link href="#!" className="dropdown-item">
+                <Link to="#!" className="dropdown-item">
                   <span>Yearly</span>
                 </Link>
               </DropdownMenu>
             </Dropdown>
-          </div>
+          </div>{" "}
         </div>
         <div className="card-body">
           <GradientDonutApp
             chartColors="[bg-gray-200, bg-primary-500]"
-            chartDarkColors="[bg-dark-850, bg-primary-500]"
+            chartDarkColors="[bg-dark-800, bg-primary-500]"
             chartId="gradientDonutChart"
           />
         </div>
@@ -126,8 +116,9 @@ const Widgets: NextPageWithLayout = () => {
           <div className="flex items-center gap-3 mb-4">
             <h6 className="grow">Holiday Lists</h6>
             <Link
-              href="#!"
-              className="shrink-0 text-13 link link-primary text-primary-500">
+              to="#!"
+              className="shrink-0 text-13 link link-primary text-primary-500"
+            >
               View More <MoveRight className="inline-block size-4" />
             </Link>
           </div>
@@ -141,23 +132,24 @@ const Widgets: NextPageWithLayout = () => {
             autoplay={{
               delay: 2000, // Autoplay delay in ms
               disableOnInteraction: false, // Keep autoplay even after interactions
-            }}>
+            }}
+          >
             <div className="swiper-wrapper">
               <SwiperSlide>
                 <div className="relative card">
                   <div className="flex items-center gap-3 card-body">
                     <div className="grow">
                       <h6 className="mb-1">
-                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />
+                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />{" "}
                         World Braille Day
                       </h6>
                       <p className="text-gray-500 dark:text-dark-500 text-13">
                         04 Jan, 2024
                       </p>
                     </div>
-                    <Image
+                    <img
                       src={holiday}
-                      alt="blogImg"
+                      alt="holidayImg"
                       className="shrink-0 size-10"
                     />
                   </div>
@@ -168,16 +160,16 @@ const Widgets: NextPageWithLayout = () => {
                   <div className="flex items-center gap-3 card-body">
                     <div className="grow">
                       <h6 className="mb-1">
-                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />
+                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />{" "}
                         Earth Hour
                       </h6>
                       <p className="text-gray-500 dark:text-dark-500 text-13">
                         23 March 2024
                       </p>
                     </div>
-                    <Image
+                    <img
                       src={holiday}
-                      alt="blogImg"
+                      alt="holidayImg"
                       className="shrink-0 size-10"
                     />
                   </div>
@@ -188,16 +180,16 @@ const Widgets: NextPageWithLayout = () => {
                   <div className="flex items-center gap-3 card-body">
                     <div className="grow">
                       <h6 className="mb-1">
-                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />
+                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />{" "}
                         Software Freedom Day
                       </h6>
                       <p className="text-gray-500 dark:text-dark-500 text-13">
                         15 Sep 2024
                       </p>
                     </div>
-                    <Image
+                    <img
                       src={holiday}
-                      alt="blogImg"
+                      alt="holidayImg"
                       className="shrink-0 size-10"
                     />
                   </div>
@@ -208,16 +200,16 @@ const Widgets: NextPageWithLayout = () => {
                   <div className="flex items-center gap-3 card-body">
                     <div className="grow">
                       <h6 className="mb-1">
-                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />
+                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />{" "}
                         Inventors Day
                       </h6>
                       <p className="text-gray-500 dark:text-dark-500 text-13">
                         29 Sep 2024
                       </p>
                     </div>
-                    <Image
+                    <img
                       src={holiday}
-                      alt="blogImg"
+                      alt="holidayImg"
                       className="shrink-0 size-10"
                     />
                   </div>
@@ -228,16 +220,16 @@ const Widgets: NextPageWithLayout = () => {
                   <div className="flex items-center gap-3 card-body">
                     <div className="grow">
                       <h6 className="mb-1">
-                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />
-                        World Teacher&apos;s Day
+                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />{" "}
+                        World Teacher's Day
                       </h6>
                       <p className="text-gray-500 dark:text-dark-500 text-13">
                         05 Oct 2024
                       </p>
                     </div>
-                    <Image
+                    <img
                       src={holiday}
-                      alt="blogImg"
+                      alt="holidayImg"
                       className="shrink-0 size-10"
                     />
                   </div>
@@ -248,16 +240,16 @@ const Widgets: NextPageWithLayout = () => {
                   <div className="flex items-center gap-3 card-body">
                     <div className="grow">
                       <h6 className="mb-1">
-                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />
+                        <CircleDot className="inline-block text-green-500 ltr:mr-1 rtl:ml-1 size-4 fill-green-500/15" />{" "}
                         Human Rights Day
                       </h6>
                       <p className="text-gray-500 dark:text-dark-500 text-13">
                         10 Dec 2024
                       </p>
                     </div>
-                    <Image
+                    <img
                       src={holiday}
-                      alt="blogImg"
+                      alt="holidayImg"
                       className="shrink-0 size-10"
                     />
                   </div>
@@ -268,18 +260,19 @@ const Widgets: NextPageWithLayout = () => {
 
           <div className="relative">
             <h6 className="mb-4">Notice Board</h6>
-            <div className="flex flex-col gap-5">
+            <div className="space-y-5">
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={blog5}
-                  alt="blogImg"
+                  alt="blog5Img"
                   className="object-cover w-16 h-20 rounded-md"
                 />
                 <div>
                   <h6 className="mb-2 line-clamp-2">
                     <Link
-                      href="#!"
-                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary">
+                      to="#!"
+                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary"
+                    >
                       Beginning or end of the school year
                     </Link>
                   </h6>
@@ -289,16 +282,17 @@ const Widgets: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={blog3}
-                  alt="blogImg"
+                  alt="blog3Img"
                   className="object-cover w-16 h-20 rounded-md"
                 />
                 <div>
                   <h6 className="mb-2 line-clamp-2">
                     <Link
-                      href="#!"
-                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary">
+                      to="#!"
+                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary"
+                    >
                       Motivational or inspirational quotes
                     </Link>
                   </h6>
@@ -308,16 +302,17 @@ const Widgets: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={blog4}
-                  alt="blogImg"
+                  alt="blog4Img"
                   className="object-cover w-16 h-20 rounded-md"
                 />
                 <div>
                   <h6 className="mb-2 line-clamp-2">
                     <Link
-                      href="#!"
-                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary">
+                      to="#!"
+                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary"
+                    >
                       Examination & Parent - Teacher Meeting
                     </Link>
                   </h6>
@@ -327,16 +322,17 @@ const Widgets: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={blog2}
-                  alt="blogImg"
+                  alt="blog2Img"
                   className="object-cover w-16 h-20 rounded-md"
                 />
                 <div>
                   <h6 className="mb-2 line-clamp-2">
                     <Link
-                      href="#!"
-                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary">
+                      to="#!"
+                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary"
+                    >
                       Elementary school student activities
                     </Link>
                   </h6>
@@ -346,16 +342,17 @@ const Widgets: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={blog1}
-                  alt="blogImg"
+                  alt="blog1Img"
                   className="object-cover w-16 h-20 rounded-md"
                 />
                 <div>
                   <h6 className="mb-2 line-clamp-2">
                     <Link
-                      href="#!"
-                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary">
+                      to="#!"
+                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary"
+                    >
                       Random acts of kindness board compare and contrast
                     </Link>
                   </h6>
@@ -365,16 +362,17 @@ const Widgets: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={blog6}
-                  alt="blogImg"
+                  alt="blog6Img"
                   className="object-cover w-16 h-20 rounded-md"
                 />
                 <div>
                   <h6 className="mb-2 line-clamp-2">
                     <Link
-                      href="#!"
-                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary">
+                      to="#!"
+                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary"
+                    >
                       A Book a Day Keeps the Monsters Away
                     </Link>
                   </h6>
@@ -384,16 +382,17 @@ const Widgets: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={blog7}
-                  alt="blogImg"
+                  alt="blog7Img"
                   className="object-cover w-16 h-20 rounded-md"
                 />
                 <div>
                   <h6 className="mb-2 line-clamp-2">
                     <Link
-                      href="#!"
-                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary">
+                      to="#!"
+                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary"
+                    >
                       Student Work Coming Bulletin Board
                     </Link>
                   </h6>
@@ -403,16 +402,17 @@ const Widgets: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={blog8}
-                  alt="blogImg"
+                  alt="blog8Img"
                   className="object-cover w-16 h-20 rounded-md"
                 />
                 <div>
                   <h6 className="mb-2 line-clamp-2">
                     <Link
-                      href="#!"
-                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary">
+                      to="#!"
+                      className="text-current dark:text-current dark:hover:text-primary-500 link link-primary"
+                    >
                       Add a Little Sunshine to Someone’s Day
                     </Link>
                   </h6>
@@ -465,6 +465,6 @@ const Widgets: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default Widgets
+  );
+};
+export default Widgets;

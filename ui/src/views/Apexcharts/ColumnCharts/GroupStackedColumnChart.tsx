@@ -1,21 +1,11 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
-
+import React from "react";
+import useChartColors from "@hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
 interface ColumnChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const GroupStackedColumnChart = ({
@@ -24,44 +14,44 @@ const GroupStackedColumnChart = ({
   chartId,
 }: ColumnChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Q1 Budget',
-      group: 'budget',
+      name: "Q1 Budget",
+      group: "budget",
       data: [44000, 55000, 41000, 67000, 22000, 43000],
     },
     {
-      name: 'Q1 Actual',
-      group: 'actual',
+      name: "Q1 Actual",
+      group: "actual",
       data: [48000, 50000, 40000, 65000, 25000, 40000],
     },
     {
-      name: 'Q2 Budget',
-      group: 'budget',
+      name: "Q2 Budget",
+      group: "budget",
       data: [13000, 36000, 20000, 8000, 13000, 27000],
     },
     {
-      name: 'Q2 Actual',
-      group: 'actual',
+      name: "Q2 Actual",
+      group: "actual",
       data: [20000, 40000, 25000, 10000, 12000, 28000],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
       stacked: true,
     },
     stroke: {
       width: 1,
-      colors: ['#fff'],
+      colors: ["#fff"],
     },
     dataLabels: {
-      formatter: (val: number) => {
-        return val / 1000 + 'K'
+      formatter: (val: any) => {
+        return val / 1000 + "K";
       },
     },
     plotOptions: {
@@ -71,12 +61,12 @@ const GroupStackedColumnChart = ({
     },
     xaxis: {
       categories: [
-        'Online advertising',
-        'Sales Training',
-        'Print advertising',
-        'Catalogs',
-        'Meetings',
-        'Public relations',
+        "Online advertising",
+        "Sales Training",
+        "Print advertising",
+        "Catalogs",
+        "Meetings",
+        "Public relations",
       ],
     },
     fill: {
@@ -86,15 +76,15 @@ const GroupStackedColumnChart = ({
     yaxis: {
       labels: {
         formatter: (val) => {
-          return val / 1000 + 'K'
+          return val / 1000 + "K";
         },
       },
     },
     legend: {
-      position: 'top',
-      horizontalAlign: 'left',
+      position: "top",
+      horizontalAlign: "left",
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -104,12 +94,12 @@ const GroupStackedColumnChart = ({
         type="bar"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-primary-200, bg-green-300]"
         data-chart-dark-colors="[bg-primary-500, bg-green-500, bg-primary-800, bg-green-800]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default GroupStackedColumnChart
+export default GroupStackedColumnChart;

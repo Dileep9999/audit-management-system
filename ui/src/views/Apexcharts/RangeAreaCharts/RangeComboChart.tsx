@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface RangeChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const RangeComboChart = ({
@@ -24,185 +15,185 @@ const RangeComboChart = ({
   chartId,
 }: RangeChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      type: 'rangeArea',
-      name: 'Team B Range',
+      type: "rangeArea",
+      name: "Team B Range",
 
       data: [
         {
-          x: 'Jan',
+          x: "Jan",
           y: [1100, 1900],
         },
         {
-          x: 'Feb',
+          x: "Feb",
           y: [1200, 1800],
         },
         {
-          x: 'Mar',
+          x: "Mar",
           y: [900, 2900],
         },
         {
-          x: 'Apr',
+          x: "Apr",
           y: [1400, 2700],
         },
         {
-          x: 'May',
+          x: "May",
           y: [2600, 3900],
         },
         {
-          x: 'Jun',
+          x: "Jun",
           y: [500, 1700],
         },
         {
-          x: 'Jul',
+          x: "Jul",
           y: [1900, 2300],
         },
         {
-          x: 'Aug',
+          x: "Aug",
           y: [1000, 1500],
         },
       ],
     },
 
     {
-      type: 'rangeArea',
-      name: 'Team A Range',
+      type: "rangeArea",
+      name: "Team A Range",
       data: [
         {
-          x: 'Jan',
+          x: "Jan",
           y: [3100, 3400],
         },
         {
-          x: 'Feb',
+          x: "Feb",
           y: [4200, 5200],
         },
         {
-          x: 'Mar',
+          x: "Mar",
           y: [3900, 4900],
         },
         {
-          x: 'Apr',
+          x: "Apr",
           y: [3400, 3900],
         },
         {
-          x: 'May',
+          x: "May",
           y: [5100, 5900],
         },
         {
-          x: 'Jun',
+          x: "Jun",
           y: [5400, 6700],
         },
         {
-          x: 'Jul',
+          x: "Jul",
           y: [4300, 4600],
         },
         {
-          x: 'Aug',
+          x: "Aug",
           y: [2100, 2900],
         },
       ],
     },
 
     {
-      type: 'line',
-      name: 'Team B Median',
+      type: "line",
+      name: "Team B Median",
       data: [
         {
-          x: 'Jan',
+          x: "Jan",
           y: 1500,
         },
         {
-          x: 'Feb',
+          x: "Feb",
           y: 1700,
         },
         {
-          x: 'Mar',
+          x: "Mar",
           y: 1900,
         },
         {
-          x: 'Apr',
+          x: "Apr",
           y: 2200,
         },
         {
-          x: 'May',
+          x: "May",
           y: 3000,
         },
         {
-          x: 'Jun',
+          x: "Jun",
           y: 1000,
         },
         {
-          x: 'Jul',
+          x: "Jul",
           y: 2100,
         },
         {
-          x: 'Aug',
+          x: "Aug",
           y: 1200,
         },
         {
-          x: 'Sep',
+          x: "Sep",
           y: 1800,
         },
         {
-          x: 'Oct',
+          x: "Oct",
           y: 2000,
         },
       ],
     },
     {
-      type: 'line',
-      name: 'Team A Median',
+      type: "line",
+      name: "Team A Median",
       data: [
         {
-          x: 'Jan',
+          x: "Jan",
           y: 3300,
         },
         {
-          x: 'Feb',
+          x: "Feb",
           y: 4900,
         },
         {
-          x: 'Mar',
+          x: "Mar",
           y: 4300,
         },
         {
-          x: 'Apr',
+          x: "Apr",
           y: 3700,
         },
         {
-          x: 'May',
+          x: "May",
           y: 5500,
         },
         {
-          x: 'Jun',
+          x: "Jun",
           y: 5900,
         },
         {
-          x: 'Jul',
+          x: "Jul",
           y: 4500,
         },
         {
-          x: 'Aug',
+          x: "Aug",
           y: 2400,
         },
         {
-          x: 'Sep',
+          x: "Sep",
           y: 2100,
         },
         {
-          x: 'Oct',
+          x: "Oct",
           y: 1500,
         },
       ],
     },
-  ]
+  ];
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'rangeArea',
+      type: "rangeArea",
       animations: {
         speed: 500,
       },
@@ -218,16 +209,16 @@ const RangeComboChart = ({
       count: 2,
     },
     stroke: {
-      curve: 'straight',
+      curve: "straight",
       width: [0, 0, 2, 2],
     },
     legend: {
       show: true,
-      customLegendItems: ['Team B', 'Team A'],
+      customLegendItems: ["Team B", "Team A"],
       inverseOrder: true,
     },
     title: {
-      text: 'Range Area with Forecast Line (Combo)',
+      text: "Range Area with Forecast Line (Combo)",
     },
     markers: {
       hover: {
@@ -241,7 +232,7 @@ const RangeComboChart = ({
         bottom: 0,
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -250,12 +241,12 @@ const RangeComboChart = ({
         series={series}
         type="rangeArea"
         data-chart-colors="[bg-sky-500, bg-red-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default RangeComboChart
+export default RangeComboChart;

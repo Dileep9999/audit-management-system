@@ -1,117 +1,113 @@
-'use client'
-
-import React, { useEffect, useRef } from 'react'
-
-import { useRouter } from 'next/navigation'
-
-import backgroundImg from '@assets/images/others/auth.jpg'
-import { MailOpen } from 'lucide-react'
-import { toast } from 'react-toastify'
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import { MailOpen } from "lucide-react";
+import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import backgroundImg from "@assets/images/others/auth.jpg";
 
 interface OTPFormProps {
-  formId: string
+  formId: string;
 }
 
 const TwoStepVerificationModern: React.FC<OTPFormProps> = ({ formId }) => {
-  const formRef = useRef<HTMLFormElement>(null)
-  const submitButtonRef = useRef<HTMLButtonElement>(null)
-
-  const router = useRouter()
+  const formRef = useRef<HTMLFormElement>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const form = formRef.current
-    if (!form) return
+    const form = formRef.current;
+    if (!form) return;
 
     const inputs = Array.from(
-      form.querySelectorAll('input[type=text]')
-    ) as HTMLInputElement[]
+      form.querySelectorAll("input[type=text]"),
+    ) as HTMLInputElement[];
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLInputElement
+      const target = e.target as HTMLInputElement;
       if (
         !/^[0-9]{1}$/.test(e.key) &&
-        e.key !== 'Backspace' &&
-        e.key !== 'Delete' &&
-        e.key !== 'Tab' &&
+        e.key !== "Backspace" &&
+        e.key !== "Delete" &&
+        e.key !== "Tab" &&
         !e.metaKey
       ) {
-        e.preventDefault()
+        e.preventDefault();
       }
 
-      if (e.key === 'Delete' || e.key === 'Backspace') {
-        const index = inputs.indexOf(target)
+      if (e.key === "Delete" || e.key === "Backspace") {
+        const index = inputs.indexOf(target);
         if (index > 0) {
-          inputs[index - 1].value = ''
-          inputs[index - 1].focus()
+          inputs[index - 1].value = "";
+          inputs[index - 1].focus();
         }
       }
-    }
+    };
 
     const handleInput = (e: Event) => {
-      const target = e.target as HTMLInputElement
-      const index = inputs.indexOf(target)
+      const target = e.target as HTMLInputElement;
+      const index = inputs.indexOf(target);
       if (target.value) {
         if (index < inputs.length - 1) {
-          inputs[index + 1].focus()
+          inputs[index + 1].focus();
         } else {
-          submitButtonRef.current?.focus()
+          submitButtonRef.current?.focus();
         }
       }
-    }
+    };
 
     const handleFocus = (e: FocusEvent) => {
-      ;(e.target as HTMLInputElement).select()
-    }
+      (e.target as HTMLInputElement).select();
+    };
 
     const handlePaste = (e: ClipboardEvent) => {
-      e.preventDefault()
-      const text = e.clipboardData?.getData('text')
-      if (!text || !/^[0-9]{6}$/.test(text)) return // Adjust the length based on the number of inputs
-      const digits = text.split('')
-      inputs.forEach((input, index) => (input.value = digits[index]))
-      submitButtonRef.current?.focus()
-    }
+      e.preventDefault();
+      const text = e.clipboardData?.getData("text");
+      if (!text || !/^[0-9]{6}$/.test(text)) return; // Adjust the length based on the number of inputs
+      const digits = text.split("");
+      inputs.forEach((input, index) => (input.value = digits[index]));
+      submitButtonRef.current?.focus();
+    };
 
     inputs.forEach((input) => {
-      input.addEventListener('input', handleInput)
-      input.addEventListener('keydown', handleKeyDown)
-      input.addEventListener('focus', handleFocus)
-      input.addEventListener('paste', handlePaste)
-    })
+      input.addEventListener("input", handleInput);
+      input.addEventListener("keydown", handleKeyDown);
+      input.addEventListener("focus", handleFocus);
+      input.addEventListener("paste", handlePaste);
+    });
 
     return () => {
       inputs.forEach((input) => {
-        input.removeEventListener('input', handleInput)
-        input.removeEventListener('keydown', handleKeyDown)
-        input.removeEventListener('focus', handleFocus)
-        input.removeEventListener('paste', handlePaste)
-      })
-    }
-  }, [formId])
+        input.removeEventListener("input", handleInput);
+        input.removeEventListener("keydown", handleKeyDown);
+        input.removeEventListener("focus", handleFocus);
+        input.removeEventListener("paste", handlePaste);
+      });
+    };
+  }, [formId]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const form = formRef.current
-    if (!form) return
+    const form = formRef.current;
+    if (!form) return;
 
     const inputs = Array.from(
-      form.querySelectorAll('input[type=text]')
-    ) as HTMLInputElement[]
-    const otp = inputs.map((input) => input.value).join('')
+      form.querySelectorAll("input[type=text]"),
+    ) as HTMLInputElement[];
+    const otp = inputs.map((input) => input.value).join("");
 
     if (otp.length !== 6) {
-      toast.error('Please enter a valid OTP')
-      return
+      ErrorToast("Please enter a valid OTP");
+      return;
     } else {
-      router.push('/auth/reset-password-modern')
+      navigate("/auth/reset-password-modern");
     }
-  }
+  };
 
   return (
     <div
-      className="relative flex items-center justify-center min-h-screen py-12 bg-center bg-cover bg-auth"
-      style={{ backgroundImage: `url(${backgroundImg.src})` }}>
+      className="relative flex items-center justify-center min-h-screen py-12 bg-center bg-cover "
+      style={{ backgroundImage: `url(${backgroundImg})` }}
+    >
       <div className="absolute inset-0 bg-gray-950/50"></div>
       <div className="container relative">
         <div className="grid grid-cols-12">
@@ -126,9 +122,14 @@ const TwoStepVerificationModern: React.FC<OTPFormProps> = ({ formId }) => {
                 OTP Verification
               </h4>
               <p className="mb-5 text-center text-white/75">
-                We&apos;re sent a code to <b>sophiamia@example.com</b>
+                We're sent a code to <b>sophiamia@example.com</b>
               </p>
-              <form id={formId} onSubmit={handleSubmit} ref={formRef}>
+              <form
+                id={formId}
+                action="/auth/reset-password-modern"
+                ref={formRef}
+                onSubmit={handleSubmit}
+              >
                 <div className="flex items-center justify-center gap-3">
                   {Array.from({ length: 6 }).map((_, index) => (
                     <input
@@ -144,7 +145,8 @@ const TwoStepVerificationModern: React.FC<OTPFormProps> = ({ formId }) => {
                   <button
                     type="submit"
                     className="w-full btn btn-primary"
-                    ref={submitButtonRef}>
+                    ref={submitButtonRef}
+                  >
                     Reset Password
                   </button>
                 </div>
@@ -154,7 +156,7 @@ const TwoStepVerificationModern: React.FC<OTPFormProps> = ({ formId }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TwoStepVerificationModern
+export default TwoStepVerificationModern;

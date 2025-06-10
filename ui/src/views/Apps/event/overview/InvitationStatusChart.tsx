@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import useChartColors from "@src/hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
+import { ApexOptions } from "apexcharts";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const InvitationStatusCharts = ({
@@ -23,38 +14,37 @@ const InvitationStatusCharts = ({
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const series = [87]
+  const series = [87];
 
-  const labels = ['Accept Invitation']
+  const labels = ["Accept Invitation"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
-      height: 300,
-      type: 'radialBar',
+      height: 257,
+      type: "radialBar",
     },
     colors: chartsColor,
     plotOptions: {
       radialBar: {
         hollow: {
-          size: '60%',
+          size: "60%",
         },
         dataLabels: {
           show: true,
           name: {
-            fontWeight: '600',
+            fontWeight: "600",
           },
         },
       },
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        shade: 'dark',
-        type: 'horizontal',
+        shade: "dark",
+        type: "horizontal",
         shadeIntensity: 0.5,
         gradientToColors: [`${chartsColor[1]}`, `${chartsColor[2]}`],
         inverseColors: true,
@@ -64,9 +54,9 @@ const InvitationStatusCharts = ({
       },
     },
     stroke: {
-      lineCap: 'round',
+      lineCap: "round",
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -78,11 +68,11 @@ const InvitationStatusCharts = ({
         data-chart-colors="[bg-pink-500, bg-primary-500]"
         type="radialBar"
         id={chartId}
-        height={300}
+        height={257}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default InvitationStatusCharts
+export default InvitationStatusCharts;

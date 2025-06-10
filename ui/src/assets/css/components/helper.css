@@ -1,5 +1,5 @@
 @layer base {
-  [data-mode='black-white'] {
+  [data-mode="black-white"] {
     @apply grayscale;
   }
 

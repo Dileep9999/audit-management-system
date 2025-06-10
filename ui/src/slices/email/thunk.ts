@@ -1,148 +1,136 @@
-import { Email } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
+import { AppDispatch } from "@src/slices/reducer";
 import {
-  LocalStorageRecord,
+  getMail,
+  addMail,
+  deleteMail,
+  editMail,
+  setCurrentEmail,
+} from "./reducer";
+import api from "@src/utils/axios_api";
+import { REACT_APP_EMAIL_API } from "@src/utils/url_helper";
+import {
   addLocalStorageRecord,
   createLocalStorage,
   deleteLocalStorageRecord,
   getLocalStorage,
   updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_EMAIL_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+} from "@src/utils/crud_functions";
+import { Email } from "@src/dtos";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-import {
-  addMail,
-  deleteMail,
-  editMail,
-  getMail,
-  setCurrentEmail,
-} from './reducer'
-
-const EMAIL_LIST_API = NEXT_PUBLIC_EMAIL_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const EMAIL_LIST_API = REACT_APP_EMAIL_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get mail data
 export const getMailData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = await getLocalStorage('d-email-list')
+      const responseData = await getLocalStorage("d-email-list");
       if (!responseData) {
-        const response = await api.get(EMAIL_LIST_API)
-        const { data } = response
-        createLocalStorage('d-email-list', data)
-        dispatch(getMail(data))
+        const response = await api.get(EMAIL_LIST_API);
+        createLocalStorage("d-email-list", response);
+        dispatch(getMail(response));
       } else {
-        dispatch(getMail(responseData))
+        dispatch(getMail(responseData));
       }
     } else {
-      const response = await api.get(EMAIL_LIST_API)
-      const { data } = response
-      dispatch(getMail(data))
+      const response = await api.get(EMAIL_LIST_API);
+      dispatch(getMail(response));
     }
-  } catch (error) {
-    let errorMessage = 'Error fetching Email data'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-      toast.error(errorMessage, { autoClose: 3000 })
-    }
-    console.error('Error fetching Email data:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Email List Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching email data:", error);
   }
-}
+};
 
 // delete mail record
 export const deleteMailData =
-  (products: number[]) => async (dispatch: AppDispatch) => {
+  (question: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = products.map(async (id: number) => {
-        const response = await customDelete(EMAIL_LIST_API, id, 'Email')
-        const { data, message } = response
-        toast.success(message || 'Email deleted successfully', {
-          autoClose: 3000,
-        })
-        return data
-      })
-      const deletedProducts = await Promise.all(deletePromises)
-      dispatch(deleteMail(deletedProducts))
+      const deletePromises = question.map(async (_id) => {
+        const response = await api.delete(EMAIL_LIST_API, _id, "Email");
+        const { message } = response;
+        DeleteToast(message || "Email deleted successfully");
+        return _id;
+      });
+
+      const deletedEmails = await Promise.all(deletePromises);
+      dispatch(deleteMail(deletedEmails));
       deleteLocalStorageRecord({
-        key: 'd-email-list',
-        listRecord: products,
+        key: "d-email-list",
+        listRecord: question,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'Email record deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Email record deletion failed:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Email record deletion failed ";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting email: ", error);
     }
-  }
+  };
 
 // add email record
 export const addEmailListRecordData =
-  (newEmailRecord: Email) => async (dispatch: AppDispatch) => {
+  (newRecord: Email) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(EMAIL_LIST_API, newEmailRecord, 'Email')
-      const { data, message } = response
-      toast.success(message || 'Email record added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-email-list', { ...data })
-      dispatch(addMail(data))
-    } catch (error) {
-      let errorMessage = 'Email record addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Email record addition failed:', error)
+      const response = await api.post(EMAIL_LIST_API, newRecord, "Email");
+      const { message } = response;
+      AddToast(message || "Email record added successfully");
+      addLocalStorageRecord("d-email-list", newRecord);
+      dispatch(addMail(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Email record addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding email record:", error);
     }
-  }
+  };
 
 // edit mail record
 export const editEmailListRecordData =
-  (email: Email) => async (dispatch: AppDispatch) => {
+  (question: Email) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(EMAIL_LIST_API, email, 'Email')
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-email-list',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editMail(data))
-    } catch (error) {
-      let errorMessage = 'Email record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Email record updation failed:', error)
+      const response = await api.put(EMAIL_LIST_API, question, "Email");
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Email record updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-email-list", question);
+      dispatch(editMail(question));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Email record updation failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding email record:", error);
     }
-  }
+  };
 
 // set current email record
 export const setCurrentEmailRecordData =
   (email: Email) => async (dispatch: AppDispatch) => {
     try {
-      const response = { data: email }
-      const { data } = response
-      dispatch(setCurrentEmail(data))
-    } catch (error) {
-      let errorMessage = 'Email record current set failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Email record current set failed:', error)
+      const response = { data: email };
+      const { data } = response;
+      dispatch(setCurrentEmail(data));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Email record current set failed";
+      ErrorToast(errorMessage);
+      console.error("Error current set record:", error);
     }
-  }
+  };

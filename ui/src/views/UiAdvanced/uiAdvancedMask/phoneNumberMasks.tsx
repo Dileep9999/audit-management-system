@@ -1,9 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import { InputMask } from '@react-input/mask'
-
+import React from "react";
+import { InputMask } from "@react-input/mask";
 const PhoneNumberMasks: React.FC = () => {
   return (
     <React.Fragment>
@@ -21,7 +17,7 @@ const PhoneNumberMasks: React.FC = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default PhoneNumberMasks
+export default PhoneNumberMasks;

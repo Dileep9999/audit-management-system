@@ -1,108 +1,131 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios'
+// mockApi.ts
+import axios from "axios";
 
-const api: AxiosInstance & {
-  post<T>(
-    url: string,
-    newRecord: T,
-    field?: string
-  ): Promise<{ data: T; message: string }>
-  put<T>(
-    url: string,
-    updatedRecord: T,
-    field?: string
-  ): Promise<{ data: T; message: string }>
-  delete(
-    url: string,
-    id: number,
-    field?: string
-  ): Promise<{ data: number; message: string }>
-} = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
-})
+const api: any = axios.create({
+  baseURL:
+    import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL || "http://localhost:3000", // This won't be used but gives a sense of structure
+});
 
-api.get = async <T>(url: string): Promise<T> => {
+api.interceptors.request.use(function (config: any) {
+  config.headers["Access-Control-Allow-Origin"] =
+    "https://node-api.pixeleyez.com";
+  config.baseURL = "https://node-api.pixeleyez.com";
+  config.headers["Content-Type"] = "application/json";
+  return config;
+});
+
+// Mock GET request -- get data
+api.get = async (url: string) => {
+  // Assuming url contains the endpoint to fetch data from the API
   try {
-    const response: AxiosResponse<T> = await axios.get(url)
-    return response.data
+    url = "https://node-api.pixeleyez.com" + url;
+    const response = await axios.get(url); // Make a real GET request to fetch the data
+    return response.data;
   } catch (error) {
-    console.log('error', error)
-    throw new Error('Failed to fetch data')
+    throw new Error("Failed to fetch data");
   }
-}
+};
 
-export const customPost = async <T>(
-  url: string,
-  newRecord: T,
-  field?: string
-): Promise<{ data: T; message: string }> => {
-  const isApiActive = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+api.post = async (api: string, newRecord: any, field?: string) => {
+  const isApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
+  const data: any = [];
 
-  if (isApiActive) {
+  if (isApi) {
     try {
-      const response: AxiosResponse<T> = await api.post(url, newRecord, {
-        headers: { 'Content-Type': 'application/json' },
-      })
-      return {
-        data: response.data,
-        message: `${field} record added successfully`,
-      }
-    } catch (error) {
-      console.error('Error adding record:', error)
-      throw new Error('Internal Server Error')
-    }
-  } else {
-    return { data: newRecord, message: `${field} record added successfully` }
-  }
-}
+      const response = await axios.post(
+        api,
+        { ...newRecord, _id: newRecord.id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
 
-export const customPut = async <T>(
-  url: string,
-  updatedRecord: T,
-  field?: string
-): Promise<{ data: T; message: string }> => {
-  const isApiActive = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
-
-  if (isApiActive) {
-    try {
-      const response: AxiosResponse<T> = await api.put(url, updatedRecord, {
-        headers: { 'Content-Type': 'application/json' },
-      })
-      return { data: response.data, message: `${field} update successful` }
-    } catch (error) {
-      console.error('Error updating record:', error)
-      throw new Error('Internal Server Error')
-    }
-  } else {
-    return { data: updatedRecord, message: `${field} update successful` }
-  }
-}
-
-export const customDelete = async (
-  url: string,
-  id: number,
-  field?: string
-): Promise<{ data: number; message: string }> => {
-  const isApiActive = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
-
-  if (isApiActive) {
-    try {
-      const response: AxiosResponse<number> = await api.delete(url, {
-        headers: { 'Content-Type': 'application/json' },
-        data: { id },
-      })
-
-      if (response.status === 200) {
-        return { data: id, message: `${field} delete successful` }
+      if (response.status === 200 || response.status === 201) {
+        return response.data;
       } else {
-        throw new Error('Failed to delete record')
+        throw new Error(response.data?.message || "Failed to add new record");
       }
-    } catch (error) {
-      console.error('Error deleting record:', error)
-      throw new Error('Internal Server Error')
+    } catch (error: any) {
+      console.error("Error in POST request:", error);
+      throw new Error("Internal Server Error");
     }
   } else {
-    return { data: id, message: `${field} delete successful` }
+    data.push(newRecord);
+    return Promise.resolve({
+      data: newRecord,
+      message: `${field} record added successfully`,
+    });
   }
-}
+};
 
-export default api
+api.put = async (api: string, updatedRecord: any, field?: string) => {
+  const isApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
+
+  if (isApi) {
+    try {
+      // Include the ID of the record in the URL
+      const response = await axios.put(
+        `${api}/${updatedRecord.id}`,
+        updatedRecord,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        return response.data;
+      } else {
+        throw new Error(response.data?.message || "Failed to update record");
+      }
+    } catch (error: any) {
+      throw new Error("Internal Server Error");
+    }
+  } else {
+    // Simulate update locally when API is inactive
+    return Promise.resolve({
+      data: updatedRecord,
+      message: `${field} update successfully`,
+    });
+  }
+};
+
+api.delete = async (api: string, id: number, field?: string) => {
+  const isApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
+
+  if (isApi) {
+    try {
+      // Pass the id as part of the URL
+      const response = await axios.delete(`${api}/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Check if the delete was successful
+      if (response.status === 200) {
+        console.log("response api====", response);
+        return response.data; // Return the API response data
+      } else {
+        throw new Error(response.data?.message || "Failed to delete record");
+      }
+    } catch (error: any) {
+      // Log and rethrow the error
+      console.error("Delete Error:", error);
+      const errorMessage =
+        error.response?.data?.message || "Internal Server Error";
+      throw new Error(errorMessage);
+    }
+  } else {
+    // Simulate delete when the API is inactive
+    return Promise.resolve({
+      data: id,
+      message: `${field} delete successful`,
+    });
+  }
+};
+
+export default api;

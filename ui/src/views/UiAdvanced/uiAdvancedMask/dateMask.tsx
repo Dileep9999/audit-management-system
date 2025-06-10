@@ -1,14 +1,11 @@
-'use client'
-
-import React from 'react'
-
-import { InputMask } from '@react-input/mask'
+import React from "react";
+import { InputMask } from "@react-input/mask";
 
 interface DateMaskProps {
-  placeholder?: string
+  placeholder?: string;
 }
 
-const DateMask: React.FC<DateMaskProps> = ({ placeholder = 'MM/DD/YYYY' }) => {
+const DateMask: React.FC<DateMaskProps> = ({ placeholder = "MM/DD/YYYY" }) => {
   return (
     <React.Fragment>
       <div className="col-span-12 lg:col-span-6 card">
@@ -25,7 +22,7 @@ const DateMask: React.FC<DateMaskProps> = ({ placeholder = 'MM/DD/YYYY' }) => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DateMask
+export default DateMask;

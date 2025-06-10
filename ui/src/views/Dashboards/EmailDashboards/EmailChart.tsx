@@ -1,22 +1,13 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
+import useChartColors from "@hooks/useChartColors";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
-  timeFrame?: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
+  timeFrame?: string;
 }
 
 const EmailCampaignChart = ({
@@ -25,48 +16,47 @@ const EmailCampaignChart = ({
   chartId,
   timeFrame,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
+      case "Weekly":
         return [
-          { name: 'Sent', data: [23, 24, 29, 25, 27, 26, 28, 22, 28] },
-          { name: 'Opened', data: [15, 17, 16, 18, 19, 10, 11, 10, 14] },
-        ]
-      case 'Monthly':
+          { name: "Sent", data: [23, 24, 29, 25, 27, 26, 28, 22, 28] },
+          { name: "Opened", data: [15, 17, 16, 18, 19, 10, 11, 10, 14] },
+        ];
+      case "Monthly":
         return [
-          { name: 'Sent', data: [28, 29, 33, 36, 32, 32, 33] },
-          { name: 'Opened', data: [12, 11, 14, 18, 17, 13, 13] },
-        ]
-      case 'Yearly':
+          { name: "Sent", data: [28, 29, 33, 36, 32, 32, 33] },
+          { name: "Opened", data: [12, 11, 14, 18, 17, 13, 13] },
+        ];
+      case "Yearly":
         return [
-          { name: 'Sent', data: [35, 20, 18, 25, 30, 27, 24] },
-          { name: 'Opened', data: [10, 12, 14, 13, 18, 15, 18] },
-        ]
+          { name: "Sent", data: [35, 20, 18, 25, 30, 27, 24] },
+          { name: "Opened", data: [10, 12, 14, 13, 18, 15, 18] },
+        ];
       default:
         return [
-          { name: 'Sent', data: [28, 29, 33, 36, 32, 32, 33] },
-          { name: 'Opened', data: [12, 11, 14, 18, 17, 13, 13] },
-        ]
+          { name: "Sent", data: [28, 29, 33, 36, 32, 32, 33] },
+          { name: "Opened", data: [12, 11, 14, 18, 17, 13, 13] },
+        ];
     }
-  }
+  };
 
-  const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']
+  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 280,
-      type: 'area',
+      type: "area",
       toolbar: {
         show: false,
       },
     },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
     },
     grid: {
       xaxis: {
@@ -80,7 +70,7 @@ const EmailCampaignChart = ({
       },
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
         shadeIntensity: 1,
         inverseColors: false,
@@ -89,11 +79,8 @@ const EmailCampaignChart = ({
         stops: [0, 90, 100],
       },
     },
-    xaxis: {
-      categories: labels,
-    },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -109,8 +96,8 @@ const EmailCampaignChart = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const GradientDonutApp = ({
   chartColors,
@@ -118,17 +105,17 @@ const GradientDonutApp = ({
   chartId,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
-  const series = [33, 57]
+  const series = [33, 57];
 
-  const labels = ['Open Rate', 'Click Rate']
+  const labels = ["Open Rate", "Click Rate"];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
-      height: 167,
-      type: 'donut',
+      height: 230,
+      type: "donut",
     },
     plotOptions: {
       pie: {
@@ -140,13 +127,13 @@ const GradientDonutApp = ({
       enabled: false,
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
     },
     legend: {
       formatter: function (val, opts) {
-        return val + ' - ' + opts.w.globals.series[opts.seriesIndex]
+        return val + " - " + opts.w.globals.series[opts.seriesIndex];
       },
-      position: 'bottom',
+      position: "bottom",
     },
     responsive: [
       {
@@ -156,13 +143,13 @@ const GradientDonutApp = ({
             width: 200,
           },
           legend: {
-            position: 'bottom',
+            position: "bottom",
           },
         },
       },
     ],
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -174,12 +161,12 @@ const GradientDonutApp = ({
         data-chart-colors="[bg-primary-500, bg-red-500]"
         type="donut"
         id={chartId}
-        height={167}
+        height={170}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const LabelColumnApp = ({
   chartColors,
@@ -187,26 +174,26 @@ const LabelColumnApp = ({
   chartId,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Inflation',
+      name: "Inflation",
       data: [5, 4, 7, 9, 2, 6, 10, 6, 3, 7, 9, 5],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 130,
-      type: 'bar',
+      type: "bar",
       toolbar: {
         show: false,
       },
       sparkline: { enabled: !0 },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -222,8 +209,8 @@ const LabelColumnApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const MailStatisticApp = ({
   chartColors,
@@ -232,187 +219,187 @@ const MailStatisticApp = ({
   timeFrame,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
   const getSeriesData = () => {
     switch (timeFrame) {
-      case 'Weekly':
+      case "Weekly":
         return [
           {
-            name: 'Sent',
+            name: "Sent",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 43,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 58,
               },
             ],
           },
           {
-            name: 'Pending',
+            name: "Pending",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 33,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 38,
               },
             ],
           },
           {
-            name: 'Cancel',
+            name: "Cancel",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 55,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 21,
               },
             ],
           },
-        ]
-      case 'Monthly':
+        ];
+      case "Monthly":
         return [
           {
-            name: 'Sent',
+            name: "Sent",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 83,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 48,
               },
             ],
           },
           {
-            name: 'Pending',
+            name: "Pending",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 63,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 28,
               },
             ],
           },
           {
-            name: 'Cancel',
+            name: "Cancel",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 25,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 91,
               },
             ],
           },
-        ]
-      case 'Yearly':
+        ];
+      case "Yearly":
         return [
           {
-            name: 'Sent',
+            name: "Sent",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 83,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 58,
               },
             ],
           },
           {
-            name: 'Pending',
+            name: "Pending",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 53,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 78,
               },
             ],
           },
           {
-            name: 'Cancel',
+            name: "Cancel",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 35,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 21,
               },
             ],
           },
-        ]
+        ];
       default:
         return [
           {
-            name: 'Sent',
+            name: "Sent",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 43,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 58,
               },
             ],
           },
           {
-            name: 'Pending',
+            name: "Pending",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 33,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 38,
               },
             ],
           },
           {
-            name: 'Cancel',
+            name: "Cancel",
             data: [
               {
-                x: 'Jan',
+                x: "Jan",
                 y: 55,
               },
               {
-                x: 'Feb',
+                x: "Feb",
                 y: 21,
               },
             ],
           },
-        ]
+        ];
     }
-  }
+  };
 
   const options: ApexOptions = {
     chart: {
       height: 335,
-      type: 'line',
+      type: "line",
     },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
     },
     plotOptions: {
       line: {
@@ -421,16 +408,16 @@ const MailStatisticApp = ({
     },
     legend: {
       show: true,
-      position: 'bottom',
-      horizontalAlign: 'center',
+      position: "bottom",
+      horizontalAlign: "center",
     },
-    xaxis: {
-      axisBorder: {
-        show: false,
-      },
-    },
+    // xaxis: {
+    //     axisBorder: {
+    //         show: false,
+    //     }
+    // },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -446,8 +433,8 @@ const MailStatisticApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 const TimeSpendingApp = ({
   chartColors,
@@ -455,39 +442,24 @@ const TimeSpendingApp = ({
   chartId,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Total Spend',
+      name: "Total Spend",
       data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
     },
     {
-      name: 'Sales',
+      name: "Sales",
       data: [62, 69, 91, 54, 10, 41, 35, 51, 49],
     },
-  ]
+  ];
 
-  const labels = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
   const options: ApexOptions = {
-    labels: labels,
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 120,
-      type: 'line',
+      type: "line",
       zoom: {
         enabled: true,
       },
@@ -498,9 +470,9 @@ const TimeSpendingApp = ({
     // },
     xaxis: {
       title: {
-        text: 'Xaxis',
+        text: "Xaxis",
       },
-      categories: labels,
+      // categories: labels
     },
     tooltip: {
       x: {
@@ -509,8 +481,8 @@ const TimeSpendingApp = ({
     },
     legend: {
       show: true,
-      position: 'bottom',
-      horizontalAlign: 'center',
+      position: "bottom",
+      horizontalAlign: "center",
       offsetY: 8,
     },
     stroke: {
@@ -524,7 +496,7 @@ const TimeSpendingApp = ({
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -540,8 +512,8 @@ const TimeSpendingApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
 export {
   EmailCampaignChart,
@@ -549,4 +521,4 @@ export {
   LabelColumnApp,
   MailStatisticApp,
   TimeSpendingApp,
-}
+};

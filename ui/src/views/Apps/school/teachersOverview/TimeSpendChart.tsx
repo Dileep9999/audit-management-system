@@ -1,22 +1,13 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import useChartColors from "@src/hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
-  timeFrame?: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
+  timeFrame?: string;
 }
 
 const TimeSpendLectureApp = ({
@@ -24,38 +15,47 @@ const TimeSpendLectureApp = ({
   chartDarkColors,
   chartId,
 }: AreaChartsProps) => {
-  // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Total Hours',
+      name: "Total Hours",
       data: [142, 139, 159, 149, 162, 187, 160, 154, 122],
     },
-  ]
+  ];
 
-  const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
+  const labels = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+  ];
 
   const options: ApexOptions = {
     labels: labels,
     chart: {
       height: 260,
-      type: 'bar',
+      type: "bar",
       toolbar: {
         show: false,
       },
     },
     plotOptions: {
       bar: {
-        columnWidth: '40%',
+        columnWidth: "40%",
         distributed: true,
       },
     },
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        shade: 'dark',
-        type: 'horizontal',
+        shade: "dark",
+        type: "horizontal",
         shadeIntensity: 0.2,
         inverseColors: true,
         opacityFrom: 1,
@@ -67,19 +67,19 @@ const TimeSpendLectureApp = ({
     states: {
       normal: {
         filter: {
-          type: 'none',
+          type: "none",
           value: 0,
         },
       },
       hover: {
         filter: {
-          type: 'none',
+          type: "none",
           value: 0,
         },
       },
       active: {
         filter: {
-          type: 'none',
+          type: "none",
           value: 0,
         },
       },
@@ -101,7 +101,7 @@ const TimeSpendLectureApp = ({
       },
     },
     colors: chartsColor,
-  }
+  };
 
   return (
     <React.Fragment>
@@ -117,7 +117,7 @@ const TimeSpendLectureApp = ({
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TimeSpendLectureApp
+export default TimeSpendLectureApp;

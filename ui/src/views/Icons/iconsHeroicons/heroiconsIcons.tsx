@@ -1,10 +1,6 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
-import { Usage } from './prismUsage'
+import React from "react";
+import { Usage } from "./prismUsage";
+import { Link } from "react-router-dom";
 
 const HeroiconsIcons = () => {
   return (
@@ -15,15 +11,16 @@ const HeroiconsIcons = () => {
             Heroicons Icons (React & Vue Libraries)
           </h6>
           <Link
-            href="https://heroicons.com/outline"
+            to="https://heroicons.com/outline"
             target="_blank"
-            className="font-medium text-red-500 underline transition duration-200 ease-linear hover:text-red-600 shrink-0">
+            className="font-medium text-red-500 underline transition duration-200 ease-linear hover:text-red-600 shrink-0"
+          >
             View All Icons
           </Link>
         </div>
         <div className="card-body">
           <h6 className="mb-1">Usage</h6>
-          <p className="text-gray-500 dark:text-dark-500 mb-2">
+          <p className="text-gray-500 dark:text-dark-500">
             The quickest way to use these icons is to simply copy the source for
             the icon you need from heroicons.com and inline it directly into
             your HTML:
@@ -31,12 +28,13 @@ const HeroiconsIcons = () => {
 
           <Usage />
 
-          <p className="mb-0 mt-2 text-gray-500 dark:text-dark-500">
+          <p className="mb-0 text-gray-500 dark:text-dark-500 mt-3">
             For more details, see the
             <Link
-              href="https://github.com/tailwindlabs/heroicons"
+              to="https://github.com/tailwindlabs/heroicons"
               target="_blank"
-              className="transition duration-200 ease-linear hover:text-primary-600 text-primary-500">
+              className="transition duration-200 ease-linear hover:text-primary-600 text-primary-500"
+            >
               documentation
             </Link>
             .
@@ -44,6 +42,6 @@ const HeroiconsIcons = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default HeroiconsIcons
+  );
+};
+export default HeroiconsIcons;

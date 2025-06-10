@@ -1,95 +1,96 @@
-'use client'
+import React, { useState } from "react";
+import mainLogo from "@assets/images/main-logo.png";
+import whiteLogo from "@assets/images/logo-white.png";
+import authCreative from "@assets/images/others/auth-creative.png";
+import google from "@assets/images/others/google.png";
+import { Eye, EyeOff } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
-import React, { useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
-import whiteLogo from '@assets/images/logo-white.png'
-import mainLogo from '@assets/images/main-logo.png'
-import authCreative from '@assets/images/others/auth-creative.png'
-import google from '@assets/images/others/google.png'
-import { Eye, EyeOff } from 'lucide-react'
+type FormData = {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  agreeToTerms: boolean;
+};
 
 const SignupCreative: React.FC = () => {
-  const router = useRouter()
-  const [showPassword, setShowPassword] = useState(false)
-  const [, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    name: '', // Pre-filled based on provided data
-    email: '', // Pre-filled based on provided data
-    password: '',
-    confirmPassword: '',
-  })
+  const [formData, setFormData] = useState<FormData>({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    agreeToTerms: false,
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-    if (error) setError(null) // Clear error when user types
-  }
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false,
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    setLoading(!loading);
+    setError(null);
 
-    const { name, email, password, confirmPassword } = formData
-
-    if (!name || !email || !password || !confirmPassword) {
-      setError('Please fill in all required fields')
-      setLoading(false)
-      return
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.confirmPassword
+    ) {
+      setError("Please fill in all required fields");
+      setLoading(false);
+      return;
     }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      setLoading(false)
-      return
+    // Basic validation
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long')
-      setLoading(false)
-      return
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      setLoading(false);
+      return;
     }
 
-    try {
-      const res = await fetch('/api/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-        }),
-      })
+    // Redirect to login page on success
+    navigate("/auth/signin-creative");
 
-      const data = await res.json()
-
-      if (!res.ok) {
-        throw new Error(data.message || 'Something went wrong')
-      }
-
-      router.push('/auth/signin-creative')
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message)
-      } else {
-        setError('An unknown error occurred')
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
+    // Clear form data
+    setFormData({
+      firstName: "",
+      lastName: "",
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      agreeToTerms: false,
+    });
+    setLoading(false);
+  };
 
   return (
     <div className="relative">
@@ -97,17 +98,17 @@ const SignupCreative: React.FC = () => {
         <div className="relative col-span-12 py-8 overflow-hidden bg-gray-100 dark:bg-dark-850 lg:min-h-screen lg:col-span-6 md:p-9 xl:p-12">
           <div className="absolute bottom-0 w-32 -rotate-45 -top-64 -right-8 bg-gray-200/20 dark:bg-dark-800/20"></div>
           <div className="p-4">
-            <Link href="/">
-              <Image
+            <Link to="/">
+              <img
                 src={mainLogo}
-                alt="mainLogo"
+                alt="logo"
                 width={175}
                 height={32}
                 className="h-8 inline-block dark:hidden"
               />
-              <Image
+              <img
                 src={whiteLogo}
-                alt="whiteLogo"
+                alt="logo"
                 width={175}
                 height={32}
                 className="hidden h-8 dark:inline-block"
@@ -116,7 +117,7 @@ const SignupCreative: React.FC = () => {
             <h1 className="max-w-lg mt-8 text-2xl font-normal leading-tight capitalize md:leading-tight md:text-4xl">
               The most straightforward way to manage your projects
             </h1>
-            <Image
+            <img
               src={authCreative}
               alt="Auth Creative"
               width={952}
@@ -133,10 +134,11 @@ const SignupCreative: React.FC = () => {
                   Create a New Account
                 </h4>
                 <p className="mb-5 text-center text-gray-500">
-                  Already have an account?
+                  Already have an account?{" "}
                   <Link
-                    href="/auth/signin-creative"
-                    className="font-medium link link-primary">
+                    to="/auth/signin-creative"
+                    className="font-medium link link-primary"
+                  >
                     Sign In
                   </Link>
                 </p>
@@ -154,7 +156,7 @@ const SignupCreative: React.FC = () => {
                         className="w-full form-input"
                         placeholder="Enter your first name"
                         value={formData.firstName}
-                        onChange={handleChange}
+                        onChange={handleInputChange}
                       />
                     </div>
                     <div className="col-span-12 md:col-span-6">
@@ -168,7 +170,7 @@ const SignupCreative: React.FC = () => {
                         className="w-full form-input"
                         placeholder="Enter your last name"
                         value={formData.lastName}
-                        onChange={handleChange}
+                        onChange={handleInputChange}
                       />
                     </div>
                     <div className="col-span-12 md:col-span-6">
@@ -177,12 +179,12 @@ const SignupCreative: React.FC = () => {
                       </label>
                       <input
                         type="text"
-                        id="name"
-                        name="name"
+                        id="username"
+                        name="username"
                         className="w-full form-input"
                         placeholder="Enter your username"
-                        value={formData.name}
-                        onChange={handleChange}
+                        value={formData.username}
+                        onChange={handleInputChange}
                       />
                     </div>
                     <div className="col-span-12 md:col-span-6">
@@ -196,7 +198,7 @@ const SignupCreative: React.FC = () => {
                         className="w-full form-input"
                         placeholder="Enter your email"
                         value={formData.email}
-                        onChange={handleChange}
+                        onChange={handleInputChange}
                       />
                     </div>
                     <div className="col-span-12">
@@ -205,19 +207,25 @@ const SignupCreative: React.FC = () => {
                       </label>
                       <div className="relative">
                         <input
-                          type={showPassword ? 'text' : 'password'}
+                          type={showPassword.password ? "text" : "password"}
                           id="password"
                           name="password"
                           className="ltr:pr-8 rtl:pl-8 form-input"
-                          placeholder="Enter your confirm password"
+                          placeholder="Enter your password"
                           value={formData.password}
-                          onChange={handleChange}
+                          onChange={handleInputChange}
                         />
                         <button
                           type="button"
-                          className="absolute inset-y-0 flex items-center text-gray-500 ltr:right-3 rtl:left-3 focus:outline-hidden"
-                          onClick={() => setShowPassword((prev) => !prev)}>
-                          {showPassword ? (
+                          onClick={() =>
+                            setShowPassword({
+                              ...showPassword,
+                              password: !showPassword.password,
+                            })
+                          }
+                          className="absolute inset-y-0 flex items-center text-gray-500 ltr:right-3 rtl:left-3 focus:outline-none"
+                        >
+                          {showPassword.password ? (
                             <Eye className="size-5" />
                           ) : (
                             <EyeOff className="size-5" />
@@ -231,19 +239,27 @@ const SignupCreative: React.FC = () => {
                       </label>
                       <div className="relative">
                         <input
-                          type={showPassword ? 'text' : 'password'}
-                          id="confirmPasswordInput"
+                          type={
+                            showPassword.confirmPassword ? "text" : "password"
+                          }
+                          id="confirmPassword"
                           name="confirmPassword"
                           className="ltr:pr-8 rtl:pl-8 form-input"
                           placeholder="Enter your confirm password"
                           value={formData.confirmPassword}
-                          onChange={handleChange}
+                          onChange={handleInputChange}
                         />
                         <button
                           type="button"
-                          className="absolute inset-y-0 flex items-center text-gray-500 ltr:right-3 rtl:left-3 focus:outline-hidden"
-                          onClick={() => setShowPassword((prev) => !prev)}>
-                          {showPassword ? (
+                          onClick={() =>
+                            setShowPassword({
+                              ...showPassword,
+                              confirmPassword: !showPassword.confirmPassword,
+                            })
+                          }
+                          className="absolute inset-y-0 flex items-center text-gray-500 ltr:right-3 rtl:left-3 focus:outline-none"
+                        >
+                          {showPassword.confirmPassword ? (
                             <Eye className="size-5" />
                           ) : (
                             <EyeOff className="size-5" />
@@ -258,10 +274,13 @@ const SignupCreative: React.FC = () => {
                           className="input-check input-check-primary shrink-0"
                           type="checkbox"
                           name="agreeToTerms"
+                          checked={formData.agreeToTerms}
+                          onChange={handleInputChange}
                         />
                         <label
                           htmlFor="agreeToTerms"
-                          className="leading-normal input-check-label">
+                          className="leading-normal input-check-label"
+                        >
                           By creating an account, you agree to all of our terms
                           condition & policies.
                         </label>
@@ -281,11 +300,12 @@ const SignupCreative: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-2">
+                <div className="space-y-2">
                   <button
                     type="button"
-                    className="w-full border-gray-200 dark:border-dark-800 btn hover:bg-gray-50 dark:hover:bg-dark-850 hover:text-primary-500">
-                    <Image
+                    className="w-full border-gray-200 dark:border-dark-800 btn hover:bg-gray-50 dark:hover:bg-dark-850 hover:text-primary-500"
+                  >
+                    <img
                       src={google}
                       alt="Google"
                       width={16}
@@ -296,7 +316,8 @@ const SignupCreative: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    className="w-full border-gray-200 dark:border-dark-800 btn hover:bg-gray-50 dark:hover:bg-dark-850 hover:text-primary-500">
+                    className="w-full border-gray-200 dark:border-dark-800 btn hover:bg-gray-50 dark:hover:bg-dark-850 hover:text-primary-500"
+                  >
                     <i className="ri-facebook-fill text-[20px] inline-block ltr:mr-1 rtl:ml-1 size-4 text-primary-500"></i>
                     Sign Up Via Facebook
                   </button>
@@ -307,7 +328,7 @@ const SignupCreative: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SignupCreative
+export default SignupCreative;

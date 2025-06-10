@@ -1,23 +1,18 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
+import React, { useState } from "react";
+import TicketSaleCharts from "./ticketSaleChart";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-
-import TicketSaleCharts from './TicketSaleChart'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
 
 const TicketSale = () => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   const toggle = () => {
-    setOpen(!open)
-  }
+    setOpen(!open);
+  };
   return (
     <React.Fragment>
       <div className="card">
@@ -28,9 +23,10 @@ const TicketSale = () => {
               This Week
               <svg
                 onClick={toggle}
-                className={`transition-transform duration-300 ltr:ml-1 rtl:mr-1 size-4 ${open ? 'transform rotate-180' : ''}`}
+                className={`transition-transform duration-300 ltr:ml-1 rtl:mr-1 size-4 ${open ? "transform rotate-180" : ""}`}
                 viewBox="0 0 20 20"
-                fill="currentColor">
+                fill="currentColor"
+              >
                 <path
                   fillRule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -39,14 +35,14 @@ const TicketSale = () => {
               </svg>
             </DropdownButton>
             <DropdownMenu>
-              <Link href="#!" className="dropdown-item ">
+              <Link to="#!" className="dropdown-item ">
                 <span>This Week</span>
               </Link>
 
-              <Link href="#!" className="dropdown-item ">
+              <Link to="#!" className="dropdown-item ">
                 <span>This Month</span>
               </Link>
-              <Link href="#!" className="dropdown-item">
+              <Link to="#!" className="dropdown-item">
                 <span>This Years</span>
               </Link>
             </DropdownMenu>
@@ -55,13 +51,13 @@ const TicketSale = () => {
         <div className="card-body">
           <TicketSaleCharts
             chartColors="[bg-primary-500]"
-            chartDarkColors={''}
+            chartDarkColors={""}
             chartId="ticketSaleChart"
           />
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TicketSale
+export default TicketSale;

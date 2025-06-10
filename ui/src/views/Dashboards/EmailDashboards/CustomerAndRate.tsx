@@ -1,16 +1,11 @@
-'use client'
-
-import React from 'react'
-
-import Link from 'next/link'
-
+import { NextPageWithLayout } from "@dtos/layout";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-import { Ellipsis } from 'lucide-react'
+} from "@src/components/custom/dropdown/dropdown";
+import { Ellipsis } from "lucide-react";
+import React from "react";
 
 const CustomerAndRate: NextPageWithLayout = () => {
   return (
@@ -22,20 +17,21 @@ const CustomerAndRate: NextPageWithLayout = () => {
             <Dropdown
               position="right"
               trigger="click"
-              dropdownClassName="dropdown">
+              dropdownClassName="dropdown"
+            >
               <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
                 <Ellipsis className="size-5" />
               </DropdownButton>
               <DropdownMenu>
-                <Link href="#!" className="dropdown-item">
+                <a href="#!" className="dropdown-item">
                   <span>Weekly</span>
-                </Link>
-                <Link href="#!" className="dropdown-item">
+                </a>
+                <a href="#!" className="dropdown-item">
                   <span>Monthly</span>
-                </Link>
-                <Link href="#!" className="dropdown-item">
+                </a>
+                <a href="#!" className="dropdown-item">
                   <span>Yearly</span>
-                </Link>
+                </a>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -52,20 +48,21 @@ const CustomerAndRate: NextPageWithLayout = () => {
             <Dropdown
               position="right"
               trigger="click"
-              dropdownClassName="dropdown">
+              dropdownClassName="dropdown"
+            >
               <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
                 <Ellipsis className="size-5" />
               </DropdownButton>
               <DropdownMenu>
-                <Link href="#!" className="dropdown-item">
+                <a href="#!" className="dropdown-item">
                   <span>Weekly</span>
-                </Link>
-                <Link href="#!" className="dropdown-item">
+                </a>
+                <a href="#!" className="dropdown-item">
                   <span>Monthly</span>
-                </Link>
-                <Link href="#!" className="dropdown-item">
+                </a>
+                <a href="#!" className="dropdown-item">
                   <span>Yearly</span>
-                </Link>
+                </a>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -76,6 +73,6 @@ const CustomerAndRate: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default CustomerAndRate
+  );
+};
+export default CustomerAndRate;

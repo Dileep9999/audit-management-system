@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import { MoveLeft, MoveRight } from 'lucide-react'
+import { MoveLeft, MoveRight } from "lucide-react";
+import React from "react";
 
 const EducationalBackground = () => {
   return (
@@ -10,7 +7,8 @@ const EducationalBackground = () => {
       <form
         action="#!"
         id="educationalBackgroundForm"
-        x-ref="educationalBackgroundForm">
+        x-ref="educationalBackgroundForm"
+      >
         <h6 className="mb-3">High School</h6>
         <div className="grid grid-cols-12 gap-space">
           <div className="col-span-12 sm:col-span-4">
@@ -125,7 +123,8 @@ const EducationalBackground = () => {
           <div className="col-span-12 sm:col-span-4">
             <label
               htmlFor="extracurricularActivitiesInput"
-              className="form-label">
+              className="form-label"
+            >
               Extracurricular Activities
             </label>
             <input
@@ -170,7 +169,7 @@ const EducationalBackground = () => {
         </div>
       </form>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default EducationalBackground
+export default EducationalBackground;

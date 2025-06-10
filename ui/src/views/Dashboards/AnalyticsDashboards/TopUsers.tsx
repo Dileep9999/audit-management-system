@@ -1,16 +1,11 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-
-import user11 from '@assets/images/avatar/user-11.png'
-import user14 from '@assets/images/avatar/user-14.png'
-import user15 from '@assets/images/avatar/user-15.png'
-import user17 from '@assets/images/avatar/user-17.png'
-import user18 from '@assets/images/avatar/user-18.png'
-import { NextPageWithLayout } from '@src/dtos'
-import SimpleBar from 'simplebar-react'
+import React from "react";
+import user18 from "@assets/images/avatar/user-18.png";
+import user11 from "@assets/images/avatar/user-11.png";
+import user14 from "@assets/images/avatar/user-14.png";
+import user15 from "@assets/images/avatar/user-15.png";
+import user17 from "@assets/images/avatar/user-17.png";
+import SimpleBar from "simplebar-react";
+import { NextPageWithLayout } from "@dtos/layout";
 
 const TopUsers: NextPageWithLayout = () => {
   return (
@@ -21,11 +16,11 @@ const TopUsers: NextPageWithLayout = () => {
         </div>
         <div className="card-body">
           <SimpleBar className="h-36 -mx-space px-space">
-            <div className="flex flex-col gap-3 ">
+            <div className="space-y-3 ">
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={user18}
-                  alt="userImg"
+                  alt="user18Img"
                   className="rounded-full size-10 shrink-0"
                 />
                 <div className="grow">
@@ -36,9 +31,9 @@ const TopUsers: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={user11}
-                  alt="userImg"
+                  alt="user11Img"
                   className="rounded-full size-10 shrink-0"
                 />
                 <div className="grow">
@@ -49,9 +44,9 @@ const TopUsers: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={user14}
-                  alt="userImg"
+                  alt="user14Img"
                   className="rounded-full size-10 shrink-0"
                 />
                 <div className="grow">
@@ -62,9 +57,9 @@ const TopUsers: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={user15}
-                  alt="userImg"
+                  alt="user15Img"
                   className="rounded-full size-10 shrink-0"
                 />
                 <div className="grow">
@@ -75,9 +70,9 @@ const TopUsers: NextPageWithLayout = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Image
+                <img
                   src={user17}
-                  alt="userImg"
+                  alt="user17Img"
                   className="rounded-full size-10 shrink-0"
                 />
                 <div className="grow">
@@ -92,6 +87,6 @@ const TopUsers: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default TopUsers
+  );
+};
+export default TopUsers;

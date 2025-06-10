@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface MixedChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const LineScatterChart = ({
@@ -24,12 +15,12 @@ const LineScatterChart = ({
   chartId,
 }: MixedChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Points',
-      type: 'scatter',
+      name: "Points",
+      type: "scatter",
       data: [
         {
           x: 1,
@@ -86,8 +77,8 @@ const LineScatterChart = ({
       ],
     },
     {
-      name: 'Line',
-      type: 'line',
+      name: "Line",
+      type: "line",
       data: [
         {
           x: 1,
@@ -131,15 +122,15 @@ const LineScatterChart = ({
         },
       ],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'line',
+      type: "line",
     },
     fill: {
-      type: 'solid',
+      type: "solid",
     },
     markers: {
       size: [6, 0],
@@ -153,7 +144,7 @@ const LineScatterChart = ({
       show: false,
     },
     xaxis: {
-      type: 'numeric',
+      type: "numeric",
       min: 0,
       max: 12,
       tickAmount: 12,
@@ -165,7 +156,7 @@ const LineScatterChart = ({
         bottom: 0,
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -174,12 +165,12 @@ const LineScatterChart = ({
         series={series}
         type="line"
         data-chart-colors="[bg-sky-500, bg-green-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default LineScatterChart
+export default LineScatterChart;

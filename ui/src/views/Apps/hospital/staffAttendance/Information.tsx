@@ -1,11 +1,7 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Image from 'next/image'
-
-import user3 from '@assets/images/avatar/user-3.png'
-import { MessagesSquare, Pencil, Phone } from 'lucide-react'
+import user3 from "@assets/images/avatar/user-3.png";
+import { MessagesSquare, Pencil, Phone } from "lucide-react";
 
 const Information = () => {
   return (
@@ -14,25 +10,25 @@ const Information = () => {
         <div className="card-body">
           <div className="flex flex-col gap-5 2xl:flex-row">
             <div className="shrink-0">
-              <Image src={user3} alt="userImg" className="rounded-md size-40" />
+              <img src={user3} alt="user3Img" className="rounded-md size-40" />
             </div>
             <div className="mt-5 grow 2xl:mt-0">
               <h6 className="mb-1 text-16">Linda Sharp</h6>
               <div className="flex flex-wrap gap-3 item-center *:flex *:items-center">
                 <p>
-                  <i className="ltr:mr-1 rtl:ml-1 ri-user-3-line"></i>
+                  <i className="ltr:mr-1 rtl:ml-1 ri-user-3-line"></i>{" "}
                   <span className="text-gray-500 dark:text-dark-500">
                     Female
                   </span>
                 </p>
                 <p>
-                  <i className="ltr:mr-1 rtl:ml-1 ri-briefcase-line"></i>
+                  <i className="ltr:mr-1 rtl:ml-1 ri-briefcase-line"></i>{" "}
                   <span className="text-gray-500 dark:text-dark-500">
                     Merchandiser, retail
                   </span>
                 </p>
                 <p>
-                  <i className="ltr:mr-1 rtl:ml-1 ri-map-pin-2-line"></i>
+                  <i className="ltr:mr-1 rtl:ml-1 ri-map-pin-2-line"></i>{" "}
                   <span className="text-gray-500 dark:text-dark-500">
                     California
                   </span>
@@ -41,15 +37,15 @@ const Information = () => {
               <div className="flex flex-wrap items-center gap-3 mt-5 xl:mr-40 md:gap-space">
                 <div className="p-3 md:p-4 text-center border border-gray-200 dark:border-dark-800 border-dashed rounded-md w-[110px] md:w-36 shrink-0">
                   <h5 className="mb-1 text-base md:text-lg">
-                    1
+                    1{" "}
                     <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
                       hr
-                    </small>
-                    48
+                    </small>{" "}
+                    48{" "}
                     <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
                       m
-                    </small>
-                    37
+                    </small>{" "}
+                    37{" "}
                     <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
                       s
                     </small>
@@ -60,7 +56,7 @@ const Information = () => {
                 </div>
                 <div className="p-3 md:p-4 text-center border border-gray-200 dark:border-dark-800 border-dashed rounded-md w-[110px] md:w-36 shrink-0">
                   <h4 className="mb-1 text-base md:text-lg">
-                    20
+                    20{" "}
                     <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
                       Feb, 2021
                     </small>
@@ -71,7 +67,7 @@ const Information = () => {
                 </div>
                 <div className="p-3 md:p-4 text-center border border-gray-200 dark:border-dark-800 border-dashed rounded-md w-[110px] md:w-36 shrink-0">
                   <h4 className="mb-1 text-base md:text-lg">
-                    13
+                    13{" "}
                     <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
                       Dec, 1998
                     </small>
@@ -82,7 +78,7 @@ const Information = () => {
                 </div>
                 <div className="p-3 md:p-4 text-center border border-gray-200 dark:border-dark-800 border-dashed rounded-md w-[110px] md:w-36 shrink-0">
                   <h4 className="mb-1 text-base md:text-lg">
-                    25
+                    25{" "}
                     <small className="text-sm font-normal text-gray-500 dark:text-dark-500">
                       Years
                     </small>
@@ -102,7 +98,8 @@ const Information = () => {
                 </button>
                 <button
                   className="btn btn-sub-purple btn-icon"
-                  title="messages-square">
+                  title="messages-square"
+                >
                   <MessagesSquare className="size-4" />
                 </button>
                 <button type="button" className="btn btn-primary" title="edit">
@@ -161,7 +158,7 @@ const Information = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Information
+export default Information;

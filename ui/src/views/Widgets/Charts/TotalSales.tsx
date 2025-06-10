@@ -1,19 +1,14 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-
-import TotalSalesChart from './TotalSalesChart'
+} from "@src/components/custom/dropdown/dropdown";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import TotalSalesChart from "./totalSalesChart";
 
 const TotalSales = () => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   return (
     <React.Fragment>
       <div className="col-span-12 md:col-span-6 2xl:col-span-4">
@@ -24,12 +19,11 @@ const TotalSales = () => {
               <DropdownButton colorClass="flex px-2 py-1 text-xs border-gray-200 dark:border-dark-800 link link-red btn">
                 Last Week
                 <svg
-                  className={`transition-transform duration-300 size-4 ${
-                    open ? 'transform rotate-180' : ''
-                  }`}
+                  className={`transition-transform duration-300 size-4 ${open ? "transform rotate-180" : ""}`}
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  onClick={() => setOpen(!open)}>
+                  onClick={() => setOpen(!open)}
+                >
                   <path
                     fillRule="evenodd"
                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -38,14 +32,14 @@ const TotalSales = () => {
                 </svg>
               </DropdownButton>
               <DropdownMenu>
-                <Link href="#!" className="dropdown-item ">
+                <Link to="#!" className="dropdown-item ">
                   <span>Last Week</span>
                 </Link>
 
-                <Link href="#!" className="dropdown-item ">
+                <Link to="#!" className="dropdown-item ">
                   <span>Last Month</span>
                 </Link>
-                <Link href="#!" className="dropdown-item">
+                <Link to="#!" className="dropdown-item">
                   <span>Last Years</span>
                 </Link>
               </DropdownMenu>
@@ -55,7 +49,7 @@ const TotalSales = () => {
             <div dir="ltr">
               <TotalSalesChart
                 chartColors="[bg-primary-500]"
-                chartDarkColors={''}
+                chartDarkColors={""}
                 chartId="labelColumnChart"
               />
             </div>
@@ -63,7 +57,7 @@ const TotalSales = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TotalSales
+export default TotalSales;

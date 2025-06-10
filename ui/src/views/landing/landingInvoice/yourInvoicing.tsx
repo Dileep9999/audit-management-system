@@ -1,33 +1,32 @@
-'use client'
+import React from "react";
 
-import React from 'react'
+import user11 from "@assets/images/avatar/user-11.png";
 
-import Image from 'next/image'
-
-import user11 from '@assets/images/avatar/user-11.png'
-
-import { InvoicedChart } from './invoicedChart'
+import { InvoicedChart } from "./invoicedChart";
 
 const YourInvoicing: React.FC = () => {
   return (
     <React.Fragment>
       <section
         className="relative pb-20 overflow-hidden pt-36 bg-gradient-to-b dark:from-purple-500/10"
-        id="home">
+        id="home"
+      >
         <div className="absolute top-0 opacity-30">
           <svg
             width="1900"
             viewBox="0 0 1201 401"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg">
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <mask
               id="mask0_505_112"
-              style={{ maskType: 'alpha' }}
+              style={{ maskType: "alpha" }}
               maskUnits="userSpaceOnUse"
               x="0"
               y="0"
               width="1201"
-              height="401">
+              height="401"
+            >
               <rect
                 x="0.90625"
                 y="0.380859"
@@ -256,7 +255,8 @@ const YourInvoicing: React.FC = () => {
                 />
                 <button
                   type="reset"
-                  className="absolute rounded-full top-2 ltr:right-2 rtl:left-2 btn btn-purple">
+                  className="absolute rounded-full top-2 ltr:right-2 rtl:left-2 btn btn-purple"
+                >
                   SubScribe
                 </button>
               </div>
@@ -278,7 +278,8 @@ const YourInvoicing: React.FC = () => {
                   />
                   <label
                     htmlFor="radioBasic1"
-                    className="shrink-0 dark:text-muted-invoice">
+                    className="shrink-0 dark:text-muted-invoice"
+                  >
                     Send Invoice
                   </label>
                 </div>
@@ -291,7 +292,8 @@ const YourInvoicing: React.FC = () => {
                   />
                   <label
                     htmlFor="radioBasic2"
-                    className="shrink-0 dark:text-muted-invoice">
+                    className="shrink-0 dark:text-muted-invoice"
+                  >
                     Send on specific date
                   </label>
                 </div>
@@ -301,7 +303,8 @@ const YourInvoicing: React.FC = () => {
                   </label>
                   <select
                     id="invoiceSend"
-                    className="dark:bg-body-invoice form-input dark:border-slate-300/10 focus:border-purple-500">
+                    className="dark:bg-body-invoice form-input dark:border-slate-300/10 focus:border-purple-500"
+                  >
                     <option value="1">Weekly</option>
                     <option value="2">Monthly</option>
                     <option value="3">Yearly</option>
@@ -313,7 +316,8 @@ const YourInvoicing: React.FC = () => {
                   </label>
                   <select
                     id="timesSend"
-                    className="dark:bg-body-invoice form-input dark:border-slate-300/10 focus:border-purple-500">
+                    className="dark:bg-body-invoice form-input dark:border-slate-300/10 focus:border-purple-500"
+                  >
                     <option value="1">1 Times</option>
                     <option value="2">2 Times</option>
                     <option value="3">3 Times</option>
@@ -323,7 +327,7 @@ const YourInvoicing: React.FC = () => {
               </div>
               <div className="p-5 mt-5 border border-gray-200 rounded bg-gradient-to-br dark:border-slate-300/10 dark:from-purple-500/5 dark:to-body-invoice">
                 <div className="flex items-center gap-3">
-                  <Image
+                  <img
                     src={user11}
                     alt="userImg"
                     className="rounded-full size-12"
@@ -369,7 +373,8 @@ const YourInvoicing: React.FC = () => {
                   />
                   <label
                     htmlFor="radioBasic3"
-                    className="shrink-0 dark:text-muted-invoice">
+                    className="shrink-0 dark:text-muted-invoice"
+                  >
                     Send Invoice
                   </label>
                 </div>
@@ -382,7 +387,8 @@ const YourInvoicing: React.FC = () => {
                   />
                   <label
                     htmlFor="radioBasic4"
-                    className="shrink-0 dark:text-muted-invoice">
+                    className="shrink-0 dark:text-muted-invoice"
+                  >
                     Send on specific date
                   </label>
                 </div>
@@ -392,7 +398,8 @@ const YourInvoicing: React.FC = () => {
                   </label>
                   <select
                     id="invoiceSend"
-                    className="dark:bg-body-invoice form-input dark:border-slate-300/10 focus:border-purple-500">
+                    className="dark:bg-body-invoice form-input dark:border-slate-300/10 focus:border-purple-500"
+                  >
                     <option value="1">Weekly</option>
                     <option value="2">Monthly</option>
                     <option value="3">Yearly</option>
@@ -404,7 +411,8 @@ const YourInvoicing: React.FC = () => {
                   </label>
                   <select
                     id="timesSend"
-                    className="dark:bg-body-invoice form-input dark:border-slate-300/10 focus:border-purple-500">
+                    className="dark:bg-body-invoice form-input dark:border-slate-300/10 focus:border-purple-500"
+                  >
                     <option value="1">1 Times</option>
                     <option value="2">2 Times</option>
                     <option value="3">3 Times</option>
@@ -414,7 +422,7 @@ const YourInvoicing: React.FC = () => {
               </div>
               <div className="p-5 mt-5 border border-gray-200 rounded-sm bg-gradient-to-br dark:border-slate-300/10 dark:from-purple-500/5 dark:to-body-invoice">
                 <div className="flex items-center gap-3">
-                  <Image
+                  <img
                     src={user11}
                     alt="userImg"
                     className="rounded-full size-12"
@@ -436,7 +444,7 @@ const YourInvoicing: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default YourInvoicing
+export default YourInvoicing;

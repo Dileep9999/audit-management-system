@@ -1,196 +1,188 @@
-import { GroupChatMessage, GroupChatRecord } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
+import api from "@src/utils/axios_api";
+import { AppDispatch } from "@src/slices/reducer";
 import {
-  LocalStorageRecord,
-  addLocalStorageRecord,
-  createLocalStorage,
-  deleteLocalStorageRecord,
-  getLocalStorage,
-  updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_GROUP_CHAT_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
-
-import {
-  addGroupChatListRecord,
-  addNewGroupChatMessage,
-  deleteGroupChatListRecord,
-  deleteGroupChatMessage,
-  editGroupChatListRecord,
   getGroupChatList,
   setCurrentGroupChatRecord,
-} from './reducer'
+  deleteGroupChatListRecord,
+  editGroupChatListRecord,
+  addGroupChatListRecord,
+  addNewGroupChatMessage,
+  deleteGroupChatMessage,
+} from "./reducer";
+import {
+  addLocalStorageRecord,
+  deleteLocalStorageRecord,
+  createLocalStorage,
+  updateLocalStorageRecord,
+  getLocalStorage,
+} from "@src/utils/crud_functions";
+import { GroupChatMessage, GroupChatRecord } from "@src/dtos";
+import { REACT_APP_GROUP_CHAT_API } from "@src/utils/url_helper";
+import AddToast from "@src/components/custom/toast/addToast";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-const DEFAULT_GROUP_CHAT_LIST_API = NEXT_PUBLIC_GROUP_CHAT_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const DEFAULT_GROUP_CHAT_LIST_API = REACT_APP_GROUP_CHAT_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get customer list
 export const getGroupChatData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = (await getLocalStorage('d-group-chat')) as
-        | GroupChatRecord[]
-        | null
+      const responseData = await getLocalStorage("d-group-chat");
       if (!responseData) {
-        const response = await api.get(DEFAULT_GROUP_CHAT_LIST_API)
-        const { data } = response
-        createLocalStorage('d-group-chat', data)
-        dispatch(getGroupChatList(data))
+        const response = await api.get(DEFAULT_GROUP_CHAT_LIST_API);
+        createLocalStorage("d-group-chat", response);
+        dispatch(getGroupChatList(response));
       } else {
-        dispatch(getGroupChatList(responseData || []))
+        dispatch(getGroupChatList(responseData));
       }
     } else {
-      const response = await api.get(DEFAULT_GROUP_CHAT_LIST_API)
-      const { data } = response
-      dispatch(getGroupChatList(data))
+      const response = await api.get(DEFAULT_GROUP_CHAT_LIST_API);
+      dispatch(getGroupChatList(response));
     }
-  } catch (error) {
-    let errorMessage = 'Group Chat List Fetch Failed'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-      toast.error(errorMessage, { autoClose: 3000 })
-    }
-    console.error('Group Chat List Fetch Failed:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Group Chat List Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching group chat data:", error);
   }
-}
+};
 
 // set current chat record
 export const setCurrentGroupChatListRecord =
   (chat: GroupChatRecord) => async (dispatch: AppDispatch) => {
     try {
-      const response = { data: chat }
-      dispatch(setCurrentGroupChatRecord(response.data))
+      const response = { data: chat };
+      dispatch(setCurrentGroupChatRecord(response.data));
     } catch (error) {
-      console.error('Error setting current chat record:', error)
+      console.error("Error setting current chat record:", error);
     }
-  }
+  };
 
 // add new Chat
 export const addGroupChatRecordData =
   (newRecord: GroupChatRecord) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(
+      const response = await api.post(
         DEFAULT_GROUP_CHAT_LIST_API,
         newRecord,
-        'Group Chat'
-      )
-      const { data, message } = response
-      toast.success(message || 'Chat record added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-group-chat', { ...data })
-      dispatch(addGroupChatListRecord(data))
-    } catch (error) {
-      let errorMessage = 'Group Chat record addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Group Chat record addition failed:', error)
+        "Group Chat",
+      );
+      const { message } = response;
+      AddToast(message || "Chat record added successfully");
+      addLocalStorageRecord("d-group-chat", newRecord);
+      dispatch(addGroupChatListRecord(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Group Chat record addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding group chat record:", error);
     }
-  }
+  };
 
 // delete current chat
 export const deleteGroupChatRecordData =
-  (chat: number[]) => async (dispatch: AppDispatch) => {
+  (question: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = chat.map(async (id: number) => {
-        const response = await customDelete(
+      const deletePromises = question.map(async (_id) => {
+        const response = await api.delete(
           DEFAULT_GROUP_CHAT_LIST_API,
-          id,
-          'Group Chat'
-        )
-        const { message, data } = response
-        toast.success(message || 'Group Chat record deleted successfully', {
-          autoClose: 3000,
-        })
-        return data
-      })
-      const deletedCustomers = await Promise.all(deletePromises)
-      dispatch(deleteGroupChatListRecord(deletedCustomers))
+          _id,
+          "Group Chat",
+        );
+        const { message } = response;
+        DeleteToast(message || "Group Chat record deleted successfully");
+        return _id;
+      });
+
+      const deletedGroupChat = await Promise.all(deletePromises);
+      dispatch(deleteGroupChatListRecord(deletedGroupChat));
       deleteLocalStorageRecord({
-        key: 'd-group-chat',
-        listRecord: chat,
+        key: "d-group-chat",
+        listRecord: question,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'Group Chat record deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Group Chat record deletion failed:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Group Chat record deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting group chat record: ", error);
     }
-  }
+  };
 
 // edit customer record
 export const editGroupChatListRecordData =
-  (chat: GroupChatRecord) => async (dispatch: AppDispatch) => {
+  (question: GroupChatRecord) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(
+      const response = await api.put(
         DEFAULT_GROUP_CHAT_LIST_API,
-        chat,
-        'Group Chat'
-      )
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-group-chat',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editGroupChatListRecord(data))
-    } catch (error) {
-      let errorMessage = 'Group Chat record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Group Chat record updation failed:', error)
+        question,
+        "Chat",
+      );
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Chat record updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-group-chat", question);
+      dispatch(editGroupChatListRecord(question));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Group Chat record updation failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating group chat record:", error);
     }
-  }
+  };
 
 // add new message
 export const addGroupChatMessageRecord =
-  (userid: number, newMessage: GroupChatMessage) =>
+  (userId: number, newMessage: GroupChatMessage) =>
   async (dispatch: AppDispatch) => {
     try {
-      const response = { id: userid, message: newMessage }
+      const response = { _id: userId, message: newMessage };
       dispatch(
-        addNewGroupChatMessage({ id: response.id, message: response.message })
-      )
-    } catch (error) {
-      let errorMessage = 'Chat record addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Chat record addition failed:', error)
+        addNewGroupChatMessage({
+          _id: response._id,
+          message: response.message,
+        }),
+      );
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Chat record addition failed";
+      ErrorToast(errorMessage || "Chat record addition failed");
+      console.error("Error adding group chat record:", error);
     }
-  }
+  };
 
 // delete message
 export const deleteGroupChatMessageRecord =
-  (userid: number, deletedMessage: GroupChatMessage) =>
+  (userId: number, deletedMessage: GroupChatMessage) =>
   async (dispatch: AppDispatch) => {
     try {
-      const response = { id: userid, message: deletedMessage }
+      const response = { _id: userId, message: deletedMessage };
       dispatch(
-        deleteGroupChatMessage({ id: response.id, message: response.message })
-      )
-    } catch (error) {
-      let errorMessage = 'Error deleting record'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Error deleting record:', error)
+        deleteGroupChatMessage({
+          _id: response._id,
+          message: response.message,
+        }),
+      );
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Chat record deletion failed";
+      ErrorToast(errorMessage || "Chat record deletion failed");
+      console.error("Error deleting group chat record:", error);
     }
-  }
+  };

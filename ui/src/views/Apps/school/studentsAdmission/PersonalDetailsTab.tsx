@@ -1,41 +1,47 @@
-'use client'
-
-import React, { useCallback, useEffect, useState } from 'react'
-
-import { useRouter } from 'next/navigation'
-
-import { StudentList } from '@src/dtos'
-import { OptionType, genderOptions } from '@src/dtos/apps/school'
-import { AppDispatch, RootState } from '@src/slices/reducer'
+import React, { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import Select from "react-select";
+import { StudentList } from "@src/dtos";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@src/slices/reducer";
 import {
   addStudentListData,
   editStudentListData,
   getStudentListData,
-} from '@src/slices/thunk'
-import { MoveLeft, MoveRight } from 'lucide-react'
-import Flatpickr from 'react-flatpickr'
-import { useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
-import Select from 'react-select'
+} from "@src/slices/thunk";
+import Flatpickr from "react-flatpickr";
+import { MoveLeft, MoveRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+interface OptionType {
+  label: string;
+  value: string;
+}
+
+const genderOptions: OptionType[] = [
+  { label: "Male", value: "Male" },
+  { label: "Female", value: "Female" },
+  { label: "Others", value: "Others" },
+];
 
 const PersonalDetailsTab = () => {
-  const { editeMode, currentStudent, studentList } = useSelector(
-    (state: RootState) => state.StudentList
-  )
-  const dispatch = useDispatch<AppDispatch>()
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
+  const { editMode, currentStudent, studentList } = useSelector(
+    (state: RootState) => state.StudentList,
+  );
+  const dispatch = useDispatch<AppDispatch>();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedJoiningDate, setSelectedJoiningDate] = useState<
     Date | undefined
-  >(undefined)
-  const [selectedGender, setSelectedGender] = useState<OptionType | null>(null)
+  >(undefined);
+  const [selectedGender, setSelectedGender] = useState<OptionType | null>(null);
 
-  const router = useRouter()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!studentList) {
-      dispatch(getStudentListData())
+      dispatch(getStudentListData());
     }
-  }, [studentList, dispatch])
+  }, [studentList, dispatch]);
 
   const {
     register,
@@ -46,133 +52,134 @@ const PersonalDetailsTab = () => {
     reset,
     formState: { errors },
   } = useForm<StudentList>({
-    mode: 'onChange',
-  })
+    mode: "onChange",
+  });
 
   const getSelectedGenderOption = (gender: string | undefined) => {
-    return genderOptions.find((option) => option.value === gender) || null
-  }
+    return genderOptions.find((option) => option.value === gender) || null;
+  };
 
-  const resetForm = useCallback(() => {
-    reset({
-      studentId: '',
-      studentName: '',
-      middleName: '',
-      lastName: '',
-      gender: '',
-      rollNo: '',
-      age: '',
-      class: '',
-      email: '',
-      phone: '',
-      alternativePhone: '',
-      nationality: '',
-      birthDate: '',
-      address: '',
-      city: '',
-      country: '',
-      date: '',
-      pinCode: '',
-    })
-    setSelectedGender(null)
-  }, [reset])
-
-  const validatePhoneNumber = (value: string) => {
-    const phoneNumberPattern = /^\d{10}$/ // Only 10 digits
-    return (
-      phoneNumberPattern.test(value) ||
-      'Phone number must be exactly 10 digits.'
-    )
-  }
-
-  const generateNewStudentId = (studentList: StudentList[]) => {
-    // Find the maximum numeric part from existing student IDs
+  const generateNewStudentId = (studentList: any) => {
     const maxStudentId =
       studentList.length > 0
         ? Math.max(
-            ...studentList.map((student: StudentList) => {
-              const numericPart = parseInt(student.studentId.split('-')[1], 10)
-              return isNaN(numericPart) ? 0 : numericPart
-            })
+            ...studentList.map((student: any) => {
+              const numericPart = parseInt(student.studentId.split("-")[1], 10);
+              return isNaN(numericPart) ? 0 : numericPart;
+            }),
           )
-        : 0
+        : 0;
+    const newStudentId = maxStudentId + 1;
+    return `PES-${newStudentId}`;
+  };
 
-    // Increment the highest ID by 1
-    const newStudentId = maxStudentId + 1
-    return `PES-${newStudentId}`
-  }
+  const resetForm = useCallback(() => {
+    reset({
+      _id: studentList && studentList.length > 0 ? studentList.length + 1 : 1,
+      studentId: "",
+      studentName: "",
+      middleName: "",
+      lastName: "",
+      image: "https://images.kcubeinfotech.com/domiex/images/avatar/user-3.png",
+      gender: "",
+      rollNo: "",
+      age: "",
+      class: "",
+      email: "",
+      phone: "",
+      alternativePhone: "",
+      nationality: "",
+      birthDate: "",
+      address: "",
+      city: "",
+      country: "",
+      date: "",
+      pinCode: "",
+    });
+    setSelectedGender(null);
+  }, [reset, studentList]);
+
+  const validatePhoneNumber = (value: string) => {
+    const phoneNumberPattern = /^\d{10}$/; // Only 10 digits
+    return (
+      phoneNumberPattern.test(value) ||
+      "Phone number must be exactly 10 digits."
+    );
+  };
 
   const submitForm = (data: StudentList) => {
-    if (editeMode && currentStudent) {
+    clearErrors();
+    if (editMode && currentStudent) {
       const updatedStudent = {
         ...currentStudent, // Preserve current student properties
         ...data, // Update with new form data
-        image: '/assets/images/avatar/user-3.png',
-      }
-      dispatch(editStudentListData(updatedStudent))
-      router.push('/apps/school/students-list')
+        image:
+          "https://images.kcubeinfotech.com/domiex/images/avatar/user-3.png",
+      };
+      dispatch(editStudentListData(updatedStudent));
+      navigate("/apps/school/students-list");
     } else {
-      const newStudentId = generateNewStudentId(studentList)
+      const newStudentId = generateNewStudentId(studentList);
       const newStudent = {
         ...data,
         studentId: newStudentId,
         _id:
           studentList.length > 0
-            ? Math.max(...studentList.map((s: StudentList) => s.id)) + 1
+            ? Math.max(...studentList.map((s: any) => s._id)) + 1
             : 1, // Auto-increment _id
-      }
-      dispatch(addStudentListData(newStudent))
-      router.push('/apps/school/students-list')
-      resetForm()
+      };
+      dispatch(addStudentListData(newStudent));
+      navigate("/apps/school/students-list");
+      resetForm();
     }
-  }
+  };
 
   useEffect(() => {
-    if (editeMode && currentStudent) {
-      setValue('studentName', currentStudent.studentName || '')
-      setValue('middleName', currentStudent.middleName || '')
-      setValue('lastName', currentStudent.lastName || '')
-      setValue('gender', currentStudent.gender || '')
-      setValue('rollNo', currentStudent.rollNo || '')
-      setValue('age', currentStudent.age || '')
-      setValue('class', currentStudent.class || '')
-      setValue('email', currentStudent.email || '')
-      setValue('phone', currentStudent.phone || '')
-      setValue('alternativePhone', currentStudent.alternativePhone || '')
-      setValue('nationality', currentStudent.nationality || '')
-      setValue('birthDate', currentStudent.birthDate || '')
-      setValue('address', currentStudent.address || '')
-      setValue('city', currentStudent.city || '')
-      setValue('country', currentStudent.country || '')
-      setValue('pinCode', currentStudent.pinCode || '')
+    if (editMode && currentStudent) {
+      setValue("studentName", currentStudent.studentName || "");
+      setValue("middleName", currentStudent.middleName || "");
+      setValue("lastName", currentStudent.lastName || "");
+      setValue("gender", currentStudent.gender || "");
+      setValue("rollNo", currentStudent.rollNo || "");
+      setValue("age", currentStudent.age || "");
+      setValue("class", currentStudent.class || "");
+      setValue("email", currentStudent.email || "");
+      setValue("phone", currentStudent.phone || "");
+      setValue("alternativePhone", currentStudent.alternativePhone || "");
+      setValue("nationality", currentStudent.nationality || "");
+      setValue("birthDate", currentStudent.birthDate || "");
+      setValue("address", currentStudent.address || "");
+      setValue("city", currentStudent.city || "");
+      setValue("country", currentStudent.country || "");
+      setValue("pinCode", currentStudent.pinCode || "");
 
       setSelectedDate(
         currentStudent.birthDate
           ? new Date(currentStudent.birthDate)
-          : undefined
-      )
+          : undefined,
+      );
       setSelectedJoiningDate(
-        currentStudent.date ? new Date(currentStudent.date) : undefined
-      )
-      setSelectedGender(getSelectedGenderOption(currentStudent.gender))
+        currentStudent.date ? new Date(currentStudent.date) : undefined,
+      );
+      setSelectedGender(getSelectedGenderOption(currentStudent.gender));
     } else {
-      resetForm()
+      resetForm();
     }
-  }, [resetForm, currentStudent, editeMode, setValue])
+  }, [resetForm, currentStudent, editMode, setValue]);
 
   const formatDate = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    }
-    return date.toLocaleDateString('en-GB', options).replace(',', '')
-  }
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    };
+    return date.toLocaleDateString("en-GB", options).replace(",", "");
+  };
 
   const handleGenderChange = (selectedOption: OptionType | null) => {
-    setSelectedGender(selectedOption) // Update selected gender
-    setValue('gender', selectedOption?.value || '') // Set value in the form state
-  }
+    setSelectedGender(selectedOption); // Update selected gender
+    setValue("gender", selectedOption?.value || ""); // Set value in the form state
+  };
 
   return (
     <React.Fragment>
@@ -188,8 +195,8 @@ const PersonalDetailsTab = () => {
               id="firstNameInput"
               className="form-input"
               placeholder="Enter your first name"
-              {...register('studentName', {
-                required: 'Student Name is required.',
+              {...register("studentName", {
+                required: "Student Name is required.",
               })}
             />
             {errors.studentName && (
@@ -205,8 +212,8 @@ const PersonalDetailsTab = () => {
               id="middleNameInput"
               className="form-input"
               placeholder="Enter your middle name"
-              {...register('middleName', {
-                required: 'Middle  Name is required.',
+              {...register("middleName", {
+                required: "Middle  Name is required.",
               })}
             />
             {errors.middleName && (
@@ -222,7 +229,7 @@ const PersonalDetailsTab = () => {
               id="lastNameInput"
               className="form-input"
               placeholder="Enter your last name"
-              {...register('lastName', { required: 'Last Name is required.' })}
+              {...register("lastName", { required: "Last Name is required." })}
             />
             {errors.lastName && (
               <span className="text-red-500">{errors.lastName.message}</span>
@@ -239,14 +246,14 @@ const PersonalDetailsTab = () => {
                 options={genderOptions}
                 value={selectedGender}
                 onChange={(value) => {
-                  handleGenderChange(value) // Your existing change handler
-                  clearErrors('gender') // Clear error when a gender is selected
+                  handleGenderChange(value); // Your existing change handler
+                  clearErrors("gender"); // Clear error when a gender is selected
                 }}
                 placeholder="Select Gender"
               />
               <input
                 type="hidden"
-                {...register('gender', { required: 'Gender is required.' })}
+                {...register("gender", { required: "Gender is required." })}
               />
               {errors.gender && (
                 <span className="text-red-500">{errors.gender.message}</span>
@@ -263,7 +270,7 @@ const PersonalDetailsTab = () => {
               id="ageInput"
               className="form-input"
               placeholder="Enter your age"
-              {...register('age', { required: 'Age is required.' })}
+              {...register("age", { required: "Age is required." })}
             />
             {errors.age && (
               <span className="text-red-500">{errors.age.message}</span>
@@ -271,27 +278,27 @@ const PersonalDetailsTab = () => {
           </div>
 
           <div className="col-span-12 sm:col-span-6 2xl:col-span-4">
-            <label htmlFor="joiningdate" className="form-label">
+            <label htmlFor="joiningDate" className="form-label">
               Date of Birth
             </label>
             <Flatpickr
-              id="joiningdate"
+              id="joiningDate"
               className="form-input"
               placeholder="Select date"
-              value={selectedDate || selectedJoiningDate || undefined}
+              value={selectedDate || undefined}
               options={{
-                mode: 'single',
+                mode: "single",
               }}
-              onChange={(date: Date[]) => {
-                const formattedDate = formatDate(date[0])
-                setSelectedDate(date[0])
-                setValue('birthDate', formattedDate)
-                clearErrors('birthDate')
+              onChange={(date: any) => {
+                const formattedDate = formatDate(date[0]);
+                setSelectedDate(date[0]);
+                setValue("birthDate", formattedDate);
+                clearErrors("birthDate");
               }}
             />
             <input
               type="hidden"
-              {...register('birthDate', { required: 'BirthDate is required.' })}
+              {...register("birthDate", { required: "BirthDate is required." })}
             />
             {errors.birthDate && (
               <span className="text-red-500">{errors.birthDate.message}</span>
@@ -310,16 +317,16 @@ const PersonalDetailsTab = () => {
               id="mobileNumberInput"
               className="form-input"
               placeholder="Enter your mobile number"
-              {...register('phone', {
-                required: 'Phone Number is required.',
+              {...register("phone", {
+                required: "Phone Number is required.",
                 validate: (value) => {
-                  const isValid = validatePhoneNumber(value)
-                  if (typeof isValid === 'string') {
-                    setError('phone', { type: 'manual', message: isValid })
+                  const isValid = validatePhoneNumber(value);
+                  if (typeof isValid === "string") {
+                    setError("phone", { type: "manual", message: isValid });
                   } else {
-                    clearErrors('phone') // Clear error if valid
+                    clearErrors("phone"); // Clear error if valid
                   }
-                  return isValid
+                  return isValid;
                 },
               })}
             />
@@ -330,7 +337,8 @@ const PersonalDetailsTab = () => {
           <div className="col-span-12 md:col-span-6">
             <label
               htmlFor="alternativeMobileNumberInput"
-              className="form-label">
+              className="form-label"
+            >
               Alternative Mobile Number
             </label>
             <input
@@ -338,19 +346,19 @@ const PersonalDetailsTab = () => {
               id="alternativeMobileNumberInput"
               className="form-input"
               placeholder="Enter your mobile number"
-              {...register('alternativePhone', {
-                required: 'Alternative Phone is required.',
+              {...register("alternativePhone", {
+                required: "Alternative Phone is required.",
                 validate: (value) => {
-                  const isValid = validatePhoneNumber(value)
-                  if (typeof isValid === 'string') {
-                    setError('alternativePhone', {
-                      type: 'manual',
+                  const isValid = validatePhoneNumber(value);
+                  if (typeof isValid === "string") {
+                    setError("alternativePhone", {
+                      type: "manual",
                       message: isValid,
-                    })
+                    });
                   } else {
-                    clearErrors('alternativePhone') // Clear error if valid
+                    clearErrors("alternativePhone"); // Clear error if valid
                   }
-                  return isValid
+                  return isValid;
                 },
               })}
             />
@@ -369,7 +377,7 @@ const PersonalDetailsTab = () => {
               id="emailIDInput"
               className="form-input"
               placeholder="example@example.com"
-              {...register('email', { required: 'Emai is required.' })}
+              {...register("email", { required: "Email is required." })}
             />
             {errors.email && (
               <span className="text-red-500">{errors.email.message}</span>
@@ -384,8 +392,8 @@ const PersonalDetailsTab = () => {
               id="nationalityInput"
               className="form-input"
               placeholder="Enter your nationality"
-              {...register('nationality', {
-                required: 'Nationality is required.',
+              {...register("nationality", {
+                required: "Nationality is required.",
               })}
             />
             {errors.nationality && (
@@ -401,7 +409,7 @@ const PersonalDetailsTab = () => {
               id="addressInput"
               className="form-input"
               placeholder="Enter your address"
-              {...register('address', { required: 'Address is required.' })}
+              {...register("address", { required: "Address is required." })}
             />
             {errors.address && (
               <span className="text-red-500">{errors.address.message}</span>
@@ -416,7 +424,7 @@ const PersonalDetailsTab = () => {
               id="cityInput"
               className="form-input"
               placeholder="Enter your city"
-              {...register('city', { required: 'City is required.' })}
+              {...register("city", { required: "City is required." })}
             />
             {errors.city && (
               <span className="text-red-500">{errors.city.message}</span>
@@ -431,7 +439,7 @@ const PersonalDetailsTab = () => {
               id="countryInput"
               className="form-input"
               placeholder="Enter your country"
-              {...register('country', { required: 'Country is required.' })}
+              {...register("country", { required: "Country is required." })}
             />
             {errors.country && (
               <span className="text-red-500">{errors.country.message}</span>
@@ -445,8 +453,8 @@ const PersonalDetailsTab = () => {
               type="text"
               id="pinCodeInput"
               className="form-input"
-              placeholder="Enter your pincode"
-              {...register('pinCode', { required: 'Pin Code is required.' })}
+              placeholder="Enter your pinCode"
+              {...register("pinCode", { required: "Pin Code is required." })}
             />
             {errors.pinCode && (
               <span className="text-red-500">{errors.pinCode.message}</span>
@@ -462,7 +470,7 @@ const PersonalDetailsTab = () => {
         </div>
       </form>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default PersonalDetailsTab
+export default PersonalDetailsTab;

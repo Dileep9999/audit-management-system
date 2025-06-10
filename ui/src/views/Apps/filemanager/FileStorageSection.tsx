@@ -1,14 +1,7 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-
-import upgradeImage from '@assets/images/file-manager/upgrade.png'
-import { documents } from '@src/data/FileManager/files'
-
-import StorageChart from './StorageChart'
-
+import React from "react";
+import StorageChart from "./storageChart";
+import { documents } from "@src/data/fileManager/files";
+import upgradeImage from "@assets/images/file-manager/upgrade.png";
 const FileStorageSection = () => {
   return (
     <React.Fragment>
@@ -18,18 +11,19 @@ const FileStorageSection = () => {
             <div
               className="h-72"
               x-ref="basicBarChart"
-              data-chart-colors="[bg-sky-500, bg-green-500]">
+              data-chart-colors="[bg-sky-500, bg-green-500]"
+            >
               <StorageChart />
             </div>
 
             <p className="text-center text-slate-500 dark:text-dark-500">
               Get an additional 500 GB of space for your documents and files.
             </p>
-            <div className="flex flex-col gap-4 mt-space">
+            <div className="space-y-4 mt-space">
               {documents.map((document, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <div className="flex items-center justify-center p-2 rounded-md bg-gray-50 size-12 shrink-0 dark:bg-dark-850">
-                    <Image src={document.icon} alt="icon" />
+                    <img src={document.icon} alt="documentImg" />
                   </div>
                   <div className="grow">
                     <h6 className="mb-1">
@@ -46,7 +40,7 @@ const FileStorageSection = () => {
               ))}
               <div className="pt-3 overflow-hidden rounded-md">
                 <div className="mx-10">
-                  <Image src={upgradeImage} alt="upgradeImage" />
+                  <img src={upgradeImage} alt="upgradeImage" />
                 </div>
                 <div className="text-center p-space bg-primary-500/10">
                   <h6 className="mb-1">Get More space for files</h6>
@@ -63,7 +57,7 @@ const FileStorageSection = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default FileStorageSection
+export default FileStorageSection;

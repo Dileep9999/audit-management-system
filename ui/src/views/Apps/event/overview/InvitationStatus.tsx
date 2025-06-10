@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import InvitationStatusCharts from './InvitationStatusChart'
+import React from "react";
+import InvitationStatusCharts from "./invitationStatusChart";
 
 const InvitationStatus = () => {
   return (
@@ -15,7 +12,7 @@ const InvitationStatus = () => {
           <div>
             <InvitationStatusCharts
               chartColors="[bg-pink-500, bg-primary-500]"
-              chartDarkColors={''}
+              chartDarkColors={""}
               chartId="invitationChart"
             />
           </div>
@@ -32,7 +29,7 @@ const InvitationStatus = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default InvitationStatus
+export default InvitationStatus;

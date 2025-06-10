@@ -1,141 +1,130 @@
-import { ProjectList } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
+import { AppDispatch } from "@src/slices/reducer";
 import {
-  LocalStorageRecord,
+  getProjectList,
+  addProjectList,
+  editProjectList,
+  deleteProjectList,
+} from "./reducer";
+import api from "@src/utils/axios_api";
+import {
   addLocalStorageRecord,
   createLocalStorage,
   deleteLocalStorageRecord,
   getLocalStorage,
   updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_PROJECT_LIST_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+} from "@src/utils/crud_functions";
+import { REACT_APP_PROJECT_LIST_API } from "@src/utils/url_helper";
+import { ProjectList } from "@src/dtos";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-import {
-  addProjectList,
-  deleteProjectList,
-  editProjectList,
-  getProjectList,
-} from './reducer'
-
-const PROJECT_LIST_API = NEXT_PUBLIC_PROJECT_LIST_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const PROJECT_LIST_API = REACT_APP_PROJECT_LIST_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get data
 export const getProjectListData = () => async (dispatch: AppDispatch) => {
   try {
-    if (!IsApi) {
-      const responseData = (await getLocalStorage('d-project-list')) as
-        | ProjectList[]
-        | null
+    if (IsApi === false) {
+      const responseData = await getLocalStorage("d-project-list");
       if (!responseData) {
-        const response = await api.get(PROJECT_LIST_API)
-        const { data } = response
-        createLocalStorage('d-project-list', data)
-        dispatch(getProjectList(data))
+        const response = await api.get(PROJECT_LIST_API);
+        createLocalStorage("d-project-list", response);
+        dispatch(getProjectList(response));
       } else {
-        dispatch(getProjectList(responseData || []))
+        dispatch(getProjectList(responseData));
       }
     } else {
-      const response = await api.get(PROJECT_LIST_API)
-      const { data } = response
-      dispatch(getProjectList(data))
+      const response = await api.get(PROJECT_LIST_API);
+      dispatch(getProjectList(response));
     }
-  } catch (error: unknown) {
-    let errorMessage = 'Projects List Fetch failed'
-    if (error instanceof AxiosError && error.response?.data) {
-      const apiError = error.response.data
-      errorMessage = apiError.message || errorMessage
-    } else if (error instanceof Error) {
-      errorMessage = error.message
-    }
-    toast.error(errorMessage, { autoClose: 3000 })
-    console.error('Error fetching project list data:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Project List Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching project list data:", error);
   }
-}
+};
 
 // add record
 export const addProjectListData =
   (newRecord: ProjectList) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(PROJECT_LIST_API, newRecord, 'Project')
-      const { data, message } = response
-      toast.success(message || 'Project record added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-project-list', { ...data })
-      dispatch(addProjectList(data))
-    } catch (error: unknown) {
-      let errorMessage = 'Project record addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        const apiError = error.response.data
-        errorMessage = apiError.message || errorMessage
-      } else if (error instanceof Error) {
-        errorMessage = error.message
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('Error adding record:', error)
+      const response = await api.post(
+        PROJECT_LIST_API,
+        newRecord,
+        "Project List",
+      );
+      const { message } = response;
+      AddToast(message || "Project List added successfully");
+      addLocalStorageRecord("d-project-list", newRecord);
+      dispatch(addProjectList(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Project List addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding project list record:", error);
     }
-  }
+  };
 
 // edit data
 export const editProjectData =
-  (project: ProjectList) => async (dispatch: AppDispatch) => {
+  (question: ProjectList) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(PROJECT_LIST_API, project, 'project')
-      const { data, message } = response
-      toast.success(message || 'Project record updated successfully', {
-        autoClose: 3000,
-      })
-      updateLocalStorageRecord(
-        'd-project-list',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editProjectList(data))
-    } catch (error: unknown) {
-      let errorMessage = 'Project record update failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        const apiError = error.response.data
-        errorMessage = apiError.message || errorMessage
-      } else if (error instanceof Error) {
-        errorMessage = error.message
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('Error updating record:', error)
+      const response = await api.put(
+        PROJECT_LIST_API,
+        question,
+        "Project List",
+      );
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Project List updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-project-list", question);
+      dispatch(editProjectList(question));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Project List update failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating project list record:", error);
     }
-  }
+  };
 
 // delete data
 export const deleteProjectListData =
-  (projects: number[]) => async (dispatch: AppDispatch) => {
+  (question: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = projects.map(async (id) => {
-        const response = await customDelete(PROJECT_LIST_API, id, 'project')
-        const { message } = response
-        toast.success(message || 'Project record deleted successfully', {
-          autoClose: 3000,
-        })
-        return response.data
-      })
-      const deletedProjects = await Promise.all(deletePromises)
-      dispatch(deleteProjectList(deletedProjects))
+      const deletePromises = question.map(async (_id) => {
+        const response = await api.delete(
+          PROJECT_LIST_API,
+          _id,
+          "Project List",
+        );
+        const { message } = response;
+        DeleteToast(message || "Project List deleted successfully");
+        return _id;
+      });
+
+      const deletedList = await Promise.all(deletePromises);
+      dispatch(deleteProjectList(deletedList));
       deleteLocalStorageRecord({
-        key: 'd-project-list',
-        listRecord: projects,
+        key: "d-project-list",
+        listRecord: question,
         multipleRecords: true,
-      })
-    } catch (error: unknown) {
-      let errorMessage = 'Project record deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        const apiError = error.response.data
-        errorMessage = apiError.message || errorMessage
-      } else if (error instanceof Error) {
-        errorMessage = error.message
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('Error deleting records:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Project List deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting project list: ", error);
     }
-  }
+  };

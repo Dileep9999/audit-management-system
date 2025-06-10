@@ -1,12 +1,7 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-
-import user14 from '@assets/images/avatar/user-14.png'
-import UseNumberCounter from '@src/components/common/NumberCounter'
-import { Dot, SunMedium } from 'lucide-react'
+import React from "react";
+import user14 from "@assets/images/avatar/user-14.png";
+import { Dot, SunMedium } from "lucide-react";
+import UseNumberCounter from "@src/components/common/numberCounter";
 
 const StudentsAttendancesInfo = () => {
   return (
@@ -15,7 +10,7 @@ const StudentsAttendancesInfo = () => {
         <div className="col-span-12 md:col-span-7">
           <h6 className="mb-1">Attendance History</h6>
           <p className="mb-5 text-gray-500 dark:text-dark-500">
-            <SunMedium className="inline-block size-4 ltr:mr-1 rtl:ml-1"></SunMedium>{' '}
+            <SunMedium className="inline-block size-4 ltr:mr-1 rtl:ml-1"></SunMedium>{" "}
             Today Mon, July 8, 2024
           </p>
           <div className="flex items-center mb-space">
@@ -38,7 +33,11 @@ const StudentsAttendancesInfo = () => {
         </div>
         <div className="col-span-12 md:col-span-5">
           <div className="flex justify-end gap-3 mb-space">
-            <Image src={user14} alt="usermg" className="rounded-full size-10" />
+            <img
+              src={user14}
+              alt="user14Img"
+              className="rounded-full size-10"
+            />
             <div>
               <h6>Michael Johnson</h6>
               <p className="text-sm text-gray-500 dark:text-dark-500">
@@ -95,7 +94,7 @@ const StudentsAttendancesInfo = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default StudentsAttendancesInfo
+export default StudentsAttendancesInfo;

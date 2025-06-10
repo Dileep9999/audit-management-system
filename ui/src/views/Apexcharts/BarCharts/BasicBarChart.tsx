@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import useChartColors from "@hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import React from "react";
+import ReactApexChart from "react-apexcharts";
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const BasicBarChart = ({
@@ -24,17 +15,18 @@ const BasicBarChart = ({
   chartId,
 }: AreaChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
       data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380],
     },
-  ]
+  ];
+
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
     },
     plotOptions: {
       bar: {
@@ -47,16 +39,16 @@ const BasicBarChart = ({
     },
     xaxis: {
       categories: [
-        'South Korea',
-        'Canada',
-        'United Kingdom',
-        'Netherlands',
-        'Italy',
-        'France',
-        'Japan',
-        'United States',
-        'China',
-        'Germany',
+        "South Korea",
+        "Canada",
+        "United Kingdom",
+        "Netherlands",
+        "Italy",
+        "France",
+        "Japan",
+        "United States",
+        "China",
+        "Germany",
       ],
     },
     colors: chartsColor,
@@ -66,7 +58,7 @@ const BasicBarChart = ({
         bottom: -10,
       },
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -74,14 +66,13 @@ const BasicBarChart = ({
         className="!min-h-full"
         options={options}
         series={series}
-        data-chart-colors="[bg-primary-500]"
         type="bar"
         id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default BasicBarChart
+export default BasicBarChart;

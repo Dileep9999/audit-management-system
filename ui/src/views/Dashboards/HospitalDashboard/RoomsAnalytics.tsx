@@ -1,22 +1,18 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import emergencyRoom from '@assets/images/dashboards/hospital/emergency-room.png'
-import hospitalBedImg from '@assets/images/dashboards/hospital/hospital-bed.png'
-import hospital from '@assets/images/dashboards/hospital/hospital.png'
-import meeting from '@assets/images/dashboards/hospital/meeting.png'
-import vip from '@assets/images/dashboards/hospital/vip.png'
-import waitingArea from '@assets/images/dashboards/hospital/waiting-area.png'
+import vip from "@assets/images/dashboards/hospital/vip.png";
+import hospitalbed from "@assets/images/dashboards/hospital/hospital-bed.png";
+import hospital from "@assets/images/dashboards/hospital/hospital.png";
+import emergencyroom from "@assets/images/dashboards/hospital/emergency-room.png";
+import waitingarea from "@assets/images/dashboards/hospital/waiting-area.png";
+import meeting from "@assets/images/dashboards/hospital/meeting.png";
+import { Ellipsis } from "lucide-react";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { Ellipsis } from 'lucide-react'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
 
 const RoomsAnalytics = () => {
   return (
@@ -24,28 +20,32 @@ const RoomsAnalytics = () => {
       <div className="col-span-12 lg:col-span-6 xl:col-span-4 card">
         <div className="flex items-center gap-3 card-header">
           <h6 className="card-title grow">Rooms Analytics Sessions</h6>
-          <Dropdown position="" trigger="click" dropdownClassName="dropdown">
+          <Dropdown
+            position="right"
+            trigger="click"
+            dropdownClassName="dropdown"
+          >
             <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
               <Ellipsis className="size-5" />
             </DropdownButton>
             <DropdownMenu>
-              <Link href="#!" className="dropdown-item ">
+              <Link to="#!" className="dropdown-item ">
                 <span>Weekly</span>
               </Link>
 
-              <Link href="#!" className="dropdown-item ">
+              <Link to="#!" className="dropdown-item ">
                 <span>Monthly</span>
               </Link>
-              <Link href="#!" className="dropdown-item">
+              <Link to="#!" className="dropdown-item">
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
           </Dropdown>
         </div>
         <div className="card-body">
-          <div className="flex flex-col gap-4">
+          <div className="space-y-4">
             <div className="flex flex-col gap-3 md:items-center md:flex-row">
-              <Image src={vip} alt="vipImg" className="size-8 shrink-0" />
+              <img src={vip} alt="vipImg" className="size-8 shrink-0" />
               <div className="grow">
                 <h6>VIP Rooms</h6>
                 <p className="text-gray-500 dark:text-dark-500">
@@ -58,9 +58,9 @@ const RoomsAnalytics = () => {
               </div>
             </div>
             <div className="flex flex-col gap-3 md:items-center md:flex-row">
-              <Image
-                src={hospitalBedImg}
-                alt="hospitalBedImg"
+              <img
+                src={hospitalbed}
+                alt="hospitalbedImg"
                 className="size-8 shrink-0"
               />
               <div className="grow">
@@ -75,7 +75,7 @@ const RoomsAnalytics = () => {
               </div>
             </div>
             <div className="flex flex-col gap-3 md:items-center md:flex-row">
-              <Image
+              <img
                 src={hospital}
                 alt="hospitalImg"
                 className="size-8 shrink-0"
@@ -92,9 +92,9 @@ const RoomsAnalytics = () => {
               </div>
             </div>
             <div className="flex flex-col gap-3 md:items-center md:flex-row">
-              <Image
-                src={emergencyRoom}
-                alt="emergencyRoom"
+              <img
+                src={emergencyroom}
+                alt="emergencyroomImg"
                 className="size-8 shrink-0"
               />
               <div className="grow">
@@ -109,9 +109,9 @@ const RoomsAnalytics = () => {
               </div>
             </div>
             <div className="flex flex-col gap-3 md:items-center md:flex-row">
-              <Image
-                src={waitingArea}
-                alt="waitingArea"
+              <img
+                src={waitingarea}
+                alt="waitingareaImg"
                 className="size-8 shrink-0"
               />
               <div className="grow">
@@ -126,7 +126,7 @@ const RoomsAnalytics = () => {
               </div>
             </div>
             <div className="flex flex-col gap-3 md:items-center md:flex-row">
-              <Image src={meeting} alt="meeting" className="size-8 shrink-0" />
+              <img src={meeting} alt="meetingImg" className="size-8 shrink-0" />
               <div className="grow">
                 <h6>Staff Rooms</h6>
                 <p className="text-gray-500 dark:text-dark-500">
@@ -142,6 +142,6 @@ const RoomsAnalytics = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default RoomsAnalytics
+  );
+};
+export default RoomsAnalytics;

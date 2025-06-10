@@ -1,142 +1,130 @@
-import { departments } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
-import {
-  LocalStorageRecord,
-  addLocalStorageRecord,
-  createLocalStorage,
-  deleteLocalStorageRecord,
-  getLocalStorage,
-  updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_HOSPITAL_DEPARTMENT_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
-
+import { AppDispatch } from "@src/slices/reducer";
+import { departments } from "@src/dtos";
+import api from "@src/utils/axios_api";
 import {
   addDepartment,
   deleteDepartment,
   editDepartment,
   getDepartment,
-} from './reducer'
+} from "./reducer";
+import {
+  addLocalStorageRecord,
+  createLocalStorage,
+  deleteLocalStorageRecord,
+  getLocalStorage,
+  updateLocalStorageRecord,
+} from "@src/utils/crud_functions";
+import { REACT_APP_HOSPITAL_DEPARTMENT_API } from "@src/utils/url_helper";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-const HOSPITAL_DEPARTMENT_API = NEXT_PUBLIC_HOSPITAL_DEPARTMENT_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const HOSPITAL_DEPARTMENT_API = REACT_APP_HOSPITAL_DEPARTMENT_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 //get department data
 export const getDepartmentsData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = (await getLocalStorage('d-hospital-department')) as
-        | departments[]
-        | null
+      const responseData = await getLocalStorage("d-hospital-department");
       if (!responseData) {
-        const response = await api.get(HOSPITAL_DEPARTMENT_API)
-        const { data } = response
-        createLocalStorage('d-hospital-department', data)
-        dispatch(getDepartment(data))
+        const response = await api.get(HOSPITAL_DEPARTMENT_API);
+        createLocalStorage("d-hospital-department", response);
+        dispatch(getDepartment(response));
       } else {
-        dispatch(getDepartment(responseData || []))
+        dispatch(getDepartment(responseData));
       }
     } else {
-      const response = await api.get(HOSPITAL_DEPARTMENT_API)
-      const { data } = response
-      dispatch(getDepartment(data))
+      const response = await api.get(HOSPITAL_DEPARTMENT_API);
+      dispatch(getDepartment(response));
     }
-  } catch (error) {
-    let errorMessage = 'Error fetching department data'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-    }
-    toast.error(errorMessage, { autoClose: 3000 })
-    console.error('Error fetching department data:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Department Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching appointments data:", error);
   }
-}
+};
 
 //add department
 export const addDepartmentsData =
   (newRecord: departments) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(
+      const response = await api.post(
         HOSPITAL_DEPARTMENT_API,
         newRecord,
-        'departments'
-      )
-      const { data, message } = response
-      toast.success(message || 'department added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-hospital-department', { ...data })
-      dispatch(addDepartment(data))
-    } catch (error) {
-      let errorMessage = 'departments addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('departments addition failed:', error)
+        "Departments",
+      );
+      const { message } = response;
+      AddToast(message || "Department added successfully");
+      addLocalStorageRecord("d-hospital-department", newRecord);
+      dispatch(addDepartment(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Department addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error in hospital department adding record:", error);
     }
-  }
+  };
 
-//edite department
+//edit department
 export const editDepartmentsData =
-  (staff: departments) => async (dispatch: AppDispatch) => {
+  (appointment: departments) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(
+      const response = await api.put(
         HOSPITAL_DEPARTMENT_API,
-        staff,
-        'departments'
-      )
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-hospital-department',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editDepartment(data))
-    } catch (error) {
-      let errorMessage = 'department record updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('department record updation failed:', error)
+        appointment,
+        "Departments",
+      );
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "Departments updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-hospital-department", appointment);
+      dispatch(editDepartment(appointment));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Departments update failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating medicine record:", error);
     }
-  }
+  };
 
 //delete department
 export const deleteDepartmentsData =
-  (staff: number[]) => async (dispatch: AppDispatch) => {
+  (question: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = staff.map(async (id) => {
-        const response = await customDelete(
+      const deletePromises = question.map(async (_id) => {
+        const response = await api.delete(
           HOSPITAL_DEPARTMENT_API,
-          id,
-          'departmanent'
-        )
-        const { message } = response
-        toast.success(message || 'department deleted successfully', {
-          autoClose: 3000,
-        })
-        return response.data
-      })
-      const deletedProducts = await Promise.all(deletePromises)
-      dispatch(deleteDepartment(deletedProducts))
+          _id,
+          "Department",
+        );
+        const { message } = response;
+        DeleteToast(message || "Department deleted successfully");
+        return _id;
+      });
+
+      const deletedDepartment = await Promise.all(deletePromises);
+      dispatch(deleteDepartment(deletedDepartment));
       deleteLocalStorageRecord({
-        key: 'd-hospital-department',
-        listRecord: staff,
+        key: "d-hospital-department",
+        listRecord: question,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'department deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-      }
-      toast.error(errorMessage, { autoClose: 3000 })
-      console.error('department deletion failed:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Department deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting Department: ", error);
     }
-  }
+  };

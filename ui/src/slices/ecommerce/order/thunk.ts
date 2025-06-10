@@ -1,130 +1,118 @@
-import { OrderListItem } from '@src/dtos'
-import { AppDispatch } from '@src/slices/reducer'
-import api, { customDelete, customPost, customPut } from '@src/utils/axios_api'
+import { AppDispatch } from "@src/slices/reducer";
 import {
-  LocalStorageRecord,
+  getOrderList,
+  addOrderList,
+  editOrderList,
+  deleteOrderList,
+} from "./reducer";
+import api from "@src/utils/axios_api";
+import {
   addLocalStorageRecord,
   createLocalStorage,
   deleteLocalStorageRecord,
   getLocalStorage,
   updateLocalStorageRecord,
-} from '@src/utils/crud_functions'
-import { NEXT_PUBLIC_ORDER_API } from '@src/utils/url_helper'
-import { AxiosError } from 'axios'
-import { toast } from 'react-toastify'
+} from "@src/utils/crud_functions";
+import { REACT_APP_ORDER_API } from "@src/utils/url_helper";
+import { OrderListItem } from "@src/dtos";
+import ErrorToast from "@src/components/custom/toast/errorToast";
+import AddToast from "@src/components/custom/toast/addToast";
+import UpdateToast from "@src/components/custom/toast/updateToast";
+import DeleteToast from "@src/components/custom/toast/deleteToast";
 
-import {
-  addOrderList,
-  deleteOrderList,
-  editOrderList,
-  getOrderList,
-} from './reducer'
-
-const ORDER_LIST_API = NEXT_PUBLIC_ORDER_API
-const IsApi = process.env.NEXT_PUBLIC_IS_API_ACTIVE === 'true'
+const ORDER_LIST_API = REACT_APP_ORDER_API;
+const IsApi = import.meta.env.VITE_REACT_APP_IS_API_ACTIVE === "true";
 
 // get order list
 export const getOrderData = () => async (dispatch: AppDispatch) => {
   try {
     if (IsApi === false) {
-      const responseData = (await getLocalStorage('d-order-list')) as
-        | OrderListItem[]
-        | null
+      const responseData = await getLocalStorage("d-order-list");
       if (!responseData) {
-        const response = await api.get(ORDER_LIST_API)
-        const { data } = response
-        createLocalStorage('d-order-list', data)
-        dispatch(getOrderList(data))
+        const response = await api.get(ORDER_LIST_API);
+        createLocalStorage("d-order-list", response);
+        dispatch(getOrderList(response));
       } else {
-        dispatch(getOrderList(responseData || []))
+        dispatch(getOrderList(responseData));
       }
     } else {
-      const response = await api.get(ORDER_LIST_API)
-      const { data } = response
-      dispatch(getOrderList(data))
+      const response = await api.get(ORDER_LIST_API);
+      dispatch(getOrderList(response));
     }
-  } catch (error) {
-    let errorMessage = 'Order List Fetch Failed'
-    if (error instanceof AxiosError && error.response?.data) {
-      errorMessage =
-        error.response.data.message || error.message || errorMessage
-      toast.error(errorMessage, { autoClose: 3000 })
-    }
-    console.error('Order List Fetch Failed:', error)
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Order List Fetch Failed";
+    ErrorToast(errorMessage);
+    console.error("Error fetching Order data:", error);
   }
-}
+};
 
 // add record
 export const addOrderData =
   (newRecord: OrderListItem) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPost(ORDER_LIST_API, newRecord, 'order')
-      const { data, message } = response
-      toast.success(message || 'Order List added successfully', {
-        autoClose: 3000,
-      })
-      addLocalStorageRecord('d-order-list', { ...data })
-      dispatch(addOrderList(data))
-    } catch (error) {
-      let errorMessage = 'Order List addition failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Order List addition failed:', error)
+      const response = await api.post(ORDER_LIST_API, newRecord, "Order");
+      const { message } = response;
+      AddToast(message || "Order List added successfully");
+      addLocalStorageRecord("d-order-list", newRecord);
+      dispatch(addOrderList(newRecord));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Order List addition failed";
+      ErrorToast(errorMessage);
+      console.error("Error adding order record:", error);
     }
-  }
+  };
 
 // edit data
 export const editOrderData =
   (order: OrderListItem) => async (dispatch: AppDispatch) => {
     try {
-      const response = await customPut(ORDER_LIST_API, order, 'order')
-      const { data, message } = response
-      toast.success(message, { autoClose: 3000 })
-      updateLocalStorageRecord(
-        'd-order-list',
-        data as unknown as LocalStorageRecord
-      )
-      dispatch(editOrderList(data))
-    } catch (error) {
-      let errorMessage = 'Order List updation failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Order List updation failed:', error)
+      const response = await api.put(ORDER_LIST_API, order, "Order");
+      const { message } = response;
+      setTimeout(() => {
+        UpdateToast(message || "User Order updated successfully");
+      }, 2000);
+      updateLocalStorageRecord("d-order-list", order);
+      dispatch(editOrderList(order));
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Order List updation failed";
+      ErrorToast(errorMessage);
+      console.error("Error updating order record:", error);
     }
-  }
+  };
 
 // delete data
 export const deleteOrderData =
-  (orders: number[]) => async (dispatch: AppDispatch) => {
+  (reviews: number[]) => async (dispatch: AppDispatch) => {
     try {
-      const deletePromises = orders.map(async (id) => {
-        const response = await customDelete(ORDER_LIST_API, id, 'order')
-        const { message } = response
-        toast.success(message || 'Order List deleted successfully', {
-          autoClose: 3000,
-        })
-        return response.data
-      })
-      const deletedorders = await Promise.all(deletePromises)
-      dispatch(deleteOrderList(deletedorders))
+      const deletePromises = reviews.map(async (_id) => {
+        const response = await api.delete(ORDER_LIST_API, _id, "Order");
+        const { message } = response;
+        DeleteToast(message || "Order List deleted successfully");
+        return _id;
+      });
+
+      const deletedOrders = await Promise.all(deletePromises);
+      dispatch(deleteOrderList(deletedOrders));
       deleteLocalStorageRecord({
-        key: 'd-order-list',
-        listRecord: orders,
+        key: "d-order-list",
+        listRecord: reviews,
         multipleRecords: true,
-      })
-    } catch (error) {
-      let errorMessage = 'Order List deletion failed'
-      if (error instanceof AxiosError && error.response?.data) {
-        errorMessage =
-          error.response.data.message || error.message || errorMessage
-        toast.error(errorMessage, { autoClose: 3000 })
-      }
-      console.error('Order List deletion failed:', error)
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Order List deletion failed";
+      ErrorToast(errorMessage);
+      console.error("Error in deleting orders: ", error);
     }
-  }
+  };

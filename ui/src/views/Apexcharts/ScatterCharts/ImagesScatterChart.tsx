@@ -1,26 +1,17 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import de from '@assets/images/flag/de.svg'
-import us from '@assets/images/flag/us.svg'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import { ApexOptions } from "apexcharts";
+import React from "react";
+import us from "@assets/images/flag/us.svg";
+import de from "@assets/images/flag/de.svg";
+import ReactApexChart from "react-apexcharts";
 
 interface ScatterChartsProps {
-  chartId: React.MutableRefObject<null>
+  chartId: any;
 }
 
 const ImagesScatterChart = ({ chartId }: ScatterChartsProps) => {
   const series = [
     {
-      name: 'Messenger',
+      name: "Messenger",
       data: [
         [16.4, 5.4],
         [21.7, 4],
@@ -50,7 +41,7 @@ const ImagesScatterChart = ({ chartId }: ScatterChartsProps) => {
       ],
     },
     {
-      name: 'Instagram',
+      name: "Instagram",
       data: [
         [6.4, 5.4],
         [11.7, 4],
@@ -63,12 +54,12 @@ const ImagesScatterChart = ({ chartId }: ScatterChartsProps) => {
         [11.6, 12],
       ],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'scatter',
+      type: "scatter",
       animations: {
         enabled: false,
       },
@@ -79,7 +70,7 @@ const ImagesScatterChart = ({ chartId }: ScatterChartsProps) => {
         show: false,
       },
     },
-    colors: ['#056BF6', '#D2376A'],
+    colors: ["#056BF6", "#D2376A"],
     xaxis: {
       tickAmount: 10,
       min: 0,
@@ -92,10 +83,10 @@ const ImagesScatterChart = ({ chartId }: ScatterChartsProps) => {
       size: 20,
     },
     fill: {
-      type: 'image',
+      type: "image",
       opacity: 1,
       image: {
-        src: [us.src, de.src],
+        src: [us, de],
         width: 40,
         height: 40,
       },
@@ -105,7 +96,7 @@ const ImagesScatterChart = ({ chartId }: ScatterChartsProps) => {
         useSeriesColors: true,
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -113,12 +104,12 @@ const ImagesScatterChart = ({ chartId }: ScatterChartsProps) => {
         options={options}
         series={series}
         type="scatter"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default ImagesScatterChart
+export default ImagesScatterChart;

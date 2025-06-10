@@ -1,8 +1,5 @@
-'use client'
-
-import React from 'react'
-
-import TestMarksSubjectChat from './TestMarksChart'
+import React from "react";
+import TestMarksSubjectChat from "./testMarksChart";
 
 const TestMarks = () => {
   return (
@@ -15,14 +12,14 @@ const TestMarks = () => {
           <div dir="ltr">
             <TestMarksSubjectChat
               chartColors="[bg-primary-300, bg-purple-300, bg-sky-300, bg-green-300, bg-red-200, bg-orange-200]"
-              chartDarkColors={''}
+              chartDarkColors={""}
               chartId="testMarksSubjectChart"
             />
           </div>
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default TestMarks
+export default TestMarks;

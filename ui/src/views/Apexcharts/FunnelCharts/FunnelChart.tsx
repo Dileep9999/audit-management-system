@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface FunnelChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const FunnelChart = ({
@@ -24,43 +15,43 @@ const FunnelChart = ({
   chartId,
 }: FunnelChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: '',
+      name: "",
       data: [1380, 1100, 990, 880, 740, 548, 330, 200],
     },
-  ]
+  ];
 
   const labels = [
-    'Sourced',
-    'Screened',
-    'Assessed',
-    'HR Interview',
-    'Technical',
-    'Verify',
-    'Offered',
-    'Hired',
-  ]
+    "Sourced",
+    "Screened",
+    "Assessed",
+    "HR Interview",
+    "Technical",
+    "Verify",
+    "Offered",
+    "Hired",
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'bar',
+      type: "bar",
     },
     plotOptions: {
       bar: {
         borderRadius: 0,
         horizontal: true,
-        barHeight: '80%',
+        barHeight: "80%",
         isFunnel: true,
       },
     },
     dataLabels: {
       enabled: true,
       formatter: (val, opt) => {
-        return `${labels[opt.dataPointIndex]}: ${val}`
+        return `${labels[opt.dataPointIndex]}: ${val}`;
       },
       dropShadow: {
         enabled: true,
@@ -68,8 +59,8 @@ const FunnelChart = ({
     },
     colors: chartsColor,
     title: {
-      text: 'Recruitment Funnel',
-      align: 'center',
+      text: "Recruitment Funnel",
+      align: "center",
     },
     xaxis: {
       categories: labels,
@@ -84,7 +75,7 @@ const FunnelChart = ({
         bottom: 0,
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -93,12 +84,12 @@ const FunnelChart = ({
         series={series}
         data-chart-colors="[bg-primary-500]"
         type="bar"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default FunnelChart
+export default FunnelChart;

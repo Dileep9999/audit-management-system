@@ -1,31 +1,9 @@
-'use client'
-
-import React, { useEffect, useRef, useState } from 'react'
-
-import Image, { StaticImageData } from 'next/image'
-import Link from 'next/link'
-
-import MessageComponent from '@src/components/common/MessageComponent'
-import {
-  Dropdown,
-  DropdownButton,
-  DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
 import {
   ContactChatRecord,
   UserChatMessageRecord,
   UserChatRecord,
-} from '@src/dtos'
-import { UserChatBoardProps } from '@src/dtos/apps/chat'
-import { AppDispatch } from '@src/slices/reducer'
-import {
-  addContactChatRecordData,
-  addDefaultChatMessageRecord,
-  deleteDefaultChatMessageRecord,
-  deleteDefaultChatRecordData,
-  editDefaultChatListRecordData,
-} from '@src/slices/thunk'
-import Picker, { EmojiClickData } from 'emoji-picker-react'
+} from "@src/dtos";
+import { AppDispatch } from "@src/slices/reducer";
 import {
   AudioLines,
   ChevronsLeft,
@@ -34,9 +12,34 @@ import {
   Phone,
   Send,
   Video,
-} from 'lucide-react'
-import { useDispatch } from 'react-redux'
-import SimpleBar from 'simplebar-react'
+} from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import SimpleBar from "simplebar-react";
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownMenu,
+} from "@src/components/custom/dropdown/dropdown";
+import MessageComponent from "@src/components/common/messageComponent";
+import {
+  addContactChatRecordData,
+  addDefaultChatMessageRecord,
+  deleteDefaultChatMessageRecord,
+  deleteDefaultChatRecordData,
+  editDefaultChatListRecordData,
+} from "@src/slices/thunk";
+
+import Picker, { EmojiClickData } from "emoji-picker-react";
+import { Link } from "react-router-dom";
+
+interface UserChatBoardProps {
+  currentChat: UserChatRecord;
+  handleAudioCallModal: () => void;
+  handleVideoCallModal: () => void;
+  contactList: ContactChatRecord[];
+  onBack: () => void;
+}
 
 const UserChatBoard: React.FC<UserChatBoardProps> = ({
   currentChat,
@@ -45,159 +48,160 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
   contactList,
   onBack,
 }) => {
-  const dispatch = useDispatch<AppDispatch>()
-  const [showPicker, setShowPicker] = useState(false)
-  const [isCopySuccess, setIsCopySuccess] = useState(false)
-  const [isReplyMessage, setIsReplyMessage] = useState<boolean>(false)
+  const dispatch = useDispatch<AppDispatch>();
+  const [showPicker, setShowPicker] = useState(false);
+  const [isCopySuccess, setIsCopySuccess] = useState(false);
+  const [isReplyMessage, setIsReplyMessage] = useState<boolean>(false);
   const [replyMessage, setReplyMessage] =
-    useState<UserChatMessageRecord | null>(null)
-  const [message, setMessage] = useState('')
+    useState<UserChatMessageRecord | null>(null);
+  const [message, setMessage] = useState("");
 
-  const pickerRef = useRef<HTMLDivElement>(null)
-  const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // handle chat delete
   const handleChatDelete = (record: UserChatRecord) => {
     const newContact: ContactChatRecord = {
-      id: contactList && contactList.length > 0 ? contactList.length + 1 : 1,
+      _id: contactList && contactList.length > 0 ? contactList.length + 1 : 1,
       roomId: record.roomId,
       name: record.name,
-      avatar: record.receiverImage ?? '/assets/images/chat/video-dummy.png',
-    }
+      avatar:
+        record.receiverImage ??
+        "https://images.kcubeinfotech.com/domiex/images/chat/video-dummy.png",
+    };
     if (newContact) {
-      dispatch(addContactChatRecordData(newContact))
+      dispatch(addContactChatRecordData(newContact));
     }
-    dispatch(deleteDefaultChatRecordData([record.id]))
-  }
+    dispatch(deleteDefaultChatRecordData([record._id]));
+  };
 
   // handle chat clear
   const handleChatClear = (record: UserChatRecord) => {
     const newContact: UserChatRecord = {
       ...record,
       messages: [],
-    }
+    };
     if (newContact) {
-      dispatch(editDefaultChatListRecordData(newContact))
+      dispatch(editDefaultChatListRecordData(newContact));
     }
-  }
+  };
 
   // handle delete individual  message
-  const handleDeleteMessage = (id: number, message: UserChatMessageRecord) => {
-    dispatch(deleteDefaultChatMessageRecord(id, message))
-  }
+  const handleDeleteMessage = (_id: number, message: UserChatMessageRecord) => {
+    dispatch(deleteDefaultChatMessageRecord(_id, message));
+  };
 
   // formate time
   const formatTime = (date: Date): string => {
-    const today = new Date()
+    const today = new Date();
     const isToday =
       date.getDate() === today.getDate() &&
       date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
+      date.getFullYear() === today.getFullYear();
 
     // Options to format the time as "10:00 AM"
     const timeOptions: Intl.DateTimeFormatOptions = {
-      hour: 'numeric',
-      minute: 'numeric',
+      hour: "numeric",
+      minute: "numeric",
       hour12: true,
-    }
+    };
 
-    // Format time as "10:00 AM"
-    const timeString = new Intl.DateTimeFormat('en-US', timeOptions).format(
-      date
-    )
+    const timeString = new Intl.DateTimeFormat("en-US", timeOptions).format(
+      date,
+    );
 
-    // Return "Today" if the date is today, otherwise format as "MM/DD/YYYY"
     return isToday
       ? `Today, ${timeString}`
-      : `${date.toLocaleDateString()}, ${timeString}`
-  }
+      : `${date.toLocaleDateString()}, ${timeString}`;
+  };
 
   // handle add new message
   const handleAddNewMessage = () => {
-    const trimmedMessage = message.trim()
-
-    // Don't do anything if message is empty or only whitespace
-    if (trimmedMessage === '') return
+    if (message.trim() === "") {
+      return false;
+    }
 
     if (replyMessage && isReplyMessage) {
       const newMessage = {
         ...replyMessage,
-        sender: 'You',
+        sender: "You",
         time: formatTime(new Date()),
         text: message,
-        avatar: '/assets/images/avatar/user-17.png',
-        type: 'sent',
-      }
+        avatar:
+          "https://images.kcubeinfotech.com/domiex/images/avatar/user-17.png",
+        type: "sent",
+      };
       if (newMessage) {
-        dispatch(addDefaultChatMessageRecord(currentChat.id, newMessage))
-        setMessage('')
-        setIsReplyMessage(false)
-        setReplyMessage(null)
-        return true
+        dispatch(addDefaultChatMessageRecord(currentChat._id, newMessage));
+        setMessage("");
+        setIsReplyMessage(false);
+        setReplyMessage(null);
+        return true;
       }
     }
 
     const newMessage = {
-      id:
+      _id:
         currentChat && currentChat.messages.length > 0
           ? currentChat.messages.length + 1
           : 1,
-      sender: 'You',
+      sender: "You",
       time: formatTime(new Date()),
       text: message,
-      avatar: '/assets/images/avatar/user-17.png',
-      type: 'sent',
-    }
+      avatar:
+        "https://images.kcubeinfotech.com/domiex/images/avatar/user-17.png",
+      type: "sent",
+    };
     if (newMessage) {
-      dispatch(addDefaultChatMessageRecord(currentChat.id, newMessage))
-      setMessage('')
+      dispatch(addDefaultChatMessageRecord(currentChat._id, newMessage));
+      setMessage("");
     }
-  }
+  };
 
   // handle copy message
   const handleCopyMessage = (message: string) => {
-    setIsCopySuccess(true)
-    scrollToBottom()
-    navigator.clipboard.writeText(message)
+    setIsCopySuccess(true);
+    scrollToBottom();
+    navigator.clipboard.writeText(message);
     setTimeout(() => {
-      setIsCopySuccess(false)
-    }, 2000)
-  }
+      setIsCopySuccess(false);
+    }, 2000);
+  };
 
   // Scroll to bottom function
   const scrollToBottom = () => {
     setTimeout(() => {
       if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
       }
-    }, 200)
-  }
+    }, 200);
+  };
 
   // handle emoji
   const handleEmojiClick = (emojiData: EmojiClickData) => {
-    setMessage((prev) => prev + emojiData.emoji)
-  }
+    setMessage((prev) => prev + emojiData.emoji);
+  };
 
   // handle reply message
   const handleReplyMessage = (
     value: boolean,
-    message: UserChatMessageRecord
+    message: UserChatMessageRecord,
   ) => {
-    setIsReplyMessage(value)
+    setIsReplyMessage(value);
 
     // set reply message of text
     if (message.text) {
       const newMessage: UserChatMessageRecord = {
         ...message,
-        id:
+        _id:
           currentChat.messages && currentChat.messages.length > 0
             ? currentChat.messages.length + 1
             : 1,
         replyText: message.text,
-        contentType: 'content',
-      }
+        contentType: "content",
+      };
       if (newMessage) {
-        setReplyMessage(newMessage)
+        setReplyMessage(newMessage);
       }
     }
 
@@ -205,71 +209,70 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
     if (message.images) {
       const newMessage: UserChatMessageRecord = {
         ...message,
-        id:
+        _id:
           currentChat.messages && currentChat.messages.length > 0
             ? currentChat.messages.length + 1
             : 1,
         replyText: message.images,
-        contentType: 'image',
-      }
+        contentType: "image",
+      };
       if (newMessage) {
-        setReplyMessage(newMessage)
+        setReplyMessage(newMessage);
       }
     }
-  }
+  };
 
   // handle close reply message
   const handleCloseReplyMessage = () => {
-    setIsReplyMessage(false)
-    setReplyMessage(null)
-  }
+    setIsReplyMessage(false);
+    setReplyMessage(null);
+  };
 
   // Handle outsideClick based close picker
   useEffect(() => {
-    if (typeof window === 'undefined') return
-
+    if (typeof window === "undefined") return;
     // Close picker when clicked outside
     const handleClickOutside = (event: MouseEvent) => {
       if (
         pickerRef.current &&
         !pickerRef.current.contains(event.target as Node)
       ) {
-        setShowPicker(false)
+        setShowPicker(false);
       }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-
+    };
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [pickerRef])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [pickerRef]);
 
   // Call scrollToBottom when key moments are added
   useEffect(() => {
-    scrollToBottom()
-  }, [currentChat])
+    scrollToBottom();
+  }, [currentChat]);
 
   return (
     <React.Fragment>
       <div
         className="col-span-12 overflow-hidden xl:col-span-8 card"
-        id="chat-wrapper">
+        id="chat-wrapper"
+      >
         <SimpleBar className="max-h-[calc(100vh_-_19rem)] min-h-[calc(100vh_-_19rem)] relative chat-body">
-          <div className="sticky inset-x-0 top-0 z-50 flex items-center gap-3 border-b border-gray-200 card-body bg-white/30 dark:bg-dark-900/90 dark:border-dark-800 backdrop-blur-lg">
+          <div className="sticky inset-x-0 top-0 z-50 flex items-center gap-3 border-b card-body bg-white/30 dark:bg-dark-900/90 dark:border-dark-800 backdrop-blur-lg">
             <div className="xl:hidden shrink-0">
               <button
                 className="btn btn-sub-gray btn-icon"
                 title="back btn"
-                onClick={onBack}>
+                onClick={onBack}
+              >
                 <ChevronsLeft className="size-5" />
               </button>
             </div>
             <div className="relative flex items-center justify-center font-semibold transition duration-200 ease-linear bg-gray-100 rounded-full dark:bg-dark-850 size-10 shrink-0">
               {currentChat && currentChat.receiverImage ? (
-                <Image
+                <img
                   src={currentChat.receiverImage}
-                  alt="userImg"
+                  alt="currentChatImg"
                   className="rounded-full"
                   width={40}
                   height={40}
@@ -282,7 +285,7 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
             </div>
             <div className="grow">
               <h6 className="mb-0.5">
-                <Link href="#!">{currentChat && currentChat.name}</Link>
+                <Link to="#!">{currentChat && currentChat.name}</Link>
               </h6>
               <p className="text-gray-500 dark:text-dark-500">
                 {currentChat && currentChat.lastSeen}
@@ -291,40 +294,42 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
             <button
               title="call btn"
               className="btn btn-active-red shrink-0 btn-icon"
-              onClick={handleAudioCallModal}>
+              onClick={handleAudioCallModal}
+            >
               <Phone className="size-5" />
             </button>
             <button
               title="video call btn"
               className="btn btn-active-purple shrink-0 btn-icon"
-              onClick={handleVideoCallModal}>
+              onClick={handleVideoCallModal}
+            >
               <Video className="size-5" />
             </button>
           </div>
           <div className="pb-0 card-body relative">
             <div
               className="flex flex-col justify-end min-h-[calc(100vh_-_24rem)] gap-5 "
-              id="chat-messages">
+              id="chat-messages"
+            >
               {currentChat &&
                 currentChat.messages &&
                 currentChat.messages.map(
                   (msg: UserChatMessageRecord, index: number) => {
                     return (
                       <div
-                        className={`messages flex items-end max-w-xl gap-3 ltr:[&.right]:ml-auto rtl:[&.right]:mr-auto group/chat ${
-                          msg.type == 'sent' ? 'right' : ''
-                        } `}
-                        key={index}>
+                        className={`messages flex items-end max-w-xl gap-3 ltr:[&.right]:ml-auto rtl:[&.right]:mr-auto group/chat ${msg.type == "sent" ? "right" : ""} `}
+                        key={index}
+                      >
                         {msg.replyText ? (
                           <>
                             {/* render text message */}
-                            {msg.contentType === 'content' && msg.text && (
+                            {msg.contentType === "content" && msg.text && (
                               <>
                                 <div className="relative flex items-center justify-center font-semibold transition duration-200 ease-linear bg-gray-100 dark:bg-dark-850 rounded-full size-8 shrink-0 group-[&.right]/chat:order-2">
                                   {msg.avatar ? (
-                                    <Image
+                                    <img
                                       src={msg.avatar}
-                                      alt="userImg"
+                                      alt="avatar"
                                       className="rounded-full"
                                       width={32}
                                       height={32}
@@ -346,7 +351,7 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
                                           <h6 className="mb-2">{msg.sender}</h6>
                                           <p className="mb-0">
                                             <MessageComponent
-                                              message={msg.text.toString()}
+                                              message={msg.replyText}
                                             />
                                           </p>
                                         </div>
@@ -358,44 +363,48 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
                                   <Dropdown
                                     position="right"
                                     trigger="click"
-                                    dropdownClassName="dropdown">
+                                    dropdownClassName="dropdown"
+                                  >
                                     <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
                                       <i className="ri-more-2-fill"></i>
                                     </DropdownButton>
                                     <DropdownMenu>
                                       <Link
-                                        href="#!"
+                                        to="#!"
                                         className="dropdown-item"
                                         onClick={(e) => {
-                                          e.preventDefault()
-                                          handleReplyMessage(true, msg)
-                                        }}>
-                                        <i className="align-middle ltr:mr-2 rtl:ml-2 ri-reply-line"></i>
+                                          e.preventDefault();
+                                          handleReplyMessage(true, msg);
+                                        }}
+                                      >
+                                        <i className="align-middle ltr:mr-2 rtl:ml-2 ri-reply-line"></i>{" "}
                                         <span>Reply</span>
                                       </Link>
 
                                       <Link
-                                        href="#!"
+                                        to="#!"
                                         className="dropdown-item "
                                         onClick={(e) => {
-                                          e.preventDefault()
-                                          handleCopyMessage(msg.text ?? '')
-                                        }}>
-                                        <i className="align-middle ltr:mr-2 rtl:ml-2 ri-file-copy-line"></i>
+                                          e.preventDefault();
+                                          handleCopyMessage(msg.text ?? "");
+                                        }}
+                                      >
+                                        <i className="align-middle ltr:mr-2 rtl:ml-2 ri-file-copy-line"></i>{" "}
                                         <span>Copy</span>
                                       </Link>
 
                                       <Link
-                                        href="#!"
+                                        to="#!"
                                         className="dropdown-item "
                                         onClick={(e) => {
-                                          e.preventDefault()
+                                          e.preventDefault();
                                           handleDeleteMessage(
-                                            currentChat.id,
-                                            msg
-                                          )
-                                        }}>
-                                        <i className="align-middle ltr:mr-2 rtl:ml-2 ri-delete-bin-line"></i>
+                                            currentChat._id,
+                                            msg,
+                                          );
+                                        }}
+                                      >
+                                        <i className="align-middle ltr:mr-2 rtl:ml-2 ri-delete-bin-line"></i>{" "}
                                         <span>Delete</span>
                                       </Link>
                                     </DropdownMenu>
@@ -405,13 +414,13 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
                             )}
 
                             {/* render reply images */}
-                            {msg.contentType === 'image' && (
+                            {msg.contentType === "image" && (
                               <>
                                 <div className="relative flex items-center justify-center font-semibold transition duration-200 ease-linear bg-gray-100 dark:bg-dark-850 rounded-full size-8 shrink-0 group-[&.right]/chat:order-2">
                                   {msg.avatar ? (
-                                    <Image
+                                    <img
                                       src={msg.avatar}
-                                      alt="userImg"
+                                      alt="avatar"
                                       className="rounded-full"
                                       width={32}
                                       height={32}
@@ -432,39 +441,42 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
                                         <h6 className="mb-2">{msg.sender}</h6>
                                         <div className="last:mb-0">
                                           <div className="grid grid-cols-12 gap-4">
-                                            {msg.images &&
-                                              Array.isArray(msg.images) &&
+                                            {msg &&
+                                              msg.images &&
                                               msg.images.length > 0 &&
                                               msg.images.map(
                                                 (
-                                                  img: string | StaticImageData,
-                                                  index: number
+                                                  img: string,
+                                                  index: number,
                                                 ) => {
                                                   return (
                                                     <div
                                                       className="col-span-3"
-                                                      key={index}>
+                                                      key={index}
+                                                    >
                                                       <Link
-                                                        href="#!"
-                                                        title="Gallery Images">
-                                                        <Image
+                                                        to="#!"
+                                                        title="Gallery Images"
+                                                      >
+                                                        <img
                                                           src={img}
-                                                          alt="userImg"
+                                                          alt="img"
                                                           className="rounded-md"
                                                           width={121}
                                                           height={81}
                                                         />
                                                       </Link>
                                                     </div>
-                                                  )
-                                                }
+                                                  );
+                                                },
                                               )}
                                             {msg &&
                                               msg.extraImagesCount &&
                                               msg.extraImagesCount > 0 && (
                                                 <Link
-                                                  href="#!"
-                                                  className="flex items-center justify-center col-span-3 p-3 bg-gray-100 rounded-md dark:bg-dark-850">
+                                                  to="#!"
+                                                  className="flex items-center justify-center col-span-3 p-3 bg-gray-100 rounded-md dark:bg-dark-850"
+                                                >
                                                   <h6>
                                                     {msg.extraImagesCount}+
                                                   </h6>
@@ -482,41 +494,48 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
                                 <Dropdown
                                   position="right"
                                   trigger="click"
-                                  dropdownClassName="dropdown">
+                                  dropdownClassName="dropdown"
+                                >
                                   <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
                                     <i className="ri-more-2-fill"></i>
                                   </DropdownButton>
                                   <DropdownMenu>
                                     <Link
-                                      href="#!"
+                                      to="#!"
                                       className="dropdown-item"
                                       onClick={(e) => {
-                                        e.preventDefault()
-                                        handleReplyMessage(true, msg)
-                                      }}>
-                                      <i className="align-middle ltr:mr-2 rtl:ml-2 ri-reply-line"></i>
+                                        e.preventDefault();
+                                        handleReplyMessage(true, msg);
+                                      }}
+                                    >
+                                      <i className="align-middle ltr:mr-2 rtl:ml-2 ri-reply-line"></i>{" "}
                                       <span>Reply</span>
                                     </Link>
 
                                     <Link
-                                      href="#!"
+                                      to="#!"
                                       className="dropdown-item "
                                       onClick={(e) => {
-                                        e.preventDefault()
-                                        handleCopyMessage(msg.text ?? '')
-                                      }}>
-                                      <i className="align-middle ltr:mr-2 rtl:ml-2 ri-file-copy-line"></i>
+                                        e.preventDefault();
+                                        handleCopyMessage(msg.text ?? "");
+                                      }}
+                                    >
+                                      <i className="align-middle ltr:mr-2 rtl:ml-2 ri-file-copy-line"></i>{" "}
                                       <span>Copy</span>
                                     </Link>
 
                                     <Link
-                                      href="#!"
+                                      to="#!"
                                       className="dropdown-item "
                                       onClick={(e) => {
-                                        e.preventDefault()
-                                        handleDeleteMessage(currentChat.id, msg)
-                                      }}>
-                                      <i className="align-middle ltr:mr-2 rtl:ml-2 ri-delete-bin-line"></i>
+                                        e.preventDefault();
+                                        handleDeleteMessage(
+                                          currentChat._id,
+                                          msg,
+                                        );
+                                      }}
+                                    >
+                                      <i className="align-middle ltr:mr-2 rtl:ml-2 ri-delete-bin-line"></i>{" "}
                                       <span>Delete</span>
                                     </Link>
                                   </DropdownMenu>
@@ -528,9 +547,9 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
                           <>
                             <div className="relative flex items-center justify-center font-semibold transition duration-200 ease-linear bg-gray-100 dark:bg-dark-850 rounded-full size-8 shrink-0 group-[&.right]/chat:order-2">
                               {msg.avatar ? (
-                                <Image
+                                <img
                                   src={msg.avatar}
-                                  alt="userImg"
+                                  alt="avatar"
                                   className="rounded-full"
                                   width={32}
                                   height={32}
@@ -556,42 +575,41 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
                               )}
 
                               {/* render images message */}
-                              {msg.images && Array.isArray(msg.images) && (
+                              {msg && msg.images && (
                                 <div className="last:mb-0">
                                   <div className="grid grid-cols-12 gap-4">
                                     {msg.images.length > 0 &&
                                       msg.images.map(
-                                        (
-                                          img: string | StaticImageData,
-                                          index: number
-                                        ) => {
+                                        (img: string, index: number) => {
                                           return (
                                             <div
                                               className="col-span-3"
-                                              key={index}>
+                                              key={index}
+                                            >
                                               <Link
-                                                href="#!"
+                                                to="#!"
                                                 title="Gallery Images"
                                                 // onClick={() => handleImageClick(index)}
                                               >
-                                                <Image
+                                                <img
                                                   src={img}
-                                                  alt="userImg"
+                                                  alt="img"
                                                   className="rounded-md"
                                                   width={121}
                                                   height={81}
                                                 />
                                               </Link>
                                             </div>
-                                          )
-                                        }
+                                          );
+                                        },
                                       )}
                                     {msg &&
                                       msg.extraImagesCount &&
                                       msg.extraImagesCount > 0 && (
                                         <Link
-                                          href="#!"
-                                          className="flex items-center justify-center col-span-3 p-3 bg-gray-100 rounded-md dark:bg-dark-850">
+                                          to="#!"
+                                          className="flex items-center justify-center col-span-3 p-3 bg-gray-100 rounded-md dark:bg-dark-850"
+                                        >
                                           <h6>{msg.extraImagesCount}+</h6>
                                         </Link>
                                       )}
@@ -604,30 +622,36 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
                                 <Dropdown
                                   position="right"
                                   trigger="click"
-                                  dropdownClassName="dropdown">
+                                  dropdownClassName="dropdown"
+                                >
                                   <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
                                     <i className="ri-more-2-fill"></i>
                                   </DropdownButton>
                                   <DropdownMenu>
                                     <Link
-                                      href="#!"
+                                      to="#!"
                                       className="dropdown-item"
                                       onClick={(e) => {
-                                        e.preventDefault()
-                                        handleReplyMessage(true, msg)
-                                      }}>
-                                      <i className="align-middle ltr:mr-2 rtl:ml-2 ri-reply-line"></i>
+                                        e.preventDefault();
+                                        handleReplyMessage(true, msg);
+                                      }}
+                                    >
+                                      <i className="align-middle ltr:mr-2 rtl:ml-2 ri-reply-line"></i>{" "}
                                       <span>Reply</span>
                                     </Link>
 
                                     <Link
-                                      href="#!"
+                                      to="#!"
                                       className="dropdown-item "
                                       onClick={(e) => {
-                                        e.preventDefault()
-                                        handleDeleteMessage(currentChat.id, msg)
-                                      }}>
-                                      <i className="align-middle ltr:mr-2 rtl:ml-2 ri-delete-bin-line"></i>
+                                        e.preventDefault();
+                                        handleDeleteMessage(
+                                          currentChat._id,
+                                          msg,
+                                        );
+                                      }}
+                                    >
+                                      <i className="align-middle ltr:mr-2 rtl:ml-2 ri-delete-bin-line"></i>{" "}
                                       <span>Delete</span>
                                     </Link>
                                   </DropdownMenu>
@@ -638,8 +662,8 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
                         )}
                         <div ref={messagesEndRef} />
                       </div>
-                    )
-                  }
+                    );
+                  },
                 )}
             </div>
 
@@ -648,32 +672,28 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
               <div className="card absolute bottom-0 m-0 left-0 right-0 mx-5 w-[calc(100%_-_40px)]">
                 <div className="alert m-4 alert-primary">
                   <h5 className="mb-2">You</h5>
-                  {/* render text message as reply message */}
-                  {replyMessage && replyMessage.contentType === 'content' && (
+                  {replyMessage && replyMessage.contentType === "content" && (
                     <p className="mb-0">
-                      {typeof replyMessage.replyText === 'string' && (
-                        <MessageComponent message={replyMessage.replyText} />
-                      )}
+                      <MessageComponent message={replyMessage.replyText} />
                     </p>
                   )}
 
                   {/* render image message as reply message */}
-                  {replyMessage && replyMessage.contentType === 'image' && (
+                  {replyMessage && replyMessage.contentType === "image" && (
                     <div className="flex flex-wrap gap-2">
                       {/* reply images */}
-                      {Array.isArray(replyMessage.replyText) &&
-                        replyMessage.replyText.map(
-                          (image: string | StaticImageData, index: number) => (
-                            <Image
-                              key={index}
-                              src={image}
-                              width={84}
-                              height={56}
-                              className="rounded-md"
-                              alt="image"
-                            />
-                          )
-                        )}
+                      {replyMessage.replyText.map(
+                        (image: string, index: number) => (
+                          <img
+                            key={index}
+                            src={image}
+                            width={84}
+                            height={56}
+                            className="rounded-md"
+                            alt="image"
+                          />
+                        ),
+                      )}
 
                       {/* reply extra images count */}
                       {replyMessage &&
@@ -688,12 +708,13 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
 
                   {/* render image message as reply message */}
                   <Link
-                    href="#!"
+                    to="#!"
                     className="btn-close text-primary-400 hover:text-primary-500"
                     onClick={(e) => {
-                      e.preventDefault()
-                      handleCloseReplyMessage()
-                    }}>
+                      e.preventDefault();
+                      handleCloseReplyMessage();
+                    }}
+                  >
                     <i className="ri-close-fill"></i>
                   </Link>
                 </div>
@@ -704,8 +725,9 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
           {/* Message copied alert */}
           {isCopySuccess && (
             <div
-              className="bg-green-100 m-5 text-sm w-max mx-auto mb-0 border border-green-400 text-green-700 px-4 py-2 rounded relative"
-              role="alert">
+              className="bg-green-100 m-5 text-sm w-max mx-auto mb-0 border border-green-400 text-green-700 px-4 py-2 rounded-smrelative"
+              role="alert"
+            >
               Message copied
             </div>
           )}
@@ -721,25 +743,28 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
               placeholder="Type something ..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddNewMessage()}
+              onKeyDown={(e) => e.key === "Enter" && handleAddNewMessage()}
             />
             <button
               type="submit"
               className="btn btn-active-primary btn-icon shrink-0"
-              onClick={() => handleAddNewMessage()}>
+              onClick={() => handleAddNewMessage()}
+            >
               <Send className="size-5" />
             </button>
             <div className="hidden shrink-0 md:flex">
               <label
                 htmlFor="sendImages"
-                className="btn btn-active-gray btn-icon">
+                className="btn btn-active-gray btn-icon"
+              >
                 <FileImage className="size-5" />
               </label>
               <input type="file" id="sendImages" className="hidden" />
             </div>
             <button
               className="text-lg btn btn-active-gray btn-icon shrink-0"
-              onClick={() => setShowPicker(!showPicker)}>
+              onClick={() => setShowPicker(!showPicker)}
+            >
               😊
             </button>
             {showPicker && (
@@ -751,9 +776,10 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
               </div>
             )}
             <Dropdown
-              position="right"
+              position="top-left"
               trigger="click"
-              dropdownClassName="dropdown">
+              dropdownClassName="dropdown"
+            >
               <DropdownButton colorClass="text-lg btn btn-active-gray btn-icon shrink-0">
                 <Ellipsis className="size-5" />
               </DropdownButton>
@@ -761,20 +787,22 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
                 <button
                   className="dropdown-item "
                   onClick={(e) => {
-                    e.preventDefault()
-                    handleChatClear(currentChat)
-                  }}>
-                  <i className="align-middle ltr:mr-2 rtl:ml-2 ri-chat-4-line"></i>
+                    e.preventDefault();
+                    handleChatClear(currentChat);
+                  }}
+                >
+                  <i className="align-middle ltr:mr-2 rtl:ml-2 ri-chat-4-line"></i>{" "}
                   <span>Clear Chat</span>
                 </button>
 
                 <button
                   className="dropdown-item "
                   onClick={(e) => {
-                    e.preventDefault()
-                    handleChatDelete(currentChat)
-                  }}>
-                  <i className="align-middle ltr:mr-2 rtl:ml-2 ri-delete-bin-line"></i>
+                    e.preventDefault();
+                    handleChatDelete(currentChat);
+                  }}
+                >
+                  <i className="align-middle ltr:mr-2 rtl:ml-2 ri-delete-bin-line"></i>{" "}
                   <span>Delete</span>
                 </button>
               </DropdownMenu>
@@ -783,7 +811,7 @@ const UserChatBoard: React.FC<UserChatBoardProps> = ({
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default UserChatBoard
+export default UserChatBoard;

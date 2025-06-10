@@ -1,100 +1,91 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface TreemapChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: any;
 }
 
-const DistributedTreemapChart = ({
+const DistributedTreeMapChart = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: TreemapChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
   const series = [
     {
       data: [
         {
-          x: 'New Delhi',
+          x: "New Delhi",
           y: 218,
         },
         {
-          x: 'Kolkata',
+          x: "Kolkata",
           y: 149,
         },
         {
-          x: 'Mumbai',
+          x: "Mumbai",
           y: 184,
         },
         {
-          x: 'Ahmedabad',
+          x: "Ahmedabad",
           y: 55,
         },
         {
-          x: 'Bangaluru',
+          x: "Bangaluru",
           y: 84,
         },
         {
-          x: 'Pune',
+          x: "Pune",
           y: 31,
         },
         {
-          x: 'Chennai',
+          x: "Chennai",
           y: 70,
         },
         {
-          x: 'Jaipur',
+          x: "Jaipur",
           y: 30,
         },
         {
-          x: 'Surat',
+          x: "Surat",
           y: 44,
         },
         {
-          x: 'Hyderabad',
+          x: "Hyderabad",
           y: 68,
         },
         {
-          x: 'Lucknow',
+          x: "Lucknow",
           y: 28,
         },
         {
-          x: 'Indore',
+          x: "Indore",
           y: 19,
         },
         {
-          x: 'Kanpur',
+          x: "Kanpur",
           y: 29,
         },
       ],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'treemap',
+      type: "treemap",
     },
     legend: {
       show: false,
     },
     title: {
-      text: 'Distibuted Treemap (different color for each cell)',
-      align: 'center',
+      text: "Distibuted Treemap (different color for each cell)",
+      align: "center",
     },
     colors: chartsColor,
     plotOptions: {
@@ -103,7 +94,7 @@ const DistributedTreemapChart = ({
         enableShades: false,
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -112,12 +103,12 @@ const DistributedTreemapChart = ({
         series={series}
         type="treemap"
         data-chart-colors="[bg-primary-500, bg-green-500, bg-yellow-500, bg-purple-500, bg-sky-500, bg-red-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DistributedTreemapChart
+export default DistributedTreeMapChart;

@@ -1,14 +1,9 @@
-'use client'
-
-import React from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import whiteLogo from '@assets/images/logo-white.png'
-import mainLogo from '@assets/images/main-logo.png'
-import creativeAuth from '@assets/images/others/auth-creative.png'
-import { EyeOff, Trash2 } from 'lucide-react'
+import React from "react";
+import { EyeOff, Trash2 } from "lucide-react";
+import mainLogo from "@assets/images/main-logo.png";
+import whiteLogo from "@assets/images/logo-white.png";
+import creativeAuth from "@assets/images/others/auth-creative.png";
+import { Link } from "react-router-dom";
 
 const AccountDeactivationCreative = () => {
   return (
@@ -18,17 +13,17 @@ const AccountDeactivationCreative = () => {
           <div className="relative col-span-12 py-8 overflow-hidden bg-gray-100 dark:bg-dark-850 lg:min-h-screen lg:col-span-6 md:p-9 xl:p-12">
             <div className="absolute bottom-0 w-32 -rotate-45 -top-64 -right-8 bg-gray-200/20 dark:bg-dark-800/20"></div>
             <div className="p-4">
-              <Link href="/">
-                <Image
+              <Link to="/">
+                <img
                   src={mainLogo}
-                  alt="mainLogo"
+                  alt="logo"
                   className="h-8 mx-auto dark:hidden inline-block"
                   width={176}
                   height={32}
                 />
-                <Image
+                <img
                   src={whiteLogo}
-                  alt="whiteLogo"
+                  alt="logo"
                   className="hidden h-8 mx-auto dark:inline-block"
                   width={176}
                   height={32}
@@ -38,7 +33,7 @@ const AccountDeactivationCreative = () => {
                 The most straightforward way to manage your projects
               </h1>
 
-              <Image
+              <img
                 src={creativeAuth}
                 alt="creativeAuth"
                 className="mt-9 xl:mt-0 relative xl:absolute xl:scale-110 rounded-lg shadow-lg xl:top-[315px] xl:left-[115px]"
@@ -50,17 +45,17 @@ const AccountDeactivationCreative = () => {
               <div className="col-span-12 2xl:col-span-8 2xl:col-start-3 mx-4 md:mx-12 mb-0 card">
                 <div className="md:p-10 card-body">
                   <div className="mb-5 text-center">
-                    <Link href="/">
-                      <Image
+                    <Link to="/">
+                      <img
                         src={mainLogo}
-                        alt="mainLogo"
+                        alt="logo"
                         className="h-8 mx-auto dark:hidden inline-block"
                         width={176}
                         height={32}
                       />
-                      <Image
+                      <img
                         src={whiteLogo}
-                        alt="whiteLogo"
+                        alt="logo"
                         className="hidden h-8 mx-auto dark:inline-block"
                         width={176}
                         height={32}
@@ -81,8 +76,8 @@ const AccountDeactivationCreative = () => {
                       <h6 className="mb-1">Temporary Disable</h6>
                       <p className="text-gray-500">
                         The customer is very important and will be followed up
-                        with care. Everyone&apos;s needs are expected to be met.
-                        It is not just about the process, but about benefiting
+                        with care. Everyone's needs are expected to be met. It
+                        is not just about the process, but about benefiting
                         everyone, with an emphasis on ecological mindfulness.
                       </p>
                     </div>
@@ -95,18 +90,18 @@ const AccountDeactivationCreative = () => {
                       <h6 className="mb-1">Permanent Delete</h6>
                       <p className="text-gray-500">
                         The customer is very important and will receive
-                        dedicated attention. Everyone&apos;s needs and
-                        expectations are considered. This process is undertaken
-                        for the benefit of all, with a focus on ecological
+                        dedicated attention. Everyone's needs and expectations
+                        are considered. This process is undertaken for the
+                        benefit of all, with a focus on ecological
                         responsibility.
                       </p>
                     </div>
                   </div>
                   <div className="sm:flex justify-center gap-2 mt-6">
-                    <Link href="#!" className="btn btn-primary">
+                    <Link to="#!" className="btn btn-primary">
                       Temporary Disable
                     </Link>
-                    <Link href="#!" className="btn btn-red mt-2.5 sm:mt-0">
+                    <Link to="#!" className="btn btn-red mt-2.5 sm:mt-0">
                       Permanent Delete
                     </Link>
                   </div>
@@ -117,6 +112,6 @@ const AccountDeactivationCreative = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default AccountDeactivationCreative
+  );
+};
+export default AccountDeactivationCreative;

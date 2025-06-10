@@ -1,28 +1,19 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
 
 interface PolarChartsProps {
-  chartId: React.MutableRefObject<null>
+  chartId: any;
 }
 
 const MonochromePolarAreaChart = ({ chartId }: PolarChartsProps) => {
-  const series = [42, 47, 52, 58, 65]
-  const labels = ['Rose A', 'Rose B', 'Rose C', 'Rose D', 'Rose E']
+  const series = [42, 47, 52, 58, 65];
+  const labels = ["Rose A", "Rose B", "Rose C", "Rose D", "Rose E"];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'polarArea',
+      type: "polarArea",
     },
     labels: labels,
     fill: {
@@ -36,7 +27,7 @@ const MonochromePolarAreaChart = ({ chartId }: PolarChartsProps) => {
       show: false,
     },
     legend: {
-      position: 'bottom',
+      position: "bottom",
     },
     plotOptions: {
       polarArea: {
@@ -51,11 +42,11 @@ const MonochromePolarAreaChart = ({ chartId }: PolarChartsProps) => {
     theme: {
       monochrome: {
         enabled: true,
-        shadeTo: 'light',
+        shadeTo: "light",
         shadeIntensity: 0.6,
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -63,12 +54,12 @@ const MonochromePolarAreaChart = ({ chartId }: PolarChartsProps) => {
         options={options}
         series={series}
         type="polarArea"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default MonochromePolarAreaChart
+export default MonochromePolarAreaChart;

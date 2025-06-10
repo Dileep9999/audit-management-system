@@ -1,35 +1,31 @@
-'use client'
-
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-
-import useChartColors from '@src/hooks/useChartColors'
-import ApexTree from 'apextree'
-
-import user4 from '../../../assets/images/avatar/user-4.png'
-import user11 from '../../../assets/images/avatar/user-11.png'
-import user13 from '../../../assets/images/avatar/user-13.png'
-import user14 from '../../../assets/images/avatar/user-14.png'
-import user15 from '../../../assets/images/avatar/user-15.png'
-import user16 from '../../../assets/images/avatar/user-16.png'
-import user17 from '../../../assets/images/avatar/user-17.png'
-import { TreeData, TreeOptions } from '../../../dtos/pages/apextree'
+import { useCallback, useEffect, useRef, useState } from "react";
+import ApexTree from "apextree";
+import { TreeOptions, TreeData } from "../../../dtos/pages/apextree";
+import user4 from "../../../assets/images/avatar/user-4.png";
+import user11 from "../../../assets/images/avatar/user-11.png";
+import user13 from "../../../assets/images/avatar/user-13.png";
+import user14 from "../../../assets/images/avatar/user-14.png";
+import user15 from "../../../assets/images/avatar/user-15.png";
+import user16 from "../../../assets/images/avatar/user-16.png";
+import user17 from "../../../assets/images/avatar/user-17.png";
+import useChartColors from "@hooks/useChartColors";
 
 interface BarChartsProps {
-  chartColors: string
-  chartDarkColors: string
+  chartColors: string;
+  chartDarkColors: string;
 }
 
 const TopBottomChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
-  const apexTreeContainerRef = useRef<HTMLDivElement | null>(null)
-  const [treeData, setTreeData] = useState<TreeData | null>(null)
-  const colors = useChartColors({ chartColors, chartDarkColors })
+  const apexTreeContainerRef = useRef<HTMLDivElement | null>(null);
+  const [treeData, setTreeData] = useState<TreeData | null>(null);
+  const colors = useChartColors({ chartColors, chartDarkColors });
 
   const initializeTreeData = useCallback(() => {
     const data: TreeData = {
-      id: 'ms',
+      id: "ms",
       data: {
-        imageURL: user4.src,
-        name: 'Jordan Davis',
+        imageURL: user4,
+        name: "Jordan Davis",
       },
       options: {
         nodeBGColor: colors[2],
@@ -37,10 +33,10 @@ const TopBottomChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
       },
       children: [
         {
-          id: 'mh',
+          id: "mh",
           data: {
-            imageURL: user11.src,
-            name: 'Chris Wilson',
+            imageURL: user11,
+            name: "Chris Wilson",
           },
           options: {
             nodeBGColor: colors[3],
@@ -48,10 +44,10 @@ const TopBottomChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
           },
           children: [
             {
-              id: 'kb',
+              id: "kb",
               data: {
-                imageURL: user13.src,
-                name: 'Alex Lee',
+                imageURL: user13,
+                name: "Alex Lee",
               },
               options: {
                 nodeBGColor: colors[4],
@@ -59,10 +55,10 @@ const TopBottomChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
               },
             },
             {
-              id: 'cr',
+              id: "cr",
               data: {
-                imageURL: user14.src,
-                name: 'Taylor Wilson',
+                imageURL: user14,
+                name: "Taylor Wilson",
               },
               options: {
                 nodeBGColor: colors[5],
@@ -72,10 +68,10 @@ const TopBottomChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
           ],
         },
         {
-          id: 'cs',
+          id: "cs",
           data: {
-            imageURL: user15.src,
-            name: 'Jane Brown',
+            imageURL: user15,
+            name: "Jane Brown",
           },
           options: {
             nodeBGColor: colors[6],
@@ -83,10 +79,10 @@ const TopBottomChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
           },
           children: [
             {
-              id: 'Noah_Chandler',
+              id: "Noah_Chandler",
               data: {
-                imageURL: user16.src,
-                name: 'John Garcia',
+                imageURL: user16,
+                name: "John Garcia",
               },
               options: {
                 nodeBGColor: colors[7],
@@ -94,10 +90,10 @@ const TopBottomChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
               },
             },
             {
-              id: 'Felix_Wagner',
+              id: "Felix_Wagner",
               data: {
-                imageURL: user17.src,
-                name: 'Cameron Wilson',
+                imageURL: user17,
+                name: "Cameron Wilson",
               },
               options: {
                 nodeBGColor: colors[8],
@@ -107,15 +103,15 @@ const TopBottomChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
           ],
         },
       ],
-    }
-    setTreeData(data)
-  }, [colors])
+    };
+    setTreeData(data);
+  }, [colors]);
 
   const renderTree = useCallback(() => {
     if (apexTreeContainerRef.current && treeData) {
       const options: TreeOptions = {
-        contentKey: 'data',
-        width: '100%',
+        contentKey: "data",
+        width: "100%",
         height: 600,
         nodeWidth: 150,
         nodeHeight: 120,
@@ -126,45 +122,46 @@ const TopBottomChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
         tooltipBorderColor: colors[0],
         childrenSpacing: 50,
         siblingSpacing: 20,
-        direction: 'top',
+        direction: "top",
         nodeTemplate: (content) => `
                     <div class="flex gap-5 justify-center flex-col items-center p-3">
-                        <img class="size-12 rounded-full" src='${content.imageURL}' alt='img' />
+                        <img class="size-12 rounded-full" src='${content.imageURL}' alt='contentImg' />
                         <h6>${content.name}</h6>
                     </div>`,
         enableToolbar: true,
-      }
+      };
 
-      apexTreeContainerRef.current.innerHTML = '' // Clear the container
-      const newApexTree = new ApexTree(apexTreeContainerRef.current, options)
-      newApexTree.render(treeData)
+      apexTreeContainerRef.current.innerHTML = ""; // Clear the container
+      const newApexTree = new ApexTree(apexTreeContainerRef.current, options);
+      newApexTree.render(treeData);
     }
-  }, [colors, treeData])
+  }, [colors, treeData]);
 
   useEffect(() => {
     if (colors.length > 0) {
-      initializeTreeData() // Initialize tree data when colors are ready
+      initializeTreeData(); // Initialize tree data when colors are ready
     }
-  }, [colors, initializeTreeData])
+  }, [colors, initializeTreeData]);
 
   useEffect(() => {
-    renderTree() // Render the tree whenever treeData changes
+    renderTree(); // Render the tree whenever treeData changes
 
     const reloadTree = () => {
-      renderTree() // Re-render tree on resize
-    }
+      renderTree(); // Re-render tree on resize
+    };
 
-    window.addEventListener('resize', reloadTree)
+    window.addEventListener("resize", reloadTree);
     return () => {
-      window.removeEventListener('resize', reloadTree)
-    }
-  }, [treeData, renderTree]) // Depend on treeData
+      window.removeEventListener("resize", reloadTree);
+    };
+  }, [treeData, renderTree]); // Depend on treeData
 
   return (
     <div
       ref={apexTreeContainerRef}
-      className="border border-gray-200 rounded-md dark:border-dark-800"></div>
-  )
-}
+      className="border border-gray-200 rounded-md dark:border-dark-800"
+    ></div>
+  );
+};
 
-export default TopBottomChart
+export default TopBottomChart;

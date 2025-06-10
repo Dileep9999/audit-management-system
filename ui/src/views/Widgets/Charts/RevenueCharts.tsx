@@ -1,13 +1,9 @@
-'use client'
-
-import React from 'react'
-
-import UseNumberCounter from '@src/components/common/NumberCounter'
-import { Activity, Aperture, CircleArrowUp } from 'lucide-react'
-
-import AdsRevenueApp from './AdsRevenueChart'
-import AdsRevenueChart2 from './AdsRevenueChart2'
-import SalesRevenueApp from './SalesRevenueChart'
+import React from "react";
+import { Activity, Aperture, CircleArrowUp } from "lucide-react";
+import UseNumberCounter from "@src/components/common/numberCounter";
+import AdsRevenueApp from "./adsRevenueChart";
+import SalesRevenueApp from "./salesRevenueChart";
+import AdsRevenueChart2 from "./adsRevenueChart2";
 
 const RevenueCharts = () => {
   return (
@@ -30,7 +26,7 @@ const RevenueCharts = () => {
           <div dir="ltr">
             <AdsRevenueApp
               chartColors="[bg-red-500]"
-              chartDarkColors={''}
+              chartDarkColors={""}
               chartId="adsRevenueChart"
             />
           </div>
@@ -54,7 +50,7 @@ const RevenueCharts = () => {
           <div dir="ltr">
             <SalesRevenueApp
               chartColors="[bg-primary-500, bg-primary-100, bg-primary-50, bg-primary-300]"
-              chartDarkColors={''}
+              chartDarkColors={""}
               chartId="salesRevenueChart"
             />
           </div>
@@ -78,14 +74,14 @@ const RevenueCharts = () => {
           <div dir="ltr">
             <AdsRevenueChart2
               chartColors="[bg-purple-500]"
-              chartDarkColors={''}
+              chartDarkColors={""}
               chartId="adsRevenueChart"
             />
           </div>
         </div>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default RevenueCharts
+export default RevenueCharts;

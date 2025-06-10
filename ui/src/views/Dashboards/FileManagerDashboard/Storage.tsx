@@ -1,16 +1,12 @@
-'use client'
-
-import React from 'react'
-
+import { NextPageWithLayout } from "@dtos/layout";
+import React from "react";
+import { OverviewStorageApp } from "./fileManagerChart";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-import { Ellipsis } from 'lucide-react'
-
-import { OverviewStorageApp } from './FileManagerChart'
+} from "@src/components/custom/dropdown/dropdown";
+import { Ellipsis } from "lucide-react";
 
 const Storage: NextPageWithLayout = () => {
   return (
@@ -22,7 +18,8 @@ const Storage: NextPageWithLayout = () => {
             <Dropdown
               position="right"
               trigger="click"
-              dropdownClassName="dropdown">
+              dropdownClassName="dropdown"
+            >
               <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
                 <Ellipsis className="size-5" />
               </DropdownButton>
@@ -38,12 +35,12 @@ const Storage: NextPageWithLayout = () => {
                 </a>
               </DropdownMenu>
             </Dropdown>
-          </div>{' '}
+          </div>{" "}
         </div>
         <div className="card-body">
           <OverviewStorageApp
             chartColors="[bg-primary-400, bg-green-400, bg-yellow-400, bg-purple-400, bg-red-400]"
-            chartDarkColors={''}
+            chartDarkColors={""}
             chartId="overviewStorageChart"
           />
           <div className="mt-5">
@@ -58,6 +55,6 @@ const Storage: NextPageWithLayout = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default Storage
+  );
+};
+export default Storage;

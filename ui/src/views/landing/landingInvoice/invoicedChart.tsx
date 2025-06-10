@@ -1,35 +1,29 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import { ApexOptions } from 'apexcharts'
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
 
 // Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
 
 interface AreaChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: string
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string;
 }
 
 const InvoicedChart = ({ chartId }: AreaChartsProps) => {
   const series = [
     {
-      name: 'Series name',
+      name: "Series name",
       data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     chart: {
-      defaultLocale: 'en',
+      defaultLocale: "en",
       height: 350,
-      type: 'line',
+      type: "line",
       zoom: {
         enabled: true,
       },
@@ -41,22 +35,22 @@ const InvoicedChart = ({ chartId }: AreaChartsProps) => {
       enabled: false,
     },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
     },
     xaxis: {
       categories: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
       ],
     },
     tooltip: {
@@ -65,11 +59,11 @@ const InvoicedChart = ({ chartId }: AreaChartsProps) => {
       },
       y: {
         formatter: (val: number) => {
-          return '$' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+          return "$" + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         },
       },
     },
-    colors: ['#8E2DE2'],
+    colors: ["#8E2DE2"],
     grid: {
       strokeDashArray: 2,
       padding: {
@@ -88,7 +82,7 @@ const InvoicedChart = ({ chartId }: AreaChartsProps) => {
         },
       },
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -104,7 +98,7 @@ const InvoicedChart = ({ chartId }: AreaChartsProps) => {
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export { InvoicedChart }
+export { InvoicedChart };

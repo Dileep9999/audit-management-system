@@ -1,56 +1,52 @@
-'use client'
-
-import React, { useEffect, useRef, useState } from 'react'
-
-import useChartColors from '@src/hooks/useChartColors'
-import ApexSankey from 'apexsankey'
-
+import ApexSankey from "apexsankey";
+import { useEffect, useRef, useState } from "react";
 import {
   BarChartsProps,
   DataType,
   GraphOptions,
-} from '../../dtos/pages/apexsankey'
+} from "../../dtos/pages/apexsankey";
+import useChartColors from "@hooks/useChartColors";
 
 const BasicSankeyChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
-  const apexSankeyContainerRef = useRef<HTMLDivElement | null>(null)
-  const [data, setData] = useState<DataType | null>(null)
-  const colors = useChartColors({ chartColors, chartDarkColors })
+  const apexSankeyContainerRef = useRef<HTMLDivElement | null>(null);
+  const [data, setData] = useState<DataType | null>(null);
+  const colors = useChartColors({ chartColors, chartDarkColors });
 
   // Initialize data once
   useEffect(() => {
     const initialData: DataType = {
       nodes: [
-        { id: 'Oil', title: 'Oil' },
-        { id: 'Natural Gas', title: 'Natural Gas' },
-        { id: 'Coal', title: 'Coal' },
-        { id: 'Fossil Fuels', title: 'Fossil Fuels' },
-        { id: 'Electricity', title: 'Electricity' },
-        { id: 'Energy', title: 'Energy' },
+        { id: "Oil", title: "Oil" },
+        { id: "Natural Gas", title: "Natural Gas" },
+        { id: "Coal", title: "Coal" },
+        { id: "Fossil Fuels", title: "Fossil Fuels" },
+        { id: "Electricity", title: "Electricity" },
+        { id: "Energy", title: "Energy" },
       ],
       edges: [
-        { source: 'Oil', target: 'Fossil Fuels', value: 15 },
-        { source: 'Natural Gas', target: 'Fossil Fuels', value: 20 },
-        { source: 'Coal', target: 'Fossil Fuels', value: 25 },
-        { source: 'Coal', target: 'Electricity', value: 25 },
-        { source: 'Fossil Fuels', target: 'Energy', value: 60 },
-        { source: 'Electricity', target: 'Energy', value: 25 },
+        { source: "Oil", target: "Fossil Fuels", value: 15 },
+        { source: "Natural Gas", target: "Fossil Fuels", value: 20 },
+        { source: "Coal", target: "Fossil Fuels", value: 25 },
+        { source: "Coal", target: "Electricity", value: 25 },
+        { source: "Fossil Fuels", target: "Energy", value: 60 },
+        { source: "Electricity", target: "Energy", value: 25 },
       ],
-    }
-    setData(initialData)
-  }, [])
+    };
+    setData(initialData);
+  }, []);
 
   // Render chart when data or colors change
   useEffect(() => {
-    if (colors.length === 0 || !data || !apexSankeyContainerRef.current) return
+    if (colors.length === 0 || !data || !apexSankeyContainerRef.current) return;
 
     const renderChart = () => {
       const graphOptions: GraphOptions = {
         nodeWidth: 20,
         fontWeight: 500,
-        fontSize: '10px',
+        fontSize: "10px",
         height: 300,
         fontColor: colors[0],
-        canvasStyle: '',
+        canvasStyle: "",
         tooltipBGColor: colors[1],
         tooltipBorderColor: colors[2],
         nodeTemplate: (source, target, value) => {
@@ -63,39 +59,39 @@ const BasicSankeyChart = ({ chartColors, chartDarkColors }: BarChartsProps) => {
                             <h6 class="dark:text-dark-100">${target.title}</h6>
                             <div>: ${value}</div> 
                         </div>
-                    `
+                    `;
         },
-      }
+      };
 
       // Clear previous chart
       if (apexSankeyContainerRef.current) {
-        apexSankeyContainerRef.current.innerHTML = ''
+        apexSankeyContainerRef.current.innerHTML = "";
       }
 
       // Initialize and render new chart
       const newApexSankeyChart = new ApexSankey(
         apexSankeyContainerRef.current,
-        graphOptions
-      )
-      newApexSankeyChart.render(data)
-    }
+        graphOptions,
+      );
+      newApexSankeyChart.render(data);
+    };
 
-    renderChart()
+    renderChart();
 
     // Handle window resize
     const handleResize = () => {
-      renderChart()
-    }
+      renderChart();
+    };
 
-    window.addEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize);
 
     // Cleanup on unmount
     return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [data, colors])
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [data, colors]);
 
-  return <div ref={apexSankeyContainerRef}></div>
-}
+  return <div ref={apexSankeyContainerRef}></div>;
+};
 
-export default BasicSankeyChart
+export default BasicSankeyChart;

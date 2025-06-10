@@ -1,21 +1,7 @@
-import React from 'react'
-
-import { initialState } from '@src/slices/layout/reducer'
-import { changeHTMLAttribute, setNewThemeData } from '@src/slices/layout/utils'
-import { AppDispatch, RootState } from '@src/slices/reducer'
-import {
-  changeDarkModeClass,
-  changeDataColor,
-  changeDirection,
-  changeLayout,
-  changeLayoutContentWidth,
-  changeLayoutMode,
-  changeModernNavigation,
-  changeSidebarColor,
-  changeSidebarSize,
-} from '@src/slices/thunk'
-import { RotateCcw, ShoppingBag, X } from 'lucide-react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from "react";
+import { Modal } from "../custom/modal/modal";
+import { RotateCcw, ShoppingBag, X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   DARK_MODE_CLASS,
@@ -27,17 +13,23 @@ import {
   MODERN_NAVIGATION,
   SIDEBAR_COLOR,
   SIDEBAR_SIZE,
-} from '../constants/layout'
-import { Modal } from '../custom/modal/modal'
+} from "@src/components/constants/layout";
+import {
+  changeDarkModeClass,
+  changeDataColor,
+  changeDirection,
+  changeLayout,
+  changeLayoutContentWidth,
+  changeLayoutMode,
+  changeModernNavigation,
+  changeSidebarColor,
+  changeSidebarSize,
+} from "@src/slices/thunk";
+import { initialState } from "@src/slices/layout/reducer";
+import { changeHTMLAttribute, setNewThemeData } from "@src/slices/layout/utils";
 
-const SettingsModal = ({
-  open,
-  handleCloseModal,
-}: {
-  open: boolean
-  handleCloseModal: () => void
-}) => {
-  const dispatch = useDispatch<AppDispatch>()
+const SettingsModal = ({ open, handleCloseModal }: any) => {
+  const dispatch = useDispatch<any>();
   const {
     layoutMode,
     layoutType,
@@ -48,60 +40,65 @@ const SettingsModal = ({
     layoutDarkModeClass,
     layoutSidebarColor,
     layoutDataColor,
-  } = useSelector((state: RootState) => state.Layout)
+  } = useSelector((state: any) => state.Layout);
 
   const handleThemeLayout = (value: LAYOUT_MODE_TYPES) => {
-    dispatch(changeLayoutMode(value))
-  }
+    dispatch(changeLayoutMode(value));
+  };
 
   const handleThemeContentWidth = (value: LAYOUT_CONTENT_WIDTH) => {
-    dispatch(changeLayoutContentWidth(value))
-  }
+    dispatch(changeLayoutContentWidth(value));
+  };
+
+  useEffect(() => {
+    // Set content width to fluid by default
+    handleThemeContentWidth(LAYOUT_CONTENT_WIDTH.FLUID);
+  }, []);
 
   const handleThemeSidebarSize = (value: SIDEBAR_SIZE) => {
-    dispatch(changeSidebarSize(value))
-  }
+    dispatch(changeSidebarSize(value));
+  };
 
   const handleThemeDirection = (value: LAYOUT_DIRECTION) => {
-    dispatch(changeDirection(value))
-  }
+    dispatch(changeDirection(value));
+  };
 
   const handleThemeLayoutType = (value: LAYOUT_TYPES) => {
-    dispatch(changeLayout(value))
+    dispatch(changeLayout(value));
     if (value === LAYOUT_TYPES.HORIZONTAL) {
-      setNewThemeData('data-sidebar-size', SIDEBAR_SIZE.DEFAULT)
-      changeHTMLAttribute('data-sidebar', SIDEBAR_SIZE.DEFAULT)
+      setNewThemeData("data-sidebar-size", SIDEBAR_SIZE.DEFAULT);
+      changeHTMLAttribute("data-sidebar", SIDEBAR_SIZE.DEFAULT);
     }
-  }
+  };
 
   const handleThemeSideColorChange = (value: SIDEBAR_COLOR) => {
-    dispatch(changeSidebarColor(value))
-  }
+    dispatch(changeSidebarColor(value));
+  };
 
   const handleThemeColor = (value: DATA_COLORS) => {
-    dispatch(changeDataColor(value))
-  }
+    dispatch(changeDataColor(value));
+  };
 
   const handleModernNavigation = (value: MODERN_NAVIGATION) => {
-    dispatch(changeModernNavigation(value))
-  }
+    dispatch(changeModernNavigation(value));
+  };
 
   const handleDarkModeClass = (value: DARK_MODE_CLASS) => {
-    dispatch(changeDarkModeClass(value))
-  }
+    dispatch(changeDarkModeClass(value));
+  };
 
   const resetTheme = (onClose: () => void) => {
-    handleThemeLayoutType(initialState.layoutType)
-    handleThemeDirection(initialState.layoutDirection)
-    handleModernNavigation(initialState.layoutNavigation)
-    handleThemeContentWidth(initialState.layoutWidth)
-    handleThemeSidebarSize(initialState.layoutSidebar)
-    handleThemeLayout(initialState.layoutMode)
-    handleDarkModeClass(initialState.layoutDarkModeClass)
-    handleThemeSideColorChange(initialState.layoutSidebarColor)
-    handleThemeColor(initialState.layoutDataColor)
-    onClose()
-  }
+    handleThemeLayoutType(initialState.layoutType);
+    handleThemeDirection(initialState.layoutDirection);
+    handleModernNavigation(initialState.layoutNavigation);
+    handleThemeContentWidth(initialState.layoutWidth);
+    handleThemeSidebarSize(initialState.layoutSidebar);
+    handleThemeLayout(initialState.layoutMode);
+    handleDarkModeClass(initialState.layoutDarkModeClass);
+    handleThemeSideColorChange(initialState.layoutSidebarColor);
+    handleThemeColor(initialState.layoutDataColor);
+    onClose();
+  };
 
   return (
     <React.Fragment>
@@ -114,7 +111,7 @@ const SettingsModal = ({
         size="modal-xl"
         contentClass="model-content"
         footerClass="flex items-center justify-end gap-2"
-        content={() => (
+        content={
           <>
             <div>
               <h6 className="mb-3">Select Layout:</h6>
@@ -133,7 +130,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="defaultLayout"
-                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500">
+                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500"
+                  >
                     <span className="block h-full">
                       <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                         <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -154,7 +152,8 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="defaultLayout"
-                    className="cursor-pointer form-label">
+                    className="cursor-pointer form-label"
+                  >
                     Default
                   </label>
                 </div>
@@ -172,7 +171,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="horizontalLayout"
-                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500">
+                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500"
+                  >
                     <span className="block h-full">
                       <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                         <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -193,13 +193,15 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="horizontalLayout"
-                    className="cursor-pointer form-label">
+                    className="cursor-pointer form-label"
+                  >
                     Horizontal
                   </label>
                 </div>
                 <div
                   className="flex-col hidden gap-0 input-radio-group lg:flex"
-                  onClick={() => handleThemeLayoutType(LAYOUT_TYPES.MODERN)}>
+                  onClick={() => handleThemeLayoutType(LAYOUT_TYPES.MODERN)}
+                >
                   <input
                     id="modernLayout"
                     name="layout"
@@ -211,7 +213,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="modernLayout"
-                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500">
+                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500"
+                  >
                     <span className="flex h-full">
                       <span className="w-3 h-full shrink-0 bg-gray-50 dark:bg-dark-850"></span>
                       <span className="grow">
@@ -232,7 +235,8 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="modernLayout"
-                    className="cursor-pointer form-label">
+                    className="cursor-pointer form-label"
+                  >
                     Modern
                   </label>
                 </div>
@@ -248,7 +252,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="boxedLayout"
-                    className="block w-full p-1.5 mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500">
+                    className="block w-full p-1.5 mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500"
+                  >
                     <span className="block h-full">
                       <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                         <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -269,7 +274,8 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="boxedLayout"
-                    className="cursor-pointer form-label">
+                    className="cursor-pointer form-label"
+                  >
                     Boxed
                   </label>
                 </div>
@@ -285,7 +291,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="semiboxLayout"
-                    className="block w-full p-1.5 mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500">
+                    className="block w-full p-1.5 mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500"
+                  >
                     <span className="block h-full">
                       <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                         <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -306,14 +313,15 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="semiboxLayout"
-                    className="cursor-pointer form-label">
+                    className="cursor-pointer form-label"
+                  >
                     Semibox
                   </label>
                 </div>
               </div>
               {layoutType === LAYOUT_TYPES.MODERN && (
                 <div>
-                  <h6 className="my-3">Navigation Types</h6>
+                  <h6 className="my-3">Navigation Type</h6>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space">
                     <div className="input-radio-group">
                       <input
@@ -329,7 +337,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="defaultType"
-                        className="input-radio-label">
+                        className="input-radio-label"
+                      >
                         Default
                       </label>
                     </div>
@@ -349,7 +358,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="floatingType"
-                        className="input-radio-label">
+                        className="input-radio-label"
+                      >
                         Floating
                       </label>
                     </div>
@@ -383,7 +393,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="patternType"
-                        className="input-radio-label">
+                        className="input-radio-label"
+                      >
                         Pattern
                       </label>
                     </div>
@@ -392,7 +403,7 @@ const SettingsModal = ({
               )}
 
               <div className="hidden xl:block">
-                <h6 className="my-4">Content Widths:</h6>
+                <h6 className="my-4">Content Width:</h6>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-space">
                   <div className="flex-col gap-0 input-radio-group">
                     <input
@@ -408,7 +419,8 @@ const SettingsModal = ({
                     />
                     <label
                       htmlFor="defaultContent"
-                      className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500">
+                      className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500"
+                    >
                       <span className="block h-full">
                         <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                           <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -429,7 +441,8 @@ const SettingsModal = ({
                     </label>
                     <label
                       htmlFor="defaultContent"
-                      className="cursor-pointer form-label">
+                      className="cursor-pointer form-label"
+                    >
                       Default
                     </label>
                   </div>
@@ -447,7 +460,8 @@ const SettingsModal = ({
                     />
                     <label
                       htmlFor="fluidLayout"
-                      className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500">
+                      className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500"
+                    >
                       <span className="block h-full">
                         <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                           <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -468,7 +482,8 @@ const SettingsModal = ({
                     </label>
                     <label
                       htmlFor="fluidLayout"
-                      className="cursor-pointer form-label">
+                      className="cursor-pointer form-label"
+                    >
                       Fluid
                     </label>
                   </div>
@@ -477,7 +492,7 @@ const SettingsModal = ({
 
               {layoutType !== LAYOUT_TYPES.HORIZONTAL && (
                 <div className="hidden lg:block">
-                  <h6 className="my-4">Sidebar Sizes:</h6>
+                  <h6 className="my-4">Sidebar Size:</h6>
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-space">
                     <div className="flex-col gap-0 input-radio-group">
                       <input
@@ -493,7 +508,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="defaultSidebar"
-                        className="block w-full h-24 mb-3 overflow-hidden cursor-pointer card peer-checked:border-primary-500">
+                        className="block w-full h-24 mb-3 overflow-hidden cursor-pointer card peer-checked:border-primary-500"
+                      >
                         <span className="block h-full">
                           <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                             <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -514,7 +530,8 @@ const SettingsModal = ({
                       </label>
                       <label
                         htmlFor="defaultSidebar"
-                        className="cursor-pointer form-label">
+                        className="cursor-pointer form-label"
+                      >
                         Default (Large)
                       </label>
                     </div>
@@ -533,7 +550,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="mediumSidebar"
-                        className="block w-full h-24 mb-3 overflow-hidden cursor-pointer card peer-checked:border-primary-500">
+                        className="block w-full h-24 mb-3 overflow-hidden cursor-pointer card peer-checked:border-primary-500"
+                      >
                         <span className="block h-full">
                           <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                             <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -554,7 +572,8 @@ const SettingsModal = ({
                       </label>
                       <label
                         htmlFor="mediumSidebar"
-                        className="cursor-pointer form-label">
+                        className="cursor-pointer form-label"
+                      >
                         Medium
                       </label>
                     </div>
@@ -573,7 +592,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="smallSidebar"
-                        className="block w-full h-24 mb-3 overflow-hidden cursor-pointer card peer-checked:border-primary-500">
+                        className="block w-full h-24 mb-3 overflow-hidden cursor-pointer card peer-checked:border-primary-500"
+                      >
                         <span className="block h-full">
                           <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                             <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -594,7 +614,8 @@ const SettingsModal = ({
                       </label>
                       <label
                         htmlFor="smallSidebar"
-                        className="cursor-pointer form-label">
+                        className="cursor-pointer form-label"
+                      >
                         Small
                       </label>
                     </div>
@@ -604,7 +625,7 @@ const SettingsModal = ({
 
               {/* </template> */}
 
-              <h6 className="my-4">Layout Directions:</h6>
+              <h6 className="my-4">Layout Direction:</h6>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-space">
                 <div className="flex-col gap-0 input-radio-group">
                   <input
@@ -618,7 +639,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="ltrMode"
-                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500">
+                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500"
+                  >
                     <span className="block h-full">
                       <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                         <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -639,7 +661,8 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="ltrMode"
-                    className="cursor-pointer form-label">
+                    className="cursor-pointer form-label"
+                  >
                     LTR
                   </label>
                 </div>
@@ -655,7 +678,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="rtlMode"
-                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500">
+                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500"
+                  >
                     <span className="block h-full">
                       <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 justify-end dark:bg-dark-800/50">
                         <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -676,13 +700,14 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="rtlMode"
-                    className="cursor-pointer form-label">
+                    className="cursor-pointer form-label"
+                  >
                     RTL
                   </label>
                 </div>
               </div>
 
-              <h6 className="my-4">Layout Modes:</h6>
+              <h6 className="my-4">Layout Mode:</h6>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-space">
                 <div className="flex-col gap-0 input-radio-group">
                   <input
@@ -696,7 +721,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="lightMode"
-                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500">
+                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500"
+                  >
                     <span className="block h-full">
                       <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                         <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -717,7 +743,8 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="lightMode"
-                    className="cursor-pointer form-label">
+                    className="cursor-pointer form-label"
+                  >
                     Light
                   </label>
                 </div>
@@ -733,7 +760,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="darkMode"
-                    className="block w-full mb-3 overflow-hidden cursor-pointer border-dark-700 bg-dark-950 card h-28 peer-checked:border-primary-500">
+                    className="block w-full mb-3 overflow-hidden cursor-pointer border-dark-700 bg-dark-950 card h-28 peer-checked:border-primary-500"
+                  >
                     <span className="block h-full">
                       <span className="flex gap-1 px-4 py-1.5 bg-dark-700/50">
                         <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -754,7 +782,8 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="darkMode"
-                    className="cursor-pointer form-label">
+                    className="cursor-pointer form-label"
+                  >
                     Dark
                   </label>
                 </div>
@@ -772,7 +801,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="autoMode"
-                    className="relative block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500 before:absolute before:bg-gray-950 before:w-1/2 before:inset-y-0 before:right-0">
+                    className="relative block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500 before:absolute before:bg-gray-950 before:w-1/2 before:inset-y-0 before:right-0"
+                  >
                     <span className="relative block h-full">
                       <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                         <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -793,8 +823,9 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="autoMode"
-                    className="cursor-pointer form-label">
-                    Default Systems
+                    className="cursor-pointer form-label"
+                  >
+                    Default System
                   </label>
                 </div>
                 <div className="flex-col gap-0 input-radio-group">
@@ -805,13 +836,14 @@ const SettingsModal = ({
                     className="hidden input-radio peer"
                     value={layoutMode}
                     onChange={() =>
-                      handleThemeLayout(LAYOUT_MODE_TYPES.BLACK_WHITE)
+                      handleThemeLayout(LAYOUT_MODE_TYPES.BLACKWHITE)
                     }
-                    checked={layoutMode === LAYOUT_MODE_TYPES.BLACK_WHITE}
+                    checked={layoutMode === LAYOUT_MODE_TYPES.BLACKWHITE}
                   />
                   <label
                     htmlFor="blackWhiteMode"
-                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500 grayscale">
+                    className="block w-full mb-3 overflow-hidden cursor-pointer card h-28 peer-checked:border-primary-500 grayscale"
+                  >
                     <span className="block h-full">
                       <span className="flex gap-1 px-4 py-1.5 bg-gray-200/50 dark:bg-dark-800/50">
                         <span className="inline-block bg-red-500 rounded-full size-1.5"></span>
@@ -832,7 +864,8 @@ const SettingsModal = ({
                   </label>
                   <label
                     htmlFor="blackWhiteMode"
-                    className="cursor-pointer form-label">
+                    className="cursor-pointer form-label"
+                  >
                     Black & White
                   </label>
                 </div>
@@ -858,7 +891,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="noneColors"
-                        className="flex items-center justify-center border border-gray-200 rounded-full dark:border-dark-800 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400">
+                        className="flex items-center justify-center border border-gray-200 rounded-full dark:border-dark-800 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                      >
                         <X className="size-4" />
                       </label>
                     </div>
@@ -876,13 +910,13 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="zincColors"
-                        className="rounded-full bg-zinc-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                        className="rounded-full bg-zinc-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                      ></label>
                     </div>
                     <div
                       className="input-radio-group"
-                      onClick={() =>
-                        handleDarkModeClass(DARK_MODE_CLASS.STONE)
-                      }>
+                      onClick={() => handleDarkModeClass(DARK_MODE_CLASS.STONE)}
+                    >
                       <input
                         id="stoneColors"
                         name="darkModeColors"
@@ -896,13 +930,15 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="stoneColors"
-                        className="rounded-full bg-stone-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                        className="rounded-full bg-stone-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                      ></label>
                     </div>
                     <div
                       className="input-radio-group"
                       onClick={() =>
                         handleDarkModeClass(DARK_MODE_CLASS.NEUTRAL)
-                      }>
+                      }
+                    >
                       <input
                         id="neutralColors"
                         name="darkModeColors"
@@ -918,7 +954,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="neutralColors"
-                        className="rounded-full bg-neutral-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                        className="rounded-full bg-neutral-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                      ></label>
                     </div>
                     <div className="input-radio-group">
                       <input
@@ -934,7 +971,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="defaultColors"
-                        className="rounded-full bg-gray-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                        className="rounded-full bg-gray-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                      ></label>
                     </div>
                   </div>
                 </div>
@@ -957,7 +995,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="lightSidebarColors"
-                        className="bg-gray-100 rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                        className="bg-gray-100 rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                      ></label>
                     </div>
 
                     <div className="input-radio-group">
@@ -974,7 +1013,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="darkSidebarColors"
-                        className="bg-gray-800 rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                        className="bg-gray-800 rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                      ></label>
                     </div>
 
                     <div className="input-radio-group">
@@ -991,7 +1031,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="brandSidebarColors"
-                        className="rounded-full bg-primary-900 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                        className="rounded-full bg-primary-900 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                      ></label>
                     </div>
 
                     <div className="input-radio-group">
@@ -1008,7 +1049,8 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="purpleSidebarColors"
-                        className="rounded-full bg-purple-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                        className="rounded-full bg-purple-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                      ></label>
                     </div>
 
                     <div className="input-radio-group">
@@ -1025,11 +1067,13 @@ const SettingsModal = ({
                       />
                       <label
                         htmlFor="skySidebarColors"
-                        className="rounded-full bg-sky-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                        className="rounded-full bg-sky-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                      ></label>
                     </div>
                   </div>
                 </div>
               )}
+
               <h6 className="my-4">Primary Asset Colors:</h6>
               <div className="flex flex-wrap items-center gap-3">
                 <div className="input-radio-group">
@@ -1044,7 +1088,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="defaultPrimaryColors"
-                    className="rounded-full bg-[#358ffc] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                    className="rounded-full bg-[#358ffc] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                  ></label>
                 </div>
                 <div className="input-radio-group">
                   <input
@@ -1058,7 +1103,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="greenPrimaryColors"
-                    className="bg-[#1acd81] rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                    className="bg-[#1acd81] rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                  ></label>
                 </div>
                 <div className="input-radio-group">
                   <input
@@ -1072,7 +1118,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="violetPrimaryColors"
-                    className="rounded-full bg-violet-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                    className="rounded-full bg-violet-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                  ></label>
                 </div>
                 <div className="input-radio-group">
                   <input
@@ -1086,7 +1133,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="orangePrimaryColors"
-                    className="rounded-full bg-[#f04b1f] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                    className="rounded-full bg-[#f04b1f] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                  ></label>
                 </div>
                 <div className="input-radio-group">
                   <input
@@ -1100,7 +1148,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="tealPrimaryColors"
-                    className="bg-teal-500 rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                    className="bg-teal-500 rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                  ></label>
                 </div>
                 <div className="input-radio-group">
                   <input
@@ -1114,7 +1163,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="fuchsiaPrimaryColors"
-                    className="rounded-full bg-fuchsia-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                    className="rounded-full bg-fuchsia-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                  ></label>
                 </div>
                 <div className="input-radio-group">
                   <input
@@ -1128,7 +1178,8 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="limePrimaryColors"
-                    className="rounded-full bg-lime-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                    className="rounded-full bg-lime-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                  ></label>
                 </div>
                 <div className="input-radio-group">
                   <input
@@ -1142,30 +1193,35 @@ const SettingsModal = ({
                   />
                   <label
                     htmlFor="amberPrimaryColors"
-                    className="rounded-full bg-amber-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"></label>
+                    className="rounded-full bg-amber-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                  ></label>
                 </div>
               </div>
             </div>
           </>
-        )}
+        }
         footer={(onClose) => (
           <>
             <button
               type="button"
               className="btn btn-sub-gray"
-              onClick={() => resetTheme(onClose)}>
+              onClick={() => resetTheme(onClose)}
+            >
               <RotateCcw className="inline-block ltr:mr-1 rtl:ml-1 size-4" />
               Reset Layouts
             </button>
             <button type="button" className="btn btn-red">
-              <ShoppingBag className="inline-block ltr:mr-1 rtl:ml-1 size-4" />{' '}
+              <ShoppingBag
+                className="inline-block ltr:mr-1 rtl:ml-1 size-4"
+                onClick={onClose}
+              />{" "}
               Buy Now
             </button>
           </>
         )}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default SettingsModal
+export default SettingsModal;

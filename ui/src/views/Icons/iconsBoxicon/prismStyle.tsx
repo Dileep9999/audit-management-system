@@ -1,11 +1,7 @@
-'use client'
+import PrismCode from "@src/components/common/prism";
 
-import React from 'react'
+const installation = `@import 'boxicons';`;
 
-import PrismCode from '@src/components/common/Prism'
+const Style = () => <PrismCode language="javascript" code={installation} />;
 
-const installation = "@import 'boxicons';"
-
-const Style = () => <PrismCode language="javascript" code={installation} />
-
-export { Style }
+export { Style };

@@ -1,10 +1,6 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Image from 'next/image'
-
-import user25 from '@assets/images/avatar/user-25.png'
+import user25 from "@assets/images/avatar/user-25.png";
 
 const UpcomingConsultation = () => {
   return (
@@ -14,9 +10,9 @@ const UpcomingConsultation = () => {
         <div className="card">
           <div className="card-body">
             <div className="flex gap-3">
-              <Image
+              <img
                 src={user25}
-                alt="userImg"
+                alt="user25Img"
                 className="rounded-md size-11 shrink-0"
               />
               <div className="grow">
@@ -28,7 +24,7 @@ const UpcomingConsultation = () => {
             </div>
             <div className="px-3 py-2 my-4 text-gray-500 bg-gray-100 rounded-md dark:text-dark-500 dark:bg-dark-850 text-13">
               <p>
-                <i className="align-baseline ri-calendar-todo-line text-14 ltr:mr-1 rtl:ml-1"></i>
+                <i className="align-baseline ri-calendar-todo-line text-14 ltr:mr-1 rtl:ml-1"></i>{" "}
                 24 Jul, 2024 - 11:00 AM - 12:00 PM
               </p>
             </div>
@@ -44,6 +40,6 @@ const UpcomingConsultation = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default UpcomingConsultation
+  );
+};
+export default UpcomingConsultation;

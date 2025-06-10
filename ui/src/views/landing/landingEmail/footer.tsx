@@ -1,14 +1,11 @@
-'use client'
+import React, { useState } from "react";
 
-import React, { useState } from 'react'
+import { Link } from "react-router-dom";
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import logoWhite from '@assets/images/logo-white.png'
+import logoWhite from "@assets/images/logo-white.png";
 
 const Footer: React.FC = () => {
-  const [year] = useState<number>(new Date().getFullYear())
+  const [year] = useState<number>(new Date().getFullYear());
 
   return (
     <React.Fragment>
@@ -18,8 +15,8 @@ const Footer: React.FC = () => {
             <div className="grid grid-cols-12 gap-6">
               <div className="col-span-12 xl:col-span-6">
                 <div className="max-w-lg">
-                  <Link href="/" title="logo">
-                    <Image
+                  <Link to="/" title="logo">
+                    <img
                       src={logoWhite}
                       alt="logo"
                       className="h-7"
@@ -36,27 +33,31 @@ const Footer: React.FC = () => {
                   </p>
                   <div className="flex items-center gap-5">
                     <Link
-                      href="#!"
+                      to="#!"
                       title="facebook"
-                      className="relative flex items-center justify-center transition duration-300 ease-linear hover:-translate-y-1 after:absolute after:inset-0 after:rounded-lg after:-rotate-45 after:bg-gray-800/50 dark:after:bg-dark-800/50 size-10 text-primary-500">
+                      className="relative flex items-center justify-center transition duration-300 ease-linear hover:-translate-y-1 after:absolute after:inset-0 after:rounded-lg after:-rotate-45 after:bg-gray-800/50 dark:after:bg-dark-800/50 size-10 text-primary-500"
+                    >
                       <i className="ri-facebook-fill text-[20px] relative z-10"></i>
                     </Link>
                     <Link
-                      href="#!"
+                      to="#!"
                       title="dribbble"
-                      className="relative flex items-center justify-center text-pink-500 transition duration-300 ease-linear hover:-translate-y-1 after:absolute after:inset-0 after:rounded-lg after:-rotate-45 after:bg-gray-800/50 dark:after:bg-dark-800/50 size-10">
+                      className="relative flex items-center justify-center text-pink-500 transition duration-300 ease-linear hover:-translate-y-1 after:absolute after:inset-0 after:rounded-lg after:-rotate-45 after:bg-gray-800/50 dark:after:bg-dark-800/50 size-10"
+                    >
                       <i className="ri-dribbble-fill text-[20px] relative z-10"></i>
                     </Link>
                     <Link
-                      href="#!"
+                      to="#!"
                       title="twitter"
-                      className="relative flex items-center justify-center transition duration-300 ease-linear hover:-translate-y-1 text-sky-500 after:absolute after:inset-0 after:rounded-lg after:-rotate-45 after:bg-gray-800/50 dark:after:bg-dark-800/50 size-10">
+                      className="relative flex items-center justify-center transition duration-300 ease-linear hover:-translate-y-1 text-sky-500 after:absolute after:inset-0 after:rounded-lg after:-rotate-45 after:bg-gray-800/50 dark:after:bg-dark-800/50 size-10"
+                    >
                       <i className="ri-twitter-line text-[20px] relative z-10"></i>
                     </Link>
                     <Link
-                      href="#!"
+                      to="#!"
                       title="youtube"
-                      className="relative flex items-center justify-center text-red-500 transition duration-300 ease-linear hover:-translate-y-1 after:absolute after:inset-0 after:rounded-lg after:-rotate-45 after:bg-gray-800/50 dark:after:bg-dark-800/50 size-10">
+                      className="relative flex items-center justify-center text-red-500 transition duration-300 ease-linear hover:-translate-y-1 after:absolute after:inset-0 after:rounded-lg after:-rotate-45 after:bg-gray-800/50 dark:after:bg-dark-800/50 size-10"
+                    >
                       <i className="ri-youtube-line text-[20px] relative z-10"></i>
                     </Link>
                   </div>
@@ -68,27 +69,27 @@ const Footer: React.FC = () => {
                 </h6>
                 <ul className="flex flex-col gap-5 text-16">
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Modern Inbox
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Search
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Send Later
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       All Features
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Dashboards
                     </Link>
                   </li>
@@ -98,37 +99,37 @@ const Footer: React.FC = () => {
                 <h6 className="mb-4 text-gray-200 text-17">Resource</h6>
                 <ul className="flex flex-col gap-5 text-16">
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Blog
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Help Center
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Community
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Video
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       FAQ&apos;s
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Systems Status
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       API
                     </Link>
                   </li>
@@ -138,32 +139,32 @@ const Footer: React.FC = () => {
                 <h6 className="mb-4 text-gray-200 text-17">Company</h6>
                 <ul className="flex flex-col gap-5 text-16">
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       About
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Careers
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Feedback
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Contact Us
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       News
                     </Link>
                   </li>
                   <li>
-                    <Link href="#!" className="link link-primary">
+                    <Link to="#!" className="link link-primary">
                       Privacy Policy
                     </Link>
                   </li>
@@ -177,8 +178,9 @@ const Footer: React.FC = () => {
             <p>
               &copy; {year} Domiex. Crafted & Designed by
               <Link
-                href="#"
-                className="ml-1 font-medium text-gray-200 dark:text-dark-200 link">
+                to="#"
+                className="ml-1 font-medium text-gray-200 dark:text-dark-200 link"
+              >
                 SRBThemes
               </Link>
             </p>
@@ -186,7 +188,7 @@ const Footer: React.FC = () => {
         </div>
       </footer>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

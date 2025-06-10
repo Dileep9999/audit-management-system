@@ -1,21 +1,16 @@
-'use client'
-
-import React, { useState } from 'react'
-
-import Link from 'next/link'
-
+import React, { useState } from "react";
+import { Ellipsis } from "lucide-react";
+import { NextPageWithLayout } from "@dtos/layout";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { NextPageWithLayout } from '@src/dtos'
-import { Ellipsis } from 'lucide-react'
-
-import { DumbbellColumnApp } from './SchoolCharts'
+} from "@src/components/custom/dropdown/dropdown";
+import { Link } from "react-router-dom";
+import { DumbbellColumnApp } from "./schoolCharts";
 
 const TotalStudents: NextPageWithLayout = () => {
-  const [timeFrame, setTimeFrame] = useState<string>('all')
+  const [timeFrame, setTimeFrame] = useState<string>("all");
   return (
     <React.Fragment>
       <div className="order-9 col-span-12 md:col-span-6 2xl:col-span-6 card">
@@ -27,21 +22,24 @@ const TotalStudents: NextPageWithLayout = () => {
             </DropdownButton>
             <DropdownMenu>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Weekly')}>
+                onClick={() => setTimeFrame("Weekly")}
+              >
                 <span>Weekly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item "
-                onClick={() => setTimeFrame('Monthly')}>
+                onClick={() => setTimeFrame("Monthly")}
+              >
                 <span>Monthly</span>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 className="dropdown-item"
-                onClick={() => setTimeFrame('Yearly')}>
+                onClick={() => setTimeFrame("Yearly")}
+              >
                 <span>Yearly</span>
               </Link>
             </DropdownMenu>
@@ -50,13 +48,13 @@ const TotalStudents: NextPageWithLayout = () => {
         <div className="card-body">
           <DumbbellColumnApp
             chartColors="[bg-primary-500, bg-red-500]"
-            chartDarkColors={''}
+            chartDarkColors={""}
             chartId="dumbbellColumnChart"
             timeFrame={timeFrame}
           />
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default TotalStudents
+  );
+};
+export default TotalStudents;

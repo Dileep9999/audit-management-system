@@ -1,95 +1,89 @@
-'use client'
-
-import React, { ChangeEvent, useEffect, useState } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import folderImage from '@assets/images/file-manager/icons/folder.png'
-import DeleteModal from '@src/components/common/DeleteModal'
+import { Ellipsis, Plus, Search } from "lucide-react";
+import PinedFiles from "./pinedFiles";
+import RecentFiles from "./recentFiles";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { deleteFolderData, getFolderListData } from "@src/slices/thunk";
+import { FolderListRecord } from "@src/dtos/apps/filemanager";
+import folderImage from "@assets/images/file-manager/icons/folder.png";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@src/slices/reducer";
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
-} from '@src/components/custom/dropdown/dropdown'
-import { FolderListRecord } from '@src/dtos/apps/filemanager'
-import { AppDispatch, RootState } from '@src/slices/reducer'
-import { deleteFolderData, getFolderListData } from '@src/slices/thunk'
-import { Ellipsis, Plus, Search } from 'lucide-react'
-import { useDispatch, useSelector } from 'react-redux'
-
-import AddEditFolder from './AddEditFolder'
-import PinedFiles from './PinedFiles'
-import RecentFiles from './RecentFiles'
+} from "@src/components/custom/dropdown/dropdown";
+import DeleteModal from "@src/components/common/deleteModal";
+import AddEditFolder from "./addEditFolder";
+import { Link } from "react-router-dom";
 
 const FileManagerMainSection = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const { folderList } = useSelector((state: RootState) => state.FolderList)
-  const [folderListData, setFolderListData] = useState<FolderListRecord[]>([])
-  const [editMode, setEditMode] = useState(false)
+  const dispatch = useDispatch<AppDispatch>();
+  const { folderList } = useSelector((state: RootState) => state.FolderList);
+  const [folderListData, setFolderListData] = useState<FolderListRecord[]>([]);
+  const [editMode, setEditMode] = useState(false);
   const [currentFolder, setCurrentFolder] = useState<FolderListRecord | null>(
-    null
-  )
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [deletedRecord, setDeletedRecord] = useState<number[] | null>(null)
+    null,
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deletedRecord, setDeletedRecord] = useState<number[] | null>(null);
   const [modalState, setModalState] = useState<{ [key: string]: boolean }>({
     showAddFolder: false,
     showEditFolder: false,
-  })
-
+  });
   useEffect(() => {
     if (folderList === null) {
-      dispatch(getFolderListData())
+      dispatch(getFolderListData());
     } else {
-      setFolderListData(folderList)
+      setFolderListData(folderList);
     }
-  }, [folderList, dispatch]) // Added dependencies here
+  }, [folderList, dispatch]);
 
   // search files
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("");
   const filteredData = folderListData.filter((item: FolderListRecord) =>
     Object.values(item).some((itemValue) =>
-      itemValue.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  )
+      itemValue.toString().toLowerCase().includes(searchTerm.toLowerCase()),
+    ),
+  );
 
-  // open close modal
   const openModal = (key: string) =>
-    setModalState((prev) => ({ ...prev, [key]: true }))
+    setModalState((prev) => ({ ...prev, [key]: true }));
   const closeModal = (key: string) =>
-    setModalState((prev) => ({ ...prev, [key]: false }))
+    setModalState((prev) => ({ ...prev, [key]: false }));
+
   // open modal of add or edit
   const handleOpenModal = (
     editMode: boolean = false,
-    customer: FolderListRecord | null = null
+    customer: FolderListRecord | null = null,
   ) => {
-    setEditMode(editMode)
-    setCurrentFolder(customer)
-    const modalKey = editMode ? 'showEditFolder' : 'showAddFolder'
-    openModal(modalKey)
-  }
+    setEditMode(editMode);
+    setCurrentFolder(customer);
+    const modalKey = editMode ? "showEditFolder" : "showAddFolder";
+    openModal(modalKey);
+  };
 
+  // close modal
   const handleCloseModal = () => {
-    const modalKey = editMode ? 'showEditFolder' : 'showAddFolder'
-    closeModal(modalKey)
-    setEditMode(false)
-    setCurrentFolder(null)
-  }
+    const modalKey = editMode ? "showEditFolder" : "showAddFolder";
+    closeModal(modalKey);
+    setEditMode(false);
+    setCurrentFolder(null);
+  };
 
   // handle customer delete record
-  const handleDeleteRecord = (id: number) => {
-    setIsModalOpen(true)
-    setDeletedRecord([id])
-  }
+  const handleDeleteRecord = (_id: number) => {
+    setIsModalOpen(true);
+    setDeletedRecord([_id]);
+  };
 
   // set customer delete record
   const setDeleteRecord = () => {
     if (deletedRecord && isModalOpen) {
-      dispatch(deleteFolderData(deletedRecord))
-      setIsModalOpen(false)
-      setDeletedRecord(null)
+      dispatch(deleteFolderData(deletedRecord));
+      setIsModalOpen(false);
+      setDeletedRecord(null);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -106,24 +100,26 @@ const FileManagerMainSection = () => {
                 }
                 value={searchTerm}
               />
-              <div className="absolute inset-y-0 flex items-center text-gray-500 dark:text-dark-500 ltr:left-3 rtl:right-3 ltr:group-[&.right]/form:right-3 rtl:group-[&.right]/form:left-3 ltr:group-[&.right]/form:left-auto rtl:group-[&.right]/form:right-auto focus:outline-hidden">
+              <div className="absolute inset-y-0 flex items-center text-gray-500 dark:text-dark-500 ltr:left-3 rtl:right-3 ltr:group-[&.right]/form:right-3 rtl:group-[&.right]/form:left-3 ltr:group-[&.right]/form:left-auto rtl:group-[&.right]/form:right-auto focus:outline-none">
                 <Search className="size-4" />
               </div>
             </div>
           </div>
-          <div className="flex gap-2 shrink-0">
+          <div className="flex shrink-0 gap-2">
             <button
               type="button"
               className="w-full btn btn-primary"
               data-modal-target="createFolderModal"
-              onClick={() => openModal('showAddFolder')}>
+              onClick={() => openModal("showAddFolder")}
+            >
               <Plus className="inline-block ltr:ml-1 rtl:mr-1 size-4" /> Create
               New
             </button>
             <button
               type="button"
               title="btn"
-              className="btn btn-sub-gray btn-icon shrink-0">
+              className="btn btn-sub-gray btn-icon shrink-0"
+            >
               <Ellipsis className="size-4" />
             </button>
           </div>
@@ -136,47 +132,50 @@ const FileManagerMainSection = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-x-space">
             {filteredData &&
               filteredData.length > 0 &&
-              filteredData.map((item) => (
-                <div className="block card" key={item.id}>
+              filteredData.map((item: any, index: number) => (
+                <div className="block card" key={index}>
                   <div className="card-body">
                     <Dropdown
                       position="right"
                       trigger="click"
-                      dropdownClassName="dropdown float-end">
+                      dropdownClassName="dropdown float-end"
+                    >
                       <DropdownButton colorClass="flex items-center text-gray-500 dark:text-dark-500">
                         <i className="ri-more-2-fill"></i>
                       </DropdownButton>
                       <DropdownMenu>
-                        <Link href="#!" className="dropdown-item">
-                          <i className="align-middle ltr:mr-2 rtl:ml-2 ri-eye-line"></i>
+                        <Link to="#!" className="dropdown-item">
+                          <i className="align-middle ltr:mr-2 rtl:ml-2 ri-eye-line"></i>{" "}
                           <span>Open Folder</span>
                         </Link>
                         <Link
-                          href="#!"
+                          to="#!"
                           className="dropdown-item"
                           onClick={(e) => {
-                            e.preventDefault()
-                            handleOpenModal(true, item)
-                          }}>
-                          <i className="align-middle ltr:mr-2 rtl:ml-2 ri-pencil-line"></i>
+                            e.preventDefault();
+                            handleOpenModal(true, item);
+                          }}
+                        >
+                          <i className="align-middle ltr:mr-2 rtl:ml-2 ri-pencil-line"></i>{" "}
                           <span>Edit</span>
                         </Link>
                         <Link
-                          href="#!"
+                          to="#!"
                           className="dropdown-item"
                           onClick={(e) => {
-                            e.preventDefault()
-                            handleDeleteRecord(item.id)
-                          }}>
-                          <i className="align-middle ltr:mr-2 rtl:ml-2 ri-delete-bin-line"></i>
+                            e.preventDefault();
+                            handleDeleteRecord(item._id);
+                          }}
+                        >
+                          <i className="align-middle ltr:mr-2 rtl:ml-2 ri-delete-bin-line"></i>{" "}
                           <span>Delete</span>
                         </Link>
                       </DropdownMenu>
                     </Dropdown>
-                    <Image src={folderImage} alt="Folders Img" />
+                    <img src={folderImage} alt="Folders Img" />
                     <div className="mt-4">
                       <h6 className="mb-1">
-                        <Link href="#!">{item.name}</Link>
+                        <Link to="#!">{item.name}</Link>
                       </h6>
                       <p className="text-sm text-slate-500 dark:text-dark-500">
                         {item.description}
@@ -206,7 +205,7 @@ const FileManagerMainSection = () => {
         />
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default FileManagerMainSection
+export default FileManagerMainSection;

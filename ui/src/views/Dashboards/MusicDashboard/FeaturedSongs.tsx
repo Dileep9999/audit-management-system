@@ -1,133 +1,128 @@
-'use client'
-
-import { useEffect, useRef, useState } from 'react'
-
-// Adjust the path as needed
-import Image from 'next/image'
-import Link from 'next/link'
-
-import musicData from '@src/data/musiclist'
-import { NextPageWithLayout, Singer, Song } from '@src/dtos'
-import { Play, Shuffle } from 'lucide-react'
+import { useEffect, useRef, useState } from "react";
+import { Play, Shuffle } from "lucide-react";
+import { NextPageWithLayout } from "@dtos/layout";
+import { Singer, Song } from "@dtos/index";
+import musicData from "@src/data/music-list";
+import { Link } from "react-router-dom";
 
 const MusicPlayer: NextPageWithLayout = () => {
-  const audioRef = useRef<HTMLAudioElement>(null)
-  const [featuredSongs, setFeaturedSongs] = useState<Song[]>([])
-  const [popularSingers, setPopularSingers] = useState<Singer[]>([])
-  const [isPlaying, setIsPlaying] = useState<boolean>(false)
-  const [volume, setVolume] = useState<number>(50)
-  const [previousVolume, setPreviousVolume] = useState<number>(50)
-  const [currentTime, setCurrentTime] = useState<number>(0)
-  const [duration, setDuration] = useState<number>(0)
-  const [isMuted, setIsMuted] = useState<boolean>(false)
-  const [currentSong, setCurrentSong] = useState<Song | null>(null)
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [featuredSongs, setFeaturedSongs] = useState<Song[]>([]);
+  const [popularSingers, setPopularSingers] = useState<Singer[]>([]);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [volume, setVolume] = useState<number>(50);
+  const [previousVolume, setPreviousVolume] = useState<number>(50);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [currentSong, setCurrentSong] = useState<Song | null>(null);
 
   useEffect(() => {
     if (Array.isArray(musicData) && musicData.length > 0) {
-      setFeaturedSongs(musicData[0].featuredSongs)
-      setPopularSingers(musicData[0].popularSingers)
+      setFeaturedSongs(musicData[0].featuredSongs);
+      setPopularSingers(musicData[0].popularSingers);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (featuredSongs.length > 0 && !currentSong) {
-      const firstSong = featuredSongs[0]
-      setCurrentSong(firstSong)
+      const firstSong = featuredSongs[0];
+      setCurrentSong(firstSong);
       if (audioRef.current) {
-        audioRef.current.src = '/assets/images/dashboards/music/music.mp3' // Adjust the path as needed
-        audioRef.current.load()
-        audioRef.current.pause()
+        audioRef.current.src = `https://images.kcubeinfotech.com/domiex/images/dashboards/music/music.mp3`; // Adjust the path as needed
+        audioRef.current.load();
+        audioRef.current.pause();
       }
     }
-  }, [featuredSongs, currentSong])
+  }, [featuredSongs, currentSong]);
 
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = volume / 100
-      audioRef.current.muted = isMuted
+      audioRef.current.volume = volume / 100;
+      audioRef.current.muted = isMuted;
     }
-  }, [volume, isMuted])
+  }, [volume, isMuted]);
 
   const handlePlayPause = (song: Song) => {
     if (currentSong?.id === song.id) {
       if (isPlaying) {
-        audioRef.current?.pause()
+        audioRef.current?.pause();
       } else {
-        audioRef.current?.play()
+        audioRef.current?.play();
       }
-      setIsPlaying(!isPlaying)
+      setIsPlaying(!isPlaying);
     } else {
-      setCurrentSong(song)
-      setIsPlaying(true)
-      setCurrentTime(0)
+      setCurrentSong(song);
+      setIsPlaying(true);
+      setCurrentTime(0);
       if (audioRef.current) {
-        audioRef.current.src = '/assets/images/dashboards/music/music.mp3' // Adjust the path as needed
-        audioRef.current.load()
-        audioRef.current.play()
+        audioRef.current.src = `https://images.kcubeinfotech.com/domiex/images/dashboards/music/music.mp3`; // Adjust the path as needed
+        audioRef.current.load();
+        audioRef.current.play();
       }
     }
-  }
+  };
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime)
-      setDuration(audioRef.current.duration || 0)
+      setCurrentTime(audioRef.current.currentTime);
+      setDuration(audioRef.current.duration || 0);
     }
-  }
+  };
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (audioRef.current && duration) {
-      const rect = e.currentTarget.getBoundingClientRect()
-      const offsetX = e.clientX - rect.left
-      const newTime = (offsetX / rect.width) * duration
-      audioRef.current.currentTime = newTime
-      setCurrentTime(newTime)
+      const rect = e.currentTarget.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const newTime = (offsetX / rect.width) * duration;
+      audioRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
     }
-  }
+  };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseInt(e.target.value, 10)
-    setVolume(newVolume)
+    const newVolume = parseInt(e.target.value, 10);
+    setVolume(newVolume);
     if (audioRef.current) {
-      audioRef.current.volume = newVolume / 100
+      audioRef.current.volume = newVolume / 100;
     }
     if (newVolume === 0) {
-      setIsMuted(true)
+      setIsMuted(true);
     } else {
-      setIsMuted(false)
-      setPreviousVolume(newVolume)
+      setIsMuted(false);
+      setPreviousVolume(newVolume);
     }
-  }
+  };
 
   const handleToggleMute = () => {
-    setIsMuted(!isMuted)
+    setIsMuted(!isMuted);
     if (audioRef.current) {
-      audioRef.current.muted = !isMuted
+      audioRef.current.muted = !isMuted;
     }
     if (isMuted) {
-      setVolume(previousVolume)
+      setVolume(previousVolume);
     } else {
-      setPreviousVolume(volume)
-      setVolume(0)
+      setPreviousVolume(volume);
+      setVolume(0);
     }
-  }
+  };
 
   const handleSkip = (seconds: number) => {
     if (audioRef.current) {
-      let newTime = audioRef.current.currentTime + seconds
-      if (newTime < 0) newTime = 0
-      if (newTime > duration) newTime = duration
-      audioRef.current.currentTime = newTime
-      setCurrentTime(newTime)
+      let newTime = audioRef.current.currentTime + seconds;
+      if (newTime < 0) newTime = 0;
+      if (newTime > duration) newTime = duration;
+      audioRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
     }
-  }
+  };
 
   const formatTime = (time: number) => {
-    if (isNaN(time)) return '00:00'
-    const minutes = Math.floor(time / 60)
-    const seconds = Math.floor(time % 60)
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
-  }
+    if (isNaN(time)) return "00:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
 
   return (
     <>
@@ -135,11 +130,11 @@ const MusicPlayer: NextPageWithLayout = () => {
       <div className="col-span-12 row-span-2 md:col-span-6 2xl:col-span-4">
         <div className="mb-space">
           <h6 className="mb-4 text-15">Featured Songs</h6>
-          <div className="flex flex-col gap-3">
+          <div className="space-y-3">
             {featuredSongs.map((song) => (
               <div key={song.id} className="flex items-center gap-3">
                 <div className="relative group/items">
-                  <Image
+                  <img
                     src={song.image}
                     alt={song.title}
                     className="rounded-md size-12"
@@ -147,20 +142,22 @@ const MusicPlayer: NextPageWithLayout = () => {
                     height={48}
                   />
                   <Link
-                    href="#!"
+                    to="#!"
                     onClick={() => handlePlayPause(song)}
-                    className="absolute inset-0 flex items-center justify-center text-white transition duration-300 ease-linear rounded-md opacity-0 group-hover/items:opacity-100 bg-gray-950/30">
+                    className="absolute inset-0 flex items-center justify-center text-white transition duration-300 ease-linear rounded-md opacity-0 group-hover/items:opacity-100 bg-gray-950/30"
+                  >
                     <Play className="size-5" />
                   </Link>
                 </div>
                 <div className="grow">
                   <h6 className="mb-1.5">
-                    <Link href="#!">{song.title}</Link>
+                    <Link to="#!">{song.title}</Link>
                   </h6>
                   <div className="flex items-center">
                     <Link
-                      href="#!"
-                      className="flex px-2 link hover:underline link-purple">
+                      to="#!"
+                      className="flex px-2 link hover:underline link-purple"
+                    >
                       {song.artist}
                     </Link>
                     <i className="ml-1 ri-time-line"></i>
@@ -171,12 +168,14 @@ const MusicPlayer: NextPageWithLayout = () => {
                 </div>
                 <div className="shrink-0">
                   <Link
-                    href="#!"
+                    to="#!"
                     onClick={() => handlePlayPause(song)}
-                    className="text-gray-500 dark:text-dark-500 hover:bg-white dark:hover:bg-dark-900 btn hover:shadow-lg hover:shadow-gray-200 dark:hover:shadow-dark-850 btn-icon">
+                    className="text-gray-500 dark:text-dark-500 hover:bg-white dark:hover:bg-dark-900 btn hover:shadow-lg hover:shadow-gray-200 dark:hover:shadow-dark-850 btn-icon"
+                  >
                     <i
-                      className={`ri-${isPlaying && currentSong?.id === song.id ? 'pause' : 'play'}-line`}
-                      style={{ fontSize: '21px' }}></i>
+                      className={`ri-${isPlaying && currentSong?.id === song.id ? "pause" : "play"}-line`}
+                      style={{ fontSize: "21px" }}
+                    ></i>
                   </Link>
                 </div>
               </div>
@@ -188,12 +187,12 @@ const MusicPlayer: NextPageWithLayout = () => {
       {/* Popular Singers */}
       <div className="col-span-12 row-span-2 md:col-span-6 2xl:col-span-4">
         <div className="mb-space">
-          <h6 className="mb-4 text-15">Popular Singers</h6>
-          <div className="flex flex-col gap-3">
+          <h6 className="mb-4 text-15">Popular Singer</h6>
+          <div className="space-y-3">
             {popularSingers.map((singer) => (
               <div key={singer.id} className="flex items-center gap-3">
                 <div className="relative group/items shrink-0">
-                  <Image
+                  <img
                     src={singer.image}
                     alt={singer.name}
                     className="rounded-md size-11"
@@ -201,14 +200,15 @@ const MusicPlayer: NextPageWithLayout = () => {
                     height={44}
                   />
                   <Link
-                    href="#!"
-                    className="absolute inset-0 flex items-center justify-center text-white transition duration-300 ease-linear rounded-md opacity-0 group-hover/items:opacity-100 bg-gray-950/30">
+                    to="#!"
+                    className="absolute inset-0 flex items-center justify-center text-white transition duration-300 ease-linear rounded-md opacity-0 group-hover/items:opacity-100 bg-gray-950/30"
+                  >
                     <Play className="size-5" />
                   </Link>
                 </div>
                 <div className="grow">
                   <h6 className="mb-1">
-                    <Link href="#!">{singer.name}</Link>
+                    <Link to="#!">{singer.name}</Link>
                   </h6>
                   <p className="text-gray-500 dark:text-dark-500 line-clamp-1">
                     {singer.description}
@@ -224,7 +224,7 @@ const MusicPlayer: NextPageWithLayout = () => {
       {currentSong && (
         <div className="fixed ltr:right-0 rtl:left-0 ltr:left-sidebar rtl:right-sidebar group-data-[sidebar=small]:ltr:left-sidebar-small group-data-[sidebar=small]:rtl:right-sidebar-small group-data-[sidebar=medium]:ltr:left-sidebar-medium group-data-[sidebar=medium]:rtl:right-sidebar-medium bottom-0 bg-white/30 dark:bg-dark-900/50 backdrop-blur-lg border-t z-[1020] p-3 border-gray-200 dark:border-dark-800">
           <div className="flex items-center gap-3">
-            <Image
+            <img
               src={currentSong.image}
               alt="Music"
               className="rounded-md size-10 shrink-0"
@@ -240,37 +240,38 @@ const MusicPlayer: NextPageWithLayout = () => {
             <div className="flex items-center gap-2 mx-auto grow">
               <audio
                 ref={audioRef}
-                src={'/assets/images/dashboards/music/music.mp3'} // Adjust the path as needed
+                src={`https://images.kcubeinfotech.com/domiex/images/dashboards/music/music.mp3`} // Adjust the path as needed
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleTimeUpdate}
-                preload="metadata"></audio>
+                preload="metadata"
+              ></audio>
               <Link
-                href="#!"
+                to="#!"
                 onClick={() => handleSkip(-10)}
-                className="flex items-center justify-center text-xl size-10 link hover:text-gray-800 dark:hover:text-dark-50">
+                className="flex items-center justify-center text-xl size-10 link hover:text-gray-800 dark:hover:text-dark-50"
+              >
                 <i className="ri-skip-back-line"></i>
-                {/* <SkipBack /> */}
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 onClick={() => {
                   if (isPlaying) {
-                    audioRef.current?.pause()
+                    audioRef.current?.pause();
                   } else {
-                    audioRef.current?.play()
+                    audioRef.current?.play();
                   }
-                  setIsPlaying(!isPlaying)
+                  setIsPlaying(!isPlaying);
                 }}
-                className="flex items-center justify-center text-xl size-10 link hover:text-gray-800 dark:hover:text-dark-50">
-                <i className={isPlaying ? 'ri-pause-line' : 'ri-play-line'}></i>
-                {/* {isPlaying ? <Pause /> : <Play />} */}
+                className="flex items-center justify-center text-xl size-10 link hover:text-gray-800 dark:hover:text-dark-50"
+              >
+                <i className={isPlaying ? "ri-pause-line" : "ri-play-line"}></i>
               </Link>
               <Link
-                href="#!"
+                to="#!"
                 onClick={() => handleSkip(10)}
-                className="flex items-center justify-center text-xl size-10 link hover:text-gray-800 dark:hover:text-dark-50">
+                className="flex items-center justify-center text-xl size-10 link hover:text-gray-800 dark:hover:text-dark-50"
+              >
                 <i className="ri-skip-forward-line"></i>
-                {/* <SkipForward /> */}
               </Link>
 
               {/* Seek Bar */}
@@ -278,12 +279,12 @@ const MusicPlayer: NextPageWithLayout = () => {
                 <div className="relative flex items-center gap-3">
                   <div
                     className="w-full h-2 overflow-hidden bg-gray-200 rounded-full cursor-pointer dark:bg-dark-800"
-                    onClick={handleSeek}>
+                    onClick={handleSeek}
+                  >
                     <div
                       className="h-full bg-primary-500"
-                      style={{
-                        width: `${(currentTime / duration) * 100}%`,
-                      }}></div>
+                      style={{ width: `${(currentTime / duration) * 100}%` }}
+                    ></div>
                   </div>
                   <div className="flex justify-end text-sm">
                     <span>{formatTime(currentTime)}</span>
@@ -296,15 +297,17 @@ const MusicPlayer: NextPageWithLayout = () => {
               {/* Volume Control */}
               <div className="flex items-center gap-2">
                 <Link
-                  href="#!"
+                  to="#!"
                   onClick={handleToggleMute}
-                  className="flex items-center justify-center text-xl size-10 link hover:text-gray-800 dark:hover:text-dark-50">
+                  className="flex items-center justify-center text-xl size-10 link hover:text-gray-800 dark:hover:text-dark-50"
+                >
                   <i
                     className={
                       isMuted || volume === 0
-                        ? 'ri-volume-mute-line text-red-500'
-                        : 'ri-volume-up-line'
-                    }></i>
+                        ? "ri-volume-mute-line text-red-500"
+                        : "ri-volume-up-line"
+                    }
+                  ></i>
                 </Link>
                 <input
                   type="range"
@@ -317,7 +320,7 @@ const MusicPlayer: NextPageWithLayout = () => {
               </div>
             </div>
             <div className="shrink-0">
-              <Link href="#!" title="Shuffle Icon">
+              <Link to="#!" title="Shuffle Icon">
                 <Shuffle className="size-5" />
               </Link>
             </div>
@@ -325,7 +328,7 @@ const MusicPlayer: NextPageWithLayout = () => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default MusicPlayer
+export default MusicPlayer;

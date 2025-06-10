@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface MixedChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const LineColumnChart = ({
@@ -24,45 +15,45 @@ const LineColumnChart = ({
   chartId,
 }: MixedChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Website Blog',
-      type: 'column',
+      name: "Website Blog",
+      type: "column",
       data: [440, 505, 414, 671, 227, 413, 201, 352, 752, 320, 257, 160],
     },
     {
-      name: 'Social Media',
-      type: 'line',
+      name: "Social Media",
+      type: "line",
       data: [23, 42, 35, 27, 43, 22, 17, 31, 22, 22, 12, 16],
     },
-  ]
+  ];
   const labels = [
-    '01 Jan 2001',
-    '02 Jan 2001',
-    '03 Jan 2001',
-    '04 Jan 2001',
-    '05 Jan 2001',
-    '06 Jan 2001',
-    '07 Jan 2001',
-    '08 Jan 2001',
-    '09 Jan 2001',
-    '10 Jan 2001',
-    '11 Jan 2001',
-    '12 Jan 2001',
-  ]
+    "01 Jan 2001",
+    "02 Jan 2001",
+    "03 Jan 2001",
+    "04 Jan 2001",
+    "05 Jan 2001",
+    "06 Jan 2001",
+    "07 Jan 2001",
+    "08 Jan 2001",
+    "09 Jan 2001",
+    "10 Jan 2001",
+    "11 Jan 2001",
+    "12 Jan 2001",
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'line',
+      type: "line",
     },
     stroke: {
       width: [0, 4],
     },
     title: {
-      text: 'Traffic Sources',
+      text: "Traffic Sources",
     },
     dataLabels: {
       enabled: true,
@@ -71,18 +62,18 @@ const LineColumnChart = ({
     colors: chartsColor,
     labels: labels,
     xaxis: {
-      type: 'datetime',
+      type: "datetime",
     },
     yaxis: [
       {
         title: {
-          text: 'Website Blog',
+          text: "Website Blog",
         },
       },
       {
         opposite: true,
         title: {
-          text: 'Social Media',
+          text: "Social Media",
         },
       },
     ],
@@ -93,7 +84,7 @@ const LineColumnChart = ({
         bottom: 0,
       },
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -102,12 +93,12 @@ const LineColumnChart = ({
         series={series}
         type="line"
         data-chart-colors="[bg-primary-500, bg-green-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default LineColumnChart
+export default LineColumnChart;

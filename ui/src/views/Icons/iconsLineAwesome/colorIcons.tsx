@@ -1,6 +1,4 @@
-'use client'
-
-import React from 'react'
+import React from "react";
 
 const ColorIcons = () => {
   return (
@@ -33,6 +31,6 @@ const ColorIcons = () => {
         </div>
       </div>
     </React.Fragment>
-  )
-}
-export default ColorIcons
+  );
+};
+export default ColorIcons;

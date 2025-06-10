@@ -1,20 +1,12 @@
-import React from 'react'
+import { Trash2 } from "lucide-react";
+import React from "react";
+import { Modal } from "@src/components/custom/modal/modal";
 
-import { Trash2 } from 'lucide-react'
-
-import { Modal } from '../custom/modal/modal'
-
-interface DeleteModalProps {
-  show: boolean
-  handleHide: () => void
-  deleteModalFunction: () => void
-}
-
-const DeleteModal: React.FC<DeleteModalProps> = ({
-  show,
-  handleHide,
-  deleteModalFunction,
-}) => {
+const DeleteModal = ({ show, handleHide, deleteModalFunction }: any) => {
+  const HandleOnDelete = (onClose: () => void) => {
+    deleteModalFunction();
+    onClose();
+  };
   return (
     <React.Fragment>
       <Modal
@@ -23,11 +15,11 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
         onClose={handleHide}
         position="modal-center"
         size="modal-xs"
-        isFooter={true}
+        isFooter="false"
         content={(onClose) => (
           <>
-            <div className="text-center p-7">
-              <div className="flex items-center justify-center mx-auto mb-4 text-red-500 rounded-full bg-red-500/10 size-14 backdrop-blur-xl">
+            <div className="text-center modal-content p-7">
+              <div className="flex items-center justify-center mx-auto mb-4 text-red-500 rounded-full bg-red-500/10 size-14 backdrop-blur-sm-xl">
                 <Trash2 className="size-6" />
               </div>
               <h5 className="mb-4">
@@ -36,10 +28,8 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
               <div className="flex items-center justify-center gap-2">
                 <button
                   className="btn btn-red"
-                  onClick={() => {
-                    deleteModalFunction()
-                    onClose()
-                  }}>
+                  onClick={() => HandleOnDelete(onClose)}
+                >
                   Delete
                 </button>
                 <button className="btn link link-primary" onClick={onClose}>
@@ -49,9 +39,10 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
             </div>
           </>
         )}
+        footer={() => <></>}
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default DeleteModal
+export default DeleteModal;

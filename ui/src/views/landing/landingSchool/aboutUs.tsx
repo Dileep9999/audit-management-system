@@ -1,11 +1,7 @@
-'use client'
+import React from "react";
 
-import React from 'react'
-
-import Image from 'next/image'
-
-import image5 from '@assets/images/school/landing/img-05.png'
-import { BriefcaseBusiness, Feather, Gem, Handshake } from 'lucide-react'
+import image5 from "@assets/images/school/landing/img-05.png";
+import { BriefcaseBusiness, Feather, Gem, Handshake } from "lucide-react";
 
 const AboutUs: React.FC = () => {
   return (
@@ -19,7 +15,7 @@ const AboutUs: React.FC = () => {
                 <span className="absolute text-2xl font-bold tracking-wide uppercase -rotate-90 text-orange-500/30 -left-3 bottom-14">
                   Domiex
                 </span>
-                <Image
+                <img
                   src={image5}
                   alt="landingImg"
                   className="max-h-[36rem] relative mx-auto"
@@ -67,7 +63,7 @@ const AboutUs: React.FC = () => {
         </div>
       </section>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default AboutUs
+export default AboutUs;

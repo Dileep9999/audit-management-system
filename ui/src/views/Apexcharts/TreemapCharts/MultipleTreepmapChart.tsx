@@ -1,94 +1,85 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import React from "react";
+import { ApexOptions } from "apexcharts";
+import useChartColors from "@hooks/useChartColors";
+import ReactApexChart from "react-apexcharts";
 
 interface TreemapChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: any;
 }
 
-const MultipleTreepmapChart = ({
+const MultipleTreepMapChart = ({
   chartColors,
   chartDarkColors,
   chartId,
 }: TreemapChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'Desktops',
+      name: "Desktops",
       data: [
         {
-          x: 'ABC',
+          x: "ABC",
           y: 10,
         },
         {
-          x: 'DEF',
+          x: "DEF",
           y: 60,
         },
         {
-          x: 'XYZ',
+          x: "XYZ",
           y: 41,
         },
       ],
     },
     {
-      name: 'Mobile',
+      name: "Mobile",
       data: [
         {
-          x: 'ABCD',
+          x: "ABCD",
           y: 10,
         },
         {
-          x: 'DEFG',
+          x: "DEFG",
           y: 20,
         },
         {
-          x: 'WXYZ',
+          x: "WXYZ",
           y: 51,
         },
         {
-          x: 'PQR',
+          x: "PQR",
           y: 30,
         },
         {
-          x: 'MNO',
+          x: "MNO",
           y: 20,
         },
         {
-          x: 'CDE',
+          x: "CDE",
           y: 30,
         },
       ],
     },
-  ]
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'treemap',
+      type: "treemap",
     },
     colors: chartsColor,
     legend: {
       show: false,
     },
     title: {
-      text: 'Multi-dimensional Treemap',
-      align: 'center',
+      text: "Multi-dimensional Treemap",
+      align: "center",
     },
-  }
+  };
   return (
     <React.Fragment>
       <ReactApexChart
@@ -97,12 +88,12 @@ const MultipleTreepmapChart = ({
         series={series}
         type="treemap"
         data-chart-colors="[bg-primary-500, bg-green-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default MultipleTreepmapChart
+export default MultipleTreepMapChart;

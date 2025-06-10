@@ -1,21 +1,12 @@
-'use client'
-
-import React from 'react'
-
-import dynamic from 'next/dynamic'
-
-import useChartColors from '@src/hooks/useChartColors'
-import { ApexOptions } from 'apexcharts'
-
-// Dynamically import the ReactApexChart component
-const ReactApexChart = dynamic(() => import('react-apexcharts'), {
-  ssr: false,
-})
+import useChartColors from "@hooks/useChartColors";
+import { ApexOptions } from "apexcharts";
+import React from "react";
+import ReactApexChart from "react-apexcharts";
 
 interface MixedChartsProps {
-  chartColors: string
-  chartDarkColors: string
-  chartId: React.MutableRefObject<null>
+  chartColors: string;
+  chartDarkColors: string;
+  chartId: string | number;
 }
 
 const LineAreaChart = ({
@@ -24,44 +15,44 @@ const LineAreaChart = ({
   chartId,
 }: MixedChartsProps) => {
   // Pass both chartColors and chartDarkColors to the hook
-  const chartsColor = useChartColors({ chartColors, chartDarkColors })
+  const chartsColor = useChartColors({ chartColors, chartDarkColors });
 
   const series = [
     {
-      name: 'TEAM A',
-      type: 'area',
+      name: "TEAM A",
+      type: "area",
       data: [44, 55, 31, 47, 31, 43, 26, 41, 31, 47, 33],
     },
     {
-      name: 'TEAM B',
-      type: 'line',
+      name: "TEAM B",
+      type: "line",
       data: [55, 69, 45, 61, 43, 54, 37, 52, 44, 61, 43],
     },
-  ]
+  ];
   const labels = [
-    'Dec 01',
-    'Dec 02',
-    'Dec 03',
-    'Dec 04',
-    'Dec 05',
-    'Dec 06',
-    'Dec 07',
-    'Dec 08',
-    'Dec 09 ',
-    'Dec 10',
-    'Dec 11',
-  ]
+    "Dec 01",
+    "Dec 02",
+    "Dec 03",
+    "Dec 04",
+    "Dec 05",
+    "Dec 06",
+    "Dec 07",
+    "Dec 08",
+    "Dec 09 ",
+    "Dec 10",
+    "Dec 11",
+  ];
 
   const options: ApexOptions = {
     chart: {
       height: 300,
-      type: 'line',
+      type: "line",
     },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
     },
     fill: {
-      type: 'solid',
+      type: "solid",
       opacity: [0.35, 1],
     },
     labels: labels,
@@ -71,13 +62,13 @@ const LineAreaChart = ({
     yaxis: [
       {
         title: {
-          text: 'Series A',
+          text: "Series A",
         },
       },
       {
         opposite: true,
         title: {
-          text: 'Series B',
+          text: "Series B",
         },
       },
     ],
@@ -87,10 +78,10 @@ const LineAreaChart = ({
       intersect: false,
       y: {
         formatter: function (y) {
-          if (typeof y !== 'undefined') {
-            return y.toFixed(0) + ' points'
+          if (typeof y !== "undefined") {
+            return y.toFixed(0) + " points";
           }
-          return y
+          return y;
         },
       },
     },
@@ -101,7 +92,7 @@ const LineAreaChart = ({
         bottom: 0,
       },
     },
-  }
+  };
 
   return (
     <React.Fragment>
@@ -111,12 +102,12 @@ const LineAreaChart = ({
         series={series}
         type="line"
         data-chart-colors="[bg-sky-500, bg-green-500]"
-        chartId={chartId}
+        id={chartId}
         height={300}
         width="100%"
       />
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default LineAreaChart
+export default LineAreaChart;
