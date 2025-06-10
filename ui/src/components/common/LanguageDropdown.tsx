@@ -9,12 +9,12 @@ import flagImg from '@assets/images/flag/us.svg'
 import { interNationalization } from '@src/data'
 import { InterNationalization } from '@src/dtos'
 import { AppDispatch, RootState } from '@src/slices/reducer'
-import { changeLayoutLanguage } from '@src/slices/thunk'
+import { changeLayoutLanguage, changeDirection } from '@src/slices/thunk'
 import i18n from '@src/utils/i18n'
 import { useDispatch, useSelector } from 'react-redux'
 import SimpleBar from 'simplebar-react'
 
-import { LAYOUT_LANGUAGES } from '../constants/layout'
+import { LAYOUT_LANGUAGES, LAYOUT_DIRECTION } from '../constants/layout'
 import {
   Dropdown,
   DropdownButton,
@@ -35,6 +35,13 @@ const LanguageDropdown = () => {
   const changeLanguage = (lng: LAYOUT_LANGUAGES) => {
     dispatch(changeLayoutLanguage(lng))
     i18n.changeLanguage(lng)
+    
+    // Set RTL direction for Arabic language
+    if (lng === LAYOUT_LANGUAGES.ARABIC) {
+      dispatch(changeDirection(LAYOUT_DIRECTION.RTL))
+    } else {
+      dispatch(changeDirection(LAYOUT_DIRECTION.LTR))
+    }
   }
 
   return (
