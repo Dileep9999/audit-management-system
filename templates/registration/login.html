@@ -1,38 +1,67 @@
 <!-- templates/registration/login.html -->
 {% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
-
 {% load i18n %}
 {% load static %}
 
-{% block extra_head %}
+{% block title %}{% trans "Login" %}{% endblock %}
 
 {% block content %}
-	<div class="container" >
-		<div class="card" style="padding: 40px 36px; border-radius: 15px" >
-        <h2>
-          {%trans "Sign in" %}
-          </h2>
-			<form method="post" style="text-align: left;">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <select name="ad_choice">
-          {% for key in ad_keys %}
-            <option value="{{ key }}">{{ key|capfirst }}</option>
-          {% endfor %}
-        </select>
-        <label>
-          <input type="checkbox" name="remember_me" id="id_remember_me">
-          {% trans "Remember Me" %}
-        </label>
-        <button type="submit"> {%trans "Sign in" %}</button>
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h2>{% trans "Sign in" %}</h2>
+        </div>
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="error-message">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                <div class="error-message">
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="form-group">
+                <label for="ad_choice">{% trans "Select Domain" %}</label>
+                <select name="ad_choice" id="ad_choice">
+                    {% for key in ad_keys %}
+                        <option value="{{ key }}">{{ key|capfirst }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" name="remember_me" id="id_remember_me">
+                <label for="id_remember_me">{% trans "Remember Me" %}</label>
+            </div>
+
+            <button type="submit" class="submit-button">{% trans "Sign in" %}</button>
         </form>
        <div class="pb-4">
         {% comment %} <a href="{% url 'password_reset' %}">Forgot Password?</a> {% endcomment %}
        </a>
 		</div>
-    
-	</div>
-  {% endblock %}
-  {% endblock %}
+        {% if password_reset_url %}
+        <div class="forgot-password">
+            <a href="{% url 'password_reset' %}">{% trans "Forgot Password?" %}</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
