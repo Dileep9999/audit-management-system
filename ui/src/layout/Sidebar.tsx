@@ -160,7 +160,6 @@ const Sidebar = ({
               scrolled ? "group-data-[layout=boxed]:!top-topbar" : "scrolled"
             }`}
           >
-            {/* Sidebar content goes here */}
             <div className="sidebar-wrapper">
               <div>
                 <div className="navbar-brand">
@@ -251,45 +250,6 @@ const Sidebar = ({
                           </div>
                         </div>
                         <div className="pt-2 mt-3 border-t border-gray-200 dark:border-dark-800">
-                          {/* <Link
-                            to="/page/user-activity"
-                            className="inline-block py-2 text-gray-500 before:hidden ltr:text-left rtl:text-right link hover:text-primary-500"
-                          >
-                            <BellDot className="inline-block mr-2 size-4" />{" "}
-                            Profile Activity
-                          </Link>
-
-                          <Link
-                            to="/page/user-projects"
-                            className="inline-block py-2 text-gray-500 before:hidden ltr:text-left rtl:text-right link hover:text-primary-500"
-                          >
-                            <Presentation className="inline-block mr-2 size-4" />{" "}
-                            Manage Projects
-                          </Link>
-
-                          <Link
-                            to="/page/account-settings"
-                            className="inline-block py-2 text-gray-500 before:hidden ltr:text-left rtl:text-right link hover:text-primary-500"
-                          >
-                            <Settings className="inline-block mr-2 size-4" />{" "}
-                            Account Settings
-                          </Link>
-
-                          <Link
-                            to="/page/help-center"
-                            className="inline-block py-2 text-gray-500 before:hidden ltr:text-left rtl:text-right link hover:text-primary-500"
-                          >
-                            <Headset className="inline-block mr-2 size-4" />{" "}
-                            Help Center
-                          </Link>
-
-                          <Link
-                            to="/page/pricing"
-                            className="inline-block py-2 text-gray-500 before:hidden ltr:text-left rtl:text-right link hover:text-primary-500"
-                          >
-                            <Gem className="inline-block mr-2 size-4" /> Upgrade
-                            Plan
-                          </Link> */}
                           <div>
                             <button
                               className="inline-block py-2 text-gray-500 ltr:text-left rtl:text-right hover:text-primary-500"

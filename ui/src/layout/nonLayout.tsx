@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 interface NonLayoutProps {
   children: React.ReactNode;
@@ -11,11 +11,10 @@ const NonLayout = ({ children, breadcrumbTitle }: NonLayoutProps) => {
     : "Domiex - Admin & Dashboard Template";
 
 
-
+    
   return (
     <React.Fragment>
       <title>{title}</title>
-
       <main>{children}</main>
     </React.Fragment>
   );
