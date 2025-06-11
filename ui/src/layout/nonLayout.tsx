@@ -10,8 +10,6 @@ const NonLayout = ({ children, breadcrumbTitle }: NonLayoutProps) => {
     ? ` ${breadcrumbTitle} | Domiex - React TS Admin & Dashboard Template `
     : "Domiex - Admin & Dashboard Template";
 
-
-    
   return (
     <React.Fragment>
       <title>{title}</title>
