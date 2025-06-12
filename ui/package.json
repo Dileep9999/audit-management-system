@@ -1,5 +1,5 @@
 {
-  "name": "domiex-react-ts",
+  "name": "audit-management-ui",
   "private": true,
   "version": "2.2.0",
   "main": "server/server.cjs",
@@ -8,7 +8,7 @@
     "dev": "vite",
     "dev:server": "node server/server.cjs",
     "start:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
-    "build": "vite build",
+    "build": "vite build && mv ../static/dist/index.html ../templates/user/index.html",
     "prettier:write": "prettier --write --ignore-unknown .",
     "preview": "vite preview"
   },
@@ -62,6 +62,8 @@
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "9.21.0",
     "@types/aos": "3.0.7",
+    "@types/node": "^24.0.1",
+    "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^4.5.2",
     "@vitejs/plugin-react-swc": "^3.10.2",
     "autoprefixer": "10.4.20",
@@ -70,7 +72,7 @@
     "postcss": "8.4.47",
     "sass": "1.80.6",
     "tailwindcss": "4.1.2",
-    "vite": "^6.1.7",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vite": "^6.1.7"
   }
 }
