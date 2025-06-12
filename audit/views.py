@@ -10,12 +10,17 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import gettext as _
 from django.utils import translation
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 
 AD_CONFIGS_LIST = json.loads(config("AD_CONFIGS_JSON"))
 
 
 class HomeTemplateView(LoginRequiredMixin, TemplateView):
-    template_name = "user/index.html"
+    template_name = "index.html"
     login_url = "login"
     redirect_field_name = "next"
 
@@ -79,3 +84,23 @@ def custom_set_language(request):
             user.language = lang_code
             user.save()
     return response
+
+
+class SetLanguageAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        lang_code = (
+            request.data.get("language")
+            or request.POST.get("language")
+            or request.query_params.get("language")
+        )
+        if lang_code and translation.check_for_language(lang_code):
+            translation.activate(lang_code)
+            request.user.language = lang_code
+            request.user.save()
+            return Response({"status": "success", "language": lang_code})
+        return Response(
+            {"status": "error", "message": _("Invalid language code")},
+            status=status.HTTP_400_BAD_REQUEST,
+        )

@@ -67,3 +67,9 @@ create-superuser: ## Create a superuser
 collectstatic: ## Collect static files
 	$(MANAGE) collectstatic
 
+lint: ## Run linters
+	black . --check
+
+format: ## Format code with black
+	black .
+

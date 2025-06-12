@@ -7,6 +7,7 @@ from apps.user.views import (
     UserProfilePictureUpdateView,
 )
 
+# api/users/
 urlpatterns = [
     path("", ListUsersView.as_view(), name="list_users"),
     path("whoami", LoggedInUserView.as_view()),

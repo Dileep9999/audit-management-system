@@ -178,3 +178,14 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+# Redis database files
+*.rdb
+
+# macOS
+.DS_Store
+# macOS Finder files
+.AppleDouble
+.LSOverride
+# Thumbnails
+._*
+# Icon must end with two \r

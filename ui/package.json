@@ -8,7 +8,7 @@
     "dev": "vite",
     "dev:server": "node server/server.cjs",
     "start:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
-    "build": "vite build && mv ../static/dist/index.html ../templates/user/index.html",
+    "build": "vite build",
     "prettier:write": "prettier --write --ignore-unknown .",
     "preview": "vite preview"
   },

@@ -28,6 +28,7 @@ from apps.user.admin_views import custom_dashboard
 from .views import (
     CustomLoginView,
     HomeTemplateView,
+    SetLanguageAPIView,
     custom_404_view,
     custom_set_language,
 )
@@ -38,7 +39,11 @@ admin.site.site_header = _("Audit Management Administration")
 admin.site.site_title = _("Audit Management Admin Portal")
 
 urlpatterns = [
-    path("admin/dashboard/", custom_dashboard, name="custom_dashboard"),
+    path(
+        f"{settings.ADMIN_SITE_URL}/dashboard/",
+        custom_dashboard,
+        name="custom_dashboard",
+    ),
     path(settings.ADMIN_SITE_URL, admin.site.urls),
     path("impersonate/", include("impersonate.urls")),
     path("", HomeTemplateView.as_view(), name="home"),
@@ -50,6 +55,7 @@ urlpatterns = [
     path("logout", LogoutView.as_view(next_page="login"), name="logout"),
     path("rosetta/", include("rosetta.urls")),
     path("i18n/setlang", custom_set_language, name="set_language"),
+    path("api/setlang", SetLanguageAPIView.as_view(), name="set_language_api"),
     path("api/translation/", include("apps.translation.urls")),
     path("api/users/", include("apps.user.urls")),
     path("api/notifications/", include("apps.notifications.urls")),
