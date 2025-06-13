@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 const DashboardsPage: NextPageWithLayout = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    document.title = "Ecommerce | Domiex - React TS Admin & Dashboard Template";
+    document.title = "Ecommerce | AMS - React TS Admin & Dashboard Template";
     navigate("/dashboards/ecommerce");
   }, []);
 

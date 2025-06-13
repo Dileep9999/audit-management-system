@@ -8,7 +8,7 @@ interface Folder {
 
 const fileTreeData: Folder[] = [
   {
-    title: "Domiex-React Folders",
+    title: "AMS-React Folders",
     children: [
       {
         title: "dist/",

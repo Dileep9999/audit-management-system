@@ -106,7 +106,7 @@ const SettingsModal = ({ open, handleCloseModal }: any) => {
         isOpen={open}
         onClose={handleCloseModal}
         position="modal-center"
-        title="Domiex Customize"
+        title="AMS Customize"
         id="toolsAppsModal"
         size="modal-xl"
         contentClass="model-content"
@@ -1088,7 +1088,7 @@ const SettingsModal = ({ open, handleCloseModal }: any) => {
                   />
                   <label
                     htmlFor="defaultPrimaryColors"
-                    className="rounded-full bg-[#358ffc] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                    className="rounded-full bg-[#92722A] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
                   ></label>
                 </div>
                 <div className="input-radio-group">
@@ -1103,7 +1103,7 @@ const SettingsModal = ({ open, handleCloseModal }: any) => {
                   />
                   <label
                     htmlFor="greenPrimaryColors"
-                    className="bg-[#1acd81] rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                    className="bg-[#92722A] rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
                   ></label>
                 </div>
                 <div className="input-radio-group">
@@ -1118,7 +1118,7 @@ const SettingsModal = ({ open, handleCloseModal }: any) => {
                   />
                   <label
                     htmlFor="violetPrimaryColors"
-                    className="rounded-full bg-violet-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                    className="rounded-full bg-[#92722A] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
                   ></label>
                 </div>
                 <div className="input-radio-group">
@@ -1133,7 +1133,7 @@ const SettingsModal = ({ open, handleCloseModal }: any) => {
                   />
                   <label
                     htmlFor="orangePrimaryColors"
-                    className="rounded-full bg-[#f04b1f] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                    className="rounded-full bg-[#92722A] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
                   ></label>
                 </div>
                 <div className="input-radio-group">
@@ -1148,7 +1148,7 @@ const SettingsModal = ({ open, handleCloseModal }: any) => {
                   />
                   <label
                     htmlFor="tealPrimaryColors"
-                    className="bg-teal-500 rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                    className="bg-[#92722A] rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
                   ></label>
                 </div>
                 <div className="input-radio-group">
@@ -1163,7 +1163,7 @@ const SettingsModal = ({ open, handleCloseModal }: any) => {
                   />
                   <label
                     htmlFor="fuchsiaPrimaryColors"
-                    className="rounded-full bg-fuchsia-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                    className="rounded-full bg-[#92722A] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
                   ></label>
                 </div>
                 <div className="input-radio-group">
@@ -1178,7 +1178,7 @@ const SettingsModal = ({ open, handleCloseModal }: any) => {
                   />
                   <label
                     htmlFor="limePrimaryColors"
-                    className="rounded-full bg-lime-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                    className="rounded-full bg-[#92722A] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
                   ></label>
                 </div>
                 <div className="input-radio-group">
@@ -1193,7 +1193,7 @@ const SettingsModal = ({ open, handleCloseModal }: any) => {
                   />
                   <label
                     htmlFor="amberPrimaryColors"
-                    className="rounded-full bg-amber-500 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
+                    className="rounded-full bg-[#92722A] input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
                   ></label>
                 </div>
               </div>

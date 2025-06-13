@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 
 const SignInBasicPage: NextPageWithLayout = () => {
   useEffect(() => {
-    document.title = "Sign In | Domiex - React TS Admin & Dashboard Template";
+    document.title = "Sign In | AMS - React TS Admin & Dashboard Template";
   }, []);
 
   return (

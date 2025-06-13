@@ -20,7 +20,7 @@ const Files = [
   },
   {
     image: video,
-    filename: "Domiex Intro.mp4",
+    filename: "AMS Intro.mp4",
     date: "05 July, 2024",
     size: "44 MB",
   },

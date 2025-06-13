@@ -16,7 +16,7 @@ const ChatBot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       from: "bot",
-      text: "Hello! I am a Domiex chatbot. How can I assist you today?",
+      text: "Hello! I am an AMS chatbot. How can I assist you today?",
     },
   ]);
   const [botTyping, setBotTyping] = useState<boolean>(false);

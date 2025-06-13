@@ -6,7 +6,7 @@ const BaseExample = () => {
     <React.Fragment>
       <ul className="breadcrumb *:before:content-['\f2e5']">
         <li className="breadcrumb-item">
-          <Link to="#!">Domiex</Link>
+          <Link to="#!">AMS</Link>
         </li>
         <li className="breadcrumb-item">
           <Link to="#!">UI</Link>

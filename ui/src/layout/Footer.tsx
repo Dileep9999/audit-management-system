@@ -39,7 +39,7 @@ const Footer = () => {
             </div>
             <div className="text-center text-gray-500 dark:text-dark-500 ltr:lg:text-right rtl:lg:text-left">
               <div>
-                &copy; {new Date().getFullYear()} Domiex. Crafted by
+                &copy; {new Date().getFullYear()} AMS. Crafted by
                 <Link to="#!" className="ml-1 font-semibold">
                   {brandName}
                 </Link>

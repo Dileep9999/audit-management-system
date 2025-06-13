@@ -1,9 +1,9 @@
 const userMailRecords = [
   {
     _id: 1,
-    image: "https://images.kcubeinfotech.com/domiex/images/brands/img-05.png",
-    name: "Domiex",
-    email: "shopia@domiex.com",
+    image: "https://images.kcubeinfotech.com/ams/images/brands/img-05.png",
+    name: "AMS",
+    email: "shopia@ams.com",
   },
   {
     _id: 2,

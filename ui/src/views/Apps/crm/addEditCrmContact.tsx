@@ -372,7 +372,7 @@ const AddEditCrmContact = ({
                       type="url"
                       id="websiteInput"
                       className="form-input"
-                      placeholder="http://www.domiex.com"
+                      placeholder="http://www.ams.com"
                       {...register("website", {
                         required: "Website is required.",
                       })}
