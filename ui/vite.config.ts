@@ -5,8 +5,8 @@ import path from "path";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/static/dist/", // This is the base path for your app, adjust as needed
-
+  base: "/", // This is the base path for your app, adjust as needed
+  // base: "/static/dist/"
   build: {
     outDir: '../static/dist', // or any path you want
   },
