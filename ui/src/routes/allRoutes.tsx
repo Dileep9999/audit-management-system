@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import DashboardsPage from "@pages/dashboards/ecommerce";
-import SignInBasicPage from "@pages/auth/signinBasic";
+import SignInBasic from "@views/auth/signIn/signinBasic";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 interface IRoute {
   path: string;
@@ -8,12 +9,26 @@ interface IRoute {
 }
 
 const routes: IRoute[] = [
-  { path: "/", component: <DashboardsPage /> },
-  { path: "/dashboards/ecommerce", component: <DashboardsPage /> },
+  { 
+    path: "/", 
+    component: (
+      <ProtectedRoute>
+        <DashboardsPage />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/dashboards/ecommerce", 
+    component: (
+      <ProtectedRoute>
+        <DashboardsPage />
+      </ProtectedRoute>
+    ) 
+  },
 ];
 
 const nonAuthRoutes: IRoute[] = [
-  { path: "/auth/signin-basic", component: <SignInBasicPage /> },
+  { path: "/login", component: <SignInBasic /> },
 ];
 
 export { routes, nonAuthRoutes };

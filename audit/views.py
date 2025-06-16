@@ -10,17 +10,20 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import gettext as _
 from django.utils import translation
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+import os
+from django.middleware.csrf import get_token
+from django.utils.decorators import method_decorator
 
 AD_CONFIGS_LIST = json.loads(config("AD_CONFIGS_JSON"))
 
 
 class HomeTemplateView(LoginRequiredMixin, TemplateView):
-    template_name = "index.html"
+    template_name = os.path.join(settings.BASE_DIR, "ui", "index.html")
     login_url = "login"
     redirect_field_name = "next"
 
@@ -30,6 +33,7 @@ class HomeTemplateView(LoginRequiredMixin, TemplateView):
         return context
 
 
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class CustomLoginView(LoginView):
     template_name = "registration/login.html"
 
@@ -37,6 +41,15 @@ class CustomLoginView(LoginView):
         context = super().get_context_data(**kwargs)
         context["ad_keys"] = [item["key"] for item in AD_CONFIGS_LIST]
         return context
+
+    def get(self, request, *args, **kwargs):
+        # For API requests, return JSON with CSRF token
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'csrf_token': get_token(request),
+                'ad_keys': [item["key"] for item in AD_CONFIGS_LIST]
+            })
+        return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -47,9 +60,6 @@ class CustomLoginView(LoginView):
         if remember_me:
             # Persistent session: set expiry to e.g. 30 days
             self.request.session.set_expiry(60 * 60 * 24 * 30)  # 30 days
-        # else:
-        # Session expires on browser close
-        # self.request.session.set_expiry(0)
 
         # Set language cookie and activate user's language
         if user.is_authenticated and hasattr(user, "language") and user.language:
@@ -64,7 +74,33 @@ class CustomLoginView(LoginView):
                 httponly=getattr(settings, "LANGUAGE_COOKIE_HTTPONLY", False),
                 samesite=getattr(settings, "LANGUAGE_COOKIE_SAMESITE", None),
             )
+
+        # For API requests, return JSON response
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'status': 'success',
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'is_staff': user.is_staff,
+                    'is_active': user.is_active,
+                    'date_joined': user.date_joined.isoformat(),
+                }
+            })
+
         return response
+
+    def form_invalid(self, form):
+        # For API requests, return JSON response with errors
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'status': 'error',
+                'errors': form.errors
+            }, status=400)
+        return super().form_invalid(form)
 
 
 def custom_404_view(request, exception=None):

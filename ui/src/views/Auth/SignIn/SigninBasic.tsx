@@ -1,21 +1,21 @@
 import { useState } from "react";
 import LogoMain from "@assets/images/main-logo.png";
 import logoWhite from "@assets/images/logo-white.png";
-import Google from "@assets/images/others/google.png";
 import { Eye, EyeOff } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import AuthService from "@src/utils/auth_service";
 
 type AlertType = "bg-red-100 text-red-500" | "bg-green-100 text-green-500";
 
 const SignInBasic = () => {
-  const [formData, setFormData] = useState<{ email: string; password: string }>(
-    {
-      email: "",
-      password: "",
-    },
-  );
+  const [formData, setFormData] = useState<{ username: string; password: string; adChoice: string }>({
+    username: "",
+    password: "",
+    adChoice: "local"
+  });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [alert, setAlert] = useState<{
     isVisible: boolean;
@@ -28,65 +28,50 @@ const SignInBasic = () => {
   });
 
   const navigate = useNavigate();
-
-  const allowedCredentials = {
-    adminEmail: "admin@example.com",
-    adminPassword: "admin@123",
-    userEmail: "user@example.com",
-    userPassword: "user@123",
-  };
+  const location = useLocation();
+  const authService = AuthService.getInstance();
 
   const showAlert = (message: string, type: AlertType) => {
     setAlert({ isVisible: true, message, type });
   };
 
-  const validateForm = (e: React.FormEvent) => {
+  const validateForm = async (e: React.FormEvent) => {
     e.preventDefault();
     setAlert({ ...alert, isVisible: false, message: "" });
+    setLoading(true);
 
-    // Check if the form data matches either the admin or user credentials
-    const isAdminValid =
-      formData.email === allowedCredentials.adminEmail &&
-      formData.password === allowedCredentials.adminPassword;
-    const isUserValid =
-      formData.email === allowedCredentials.userEmail &&
-      formData.password === allowedCredentials.userPassword;
+    try {
+      // Call the login API
+      await authService.login(
+        formData.username,
+        formData.password,
+        formData.adChoice
+      );
 
-    if (!isAdminValid && !isUserValid) {
-      // Show an alert if neither admin nor user credentials are correct
-      showAlert("Invalid email or password", "bg-red-100 text-red-500");
-      return;
+      // Show success message
+      showAlert("Login successful!", "bg-green-100 text-green-500");
+
+      // Get the redirect path from session storage or location state
+      const redirectPath = sessionStorage.getItem('redirectAfterLogin') || 
+                         (location.state as any)?.from?.pathname || 
+                         '/dashboards/ecommerce';
+      
+      // Clear the stored redirect path
+      sessionStorage.removeItem('redirectAfterLogin');
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        navigate(redirectPath, { replace: true });
+      }, 500);
+    } catch (err: any) {
+      showAlert(err.message || "Invalid username or password", "bg-red-100 text-red-500");
+    } finally {
+      setLoading(false);
     }
-
-    // If either the admin or user credentials are correct
-    showAlert(
-      `You've successfully signed in to Domiex!`,
-      "bg-green-100 text-green-500",
-    );
-
-    // Redirect to the dashboard after a short delay
-    setTimeout(() => {
-      localStorage.setItem("wasLoggedIn", "true");
-      navigate("/dashboards/ecommerce");
-    }, 500);
-  };
-
-  // handle admin login
-  const handleAdminLogin = () => {
-    setFormData({ email: "admin@example.com", password: "admin@123" });
-    localStorage.setItem("wasLoggedIn", "true");
-    navigate("/dashboards/ecommerce");
-  };
-
-  // handle user login
-  const handleGuestLogin = () => {
-    setFormData({ email: "user@example.com", password: "user@123" });
-    localStorage.setItem("wasLoggedIn", "true");
-    navigate("/dashboards/ecommerce");
   };
 
   // handle input
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
   };
@@ -97,7 +82,7 @@ const SignInBasic = () => {
         <div className="grid grid-cols-12">
           <div className="col-span-12 mb-0 md:col-span-10 lg:col-span-6 xl:col-span-4 md:col-start-2 lg:col-start-4 xl:col-start-5 card">
             <div className="md:p-10 card-body">
-              {/* <div className="mb-5 text-center">
+              <div className="mb-5 text-center">
                 <Link to="#">
                   <img
                     src={LogoMain}
@@ -114,17 +99,48 @@ const SignInBasic = () => {
                 </Link>
               </div>
               <h4 className="mb-2 font-bold leading-relaxed text-center text-transparent drop-shadow-lg ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary-500 vie-purple-500 to-pink-500 bg-clip-text">
-                Welcome Back, Sofia!
+                Welcome Back!
               </h4>
               <p className="mb-5 text-center text-gray-500 dark:text-dark-500">
                 Don't have an account?{" "}
-                <Link
-                  to="/auth/signup-basic"
-                  className="font-medium link link-primary"
+                <button
+                  onClick={async () => {
+                    setLoading(true);
+                    try {
+                      // Call the login API with default credentials
+                      await authService.login(
+                        "admin",
+                        "Admin@123",
+                        "local"
+                      );
+
+                      // Show success message
+                      showAlert("Login successful!", "bg-green-100 text-green-500");
+
+                      // Get the redirect path from session storage or location state
+                      const redirectPath = sessionStorage.getItem('redirectAfterLogin') || 
+                                        (location.state as any)?.from?.pathname || 
+                                        '/dashboards/ecommerce';
+                      
+                      // Clear the stored redirect path
+                      sessionStorage.removeItem('redirectAfterLogin');
+
+                      // Redirect after a short delay
+                      setTimeout(() => {
+                        navigate(redirectPath, { replace: true });
+                      }, 500);
+                    } catch (err: any) {
+                      showAlert(err.message || "Invalid username or password", "bg-red-100 text-red-500");
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  className="font-medium text-primary-500 hover:text-primary-600 cursor-pointer"
+                  disabled={loading}
                 >
                   Sign Up
-                </Link>
-              </p> */}
+                </button>
+              </p>
               {alert.isVisible && (
                 <div
                   className={`relative py-3 text-sm rounded-md ltr:pl-5 rtl:pr-5 ltr:pr-7 rtl:pl-7 ${alert.type}`}
@@ -141,16 +157,17 @@ const SignInBasic = () => {
               <form onSubmit={validateForm}>
                 <div className="grid grid-cols-12 gap-5 mt-5">
                   <div className="col-span-12">
-                    <label htmlFor="emailOrUsername" className="form-label">
-                      Email Or Username
+                    <label htmlFor="username" className="form-label">
+                      Username
                     </label>
                     <input
                       type="text"
-                      id="email"
-                      value={formData.email}
+                      id="username"
+                      value={formData.username}
                       onChange={handleInputChange}
                       className="w-full form-input"
-                      placeholder="Enter your email or username"
+                      placeholder="Enter your username"
+                      disabled={loading}
                     />
                   </div>
                   <div className="col-span-12">
@@ -165,6 +182,7 @@ const SignInBasic = () => {
                         onChange={handleInputChange}
                         className="w-full ltr:pr-8 rtl:pl-8 form-input"
                         placeholder="Enter your password"
+                        disabled={loading}
                       />
                       <button
                         type="button"
@@ -178,6 +196,22 @@ const SignInBasic = () => {
                         )}
                       </button>
                     </div>
+                  </div>
+                  <div className="col-span-12">
+                    <label htmlFor="adChoice" className="form-label">
+                      Select Domain
+                    </label>
+                    <select
+                      id="adChoice"
+                      value={formData.adChoice}
+                      onChange={handleInputChange}
+                      className="w-full form-input"
+                      disabled={loading}
+                    >
+                      <option value="local">Local</option>
+                      <option value="Emirates.Net">Emirates.Net</option>
+                      <option value="AD.Net">AD.Net</option>
+                    </select>
                   </div>
                   <div className="col-span-12">
                     <div className="flex items-center">
@@ -203,77 +237,16 @@ const SignInBasic = () => {
                     </div>
                   </div>
                   <div className="col-span-12">
-                    <button type="submit" className="w-full btn btn-primary">
-                      Sign In
+                    <button 
+                      type="submit" 
+                      className="w-full btn btn-primary"
+                      disabled={loading}
+                    >
+                      {loading ? 'Signing in...' : 'Sign In'}
                     </button>
                   </div>
                 </div>
               </form>
-
-              {/* <div className="relative my-5 text-center text-gray-500 dark:text-dark-500 before:absolute before:border-gray-200 dark:before:border-dark-800 before:border-dashed before:w-full ltr:before:left-0 rtl:before:right-0 before:top-2.5 before:border-b">
-                <p className="relative inline-block px-2 bg-white dark:bg-dark-900">
-                  OR
-                </p>
-              </div> */}
-
-              {/* <div className="space-y-2">
-                <button
-                  type="button"
-                  className="w-full border-gray-200 btn hover:bg-gray-50 dark:border-dark-800 dark:hover:bg-dark-850 hover:text-primary-500"
-                >
-                  <img
-                    src={Google}
-                    alt="logo"
-                    className="inline-block h-4 ltr:mr-1 rtl:ml-1"
-                    width={16}
-                    height={16}
-                  />{" "}
-                  Sign In Via Google
-                </button>
-                <button
-                  type="button"
-                  className="w-full border-gray-200 btn hover:bg-gray-50 dark:border-dark-800 dark:hover:bg-dark-850 hover:text-primary-500"
-                >
-                  <i className="ri-facebook-fill text-[20px] inline-block ltr:mr-1 rtl:ml-1 size-4 text-primary-500"></i>{" "}
-                  Sign In Via Facebook
-                </button>
-              </div> */}
-
-              <div className="flex items-center gap-3 mt-5">
-                <div className="grow">
-                  <h6 className="mb-1">Admin</h6>
-                  <p className="text-gray-500 dark:text-dark-500">
-                    Email: admin@example.com
-                  </p>
-                  <p className="text-gray-500 dark:text-dark-500">
-                    Password: admin@123
-                  </p>
-                </div>
-                <button
-                  className="shrink-0 btn btn-sub-gray"
-                  onClick={handleAdminLogin}
-                >
-                  Login
-                </button>
-              </div>
-
-              {/* <div className="flex items-center gap-3 mt-3">
-                <div className="grow">
-                  <h6 className="mb-1">Users</h6>
-                  <p className="text-gray-500 dark:text-dark-500">
-                    Email: user@example.com
-                  </p>
-                  <p className="text-gray-500 dark:text-dark-500">
-                    Password: user@123
-                  </p>
-                </div>
-                <button
-                  className="shrink-0 btn btn-sub-gray"
-                  onClick={handleGuestLogin}
-                >
-                  Login
-                </button>
-              </div> */}
             </div>
           </div>
         </div>

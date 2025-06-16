@@ -23,6 +23,7 @@ from django.views.static import serve
 from django.conf.urls.static import static
 from django.urls import re_path
 from django.conf.urls import handler404
+import os
 
 from apps.user.admin_views import custom_dashboard
 from .views import (
@@ -76,6 +77,22 @@ if settings.DEBUG:
             serve,
             {
                 "document_root": "static/angular/assets",
+            },
+        ),
+        # Serve React frontend static files
+        re_path(
+            r"^static/(?P<path>.*)$",
+            serve,
+            {
+                "document_root": os.path.join(settings.BASE_DIR, "ui", "dist"),
+            },
+        ),
+        # Serve React frontend assets
+        re_path(
+            r"^assets/(?P<path>.*)$",
+            serve,
+            {
+                "document_root": os.path.join(settings.BASE_DIR, "ui", "public"),
             },
         ),
     ]

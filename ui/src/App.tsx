@@ -9,6 +9,7 @@ import React, { useEffect } from "react";
 import { getPreviousStorageData } from "./slices/layout/utils"; // Adjust the path if needed
 import { withTranslation } from "react-i18next";
 import store, { AppDispatch } from "./slices/reducer";
+import AuthProvider from "./components/AuthProvider";
 
 import {
   changeLayoutMode,
@@ -115,7 +116,9 @@ function App() {
 
   return (
     <React.Fragment>
-      <Routing />
+      <AuthProvider>
+        <Routing />
+      </AuthProvider>
     </React.Fragment>
   );
 }

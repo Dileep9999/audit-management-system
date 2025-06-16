@@ -17,11 +17,60 @@ ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", cast=Csv())
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # CORS
-CORS_ORIGIN_ALLOW_ALL = config("CORS_ORIGIN_ALLOW_ALL", cast=bool)
-CORS_ALLOW_CREDENTIALS = config("CORS_ALLOW_CREDENTIALS", cast=bool)
+CORS_ORIGIN_ALLOW_ALL = True  # For development only
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+]
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+CORS_EXPOSE_HEADERS = [
+    "content-type",
+    "x-csrftoken",
+]
 
 # CSRF Trusted Origins
-CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", cast=Csv())
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:5174",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:5174",
+]
+
+# Session and Cookie settings
+SESSION_COOKIE_SAMESITE = 'Lax'  # or 'None' if needed
+CSRF_COOKIE_SAMESITE = 'Lax'  # or 'None' if needed
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False  # Must be False for JavaScript to access the CSRF token
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_USE_SESSIONS = False  # Store CSRF token in cookie instead of session
+CSRF_COOKIE_NAME = 'csrftoken'  # Match the name expected by the frontend
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'  # Match the header name used by the frontend
+
+# Security settings
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_REFERRER_POLICY = 'same-origin'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -58,7 +107,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # Must be at the top
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -76,7 +125,11 @@ ROOT_URLCONF = "audit.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates", BASE_DIR / "static/dist"],
+        "DIRS": [
+            BASE_DIR / "templates",
+            BASE_DIR / "static/dist",
+            BASE_DIR / "ui",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -199,6 +252,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "ui", "dist"),  # React frontend static files
+    os.path.join(BASE_DIR, "ui", "public"),  # React frontend public assets
 ]
 
 MEDIA_URL = "/media/"
