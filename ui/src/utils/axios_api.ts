@@ -1,9 +1,9 @@
 // mockApi.ts
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import axios, { AxiosError } from 'axios';
 
 interface ApiErrorResponse {
-  message?: string;
-  [key: string]: any;
+  message: string;
+  errors?: Record<string, string[]>;
 }
 
 // Create a base axios instance
@@ -11,8 +11,11 @@ const api = axios.create({
   baseURL: "http://localhost:8000",
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
-  withCredentials: true  // Important for session cookies
+  withCredentials: true,  // Important for session cookies
+  xsrfCookieName: 'csrftoken',
+  xsrfHeaderName: 'X-CSRFToken',
 });
 
 // Request interceptor
@@ -25,17 +28,47 @@ api.interceptors.request.use(
       const csrfToken = csrfCookie.split('=')[1];
       config.headers['X-CSRFToken'] = csrfToken;
     }
+
+    // Log request details for debugging
+    console.log('API Request:', {
+      url: config.url,
+      method: config.method,
+      headers: config.headers,
+      cookies: document.cookie,
+      withCredentials: config.withCredentials
+    });
+
     return config;
   },
   (error) => {
+    console.error('API Request Error:', error);
     return Promise.reject(error);
   }
 );
 
 // Response interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Log response details for debugging
+    console.log('API Response:', {
+      url: response.config.url,
+      status: response.status,
+      headers: response.headers,
+      cookies: document.cookie,
+      data: response.data
+    });
+    return response;
+  },
   async (error: AxiosError<ApiErrorResponse>) => {
+    // Log error details for debugging
+    console.error('API Error:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      headers: error.response?.headers,
+      cookies: document.cookie,
+      data: error.response?.data
+    });
+
     // Handle 401 Unauthorized errors
     if (error.response?.status === 401) {
       // Get the current path
@@ -44,7 +77,10 @@ api.interceptors.response.use(
       // Only redirect if we're not already on the login page
       if (!currentPath.includes('/login')) {
         // Store the current path to redirect back after login
-        sessionStorage.setItem('redirectAfterLogin', currentPath);
+        localStorage.setItem('redirectAfterLogin', currentPath);
+        
+        // Clear any existing auth state
+        localStorage.removeItem('isRedirecting');
         
         // Redirect to login page
         window.location.href = '/login';
@@ -53,31 +89,15 @@ api.interceptors.response.use(
     
     // Handle other errors
     const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
-    console.error('API Error:', errorMessage);
+    console.error('API Error Message:', errorMessage);
     
     return Promise.reject(error);
   }
 );
 
-// Helper functions for API calls
-export const apiGet = async <T = any>(url: string, config?: AxiosRequestConfig): Promise<T> => {
-  const response = await api.get<T>(url, config);
-  return response.data;
-};
-
-export const apiPost = async <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
-  const response = await api.post<T>(url, data, config);
-  return response.data;
-};
-
-export const apiPut = async <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
-  const response = await api.put<T>(url, data, config);
-  return response.data;
-};
-
-export const apiDelete = async <T = any>(url: string, config?: AxiosRequestConfig): Promise<T> => {
-  const response = await api.delete<T>(url, config);
-  return response.data;
-};
+export const apiGet = <T>(url: string) => api.get<T>(url).then(response => response.data);
+export const apiPost = <T>(url: string, data?: any) => api.post<T>(url, data).then(response => response.data);
+export const apiPut = <T>(url: string, data?: any) => api.put<T>(url, data).then(response => response.data);
+export const apiDelete = <T>(url: string) => api.delete<T>(url).then(response => response.data);
 
 export default api;

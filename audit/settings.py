@@ -50,21 +50,29 @@ CORS_EXPOSE_HEADERS = [
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
-    "http://localhost:5174",
+    "http://localhost:5173",
     "http://127.0.0.1:8000",
-    "http://127.0.0.1:5174",
+    "http://localhost:5173",
+    "http://localhost:5174",
 ]
 
 # Session and Cookie settings
-SESSION_COOKIE_SAMESITE = 'Lax'  # or 'None' if needed
-CSRF_COOKIE_SAMESITE = 'Lax'  # or 'None' if needed
+SESSION_COOKIE_SAMESITE = 'None'  # Changed from 'Lax' to 'None' for cross-origin requests
+CSRF_COOKIE_SAMESITE = 'None'  # Changed from 'Lax' to 'None' for cross-origin requests
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = False  # Must be False for JavaScript to access the CSRF token
-SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
-CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_SECURE = True  # Set to True since we're using SameSite=None
+CSRF_COOKIE_SECURE = True  # Set to True since we're using SameSite=None
 CSRF_USE_SESSIONS = False  # Store CSRF token in cookie instead of session
 CSRF_COOKIE_NAME = 'csrftoken'  # Match the name expected by the frontend
 CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'  # Match the header name used by the frontend
+
+# Session settings
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 days
+SESSION_COOKIE_DOMAIN = 'localhost'  # Set to localhost for development
+SESSION_COOKIE_PATH = '/'  # Set to root path
+SESSION_SAVE_EVERY_REQUEST = True  # Update session expiry on every request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session until cookie expires
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
@@ -313,19 +321,3 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(hour=0, minute=0),  # Run daily at midnight
     },
 }
-
-
-"""
-Sets the default session expiry to 1800 seconds (30 minutes).
-If the session is not modified or accessed, it will expire 30 minutes after it was created (unless overridden by set_expiry()).
-SESSION_COOKIE_AGE = 60 * 30  # 30 minutes
-"""
-# SESSION_COOKIE_AGE = 60 * 30 # 30 minutes
-
-
-"""
-Resets the session expiry timer on every request that uses the session.
-So, if the user is active (making requests), their session will not expire as long as they keep interacting with the site.
-The session will only expire if there is 30 minutes of inactivity.
- """
-# SESSION_SAVE_EVERY_REQUEST = True  # Reset expiry time on every request

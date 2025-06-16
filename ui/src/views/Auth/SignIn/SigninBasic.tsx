@@ -41,12 +41,14 @@ const SignInBasic = () => {
     setLoading(true);
 
     try {
+      console.log('Starting login process...');
       // Call the login API
-      await authService.login(
+      const loginResponse = await authService.login(
         formData.username,
         formData.password,
         formData.adChoice
       );
+      console.log('Login successful, response:', loginResponse);
 
       // Show success message
       showAlert("Login successful!", "bg-green-100 text-green-500");
@@ -56,14 +58,18 @@ const SignInBasic = () => {
                          (location.state as any)?.from?.pathname || 
                          '/dashboards/ecommerce';
       
+      console.log('Redirecting to:', redirectPath);
+      
       // Clear the stored redirect path
       sessionStorage.removeItem('redirectAfterLogin');
 
-      // Redirect after a short delay
-      setTimeout(() => {
-        navigate(redirectPath, { replace: true });
-      }, 500);
+      // Set a flag in session storage to indicate we're in the process of redirecting
+      sessionStorage.setItem('isRedirecting', 'true');
+
+      // Redirect immediately without delay
+      navigate(redirectPath, { replace: true });
     } catch (err: any) {
+      console.error('Login error:', err);
       showAlert(err.message || "Invalid username or password", "bg-red-100 text-red-500");
     } finally {
       setLoading(false);

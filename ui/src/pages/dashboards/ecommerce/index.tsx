@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { NextPageWithLayout } from "@dtos/layout";
 import BreadCrumb from "@src/components/common/breadCrumb";
 import Welcome from "@views/dashboards/ecommerceDashboard/welcome";
@@ -10,13 +10,9 @@ import TopCountries from "@views/dashboards/ecommerceDashboard/topCountries";
 import Traffic from "@views/dashboards/ecommerceDashboard/traffic";
 import Message from "@views/dashboards/ecommerceDashboard/message";
 
-import { useNavigate } from "react-router-dom";
-
 const DashboardsPage: NextPageWithLayout = () => {
-  const navigate = useNavigate();
-  useEffect(() => {
+  React.useEffect(() => {
     document.title = "Ecommerce | AMS - React TS Admin & Dashboard Template";
-    navigate("/dashboards/ecommerce");
   }, []);
 
   return (
@@ -28,4 +24,5 @@ const DashboardsPage: NextPageWithLayout = () => {
     </React.Fragment>
   );
 };
+
 export default DashboardsPage;

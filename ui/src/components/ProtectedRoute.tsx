@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import AuthService from '../utils/auth_service';
 
@@ -9,10 +9,36 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const location = useLocation();
   const authService = AuthService.getInstance();
-  const isAuthenticated = authService.isAuthenticated();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // Try to get user info
+        await authService.whoami();
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Protected route auth check failed:', error);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  // Show nothing while checking auth
+  if (isLoading) {
+    return null;
+  }
 
   if (!isAuthenticated) {
-    // Redirect to login page but save the attempted url
+    // Store the attempted URL for redirect after login
+    if (location.pathname !== '/dashboards/ecommerce') {
+      localStorage.setItem('redirectAfterLogin', location.pathname);
+    }
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

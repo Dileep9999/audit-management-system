@@ -4,11 +4,15 @@ export interface User {
   id: number;
   username: string;
   email: string;
-  first_name: string;
-  last_name: string;
-  is_staff: boolean;
-  is_active: boolean;
-  date_joined: string;
+  name: string;
+  is_impersonate: boolean;
+  is_superuser: boolean;
+  language: string;
+  groups: string[];
+  department: string;
+  title: string;
+  permissions: Record<string, number>;
+  picture_url: string | null;
 }
 
 interface LoginResponse {
@@ -18,12 +22,83 @@ interface LoginResponse {
 class AuthService {
   private static instance: AuthService;
   private isAuthenticatedFlag: boolean = false;
+  private currentUser: User | null = null;
   private readonly LOGIN_URL = 'http://localhost:8000/login';  // Django expects 'login' without trailing slash
   private readonly LOGOUT_URL = 'http://localhost:8000/logout'; // Django expects 'logout' without trailing slash
+  private isInitialized: boolean = false;
 
   private constructor() {
-    // Check if we have a session cookie
-    this.isAuthenticatedFlag = document.cookie.includes('sessionid=');
+    this.initializeAuth();
+  }
+
+  private async initializeAuth() {
+    if (this.isInitialized) return;
+
+    console.log('Initializing AuthService...', {
+      cookies: document.cookie,
+      currentPath: window.location.pathname
+    });
+
+    try {
+      // Check for session cookie
+      const hasSession = this.hasValidSessionCookie();
+      console.log('Session cookie check:', { hasSession });
+
+      if (hasSession) {
+        // Try to get user info
+        const user = await this.whoami();
+        console.log('Initial auth successful:', { user });
+        this.isAuthenticatedFlag = true;
+        this.currentUser = user;
+      } else {
+        console.log('No valid session found');
+        this.clearAuthState();
+      }
+    } catch (error) {
+      console.error('Auth initialization failed:', error);
+      this.clearAuthState();
+    } finally {
+      this.isInitialized = true;
+    }
+  }
+
+  private hasValidSessionCookie(): boolean {
+    const cookies = document.cookie.split(';');
+    const sessionCookie = cookies.find(cookie => cookie.trim().startsWith('sessionid='));
+    
+    if (!sessionCookie) {
+      console.log('No session cookie found');
+      return false;
+    }
+
+    // Check if the session cookie has a value
+    const sessionValue = sessionCookie.split('=')[1] || '';
+    const isValid = sessionValue.length > 0;
+    
+    console.log('Session cookie check:', { 
+      found: !!sessionCookie, 
+      hasValue: sessionValue.length > 0,
+      isValid 
+    });
+
+    return isValid;
+  }
+
+  private clearAuthState() {
+    this.isAuthenticatedFlag = false;
+    this.currentUser = null;
+    localStorage.removeItem('redirectAfterLogin');
+    localStorage.removeItem('isRedirecting');
+    localStorage.removeItem('sessionId');
+  }
+
+  private storeSessionId() {
+    const cookies = document.cookie.split(';');
+    const sessionCookie = cookies.find(cookie => cookie.trim().startsWith('sessionid='));
+    if (sessionCookie) {
+      const sessionId = sessionCookie.split('=')[1];
+      localStorage.setItem('sessionId', sessionId);
+    }
   }
 
   public static getInstance(): AuthService {
@@ -41,46 +116,55 @@ class AuthService {
     return JSON.stringify(headerMap, null, 2);
   }
 
-  private async getCsrfToken(): Promise<{ cookieToken: string; formToken: string }> {
+  private async getCsrfToken(): Promise<string> {
     try {
+      console.log('Getting CSRF token...');
+      console.log('Current cookies:', document.cookie);
+      
       // First try to get the token from the cookie
       const cookies = document.cookie.split(';');
       const csrfCookie = cookies.find(cookie => cookie.trim().startsWith('csrftoken='));
       
       if (csrfCookie) {
         const cookieToken = csrfCookie.split('=')[1];
-        // If we have a cookie token, we can use it as both tokens
-        // Django's CSRF protection allows this in some cases
-        return { cookieToken, formToken: cookieToken };
+        console.log('Found CSRF token in cookie:', cookieToken.substring(0, 10) + '...');
+        return cookieToken;
       }
 
-      // If no cookie token, fetch the login page
+      console.log('No CSRF token in cookie, fetching from API...');
+      // If no cookie token, fetch from API endpoint
       const response = await fetch(this.LOGIN_URL, {
         method: 'GET',
         credentials: 'include',
         headers: {
-          'Accept': 'text/html',
+          'Accept': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
         }
       });
 
+      console.log('API response:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: this.logHeaders(response.headers),
+        cookies: document.cookie
+      });
+
       if (!response.ok) {
-        console.error('Login page response:', {
+        console.error('API response:', {
           status: response.status,
           statusText: response.statusText,
           headers: this.logHeaders(response.headers)
         });
-        throw new Error(`Failed to fetch login page: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to fetch CSRF token: ${response.status} ${response.statusText}`);
       }
 
-      // Get the HTML content
-      const html = await response.text();
+      // Get the JSON response
+      const data = await response.json();
+      console.log('API response data:', data);
 
-      // Extract the form token using regex
-      const formTokenMatch = html.match(/name="csrfmiddlewaretoken" value="([^"]+)"/);
-      if (!formTokenMatch) {
-        console.error('Login page HTML:', html);
-        throw new Error('CSRF token not found in form HTML');
+      if (!data.csrf_token) {
+        console.error('API response data:', data);
+        throw new Error('CSRF token not found in API response');
       }
 
       // Get the cookie token from the new cookie
@@ -88,18 +172,17 @@ class AuthService {
       const newCsrfCookie = newCookies.find(cookie => cookie.trim().startsWith('csrftoken='));
       if (!newCsrfCookie) {
         console.error('Available cookies:', newCookies);
-        throw new Error('CSRF token not found in cookies after fetching login page');
+        throw new Error('CSRF token not found in cookies after API call');
       }
 
       const cookieToken = newCsrfCookie.split('=')[1];
-      const formToken = formTokenMatch[1];
 
       console.log('CSRF tokens retrieved:', {
         cookieToken: cookieToken.substring(0, 10) + '...',
-        formToken: formToken.substring(0, 10) + '...'
+        cookies: document.cookie
       });
 
-      return { cookieToken, formToken };
+      return cookieToken;
     } catch (error) {
       console.error('Error getting CSRF token:', error);
       if (error instanceof Error) {
@@ -111,56 +194,33 @@ class AuthService {
 
   public async login(username: string, password: string, adChoice: string = 'local'): Promise<LoginResponse> {
     try {
-      // Get both CSRF tokens
-      const { cookieToken, formToken } = await this.getCsrfToken();
+      console.log('Starting login process...', {
+        cookies: document.cookie,
+        currentPath: window.location.pathname
+      });
 
-      // Now perform login
+      // Get CSRF token first
+      const csrfToken = await this.getCsrfToken();
+      console.log('Got CSRF token:', csrfToken.substring(0, 10) + '...');
+
+      // Make login request
       const formData = new FormData();
       formData.append('username', username);
       formData.append('password', password);
       formData.append('ad_choice', adChoice);
-      formData.append('csrfmiddlewaretoken', formToken);
 
-      // First try a simple fetch to check if the server is accessible
-      try {
-        const testResponse = await fetch(this.LOGIN_URL, {
-          method: 'HEAD',
-          credentials: 'include',
-          headers: {
-            'Accept': 'text/html',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Origin': 'http://localhost:5174'  // Explicitly set origin
-          }
-        });
-        console.log('Server accessibility test:', {
-          status: testResponse.status,
-          statusText: testResponse.statusText,
-          headers: this.logHeaders(testResponse.headers),
-          cookies: document.cookie
-        });
-      } catch (error) {
-        console.error('Server accessibility test failed:', error);
-        throw new Error('Cannot connect to the server. Please ensure the server is running at ' + this.LOGIN_URL);
-      }
-
-      // Now try the actual login
       const response = await fetch(this.LOGIN_URL, {
         method: 'POST',
-        body: formData,
         credentials: 'include',
         headers: {
-          'X-CSRFToken': cookieToken,
-          'Referer': this.LOGIN_URL,
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept': 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
-          'Origin': 'http://localhost:5174',  // Explicitly set origin
-          'Content-Type': 'application/x-www-form-urlencoded'  // Django expects this for form data
+          'X-CSRFToken': csrfToken
         },
-        mode: 'cors',  // Explicitly set CORS mode
-        redirect: 'follow'  // Follow redirects instead of manual
+        body: formData
       });
 
-      console.log('Login response details:', {
+      console.log('Login response:', {
         status: response.status,
         statusText: response.statusText,
         headers: this.logHeaders(response.headers),
@@ -171,12 +231,7 @@ class AuthService {
       });
 
       if (response.status === 0) {
-        console.error('CORS or cookie details:', {
-          origin: window.location.origin,
-          cookies: document.cookie,
-          headers: this.logHeaders(response.headers)
-        });
-        throw new Error('Login request was blocked. This may be due to CORS or cookie restrictions. Please ensure the server allows requests from ' + window.location.origin);
+        throw new Error('Login request was blocked. This may be due to CORS or cookie restrictions.');
       }
 
       // Check for successful login (either 302 redirect or 200 OK)
@@ -184,13 +239,23 @@ class AuthService {
         throw new Error(`Login failed: ${response.status} ${response.statusText}`);
       }
 
+      // Store session ID in localStorage
+      this.storeSessionId();
+
       // After successful login, get the user info using whoami
+      console.log('Login successful, getting user info...');
       const user = await this.whoami();
+      console.log('Got user info:', user);
+      
+      // Set authentication flag and user
+      this.isAuthenticatedFlag = true;
+      this.currentUser = user;
       
       return { user };
     } catch (error) {
       console.error('Login error:', error);
-      this.isAuthenticatedFlag = false;
+      this.clearAuthState();
+      
       if (error instanceof Error) {
         throw new Error(`Login failed: ${error.message}`);
       }
@@ -200,12 +265,23 @@ class AuthService {
 
   public async whoami(): Promise<User> {
     try {
-      const response = await apiGet<{ user: User }>('/api/users/whoami');
+      console.log('Making whoami request...', {
+        cookies: document.cookie,
+        currentPath: window.location.pathname
+      });
+
+      const response = await apiGet<User>('/api/users/whoami');
+      console.log('Whoami response:', response);
+      
       this.isAuthenticatedFlag = true;
-      return response.user;
+      this.currentUser = response;
+      return response;
     } catch (error) {
       console.error('Whoami error:', error);
-      this.isAuthenticatedFlag = false;
+      // Only clear auth state if we're not in the process of logging in
+      if (!sessionStorage.getItem('isRedirecting')) {
+        this.clearAuthState();
+      }
       if (error instanceof Error) {
         throw new Error(`Failed to get user info: ${error.message}`);
       }
@@ -215,35 +291,57 @@ class AuthService {
 
   public async logout(): Promise<void> {
     try {
-      // Get both CSRF tokens
-      const { cookieToken, formToken } = await this.getCsrfToken();
-
-      // Call Django's logout endpoint
-      const formData = new FormData();
-      formData.append('csrfmiddlewaretoken', formToken);
+      console.log('Starting logout process...', {
+        cookies: document.cookie,
+        currentPath: window.location.pathname
+      });
 
       await fetch(this.LOGOUT_URL, {
         method: 'POST',
-        body: formData,
         credentials: 'include',
         headers: {
-          'X-CSRFToken': cookieToken,
-          'Referer': this.LOGIN_URL,
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
-        },
+        }
       });
+
+      console.log('Logout successful');
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      this.isAuthenticatedFlag = false;
-      // Redirect to login page
-      window.location.href = '/login';
+      this.clearAuthState();
     }
   }
 
   public isAuthenticated(): boolean {
-    return this.isAuthenticatedFlag;
+    // Ensure auth state is initialized
+    if (!this.isInitialized) {
+      console.log('Auth not initialized, checking session...');
+      return this.hasValidSessionCookie();
+    }
+
+    const hasSession = this.hasValidSessionCookie();
+    const isRedirecting = sessionStorage.getItem('isRedirecting') === 'true';
+    
+    console.log('Auth check:', { 
+      hasSession, 
+      isAuthenticatedFlag: this.isAuthenticatedFlag,
+      currentUser: this.currentUser,
+      isRedirecting,
+      isInitialized: this.isInitialized,
+      currentPath: window.location.pathname
+    });
+
+    // If we're redirecting after login, consider ourselves authenticated
+    if (isRedirecting) {
+      return true;
+    }
+
+    return hasSession && this.isAuthenticatedFlag && this.currentUser !== null;
+  }
+
+  public getCurrentUser(): User | null {
+    return this.currentUser;
   }
 }
 
