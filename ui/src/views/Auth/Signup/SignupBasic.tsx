@@ -68,7 +68,7 @@ const SignupBasic = () => {
       return;
     }
     // Redirect to login page on success
-    navigate("/auth/signin-basic");
+    navigate("/login");
 
     // Clear form data
     setFormData({
@@ -110,7 +110,7 @@ const SignupBasic = () => {
               <p className="mb-5 text-center text-gray-500 dark:text-dark-500">
                 Already have an account?
                 <Link
-                  to="/auth/signin-basic"
+                  to="/login"
                   className="font-medium link link-primary"
                 >
                   Sign In

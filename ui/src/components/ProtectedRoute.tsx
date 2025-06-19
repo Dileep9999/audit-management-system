@@ -36,7 +36,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   if (!isAuthenticated) {
     // Store the attempted URL for redirect after login
-    if (location.pathname !== '/dashboards/ecommerce') {
+    if (location.pathname !== '/dashboard') {
       localStorage.setItem('redirectAfterLogin', location.pathname);
     }
     return <Navigate to="/login" state={{ from: location }} replace />;

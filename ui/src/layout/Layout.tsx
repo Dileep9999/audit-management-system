@@ -38,12 +38,7 @@ const Layout = ({ children, breadcrumbTitle }: LayoutProps) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const router = useLocation();
   const navigate = useNavigate();
-  useEffect(() => {
-    // If the user has no session and has no prior login, redirect to login page
-    if (!localStorage.getItem("wasLoggedIn")) {
-      navigate("/auth/signin-basic");
-    }
-  }, [router]);
+
   const handleThemeSidebarSize = useCallback(() => {
     if (layoutType !== "horizontal") {
       // Toggle between BIG and SMALL sidebar

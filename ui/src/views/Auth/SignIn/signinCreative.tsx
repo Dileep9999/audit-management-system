@@ -66,7 +66,7 @@ const SigninCreative: React.FC = () => {
 
     // Redirect to index.html after a short delay
     setTimeout(() => {
-      router("/dashboards/ecommerce"); // Adjust the path as needed
+      router("/dashboard"); // Adjust the path as needed
     }, 1000); // Adjust the delay as needed
   };
 

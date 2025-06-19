@@ -62,7 +62,7 @@ const SignInModern: React.FC = () => {
 
     // Redirect to the dashboard after a short delay
     setTimeout(() => {
-      navigate("/dashboards/ecommerce");
+      navigate("/dashboard");
     }, 1000);
   };
 

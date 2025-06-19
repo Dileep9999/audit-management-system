@@ -1,14 +1,14 @@
 import React from "react";
 import { NextPageWithLayout } from "@dtos/layout";
 import BreadCrumb from "@src/components/common/breadCrumb";
-import Welcome from "@views/dashboards/ecommerceDashboard/welcome";
-import EcomInfo from "@views/dashboards/ecommerceDashboard/ecomInfo";
-import ProductStock from "@views/dashboards/ecommerceDashboard/productStock";
-import MarkersMap from "@views/dashboards/ecommerceDashboard/location";
-import TopSellingProducts from "@views/dashboards/ecommerceDashboard/topSellingProducts";
-import TopCountries from "@views/dashboards/ecommerceDashboard/topCountries";
-import Traffic from "@views/dashboards/ecommerceDashboard/traffic";
-import Message from "@views/dashboards/ecommerceDashboard/message";
+import Welcome from "@views/dashboardDashboard/welcome";
+import EcomInfo from "@views/dashboardDashboard/ecomInfo";
+import ProductStock from "@views/dashboardDashboard/productStock";
+import MarkersMap from "@views/dashboardDashboard/location";
+import TopSellingProducts from "@views/dashboardDashboard/topSellingProducts";
+import TopCountries from "@views/dashboardDashboard/topCountries";
+import Traffic from "@views/dashboardDashboard/traffic";
+import Message from "@views/dashboardDashboard/message";
 
 const DashboardsPage: NextPageWithLayout = () => {
   React.useEffect(() => {

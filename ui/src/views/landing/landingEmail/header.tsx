@@ -131,7 +131,7 @@ const Header: React.FC = () => {
           ></i>
         </button>
         <div>
-          <Link to="/auth/signin-basic" className="btn btn-active-gray me-2">
+          <Link to="/login" className="btn btn-active-gray me-2">
             Sign In
           </Link>
           <button

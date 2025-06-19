@@ -1,5 +1,5 @@
 import React from "react";
-import pattern from "@assets/images/dashboards/ecommerce/pattern.png";
+import pattern from "@assets/images/dashboard/pattern.png";
 import { TrendingDown } from "lucide-react";
 import { NextPageWithLayout } from "@dtos/layout";
 import AnimatedCounter from "../analyticsDashboards/counter";

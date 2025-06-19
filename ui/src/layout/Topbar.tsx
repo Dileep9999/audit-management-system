@@ -121,7 +121,7 @@ const TopBar: React.FC<TopBarProps> = ({
             {/* Logo */}
             <div className="navbar-brand">
               <div className="logos">
-                <Link to="/dashboards/ecommerce">
+                <Link to="/dashboard">
                   <img
                     src={logo}
                     aria-label="Read more about Seminole tax hike"
@@ -150,30 +150,30 @@ const TopBar: React.FC<TopBarProps> = ({
             </div>
 
             {/* Search */}
-            {/* <div className="relative items-center hidden lg:flex">
+            <div className="relative items-center hidden lg:flex">
               <Search className="absolute size-4 text-topbar top-3 ltr:left-2 rtl:right-2 group-data-[nav-type=pattern]:text-white/75"></Search>
               <input
                 type="search"
                 className="border-0 w-72 ltr:pl-8 rtl:pr-8 form-input focus:outline-none group-data-[nav-type=pattern]:bg-transparent group-data-[nav-type=pattern]:placeholder:text-white/50 group-data-[nav-type=pattern]:text-white"
-                placeholder="Search for Domiex"
+                placeholder="Search for AMS..."
                 value={searchText}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   searchMenu(e.target.value)
                 }
               />
-            </div> */}
+            </div>
 
             <div className="flex items-center gap-2 ltr:ml-auto rtl:mr-auto">
-              {/* Settings (Layout modal) - Commented out
-              <button
+              {/* Settings (Layout modal) - Commented out */}
+              {/* <button
                 className="hidden topbar-link md:flex"
                 title="topbar-link"
                 type="button"
                 onClick={handleThemeModal}
               >
                 <Settings className="size-4"></Settings>
-              </button>
-              */}
+              </button> */}
+             
 
               {/* Light & Dark Modal */}
               <button

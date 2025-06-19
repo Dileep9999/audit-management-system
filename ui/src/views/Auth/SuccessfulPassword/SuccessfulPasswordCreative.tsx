@@ -57,7 +57,7 @@ const SuccessfulPasswordCreative = () => {
                     continue accessing your account.
                   </p>
                   <div className="text-center">
-                    <Link to="/auth/signin-basic" className="btn btn-primary">
+                    <Link to="/login" className="btn btn-primary">
                       <span className="align-middle">Return to SignIn </span>
                       <MoveRight className="inline-block size-4 ml-0.5" />{" "}
                     </Link>

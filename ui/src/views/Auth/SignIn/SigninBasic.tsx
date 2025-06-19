@@ -53,18 +53,18 @@ const SignInBasic = () => {
       // Show success message
       showAlert("Login successful!", "bg-green-100 text-green-500");
 
-      // Get the redirect path from session storage or location state
-      const redirectPath = sessionStorage.getItem('redirectAfterLogin') || 
+      // Get the redirect path from local storage or location state
+      const redirectPath = localStorage.getItem('redirectAfterLogin') || 
                          (location.state as any)?.from?.pathname || 
-                         '/dashboards/ecommerce';
+                         '/dashboard';
       
       console.log('Redirecting to:', redirectPath);
       
       // Clear the stored redirect path
-      sessionStorage.removeItem('redirectAfterLogin');
+      localStorage.removeItem('redirectAfterLogin');
 
-      // Set a flag in session storage to indicate we're in the process of redirecting
-      sessionStorage.setItem('isRedirecting', 'true');
+      // Set a flag in local storage to indicate we're in the process of redirecting
+      localStorage.setItem('isRedirecting', 'true');
 
       // Redirect immediately without delay
       navigate(redirectPath, { replace: true });
@@ -123,13 +123,16 @@ const SignInBasic = () => {
                       // Show success message
                       showAlert("Login successful!", "bg-green-100 text-green-500");
 
-                      // Get the redirect path from session storage or location state
-                      const redirectPath = sessionStorage.getItem('redirectAfterLogin') || 
+                      // Get the redirect path from local storage or location state
+                      const redirectPath = localStorage.getItem('redirectAfterLogin') || 
                                         (location.state as any)?.from?.pathname || 
-                                        '/dashboards/ecommerce';
+                                        '/dashboard';
                       
                       // Clear the stored redirect path
-                      sessionStorage.removeItem('redirectAfterLogin');
+                      localStorage.removeItem('redirectAfterLogin');
+
+                      // Set a flag in local storage to indicate we're in the process of redirecting
+                      localStorage.setItem('isRedirecting', 'true');
 
                       // Redirect after a short delay
                       setTimeout(() => {

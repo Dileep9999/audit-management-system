@@ -21,17 +21,10 @@ import {
   changeDataColor,
   changeLayoutLanguage,
   changeModernNavigation,
-  getStudentListData,
   changeDarkModeClass,
 } from "./slices/thunk";
 
 import Routing from "./routes";
-import { getPatientsData } from "./slices/hospital/patients/thunk";
-import { getProductListData } from "./slices/ecommerce/products/list/thunk";
-import { getWishList } from "./slices/ecommerce/wishlist/thunk";
-import { getInvoiceListData } from "./slices/invoice/thunk";
-import { getEcommerceShopCartData } from "./slices/ecommerce/shop_cart/thunk";
-import { getOrderData } from "./slices/ecommerce/order/thunk";
 import { LAYOUT_LANGUAGES } from "./components/constants/layout";
 import { initialState } from "./slices/layout/reducer";
 
@@ -45,15 +38,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const dispatch = store.dispatch as AppDispatch; // Use AppDispatch
-    dispatch(getEcommerceShopCartData());
-    dispatch(getOrderData());
-    dispatch(getInvoiceListData());
-    dispatch(getWishList());
-    dispatch(getPatientsData());
-    dispatch(getStudentListData());
-    dispatch(getProductListData());
+    const dispatch = store.dispatch as AppDispatch;
 
+    // Initialize layout settings from storage
     dispatch(
       changeLayoutMode(
         getPreviousStorageData("data-layout-mode") ?? initialState.layoutMode,

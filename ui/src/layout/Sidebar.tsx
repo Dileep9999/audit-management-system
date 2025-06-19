@@ -43,6 +43,7 @@ import {
   LifeBuoy,
   Feather,
   LogOut,
+  Building2,
 } from "lucide-react";
 import SimpleBar from "simplebar-react";
 import {
@@ -129,16 +130,17 @@ const Sidebar = ({
       "life-buoy": <LifeBuoy className={className} />,
       "file-textt": <FileText className={className} />,
       feather: <Feather className={className} />,
+      building: <Building2 className={className} />,
     };
-    return icons[icon];
+    return icons[icon.toLowerCase()];
   };
 
   const isActive = (menuItem: any) => {
-    if (router.pathname === menuItem.link) return true; // Check if the current path matches the item's link
+    if (location.pathname === menuItem.link) return true; // Check if the current path matches the item's link
 
     return menuItem.children.some(
       (child: any) =>
-        child.link === router.pathname || // Check if the current path matches the child's link
+        child.link === location.pathname || // Check if the current path matches the child's link
         (child.children.length > 0 && isActive(child)), // Recursively check nested children
     );
   };
@@ -148,7 +150,7 @@ const Sidebar = ({
   };
   const handleOnLogout = () => {
     localStorage.setItem("wasLoggedIn", "false");
-    navigate("/auth/signin-basic");
+    navigate("/login");
   };
   return (
     <>
@@ -164,7 +166,7 @@ const Sidebar = ({
               <div>
                 <div className="navbar-brand">
                   <Link
-                    to="/dashboards/ecommerce"
+                    to="/dashboard"
                     className="inline-flex items-center justify-center w-full"
                   >
                     <div className="group-data-[sidebar=small]:hidden">
@@ -365,7 +367,7 @@ const Sidebar = ({
                                                     <li key={subIndex}>
                                                       <Link
                                                         to={subChild.link}
-                                                        className={`${router.pathname === subChild.link ? "active" : ""}`}
+                                                        className={`${location.pathname === subChild.link ? "active" : ""}`}
                                                       >
                                                         {t(subChild.lang)}
                                                       </Link>
@@ -378,7 +380,7 @@ const Sidebar = ({
                                         ) : (
                                           <Link
                                             to={child.link}
-                                            className={` content ${router.pathname === child.link ? "active" : ""}`}
+                                            className={` content ${location.pathname === child.link ? "active" : ""}`}
                                           >
                                             {t(child.lang)}
                                           </Link>
@@ -397,7 +399,7 @@ const Sidebar = ({
                             item.link && (
                               <Link
                                 to={item.link}
-                                className={`nav-link flex items-center gap-2 ${router.pathname === item.link ? "active" : ""}`}
+                                className={`nav-link flex items-center gap-2 ${location.pathname === item.link ? "active" : ""}`}
                               >
                                 <span>
                                   {item.icon &&

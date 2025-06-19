@@ -31,27 +31,44 @@ class AuthService {
     this.initializeAuth();
   }
 
+  private isLoggedIn(): boolean {
+    const wasLoggedIn = localStorage.getItem('wasLoggedIn');
+    return wasLoggedIn !== null && wasLoggedIn === 'true';
+  }
+
   private async initializeAuth() {
     if (this.isInitialized) return;
 
     console.log('Initializing AuthService...', {
       cookies: document.cookie,
-      currentPath: window.location.pathname
+      currentPath: window.location.pathname,
+      wasLoggedIn: localStorage.getItem('wasLoggedIn'),
+      sessionId: localStorage.getItem('sessionId')
     });
 
     try {
-      // Check for session cookie
+      // Check for session cookie or previous login state
       const hasSession = this.hasValidSessionCookie();
-      console.log('Session cookie check:', { hasSession });
+      const wasLoggedIn = this.isLoggedIn();
+      console.log('Session check:', { hasSession, wasLoggedIn });
 
-      if (hasSession) {
+      if (hasSession || wasLoggedIn) {
         // Try to get user info
-        const user = await this.whoami();
-        console.log('Initial auth successful:', { user });
-        this.isAuthenticatedFlag = true;
-        this.currentUser = user;
+        try {
+          const user = await this.whoami();
+          console.log('Initial auth successful:', { user });
+          this.isAuthenticatedFlag = true;
+          this.currentUser = user;
+          localStorage.setItem('wasLoggedIn', 'true');
+        } catch (error) {
+          console.error('Failed to get user info:', error);
+          if (!wasLoggedIn) {
+            // Only clear auth state if we weren't previously logged in
+            this.clearAuthState();
+          }
+        }
       } else {
-        console.log('No valid session found');
+        console.log('No valid session or previous login found');
         this.clearAuthState();
       }
     } catch (error) {
@@ -65,19 +82,20 @@ class AuthService {
   private hasValidSessionCookie(): boolean {
     const cookies = document.cookie.split(';');
     const sessionCookie = cookies.find(cookie => cookie.trim().startsWith('sessionid='));
+    const storedSessionId = localStorage.getItem('sessionId');
     
-    if (!sessionCookie) {
-      console.log('No session cookie found');
+    if (!sessionCookie && !storedSessionId) {
+      console.log('No session cookie or stored session ID found');
       return false;
     }
 
     // Check if the session cookie has a value
-    const sessionValue = sessionCookie.split('=')[1] || '';
-    const isValid = sessionValue.length > 0;
+    const sessionValue = sessionCookie ? sessionCookie.split('=')[1] || '' : '';
+    const isValid = sessionValue.length > 0 || (storedSessionId && storedSessionId.length > 0);
     
-    console.log('Session cookie check:', { 
-      found: !!sessionCookie, 
-      hasValue: sessionValue.length > 0,
+    console.log('Session check:', { 
+      hasCookie: !!sessionCookie, 
+      hasStoredSession: !!storedSessionId,
       isValid 
     });
 
@@ -90,6 +108,7 @@ class AuthService {
     localStorage.removeItem('redirectAfterLogin');
     localStorage.removeItem('isRedirecting');
     localStorage.removeItem('sessionId');
+    localStorage.removeItem('wasLoggedIn');
   }
 
   private storeSessionId() {
@@ -98,6 +117,7 @@ class AuthService {
     if (sessionCookie) {
       const sessionId = sessionCookie.split('=')[1];
       localStorage.setItem('sessionId', sessionId);
+      localStorage.setItem('wasLoggedIn', 'true');
     }
   }
 
@@ -275,11 +295,12 @@ class AuthService {
       
       this.isAuthenticatedFlag = true;
       this.currentUser = response;
+      localStorage.setItem('wasLoggedIn', 'true');
       return response;
     } catch (error) {
       console.error('Whoami error:', error);
       // Only clear auth state if we're not in the process of logging in
-      if (!sessionStorage.getItem('isRedirecting')) {
+      if (!localStorage.getItem('isRedirecting')) {
         this.clearAuthState();
       }
       if (error instanceof Error) {
@@ -313,6 +334,15 @@ class AuthService {
     }
   }
 
+  private getLocalStorageBoolean(key: string): boolean {
+    const value = localStorage.getItem(key);
+    return value !== null && value === 'true';
+  }
+
+  private getLocalStorageString(key: string): string | null {
+    return localStorage.getItem(key);
+  }
+
   public isAuthenticated(): boolean {
     // Ensure auth state is initialized
     if (!this.isInitialized) {
@@ -321,13 +351,17 @@ class AuthService {
     }
 
     const hasSession = this.hasValidSessionCookie();
-    const isRedirecting = sessionStorage.getItem('isRedirecting') === 'true';
+    const isRedirecting = this.getLocalStorageBoolean('isRedirecting');
+    const wasLoggedIn = this.getLocalStorageBoolean('wasLoggedIn');
+    const storedSessionId = this.getLocalStorageString('sessionId');
     
     console.log('Auth check:', { 
       hasSession, 
       isAuthenticatedFlag: this.isAuthenticatedFlag,
       currentUser: this.currentUser,
       isRedirecting,
+      wasLoggedIn,
+      hasStoredSession: !!storedSessionId,
       isInitialized: this.isInitialized,
       currentPath: window.location.pathname
     });
@@ -337,7 +371,13 @@ class AuthService {
       return true;
     }
 
-    return hasSession && this.isAuthenticatedFlag && this.currentUser !== null;
+    // Consider authenticated if:
+    // 1. We have a valid session cookie OR stored session ID
+    // 2. AND either:
+    //    - We have a current user and auth flag is true
+    //    - OR we were previously logged in
+    return (hasSession || (storedSessionId !== null && storedSessionId.length > 0)) && 
+           ((this.isAuthenticatedFlag && this.currentUser !== null) || wasLoggedIn);
   }
 
   public getCurrentUser(): User | null {

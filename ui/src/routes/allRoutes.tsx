@@ -1,7 +1,12 @@
 import { ReactNode } from "react";
-import DashboardsPage from "@pages/dashboards/ecommerce";
-import SignInBasic from "@views/auth/signIn/signinBasic";
+import SignInBasic from "../views/auth/signIn/signinBasic";
 import ProtectedRoute from "../components/ProtectedRoute";
+import Dashboard from "../views/dashboard/Dashboard";
+import Audits from "../views/audits/Audits";
+import Admins from "../views/admins/Admins";
+import FAQ from "../views/faq/FAQ";
+import Entities from "../views/entities/Entities";
+import NotFound from "../components/NotFound";
 
 interface IRoute {
   path: string;
@@ -13,15 +18,47 @@ const routes: IRoute[] = [
     path: "/", 
     component: (
       <ProtectedRoute>
-        <DashboardsPage />
+        <Dashboard />
       </ProtectedRoute>
     ) 
   },
   { 
-    path: "/dashboards/ecommerce", 
+    path: "/dashboard", 
     component: (
       <ProtectedRoute>
-        <DashboardsPage />
+        <Dashboard />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/audits", 
+    component: (
+      <ProtectedRoute>
+        <Audits />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/admins", 
+    component: (
+      <ProtectedRoute>
+        <Admins />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/faq", 
+    component: (
+      <ProtectedRoute>
+        <FAQ />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/entities", 
+    component: (
+      <ProtectedRoute>
+        <Entities />
       </ProtectedRoute>
     ) 
   },
@@ -29,6 +66,7 @@ const routes: IRoute[] = [
 
 const nonAuthRoutes: IRoute[] = [
   { path: "/login", component: <SignInBasic /> },
+  { path: "*", component: <NotFound /> }
 ];
 
 export { routes, nonAuthRoutes };

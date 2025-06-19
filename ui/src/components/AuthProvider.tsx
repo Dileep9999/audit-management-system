@@ -38,26 +38,49 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log('Checking auth status for path:', location.pathname);
       try {
-        // Check if we have a valid session
+        // First check if we have a valid session
         const isAuthenticated = authService.isAuthenticated();
-        console.log('Auth status check:', { isAuthenticated, path: location.pathname });
+        const wasLoggedIn = localStorage.getItem('wasLoggedIn') === 'true';
+        console.log('Session check:', { isAuthenticated, wasLoggedIn });
 
-        if (isAuthenticated) {
-          // If we're on the login page but authenticated, redirect to dashboard
-          if (location.pathname === '/login') {
-            console.log('Authenticated on login page, redirecting to dashboard');
-            const redirectPath = localStorage.getItem('redirectAfterLogin') || '/dashboards/ecommerce';
-            localStorage.removeItem('redirectAfterLogin');
-            if (isMounted) {
-              setLastPath(redirectPath);
-              navigate(redirectPath, { replace: true });
+        if (isAuthenticated || wasLoggedIn) {
+          try {
+            // Try to get user info to validate the session
+            await authService.whoami();
+            console.log('Session is valid');
+
+            // If we're on the login page but authenticated, redirect to dashboard
+            if (location.pathname === '/login') {
+              console.log('Authenticated on login page, redirecting to dashboard');
+              const redirectPath = localStorage.getItem('redirectAfterLogin') || '/dashboard';
+              localStorage.removeItem('redirectAfterLogin');
+              if (isMounted) {
+                setLastPath(redirectPath);
+                navigate(redirectPath, { replace: true });
+              }
+            }
+          } catch (error) {
+            console.error('Failed to validate session:', error);
+            // Only clear auth and redirect if we weren't previously logged in
+            if (!wasLoggedIn) {
+              await authService.logout();
+              if (!location.pathname.includes('/login')) {
+                if (location.pathname !== '/dashboard') {
+                  localStorage.setItem('redirectAfterLogin', location.pathname);
+                }
+                if (isMounted) {
+                  setLastPath('/login');
+                  navigate('/login', { replace: true });
+                }
+              }
             }
           }
         } else {
-          // Not authenticated, redirect to login if not already there
+          // No valid session or previous login
+          console.log('No valid session found');
           if (!location.pathname.includes('/login')) {
             console.log('Not authenticated, redirecting to login');
-            if (location.pathname !== '/dashboards/ecommerce') {
+            if (location.pathname !== '/dashboard') {
               localStorage.setItem('redirectAfterLogin', location.pathname);
             }
             if (isMounted) {
@@ -68,10 +91,10 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       } catch (error) {
         console.error('Auth check failed:', error);
-        // Only redirect to login if we're not already there and not in the process of logging in
+        // Only redirect to login if we're not already there
         if (!location.pathname.includes('/login')) {
           console.log('Auth check failed, redirecting to login');
-          if (location.pathname !== '/dashboards/ecommerce') {
+          if (location.pathname !== '/dashboard') {
             localStorage.setItem('redirectAfterLogin', location.pathname);
           }
           if (isMounted) {
