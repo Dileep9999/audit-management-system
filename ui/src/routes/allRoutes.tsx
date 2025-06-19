@@ -3,6 +3,7 @@ import SignInBasic from "../views/auth/signIn/signinBasic";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Dashboard from "../views/dashboard/Dashboard";
 import Audits from "../views/audits/Audits";
+import AuditDetails from "../views/audits/AuditDetails";
 import Admins from "../views/admins/Admins";
 import FAQ from "../views/faq/FAQ";
 import Entities from "../views/entities/Entities";
@@ -35,6 +36,14 @@ const routes: IRoute[] = [
     component: (
       <ProtectedRoute>
         <Audits />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/audits/:id", 
+    component: (
+      <ProtectedRoute>
+        <AuditDetails />
       </ProtectedRoute>
     ) 
   },
