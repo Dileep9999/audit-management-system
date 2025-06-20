@@ -49,14 +49,14 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             await authService.whoami();
             console.log('Session is valid');
 
-            // If we're on the login page but authenticated, redirect to dashboard
-            if (location.pathname === '/login') {
-              console.log('Authenticated on login page, redirecting to dashboard');
+          // If we're on the login page but authenticated, redirect to dashboard
+          if (location.pathname === '/login') {
+            console.log('Authenticated on login page, redirecting to dashboard');
               const redirectPath = localStorage.getItem('redirectAfterLogin') || '/dashboard';
               localStorage.removeItem('redirectAfterLogin');
-              if (isMounted) {
-                setLastPath(redirectPath);
-                navigate(redirectPath, { replace: true });
+            if (isMounted) {
+              setLastPath(redirectPath);
+              navigate(redirectPath, { replace: true });
               }
             }
           } catch (error) {

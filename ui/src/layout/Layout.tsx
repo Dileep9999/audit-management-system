@@ -190,7 +190,7 @@ const Layout = ({ children, breadcrumbTitle }: LayoutProps) => {
           {" "}
           {children}
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </React.Fragment>
   );

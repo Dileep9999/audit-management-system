@@ -41,6 +41,7 @@ import teacherPayrollReducers from "./school/payroll/reducer";
 import teacherListReducers from "./school/teachers/reducer";
 import studentListReducers from "./school/student/reducer";
 import examQuestionReducers from "./school/exam_question/reducer";
+import faqReducer from "./faq/reducer";
 
 // Combine your reducers
 const rootReducer = combineReducers({
@@ -84,6 +85,7 @@ const rootReducer = combineReducers({
   TeacherList: teacherListReducers,
   StudentList: studentListReducers,
   ExamQuestionList: examQuestionReducers,
+  faq: faqReducer,
 });
 
 // Create a reducer to handle hydration (if needed)

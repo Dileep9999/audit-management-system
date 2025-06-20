@@ -55,10 +55,10 @@ class AuthService {
       if (hasSession || wasLoggedIn) {
         // Try to get user info
         try {
-          const user = await this.whoami();
-          console.log('Initial auth successful:', { user });
-          this.isAuthenticatedFlag = true;
-          this.currentUser = user;
+        const user = await this.whoami();
+        console.log('Initial auth successful:', { user });
+        this.isAuthenticatedFlag = true;
+        this.currentUser = user;
           localStorage.setItem('wasLoggedIn', 'true');
         } catch (error) {
           console.error('Failed to get user info:', error);
