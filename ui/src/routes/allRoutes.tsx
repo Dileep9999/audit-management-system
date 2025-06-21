@@ -6,10 +6,15 @@ import Audits from "../views/audits/Audits";
 import AuditDetails from "../views/audits/AuditDetails";
 import Admins from "../views/admins/Admins";
 import Users from "../views/admins/Users";
+<<<<<<< Updated upstream
 import Workflows from "../views/admins/Workflows";
 import RolesPermissions from "../views/admins/RolesPermissions";
 import AddRole from "../views/admins/AddRole";
 import EditRole from "../views/admins/EditRole";
+=======
+import WorkflowList from "../views/admins/WorkflowList";
+import WorkflowDesigner from "../views/admins/WorkflowDesigner";
+>>>>>>> Stashed changes
 import FAQ from "../views/faq/FAQ";
 import Entities from "../views/entities/Entities";
 import NotFound from "../components/NotFound";
@@ -96,7 +101,23 @@ const routes: IRoute[] = [
     path: "/admins/workflows", 
     component: (
       <ProtectedRoute>
-        <Workflows />
+        <WorkflowList />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/admins/workflows/designer", 
+    component: (
+      <ProtectedRoute>
+        <WorkflowDesigner />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/admins/workflows/designer/:id", 
+    component: (
+      <ProtectedRoute>
+        <WorkflowDesigner />
       </ProtectedRoute>
     ) 
   },

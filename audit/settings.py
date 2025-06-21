@@ -113,7 +113,11 @@ INSTALLED_APPS = [
     "apps.translation",
     "apps.notifications",
     "apps.files",
+<<<<<<< Updated upstream
     "roles",
+=======
+    "workflows",
+>>>>>>> Stashed changes
 ]
 
 MIDDLEWARE = [

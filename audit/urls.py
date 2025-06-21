@@ -61,7 +61,11 @@ urlpatterns = [
     path("api/users/", include("apps.user.urls")),
     path("api/notifications/", include("apps.notifications.urls")),
     path("api/files/", include("apps.files.urls")),
+<<<<<<< Updated upstream
     path("api/roles/", include("roles.urls")),
+=======
+    path('api/', include('workflows.urls')),
+>>>>>>> Stashed changes
 ]
 
 if settings.DEBUG:
