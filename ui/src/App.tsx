@@ -10,6 +10,7 @@ import { getPreviousStorageData } from "./slices/layout/utils"; // Adjust the pa
 import { withTranslation } from "react-i18next";
 import store, { AppDispatch } from "./slices/reducer";
 import AuthProvider from "./components/AuthProvider";
+import { Toaster } from 'react-hot-toast';
 
 import {
   changeLayoutMode,
@@ -102,11 +103,10 @@ function App() {
   }, []);
 
   return (
-    <React.Fragment>
-      <AuthProvider>
-        <Routing />
-      </AuthProvider>
-    </React.Fragment>
+    <AuthProvider>
+      <Toaster position="top-right" />
+      <Routing />
+    </AuthProvider>
   );
 }
 

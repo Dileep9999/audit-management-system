@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import SignInBasic from "../views/auth/signIn/signinBasic";
+import SignInBasic from "../views/Auth/SignIn/SigninBasic";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Dashboard from "../views/dashboard/Dashboard";
 import Audits from "../views/audits/Audits";
@@ -7,6 +7,9 @@ import AuditDetails from "../views/audits/AuditDetails";
 import Admins from "../views/admins/Admins";
 import Users from "../views/admins/Users";
 import Workflows from "../views/admins/Workflows";
+import RolesPermissions from "../views/admins/RolesPermissions";
+import AddRole from "../views/admins/AddRole";
+import EditRole from "../views/admins/EditRole";
 import FAQ from "../views/faq/FAQ";
 import Entities from "../views/entities/Entities";
 import NotFound from "../components/NotFound";
@@ -62,6 +65,30 @@ const routes: IRoute[] = [
     component: (
       <ProtectedRoute>
         <Users />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/admins/roles-permissions", 
+    component: (
+      <ProtectedRoute>
+        <RolesPermissions />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/admins/roles-permissions/add", 
+    component: (
+      <ProtectedRoute>
+        <AddRole />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/admins/roles-permissions/edit/:id", 
+    component: (
+      <ProtectedRoute>
+        <EditRole />
       </ProtectedRoute>
     ) 
   },

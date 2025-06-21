@@ -36,6 +36,20 @@ const menu: MegaMenu[] = [
         children: [],
       },
       {
+        title: "Users and Permissions",
+        lang: "Users and Permissions",
+        link: "/admins/users-permissions",
+        children: [
+          {
+            title: "Roles and Permissions",
+            lang: "Roles and Permissions",
+            link: "/admins/roles-permissions",
+            dropdownPosition: undefined,
+            children: [],
+          }
+        ],
+      },
+      {
         title: "Workflows",
         lang: "Workflows", 
         link: "/admins/workflows",

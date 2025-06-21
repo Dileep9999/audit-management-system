@@ -113,6 +113,7 @@ INSTALLED_APPS = [
     "apps.translation",
     "apps.notifications",
     "apps.files",
+    "roles",
 ]
 
 MIDDLEWARE = [

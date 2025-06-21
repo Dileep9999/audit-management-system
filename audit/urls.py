@@ -61,6 +61,7 @@ urlpatterns = [
     path("api/users/", include("apps.user.urls")),
     path("api/notifications/", include("apps.notifications.urls")),
     path("api/files/", include("apps.files.urls")),
+    path("api/roles/", include("roles.urls")),
 ]
 
 if settings.DEBUG:
