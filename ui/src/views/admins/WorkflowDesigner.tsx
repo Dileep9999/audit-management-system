@@ -21,7 +21,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { Plus, ArrowLeft, Save, Edit2, X } from 'lucide-react';
 import Popup from '../../components/shared/Popup';
-import { workflowService, Workflow, CreateWorkflowPayload } from '../../utils/workflow_service';
+import { workflowService, Workflow, CreateWorkflowPayload, WorkflowStatus } from '../../utils/workflow_service';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 
@@ -137,6 +137,12 @@ interface ApiErrorResponse {
   [key: string]: string[];
 }
 
+interface WorkflowFormData {
+  name: string;
+  description: string;
+  status: WorkflowStatus;
+}
+
 const WorkflowDesigner = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -144,10 +150,17 @@ const WorkflowDesigner = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
   const [newNode, setNewNode] = useState<WorkflowNode>({ name: '' });
   const [selectedEdge, setSelectedEdge] = useState<Edge | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [formData, setFormData] = useState<WorkflowFormData>({
+    name: '',
+    description: '',
+    status: 'draft'
+  });
+  const [workflow, setWorkflow] = useState<Workflow | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -159,18 +172,23 @@ const WorkflowDesigner = () => {
     try {
       setIsLoading(true);
       const workflow = await workflowService.getWorkflow(workflowId);
-      setWorkflowName(workflow.name);
+      setWorkflow(workflow);
+      setFormData({
+        name: workflow.name,
+        description: workflow.description || '',
+        status: workflow.status
+      });
       
       // Ensure nodes and edges have all required properties
       const processedNodes = workflow.data.nodes.map(node => ({
         ...node,
-        type: node.type || 'task',  // Default to task type if not specified
+        type: node.type || 'task',
         className: 'group',
       }));
       
       const processedEdges = workflow.data.edges.map(edge => ({
         ...edge,
-        ...edgeOptions,  // Ensure consistent edge styling
+        ...edgeOptions,
       }));
 
       setNodes(processedNodes);
@@ -182,7 +200,6 @@ const WorkflowDesigner = () => {
       } else {
         toast.error('Failed to load workflow');
       }
-      // Navigate back to list on error
       navigate('/admins/workflows');
     } finally {
       setIsLoading(false);
@@ -276,73 +293,92 @@ const WorkflowDesigner = () => {
 
   const validateWorkflow = (): string[] => {
     const errors: string[] = [];
-    
-    if (!workflowName.trim()) {
+
+    // Validate form data
+    if (!formData.name.trim()) {
       errors.push('Workflow name is required');
     }
 
+    // Validate nodes
     if (nodes.length === 0) {
       errors.push('Workflow must have at least one node');
     }
 
-    // Check for nodes without connections
-    const connectedNodeIds = new Set<string>();
+    // Check for nodes without names
+    const unnamedNodes = nodes.filter(node => !node.data?.name);
+    if (unnamedNodes.length > 0) {
+      errors.push(`${unnamedNodes.length} node(s) are missing names`);
+    }
+
+    // Check for disconnected nodes
+    const connectedNodes = new Set<string>();
     edges.forEach(edge => {
-      connectedNodeIds.add(edge.source);
-      connectedNodeIds.add(edge.target);
+      connectedNodes.add(edge.source);
+      connectedNodes.add(edge.target);
     });
 
-    if (nodes.length > 1) {
-      const disconnectedNodes = nodes.filter(node => !connectedNodeIds.has(node.id));
-      if (disconnectedNodes.length > 0) {
-        errors.push(`Some nodes are not connected: ${disconnectedNodes.map(n => n.data.name).join(', ')}`);
-      }
+    const disconnectedNodes = nodes.filter(node => !connectedNodes.has(node.id));
+    if (disconnectedNodes.length > 0) {
+      errors.push(`${disconnectedNodes.length} node(s) are not connected to any other nodes`);
     }
 
     return errors;
   };
 
   const handleSave = async () => {
+    const errors = validateWorkflow();
+    if (errors.length > 0) {
+      errors.forEach(error => toast.error(error));
+      return;
+    }
+
     try {
-      const errors = validateWorkflow();
-      if (errors.length > 0) {
-        errors.forEach(error => toast.error(error));
-        return;
-      }
-
       setIsSaving(true);
-
-      const workflowData: CreateWorkflowPayload = {
-        name: workflowName.trim(),
+      const workflowData = {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        status: formData.status,
         data: {
-          nodes: nodes.map(({ className, ...node }) => node), // Remove UI-specific properties
-          edges: edges.map(({ className, ...edge }) => edge),
-        },
+          nodes: nodes.map(({ id, type, position, data }) => ({
+            id,
+            type,
+            position,
+            data
+          })),
+          edges: edges.map(({ id, source, target, sourceHandle, targetHandle }) => ({
+            id,
+            source,
+            target,
+            sourceHandle,
+            targetHandle
+          }))
+        }
       };
 
       if (id) {
         await workflowService.updateWorkflow(parseInt(id), workflowData);
         toast.success('Workflow updated successfully');
       } else {
-        await workflowService.createWorkflow(workflowData);
+        const newWorkflow = await workflowService.createWorkflow(workflowData);
         toast.success('Workflow created successfully');
+        navigate(`/admins/workflows/designer/${newWorkflow.id}`);
       }
-      
-      navigate('/admins/workflows');
+      setShowSaveModal(false);
     } catch (error) {
       console.error('Error saving workflow:', error);
-      if (error instanceof AxiosError && error.response?.data) {
-        // Handle specific API errors
-        const errorData = error.response.data as ApiErrorResponse | string;
-        if (typeof errorData === 'object') {
-          Object.entries(errorData).forEach(([field, messages]) => {
-            messages.forEach(message => toast.error(`${field}: ${message}`));
+      if (error instanceof AxiosError) {
+        const data = error.response?.data;
+        if (typeof data === 'object') {
+          Object.entries(data).forEach(([field, errors]) => {
+            if (Array.isArray(errors)) {
+              errors.forEach(error => toast.error(`${field}: ${error}`));
+            }
           });
         } else {
-          toast.error(errorData);
+          toast.error(data?.detail || 'Failed to save workflow');
         }
       } else {
-        toast.error('Failed to save workflow. Please try again.');
+        toast.error('Failed to save workflow');
       }
     } finally {
       setIsSaving(false);
@@ -354,131 +390,227 @@ const WorkflowDesigner = () => {
   };
 
   return (
-    <div className="h-screen w-full p-4">
-      {isLoading ? (
-        <div className="flex justify-center items-center h-full">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-        </div>
-      ) : (
-        <>
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate('/admins/workflows')}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </button>
-              <div className="flex items-center gap-4">
-                <h1 className="text-2xl font-bold">Workflow Designer</h1>
-                <input
-                  type="text"
-                  value={workflowName}
-                  onChange={(e) => setWorkflowName(e.target.value)}
-                  placeholder="Enter workflow name"
-                  className="px-3 py-1 border border-gray-300 rounded-md text-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50"
-                disabled={isSaving}
-              >
-                <Plus className="h-4 w-4" />
-                <span>Add Node</span>
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSaving ? (
-                  <span>Saving...</span>
-                ) : (
-                  <>
-                    <Save className="h-4 w-4" />
-                    <span>Save Workflow</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
-          <div className="h-[calc(100vh-120px)] border border-gray-200 dark:border-gray-700 rounded-lg">
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              onEdgeClick={onEdgeClick}
-              onPaneClick={onPaneClick}
-              nodeTypes={nodeTypes}
-              fitView
-              snapToGrid
-              snapGrid={[20, 20]}
-              connectionMode={ConnectionMode.Strict}
-              defaultEdgeOptions={edgeOptions}
-            >
-              <Background />
-              <Controls />
-              {selectedEdge && (
-                <Panel position="top-center" className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">Selected Connection</span>
-                    <button
-                      onClick={onEdgeDelete}
-                      className="p-1 hover:bg-red-100 text-red-600 rounded"
-                      title="Delete Connection"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                </Panel>
-              )}
-            </ReactFlow>
-          </div>
-
-          <Popup
-            isOpen={showAddModal}
-            onClose={() => setShowAddModal(false)}
-            title="Add Node"
-            size="modal-sm"
-            position="modal-center"
-            contentClass="space-y-4"
-            footer={
-              <>
-                <button
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
-                  onClick={() => setShowAddModal(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 disabled:opacity-50"
-                  onClick={handleAddNode}
-                  disabled={!newNode.name.trim()}
-                >
-                  Add
-                </button>
-              </>
-            }
+    <div className="h-screen flex flex-col">
+      <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate('/admins/workflows')}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
           >
-            <div>
-              <input
-                type="text"
-                value={newNode.name}
-                onChange={(e) => setNewNode({ name: e.target.value })}
-                className="w-full border border-gray-300 rounded px-3 py-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                placeholder="Enter node name"
-                autoFocus
-              />
+            <ArrowLeft className="h-5 w-5" />
+            <span>Back to Workflows</span>
+          </button>
+          <div className="h-6 w-px bg-gray-300" />
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              placeholder="Workflow Name"
+              className="px-3 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as WorkflowStatus }))}
+              className="px-3 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="draft">Draft</option>
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-3 py-1 text-gray-600 hover:text-gray-800"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Add Node</span>
+          </button>
+          <button
+            onClick={() => setShowSaveModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600"
+            disabled={isSaving}
+          >
+            <Save className="h-4 w-4" />
+            <span>{isSaving ? 'Saving...' : 'Save'}</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="flex-1 h-0">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onEdgeClick={onEdgeClick}
+          onPaneClick={onPaneClick}
+          nodeTypes={nodeTypes}
+          connectionMode={ConnectionMode.Loose}
+        >
+          <Background color="#e2e8f0" gap={16} size={1} />
+          <Controls />
+          <Panel position="top-left" className="flex gap-2">
+            <div className="text-sm text-gray-500">
+              {workflow ? (
+                <>
+                  <div>Version: {workflow.version}</div>
+                  <div>Created by: {workflow.created_by_name}</div>
+                </>
+              ) : (
+                <div>New Workflow</div>
+              )}
             </div>
-          </Popup>
-        </>
-      )}
+          </Panel>
+        </ReactFlow>
+      </div>
+
+      {/* Add Node Modal */}
+      <Popup
+        isOpen={showAddModal}
+        onClose={() => {
+          setShowAddModal(false);
+          setNewNode({ name: '' });
+        }}
+        title="Add Node"
+        size="modal-sm"
+        position="modal-center"
+        contentClass="space-y-4"
+        footer={
+          <>
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              onClick={() => {
+                setShowAddModal(false);
+                setNewNode({ name: '' });
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600"
+              onClick={handleAddNode}
+              disabled={!newNode.name.trim()}
+            >
+              Add
+            </button>
+          </>
+        }
+      >
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Node Name
+          </label>
+          <input
+            type="text"
+            value={newNode.name}
+            onChange={(e) => setNewNode({ name: e.target.value })}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+            placeholder="Enter node name"
+            autoFocus
+          />
+        </div>
+      </Popup>
+
+      {/* Save Modal */}
+      <Popup
+        isOpen={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        title="Save Workflow"
+        size="modal-md"
+        position="modal-center"
+        contentClass="space-y-4"
+        footer={
+          <>
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              onClick={() => setShowSaveModal(false)}
+              disabled={isSaving}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600 disabled:opacity-50"
+              onClick={handleSave}
+              disabled={isSaving || !formData.name.trim()}
+            >
+              {isSaving ? 'Saving...' : 'Save'}
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Workflow Name
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Enter workflow name"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Enter workflow description"
+              rows={3}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Status
+            </label>
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as WorkflowStatus }))}
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="draft">Draft</option>
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+        </div>
+      </Popup>
+
+      {/* Delete Edge Modal */}
+      <Popup
+        isOpen={!!selectedEdge}
+        onClose={() => setSelectedEdge(null)}
+        title="Delete Connection"
+        size="modal-sm"
+        position="modal-center"
+        contentClass="space-y-4"
+        footer={
+          <>
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              onClick={() => setSelectedEdge(null)}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              onClick={onEdgeDelete}
+            >
+              Delete
+            </button>
+          </>
+        }
+      >
+        <p>Are you sure you want to delete this connection?</p>
+      </Popup>
     </div>
   );
 };
