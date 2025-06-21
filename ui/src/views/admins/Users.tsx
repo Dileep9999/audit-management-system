@@ -5,7 +5,7 @@ import { Admin } from '../../models/Admin';
 import Popup from '../../components/shared/Popup';
 import Confirm from '../../components/shared/Confirm';
 
-const dummyAdmins: Admin[] = [
+const dummyUsers: Admin[] = [
   { id: 1, name: 'Alice Smith', email: 'alice@example.com', group: 'HR', status: 'Active', lastActive: '05-01-2024 14:23' },
   { id: 2, name: 'Bob Johnson', email: 'bob@example.com', group: 'Finance', status: 'Inactive', lastActive: '04-28-2024 09:10' },
   { id: 3, name: 'Charlie Lee', email: 'charlie@example.com', group: 'Finance', status: 'Active', lastActive: '05-02-2024 08:45' },
@@ -16,7 +16,7 @@ const dummyAdmins: Admin[] = [
   { id: 8, name: 'Henry Ford', email: 'henry@example.com', group: 'IT', status: 'Active', lastActive: '05-02-2024 09:50' },
 ];
 
-const emptyAdmin: Admin = {
+const emptyUser: Admin = {
   id: 0,
   name: '',
   email: '',
@@ -27,28 +27,28 @@ const emptyAdmin: Admin = {
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
-const Admins = () => {
-  const [admins, setAdmins] = useState<Admin[]>(dummyAdmins);
-  const [editAdmin, setEditAdmin] = useState<Admin | null>(null);
+const Users = () => {
+  const [users, setUsers] = useState<Admin[]>(dummyUsers);
+  const [editUser, setEditUser] = useState<Admin | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [deleteAdminId, setDeleteAdminId] = useState<number | null>(null);
+  const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newAdmin, setNewAdmin] = useState<Admin>(emptyAdmin);
+  const [newUser, setNewUser] = useState<Admin>(emptyUser);
   const [filter, setFilter] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
 
   // Validation functions
-  const isFormValid = (admin: Admin) => {
-    return admin.name.trim() !== '' && 
-           admin.email.trim() !== '' && 
-           admin.group.trim() !== '' &&
-           admin.email.includes('@'); // Basic email validation
+  const isFormValid = (user: Admin) => {
+    return user.name.trim() !== '' && 
+           user.email.trim() !== '' && 
+           user.group.trim() !== '' &&
+           user.email.includes('@'); // Basic email validation
   };
 
-  const isAddFormValid = isFormValid(newAdmin);
-  const isEditFormValid = editAdmin ? isFormValid(editAdmin) : false;
+  const isAddFormValid = isFormValid(newUser);
+  const isEditFormValid = editUser ? isFormValid(editUser) : false;
 
   // Helper functions for date format conversion
   const convertToInputFormat = (displayDate: string): string => {
@@ -67,8 +67,8 @@ const Admins = () => {
     return `${month}-${day}-${year} ${timePart}`;
   };
 
-  // Filtered admins
-  const filteredAdmins = admins.filter(a =>
+  // Filtered users
+  const filteredUsers = users.filter(a =>
     a.name.toLowerCase().includes(filter.toLowerCase()) ||
     a.email.toLowerCase().includes(filter.toLowerCase()) ||
     a.group.toLowerCase().includes(filter.toLowerCase()) ||
@@ -76,74 +76,74 @@ const Admins = () => {
   );
 
   // Pagination
-  const pageCount = Math.ceil(filteredAdmins.length / pageSize);
-  const paginatedAdmins = filteredAdmins.slice((page - 1) * pageSize, page * pageSize);
+  const pageCount = Math.ceil(filteredUsers.length / pageSize);
+  const paginatedUsers = filteredUsers.slice((page - 1) * pageSize, page * pageSize);
   const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + paginatedAdmins.length;
+  const endIndex = startIndex + paginatedUsers.length;
 
-  const handleEdit = (admin: Admin) => {
-    setEditAdmin({
-      ...admin,
-      lastActive: convertToInputFormat(admin.lastActive)
+  const handleEdit = (user: Admin) => {
+    setEditUser({
+      ...user,
+      lastActive: convertToInputFormat(user.lastActive)
     });
     setShowEditModal(true);
   };
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    if (!editAdmin) return;
-    setEditAdmin({ ...editAdmin, [e.target.name]: e.target.value });
+    if (!editUser) return;
+    setEditUser({ ...editUser, [e.target.name]: e.target.value });
   };
 
   const handleUpdate = () => {
-    if (!editAdmin) return;
-    const updatedAdmin = {
-      ...editAdmin,
-      lastActive: convertToDisplayFormat(editAdmin.lastActive)
+    if (!editUser) return;
+    const updatedUser = {
+      ...editUser,
+      lastActive: convertToDisplayFormat(editUser.lastActive)
     };
-    setAdmins(admins.map(a => (a.id === editAdmin.id ? updatedAdmin : a)));
+    setUsers(users.map(a => (a.id === editUser.id ? updatedUser : a)));
     setShowEditModal(false);
-    setEditAdmin(null);
+    setEditUser(null);
   };
 
   const handleDelete = (id: number) => {
-    setDeleteAdminId(id);
+    setDeleteUserId(id);
     setShowDeleteDialog(true);
   };
 
   const confirmDelete = () => {
-    if (deleteAdminId !== null) {
-      setAdmins(admins.filter(a => a.id !== deleteAdminId));
+    if (deleteUserId !== null) {
+      setUsers(users.filter(a => a.id !== deleteUserId));
     }
     setShowDeleteDialog(false);
-    setDeleteAdminId(null);
+    setDeleteUserId(null);
   };
 
   const cancelDelete = () => {
     setShowDeleteDialog(false);
-    setDeleteAdminId(null);
+    setDeleteUserId(null);
   };
 
-  // Add Admin Handlers
+  // Add User Handlers
   const handleAddChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setNewAdmin({ ...newAdmin, [e.target.name]: e.target.value });
+    setNewUser({ ...newUser, [e.target.name]: e.target.value });
   };
 
   const handleAdd = () => {
-    const nextId = admins.length > 0 ? Math.max(...admins.map(a => a.id)) + 1 : 1;
-    const newAdminWithFormattedDate = {
-      ...newAdmin,
+    const nextId = users.length > 0 ? Math.max(...users.map(a => a.id)) + 1 : 1;
+    const newUserWithFormattedDate = {
+      ...newUser,
       id: nextId,
-      lastActive: convertToDisplayFormat(newAdmin.lastActive)
+      lastActive: convertToDisplayFormat(newUser.lastActive)
     };
-    setAdmins([newAdminWithFormattedDate, ...admins]); // Add to top
+    setUsers([newUserWithFormattedDate, ...users]); // Add to top
     setShowAddModal(false);
-    setNewAdmin(emptyAdmin);
-    setPage(1); // Go to first page to show new admin
+    setNewUser(emptyUser);
+    setPage(1); // Go to first page to show new user
   };
 
   const handleAddCancel = () => {
     setShowAddModal(false);
-    setNewAdmin(emptyAdmin);
+    setNewUser(emptyUser);
   };
 
   // Filter
@@ -163,13 +163,13 @@ const Admins = () => {
   const handleNextPage = () => setPage(p => Math.min(pageCount, p + 1));
   const handlePageChange = (p: number) => setPage(p);
 
-  // Get admin name for delete dialog
-  const adminToDelete = admins.find(a => a.id === deleteAdminId);
+  // Get user name for delete dialog
+  const userToDelete = users.find(a => a.id === deleteUserId);
 
   return (
     <div className="p-4 relative min-h-screen">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Admins</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Users</h1>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center">
           <input
             type="text"
@@ -182,7 +182,7 @@ const Admins = () => {
             className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             onClick={() => setShowAddModal(true)}
           >
-            Add Admin
+            Add User
           </button>
         </div>
       </div>
@@ -200,34 +200,34 @@ const Admins = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
-              {paginatedAdmins.length === 0 ? (
+              {paginatedUsers.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-16 text-center">
                     <div className="flex flex-col items-center justify-center">
                       <UserX className="w-10 h-10 mb-2 text-gray-300" />
-                      <span className="text-lg font-semibold text-gray-400">No admins found</span>
+                      <span className="text-lg font-semibold text-gray-400">No users found</span>
                     </div>
                   </td>
                 </tr>
               ) : (
-                paginatedAdmins.map(admin => (
-                  <tr key={admin.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{admin.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{admin.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{admin.group}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{admin.status}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{admin.lastActive}</td>
+                paginatedUsers.map(user => (
+                  <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{user.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{user.email}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{user.group}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{user.status}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{user.lastActive}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end items-center space-x-2" onClick={e => e.stopPropagation()}>
                         <button
-                          onClick={() => handleEdit(admin)}
+                          onClick={() => handleEdit(user)}
                           className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                           title="Edit"
                         >
                           <Edit2 className="h-5 w-5" />
                         </button>
                         <button
-                          onClick={() => handleDelete(admin.id)}
+                          onClick={() => handleDelete(user.id)}
                           className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                           title="Delete"
                         >
@@ -250,7 +250,7 @@ const Admins = () => {
         {/* Pagination Controls */}
         <Pagination
           currentPage={page}
-          totalItems={filteredAdmins.length}
+          totalItems={filteredUsers.length}
           pageSize={pageSize}
           pageSizeOptions={PAGE_SIZE_OPTIONS}
           onPageChange={handlePageChange}
@@ -260,11 +260,11 @@ const Admins = () => {
           }}
         />
       </div>
-      {/* Add Admin Modal */}
+      {/* Add User Modal */}
       <Popup
         isOpen={showAddModal}
         onClose={handleAddCancel}
-        title="Add Admin"
+        title="Add User"
         size="modal-lg"
         position="modal-center"
         contentClass="space-y-4"
@@ -297,7 +297,7 @@ const Admins = () => {
           <input
             type="text"
             name="name"
-            value={newAdmin.name}
+            value={newUser.name}
             onChange={handleAddChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
@@ -307,7 +307,7 @@ const Admins = () => {
           <input
             type="email"
             name="email"
-            value={newAdmin.email}
+            value={newUser.email}
             onChange={handleAddChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
@@ -317,7 +317,7 @@ const Admins = () => {
           <input
             type="text"
             name="group"
-            value={newAdmin.group}
+            value={newUser.group}
             onChange={handleAddChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
@@ -326,7 +326,7 @@ const Admins = () => {
           <label className="block text-sm font-medium mb-1">Status</label>
           <select
             name="status"
-            value={newAdmin.status}
+            value={newUser.status}
             onChange={handleAddChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
           >
@@ -339,7 +339,7 @@ const Admins = () => {
           <input
             type="datetime-local"
             name="lastActive"
-            value={newAdmin.lastActive}
+            value={newUser.lastActive}
             onChange={handleAddChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
@@ -347,9 +347,9 @@ const Admins = () => {
       </Popup>
       {/* Edit Modal */}
       <Popup
-        isOpen={showEditModal && !!editAdmin}
-        onClose={() => { setShowEditModal(false); setEditAdmin(null); }}
-        title="Edit Admin"
+        isOpen={showEditModal && !!editUser}
+        onClose={() => { setShowEditModal(false); setEditUser(null); }}
+        title="Edit User"
         size="modal-lg"
         position="modal-center"
         contentClass="space-y-4"
@@ -357,7 +357,7 @@ const Admins = () => {
           <>
             <button
               className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-              onClick={() => { setShowEditModal(false); setEditAdmin(null); }}
+              onClick={() => { setShowEditModal(false); setEditUser(null); }}
               type="button"
             >
               Cancel
@@ -382,7 +382,7 @@ const Admins = () => {
           <input
             type="text"
             name="name"
-            value={editAdmin?.name || ''}
+            value={editUser?.name || ''}
             onChange={handleEditChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
@@ -392,7 +392,7 @@ const Admins = () => {
           <input
             type="email"
             name="email"
-            value={editAdmin?.email || ''}
+            value={editUser?.email || ''}
             onChange={handleEditChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
@@ -402,7 +402,7 @@ const Admins = () => {
           <input
             type="text"
             name="group"
-            value={editAdmin?.group || ''}
+            value={editUser?.group || ''}
             onChange={handleEditChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
@@ -411,7 +411,7 @@ const Admins = () => {
           <label className="block text-sm font-medium mb-1">Status</label>
           <select
             name="status"
-            value={editAdmin?.status || 'Active'}
+            value={editUser?.status || 'Active'}
             onChange={handleEditChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
           >
@@ -424,7 +424,7 @@ const Admins = () => {
           <input
             type="datetime-local"
             name="lastActive"
-            value={editAdmin?.lastActive || ''}
+            value={editUser?.lastActive || ''}
             onChange={handleEditChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
@@ -434,7 +434,7 @@ const Admins = () => {
       <Confirm
         isOpen={showDeleteDialog}
         title="Confirm Delete"
-        message={<span>Are you sure you want to delete <span className="font-semibold">{adminToDelete?.name}</span>?</span>}
+        message={<span>Are you sure you want to delete <span className="font-semibold">{userToDelete?.name}</span>?</span>}
         onCancel={cancelDelete}
         onConfirm={confirmDelete}
         confirmText="Confirm"
@@ -444,4 +444,4 @@ const Admins = () => {
   );
 };
 
-export default Admins; 
+export default Users; 

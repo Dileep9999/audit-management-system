@@ -25,11 +25,23 @@ const menu: MegaMenu[] = [
   },
   {
     separator: false,
-    title: "Admins",
+    title: "Administrator",
     icon: "users-round",
-    lang: "Admins",
-    link: "/admins",
-    children: [],
+    lang: "Administrator",
+    children: [
+      {
+        title: "Users",
+        lang: "Users",
+        link: "/admins/users",
+        children: [],
+      },
+      {
+        title: "Workflows",
+        lang: "Workflows", 
+        link: "/admins/workflows",
+        children: [],
+      }
+    ],
   },
   {
     separator: false,

@@ -5,6 +5,8 @@ import Dashboard from "../views/dashboard/Dashboard";
 import Audits from "../views/audits/Audits";
 import AuditDetails from "../views/audits/AuditDetails";
 import Admins from "../views/admins/Admins";
+import Users from "../views/admins/Users";
+import Workflows from "../views/admins/Workflows";
 import FAQ from "../views/faq/FAQ";
 import Entities from "../views/entities/Entities";
 import NotFound from "../components/NotFound";
@@ -52,6 +54,22 @@ const routes: IRoute[] = [
     component: (
       <ProtectedRoute>
         <Admins />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/admins/users", 
+    component: (
+      <ProtectedRoute>
+        <Users />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/admins/workflows", 
+    component: (
+      <ProtectedRoute>
+        <Workflows />
       </ProtectedRoute>
     ) 
   },
