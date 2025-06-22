@@ -221,7 +221,7 @@ const RolesPermissions = () => {
   // CRUD Handlers
   const handleEdit = (role: Role) => {
     try {
-      navigate(`/admins/roles-permissions/edit/${role.id}`);
+    navigate(`/admins/roles-permissions/edit/${role.id}`);
     } catch (err: any) {
       const errorMessage = getErrorMessage(err, 'Failed to open role for editing');
       ErrorToast(errorMessage);
@@ -230,8 +230,8 @@ const RolesPermissions = () => {
 
   const handleDelete = (id: number) => {
     try {
-      setDeleteRoleId(id);
-      setShowDeleteDialog(true);
+    setDeleteRoleId(id);
+    setShowDeleteDialog(true);
     } catch (err: any) {
       const errorMessage = getErrorMessage(err, 'Failed to open delete dialog');
       ErrorToast(errorMessage);
@@ -256,8 +256,8 @@ const RolesPermissions = () => {
   // Filter
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      setFilter(e.target.value);
-      setPage(1);
+    setFilter(e.target.value);
+    setPage(1);
     } catch (err: any) {
       const errorMessage = getErrorMessage(err, 'Failed to apply filter');
       ErrorToast(errorMessage);

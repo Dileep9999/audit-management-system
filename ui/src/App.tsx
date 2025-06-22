@@ -103,10 +103,10 @@ function App() {
   }, []);
 
   return (
-    <AuthProvider>
+      <AuthProvider>
       <Toaster position="top-right" />
-      <Routing />
-    </AuthProvider>
+        <Routing />
+      </AuthProvider>
   );
 }
 
