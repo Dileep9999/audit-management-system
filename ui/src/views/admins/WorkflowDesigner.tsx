@@ -21,14 +21,26 @@ import ReactFlow, {
   BaseEdge,
   EdgeLabelRenderer,
   getBezierPath,
+  XYPosition,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { Plus, ArrowLeft, Save, Edit2, X } from 'lucide-react';
 import Popup from '../../components/shared/Popup';
-import { workflowService, Workflow, CreateWorkflowPayload, WorkflowStatus } from '../../utils/workflow_service';
+import { workflowService, Workflow, WorkflowStatus } from '../../utils/workflow_service';
 import { fetchRoles } from '../../utils/roles_api';
 import { toast } from 'react-toastify';
-import { AxiosError } from 'axios';
+import { ApiError } from '../../utils/api_error';
+import { WorkflowNodeData, EdgeData } from '../../models/Workflow';
+import { validateWorkflowData, WorkflowData, saveWorkflowWithTransitions, getNextStates, isValidTransition } from '../../utils/workflow_transitions';
+
+// Custom handle styles
+const handleStyle = {
+  width: '12px',
+  height: '12px',
+  backgroundColor: '#fff',
+  border: '2px solid',
+  borderRadius: '50%'
+};
 
 // Form field styling classes
 const formFieldClasses = {
@@ -47,18 +59,6 @@ const formFieldClasses = {
   actionsContainer: "space-y-3 bg-white dark:bg-gray-800 rounded-lg",
 };
 
-interface WorkflowNode {
-  name: string;
-  label: string;
-  color: string;
-  roles: number[];
-  type: 'task';
-}
-
-interface WorkflowNodeData extends WorkflowNode {
-  type: 'task';
-}
-
 interface Role {
   id: number;
   name: string;
@@ -67,28 +67,6 @@ interface Role {
   hierarchy_position: number;
   status: 'Active' | 'Inactive';
 }
-
-interface EdgeData {
-  actions: string[];
-}
-
-type WorkflowEdge = Edge<EdgeData>;
-
-// Custom handle styles
-const handleStyle = {
-  width: '12px',
-  height: '12px',
-  backgroundColor: '#fff',
-  border: '2px solid',
-  borderRadius: '50%'
-};
-
-const hexToRgba = (hex: string, alpha: number = 1) => {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
 
 interface ApiErrorResponse {
   [key: string]: string[];
@@ -232,16 +210,37 @@ const CustomEdge = ({
   );
 };
 
-interface NodeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  mode: 'add' | 'edit';
-  nodeData: WorkflowNode;
-  onSave: (node: WorkflowNode) => void;
-  roles: Role[];
+interface WorkflowTransition {
+  to: string;
+  actions: string[];
+  roles: number[];
 }
 
-const defaultNodeData: WorkflowNode = {
+interface WorkflowTransitions {
+  [fromState: string]: WorkflowTransition[];
+}
+
+interface WorkflowState {
+  name: string;
+  label?: string;
+  color: string;
+  roles: number[];
+}
+
+interface WorkflowDefinition {
+  states: { [key: string]: WorkflowState };
+  transitions: WorkflowTransitions;
+  initialState?: string;
+}
+
+const hexToRgba = (hex: string, alpha: number = 1) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+const defaultNodeData: Required<WorkflowNodeData> = {
   name: '',
   label: '',
   color: '#64748b',
@@ -249,154 +248,22 @@ const defaultNodeData: WorkflowNode = {
   type: 'task'
 };
 
-const NodeModal = ({ isOpen, onClose, mode, nodeData, onSave, roles }: NodeModalProps) => {
-  const [formData, setFormData] = useState<WorkflowNode>(nodeData);
-
-  useEffect(() => {
-    setFormData(nodeData);
-  }, [nodeData]);
-
-  const handleChange = (field: keyof WorkflowNode, value: string | number[]) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = () => {
-    if (formData.name.trim()) {
-      onSave(formData);
-      onClose();
-    }
-  };
-
-  return (
-    <Popup
-      isOpen={isOpen}
-      onClose={() => {
-        onClose();
-        setFormData(nodeData);
-      }}
-      title={mode === 'add' ? 'Add Node' : 'Edit Node'}
-      size="modal-sm"
-      position="modal-center"
-      contentClass="space-y-4"
-      footer={
-        <>
-          <button
-            className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition duration-150 ease-in-out"
-            onClick={() => {
-              onClose();
-              setFormData(nodeData);
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition duration-150 ease-in-out"
-            onClick={handleSubmit}
-            disabled={!formData.name.trim()}
-          >
-            {mode === 'add' ? 'Add' : 'Save'}
-          </button>
-        </>
-      }
-    >
-      <div className="space-y-4">
-        <div>
-          <label className={formFieldClasses.label}>
-            Node Name
-          </label>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={(e) => handleChange('name', e.target.value)}
-            className={formFieldClasses.input}
-            placeholder="Enter node name"
-            autoFocus
-          />
-        </div>
-        <div>
-          <label className={formFieldClasses.label}>
-            Label
-          </label>
-          <input
-            type="text"
-            value={formData.label}
-            onChange={(e) => handleChange('label', e.target.value)}
-            className={formFieldClasses.input}
-            placeholder="Enter display label"
-          />
-        </div>
-        <div>
-          <label className={formFieldClasses.label}>
-            Color
-          </label>
-          <input
-            type="color"
-            value={formData.color}
-            onChange={(e) => handleChange('color', e.target.value)}
-            className={formFieldClasses.colorInput}
-          />
-        </div>
-        <div>
-          <label className={formFieldClasses.label}>
-            Roles
-          </label>
-          <div className={formFieldClasses.rolesContainer}>
-            {roles.map((role) => (
-              <div key={role.id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  id={`node-role-${role.id}`}
-                  checked={formData.roles?.includes(role.id)}
-                  onChange={(e) => {
-                    const updatedRoles = e.target.checked
-                      ? [...(formData.roles || []), role.id]
-                      : (formData.roles || []).filter(id => id !== role.id);
-                    handleChange('roles', updatedRoles);
-                  }}
-                  className={formFieldClasses.checkbox}
-                />
-                <label
-                  htmlFor={`node-role-${role.id}`}
-                  className={formFieldClasses.checkboxLabel}
-                >
-                  {role.name}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </Popup>
-  );
-};
-
 const WorkflowDesigner = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [workflowName, setWorkflowName] = useState('');
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowNodeData>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeData>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
-  const [newNode, setNewNode] = useState<WorkflowNode>({
-    name: '',
-    label: '',
-    color: '#64748b',
-    roles: [],
-    type: 'task'
-  });
+  const [newNode, setNewNode] = useState<Required<WorkflowNodeData>>(defaultNodeData);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [selectedNodeData, setSelectedNodeData] = useState<WorkflowNode>({
-    name: '',
-    label: '',
-    color: '#64748b',
-    roles: [],
-    type: 'task'
-  });
-  const [selectedEdge, setSelectedEdge] = useState<WorkflowEdge | null>(null);
+  const [selectedNodeData, setSelectedNodeData] = useState<Required<WorkflowNodeData>>(defaultNodeData);
+  const [selectedEdge, setSelectedEdge] = useState<Edge<EdgeData> | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [edgeActions, setEdgeActions] = useState<string[]>([]);
   const [newAction, setNewAction] = useState<string>('');
+  const [nodeActions, setNodeActions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<WorkflowFormData>({
@@ -406,9 +273,8 @@ const WorkflowDesigner = () => {
   });
   const [workflow, setWorkflow] = useState<Workflow | null>(null);
   const [roles, setRoles] = useState<Role[]>([]);
-  const [showNodeModal, setShowNodeModal] = useState(false);
-  const [nodeModalMode, setNodeModalMode] = useState<'add' | 'edit'>('add');
-  const [currentNodeData, setCurrentNodeData] = useState<WorkflowNode>(defaultNodeData);
+  const [addNodeErrors, setAddNodeErrors] = useState<Record<string, string[]>>({});
+  const [editNodeErrors, setEditNodeErrors] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
     if (id) {
@@ -435,15 +301,13 @@ const WorkflowDesigner = () => {
     if (selectedNode) {
       const node = nodes.find(n => n.id === selectedNode);
       if (node) {
-        setCurrentNodeData({
+        setSelectedNodeData({
           name: node.data.name,
           label: node.data.label || '',
           color: node.data.color || '#64748b',
           roles: node.data.roles || [],
-          type: node.data.type
+          type: node.type || 'task'
         });
-        setNodeModalMode('edit');
-        setShowNodeModal(true);
       }
     }
   }, [selectedNode, nodes]);
@@ -451,24 +315,34 @@ const WorkflowDesigner = () => {
   const loadWorkflow = async (workflowId: number) => {
     try {
       setIsLoading(true);
-      const workflow = await workflowService.getWorkflow(workflowId);
-      setWorkflow(workflow);
+      const data = await workflowService.getWorkflow(workflowId);
+      setWorkflow(data);
       setFormData({
-        name: workflow.name,
-        description: workflow.description || '',
-        status: workflow.status
+        name: data.name,
+        description: data.description,
+        status: data.status
       });
-      
-      // Ensure nodes and edges have all required properties
-      const processedNodes = workflow.data.nodes.map(node => ({
+
+      // Process nodes to ensure all required fields are present
+      const processedNodes = data.data.nodes.map(node => ({
         ...node,
         type: node.type || 'task',
-        className: 'group',
+        data: {
+          ...node.data,
+          type: node.type || 'task',
+          label: node.data.label || '',
+          color: node.data.color || '#64748b',
+          roles: node.data.roles || []
+        }
       }));
-      
-      const processedEdges = workflow.data.edges.map(edge => ({
+
+      // Process edges to ensure all required fields are present
+      const processedEdges = data.data.edges.map(edge => ({
         ...edge,
         type: 'custom',
+        data: {
+          actions: edge.data?.actions || []
+        },
         style: { 
           ...edgeOptions.style,
           stroke: processedNodes.find(n => n.id === edge.source)?.data?.color || '#64748b'
@@ -476,22 +350,18 @@ const WorkflowDesigner = () => {
         markerEnd: {
           ...edgeOptions.markerEnd,
           color: processedNodes.find(n => n.id === edge.source)?.data?.color || '#64748b'
-        },
-        data: {
-          actions: edge.data?.actions || []
         }
-      })) as Edge<EdgeData>[];
+      }));
 
       setNodes(processedNodes);
       setEdges(processedEdges);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error loading workflow:', error);
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.detail || 'Failed to load workflow');
+      if (error instanceof ApiError) {
+        toast.error(error.message || 'Failed to load workflow');
       } else {
         toast.error('Failed to load workflow');
       }
-      navigate('/admins/workflows');
     } finally {
       setIsLoading(false);
     }
@@ -550,9 +420,17 @@ const WorkflowDesigner = () => {
               ...edgeOptions.markerEnd,
               color: edgeColor
             },
-            data: { actions: [] }
+            data: {
+              actions: []
+            }
           };
+
+          // Add the edge and select it for editing
           setEdges((eds) => addEdge(newEdge, eds));
+          setSelectedEdge(newEdge);
+          setEdgeActions([]);
+          setNewAction('');
+          setIsEditing(true);
         }
       }
     },
@@ -564,7 +442,7 @@ const WorkflowDesigner = () => {
     const typedEdge = edge as Edge<EdgeData>;
     setSelectedEdge(typedEdge);
     setEdgeActions(typedEdge.data?.actions || []);
-    setNewAction(''); // Explicitly reset newAction when opening the edge editor
+    setNewAction('');
     setIsEditing(true);
   };
 
@@ -617,142 +495,267 @@ const WorkflowDesigner = () => {
     }
   }, [selectedEdge, setEdges]);
 
-  const handleSaveNode = (nodeData: WorkflowNode) => {
-    if (nodeModalMode === 'add') {
-      const newNodeId = `node-${nodes.length + 1}`;
-      const position = { x: Math.random() * 500, y: Math.random() * 500 };
-      const newNodeObject: Node<WorkflowNodeData> = {
-        id: newNodeId,
+  const validateNodeData = (node: Required<WorkflowNodeData>): Record<string, string[]> => {
+    const errors: Record<string, string[]> = {};
+
+    // Validate name
+    if (!node.name.trim()) {
+      errors.name = ['Node name is required'];
+    } else if (nodes.some(n => n.data.name.trim().toLowerCase() === node.name.trim().toLowerCase())) {
+      errors.name = ['A node with this name already exists'];
+    }
+
+    // Validate roles
+    if (!node.roles?.length) {
+      errors.roles = ['At least one role is required'];
+    }
+
+    return errors;
+  };
+
+  const handleAddNode = () => {
+    // Validate node data
+    const validationErrors = validateNodeData(newNode);
+    setAddNodeErrors(validationErrors);
+    
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
+    const newNodeId = `node-${nodes.length + 1}`;
+    const newNodeData: Node<WorkflowNodeData> = {
+      id: newNodeId,
+      type: 'task',
+      position: { x: 100, y: 100 },
+      data: {
         type: 'task',
-        position,
-        data: nodeData
-      };
-      setNodes(nds => [...nds, newNodeObject]);
-    } else {
-      setNodes(nds =>
+        name: newNode.name.trim(),
+        label: newNode.label.trim(),
+        color: newNode.color,
+        roles: newNode.roles
+      }
+    };
+
+    setNodes([...nodes, newNodeData]);
+    setShowAddModal(false);
+    setNewNode(defaultNodeData);
+    setAddNodeErrors({});
+    toast.success('Node added successfully');
+  };
+
+  const handleSelectedNodeDataChange = (field: keyof WorkflowNodeData, value: string | number[]) => {
+    setSelectedNodeData(prev => ({
+      ...prev,
+      [field]: value,
+      label: field === 'label' ? (value as string) || '' : (prev.label || '')
+    }));
+  };
+
+  const handleEditNode = () => {
+    // Validate node data
+    const validationErrors = validateNodeData({
+      ...selectedNodeData,
+      type: 'task' // Add required field for validation
+    });
+    
+    // Remove duplicate name error if it's the same node
+    if (validationErrors.name?.includes('A node with this name already exists')) {
+      const currentNode = nodes.find(n => n.id === selectedNode);
+      if (currentNode && currentNode.data.name.trim().toLowerCase() === selectedNodeData.name.trim().toLowerCase()) {
+        delete validationErrors.name;
+      }
+    }
+
+    setEditNodeErrors(validationErrors);
+    
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
+    if (selectedNode) {
+      setNodes(nds => 
         nds.map(node => {
           if (node.id === selectedNode) {
             return {
               ...node,
-              data: nodeData
+              data: {
+                ...node.data,
+                name: selectedNodeData.name.trim(),
+                label: selectedNodeData.label.trim(),
+                color: selectedNodeData.color,
+                roles: selectedNodeData.roles
+              }
             };
           }
           return node;
         })
       );
       setSelectedNode(null);
+      setEditNodeErrors({});
+      toast.success('Node updated successfully');
     }
   };
 
-  const handleSave = async () => {
-    const errors = validateWorkflow();
-    if (errors.length > 0) {
-      errors.forEach(error => toast.error(error));
-      return;
-    }
+  const convertToWorkflowDefinition = (): WorkflowDefinition => {
+    const states: { [key: string]: WorkflowState } = {};
+    const transitions: WorkflowTransitions = {};
+    let initialState: string | undefined;
 
+    // Convert nodes to states
+    nodes.forEach((node) => {
+      // Use the first node as initial state if not set
+      if (!initialState) {
+        initialState = node.id;
+      }
+
+      states[node.id] = {
+        name: node.data.name,
+        label: node.data.label,
+        color: node.data.color,
+        roles: node.data.roles || []
+      };
+    });
+
+    // Convert edges to transitions
+    edges.forEach((edge) => {
+      const fromState = edge.source;
+      const toState = edge.target;
+      
+      if (!transitions[fromState]) {
+        transitions[fromState] = [];
+      }
+
+      transitions[fromState].push({
+        to: toState,
+        actions: edge.data?.actions || [],
+        roles: states[fromState].roles // Inherit roles from source state
+      });
+    });
+
+    return {
+      states,
+      transitions,
+      initialState
+    };
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
     try {
-      setIsSaving(true);
-      const workflowData: CreateWorkflowPayload = {
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-        status: formData.status,
-        data: {
-          nodes: nodes.map(({ id, type, position, data }) => ({
-            id,
-            type,
-            position,
-            data: {
-              type: data.type,
-              name: data.name,
-              label: data.label,
-              color: data.color,
-              roles: data.roles || []
-            }
-          })),
-          edges: edges.map(({ id, source, target, sourceHandle, targetHandle, data }) => ({
-            id,
-            source,
-            target,
-            sourceHandle,
-            targetHandle,
-            data: {
-              actions: data?.actions || []
-            }
-          }))
+      // Validate form data
+      const validationErrors: Record<string, string[]> = {};
+console.log("Dsdfdsvd");
+      
+      if (!formData.name.trim()) {
+        validationErrors.name = ['Workflow name is required'];
+      }
+
+      if (!nodes.length) {
+        validationErrors.nodes = ['At least one node is required'];
+      }
+
+      nodes.forEach((node, index) => {
+        if (!node.data?.name?.trim()) {
+          validationErrors[`node_${index}`] = [`Node ${index + 1} name is required`];
         }
+        if (!node.data?.roles?.length) {
+          validationErrors[`node_${index}_roles`] = [`Node ${index + 1} must have at least one role`];
+        }
+      });
+console.log("Dsdfdsvd",validationErrors);
+
+      if (Object.keys(validationErrors).length > 0) {
+        Object.entries(validationErrors).forEach(([field, messages]) => {
+          toast.error(`${field}: ${messages.join(', ')}`);
+        });
+        setIsSaving(false);
+        return;
+      }
+console.log("Dsdfdsvd");
+
+      // Prepare workflow data
+      const workflowData: WorkflowData = {
+        nodes: nodes.map(node => ({
+          ...node,
+          type: node.type || 'task',
+          data: {
+            ...node.data,
+            type: node.type || 'task',
+            label: node.data.label || '',
+            color: node.data.color || '#64748b',
+            roles: node.data.roles || []
+          }
+        })),
+        edges: edges.map(edge => ({
+          ...edge,
+          type: 'custom',
+          data: {
+            actions: edge.data?.actions || []
+          }
+        }))
       };
 
-      if (id) {
-        await workflowService.updateWorkflow(parseInt(id), workflowData);
+      // Validate the workflow data structure
+      if (!validateWorkflowData(workflowData)) {
+        toast.error('Invalid workflow structure. Please check nodes and connections.');
+        setIsSaving(false);
+        return;
+      }
+
+      // Process workflow data and transitions
+      const workflowDataWithTransitions = saveWorkflowWithTransitions(workflowData);
+console.log("workflowDataWithTransitions ",workflowDataWithTransitions);
+
+      if (!workflowDataWithTransitions) {
+        toast.error('Failed to process workflow transitions');
+        setIsSaving(false);
+        return;
+      }
+
+      // Create the payload with proper transitions
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        status: formData.status,
+        data: {
+          nodes: workflowData.nodes,
+          edges: workflowData.edges,
+          transitions: workflowDataWithTransitions.transitions
+        }
+      };
+console.log("fdsv ",payload);
+
+      if (workflow?.id) {
+        await workflowService.updateWorkflow(workflow.id, payload);
         toast.success('Workflow updated successfully');
       } else {
-        const newWorkflow = await workflowService.createWorkflow(workflowData);
+        await workflowService.createWorkflow(payload);
         toast.success('Workflow created successfully');
-        navigate(`/admins/workflows/designer/${newWorkflow.id}`);
       }
-      setShowSaveModal(false);
-    } catch (error) {
+
+      navigate('/admins/workflows');
+    } catch (error: unknown) {
       console.error('Error saving workflow:', error);
-      if (error instanceof AxiosError) {
-        const data = error.response?.data;
-        if (typeof data === 'object') {
-          Object.entries(data).forEach(([field, errors]) => {
-            if (Array.isArray(errors)) {
-              errors.forEach(error => toast.error(`${field}: ${error}`));
+      if (error instanceof ApiError) {
+        const apiError = error as ApiError<ApiErrorResponse>;
+        if (apiError.body) {
+          Object.entries(apiError.body).forEach(([field, messages]) => {
+            if (Array.isArray(messages)) {
+              toast.error(`${field}: ${messages.join(', ')}`);
             }
           });
         } else {
-          toast.error(data?.detail || 'Failed to save workflow');
+          toast.error('Failed to save workflow');
         }
+      } else if (error instanceof Error) {
+        toast.error(error.message);
       } else {
         toast.error('Failed to save workflow');
       }
     } finally {
       setIsSaving(false);
+      setShowSaveModal(false);
     }
-  };
-
-  const validateWorkflow = (): string[] => {
-    const errors: string[] = [];
-
-    // Validate form data
-    if (!formData.name.trim()) {
-      errors.push('Workflow name is required');
-    }
-
-    // Validate nodes
-    if (nodes.length === 0) {
-      errors.push('Workflow must have at least one node');
-    }
-
-    // Check for nodes without names
-    const unnamedNodes = nodes.filter(node => !node.data?.name);
-    if (unnamedNodes.length > 0) {
-      errors.push(`${unnamedNodes.length} node(s) are missing names`);
-    }
-
-    // Check for nodes without colors
-    const uncoloredNodes = nodes.filter(node => !node.data?.color);
-    if (uncoloredNodes.length > 0) {
-      errors.push(`${uncoloredNodes.length} node(s) are missing colors`);
-    }
-
-    // Check for disconnected nodes if there's more than one node
-    if (nodes.length > 1) {
-      const connectedNodes = new Set<string>();
-      edges.forEach(edge => {
-        connectedNodes.add(edge.source);
-        connectedNodes.add(edge.target);
-      });
-
-      const disconnectedNodes = nodes.filter(node => !connectedNodes.has(node.id));
-      if (disconnectedNodes.length > 0) {
-        errors.push(`${disconnectedNodes.length} node(s) are not connected to any other nodes`);
-      }
-    }
-
-    return errors;
   };
 
   const nodeTypes = useMemo(() => ({
@@ -765,30 +768,64 @@ const WorkflowDesigner = () => {
     custom: CustomEdge,
   }), []);
 
+  const handleAddAction = () => {
+    if (newAction.trim()) {
+      setEdgeActions([...edgeActions, newAction.trim()]);
+      setNewAction('');
+    }
+  };
+
+  const handleRemoveAction = (index: number) => {
+    setEdgeActions(edgeActions.filter((_, i) => i !== index));
+  };
+
+  // Clear errors when closing modals
+  const handleCloseAddModal = () => {
+    setShowAddModal(false);
+    setNewNode(defaultNodeData);
+    setAddNodeErrors({});
+  };
+
+  const handleCloseEditModal = () => {
+    setSelectedNode(null);
+    setSelectedNodeData(defaultNodeData);
+    setEditNodeErrors({});
+  };
+
   return (
     <div className="h-screen flex flex-col">
+      {/* Header */}
       <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-          {workflow ? `Edit Workflow: ${workflow.name}` : 'Create New Workflow'}
-        </h1>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate('/admins/workflows')}
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition duration-150 ease-in-out"
+          >
+            <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          </button>
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              {workflow ? `Edit Workflow hhh: ${workflow.name}` : 'Create New Workflow'}
+            </h1>
+            {workflow && (
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                Last modified: {new Date(workflow.updated_at).toLocaleString()}
+              </div>
+            )}
+          </div>
+        </div>
         <div className="flex gap-2">
           <button
-            onClick={() => {
-              setNodeModalMode('add');
-              setCurrentNodeData(defaultNodeData);
-              setShowNodeModal(true);
-            }}
+            onClick={() => setShowAddModal(true)}
             className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition duration-150 ease-in-out"
           >
             Add Node
           </button>
           <button
             onClick={() => setShowSaveModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600"
-            disabled={isSaving}
+            className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition duration-150 ease-in-out"
           >
-            <Save className="h-4 w-4" />
-            <span>{isSaving ? 'Saving...' : 'Save'}</span>
+            Save Workflow
           </button>
         </div>
       </div>
@@ -815,8 +852,7 @@ const WorkflowDesigner = () => {
             <div className="text-sm text-gray-500">
               {workflow ? (
                 <>
-                  <div>Version: {workflow.version}</div>
-                  <div>Created by: {workflow.created_by_name}</div>
+                  
                 </>
               ) : (
                 <div>New Workflow</div>
@@ -826,43 +862,27 @@ const WorkflowDesigner = () => {
         </ReactFlow>
       </div>
 
-      {/* Node Modal */}
-      <NodeModal
-        isOpen={showNodeModal}
-        onClose={() => {
-          setShowNodeModal(false);
-          setSelectedNode(null);
-          setCurrentNodeData(defaultNodeData);
-        }}
-        mode={nodeModalMode}
-        nodeData={currentNodeData}
-        onSave={handleSaveNode}
-        roles={roles}
-      />
-
-      {/* Save Modal */}
+      {/* Add Node Modal */}
       <Popup
-        isOpen={showSaveModal}
-        onClose={() => setShowSaveModal(false)}
-        title="Save Workflow"
-        size="modal-md"
+        isOpen={showAddModal}
+        onClose={handleCloseAddModal}
+        title="Add Node"
+        size="modal-sm"
         position="modal-center"
         contentClass="space-y-6"
         footer={
           <>
             <button
               className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition duration-150 ease-in-out"
-              onClick={() => setShowSaveModal(false)}
-              disabled={isSaving}
+              onClick={handleCloseAddModal}
             >
               Cancel
             </button>
             <button
               className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition duration-150 ease-in-out"
-              onClick={handleSave}
-              disabled={isSaving || !formData.name.trim()}
+              onClick={handleAddNode}
             >
-              {isSaving ? 'Saving...' : 'Save'}
+              Add
             </button>
           </>
         }
@@ -870,42 +890,259 @@ const WorkflowDesigner = () => {
         <div className="space-y-6">
           <div>
             <label className={formFieldClasses.label}>
-              Workflow Name
+              Node Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              className={formFieldClasses.input}
-              placeholder="Enter workflow name"
+              value={newNode.name}
+              onChange={(e) => setNewNode({ ...newNode, name: e.target.value })}
+              className={`${formFieldClasses.input} ${
+                addNodeErrors.name ? 'border-red-500 focus:ring-red-500' : ''
+              }`}
+              placeholder="Enter node name"
               autoFocus
+            />
+            {addNodeErrors.name && (
+              <p className="mt-1 text-sm text-red-500">
+                {addNodeErrors.name[0]}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className={formFieldClasses.label}>
+              Label
+            </label>
+            <input
+              type="text"
+              value={newNode.label}
+              onChange={(e) => setNewNode({ ...newNode, label: e.target.value })}
+              className={formFieldClasses.input}
+              placeholder="Enter display label"
             />
           </div>
           <div>
             <label className={formFieldClasses.label}>
+              Color
+            </label>
+            <input
+              type="color"
+              value={newNode.color}
+              onChange={(e) => setNewNode({ ...newNode, color: e.target.value })}
+              className={formFieldClasses.colorInput}
+            />
+          </div>
+          <div>
+            <label className={formFieldClasses.label}>
+              Roles <span className="text-red-500">*</span>
+            </label>
+            <div className={`${formFieldClasses.rolesContainer} ${
+              addNodeErrors.roles ? 'border-red-500' : ''
+            }`}>
+              {roles.map((role) => (
+                <div key={role.id} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`new-role-${role.id}`}
+                    checked={newNode.roles?.includes(role.id)}
+                    onChange={(e) => {
+                      const updatedRoles = e.target.checked
+                        ? [...(newNode.roles || []), role.id]
+                        : (newNode.roles || []).filter(id => id !== role.id);
+                      setNewNode({ ...newNode, roles: updatedRoles });
+                    }}
+                    className={formFieldClasses.checkbox}
+                  />
+                  <label
+                    htmlFor={`new-role-${role.id}`}
+                    className={formFieldClasses.checkboxLabel}
+                  >
+                    {role.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+            {addNodeErrors.roles && (
+              <p className="mt-1 text-sm text-red-500">
+                {addNodeErrors.roles[0]}
+              </p>
+            )}
+          </div>
+        </div>
+      </Popup>
+
+      {/* Edit Node Modal */}
+      <Popup
+        isOpen={!!selectedNode}
+        onClose={handleCloseEditModal}
+        title="Edit Node"
+        size="modal-sm"
+        position="modal-center"
+        contentClass="space-y-4"
+        footer={
+          <>
+            <button
+              className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition duration-150 ease-in-out"
+              onClick={handleCloseEditModal}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition duration-150 ease-in-out"
+              onClick={handleEditNode}
+            >
+              Save
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <label className={formFieldClasses.label}>
+              Node Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={selectedNodeData.name}
+              onChange={(e) => handleSelectedNodeDataChange('name', e.target.value)}
+              className={`${formFieldClasses.input} ${
+                editNodeErrors.name ? 'border-red-500 focus:ring-red-500' : ''
+              }`}
+              placeholder="Enter node name"
+              autoFocus
+            />
+            {editNodeErrors.name && (
+              <p className="mt-1 text-sm text-red-500">
+                {editNodeErrors.name[0]}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className={formFieldClasses.label}>
+              Label
+            </label>
+            <input
+              type="text"
+              value={selectedNodeData.label}
+              onChange={(e) => handleSelectedNodeDataChange('label', e.target.value)}
+              className={formFieldClasses.input}
+              placeholder="Enter display label"
+            />
+          </div>
+          <div>
+            <label className={formFieldClasses.label}>
+              Color
+            </label>
+            <input
+              type="color"
+              value={selectedNodeData.color}
+              onChange={(e) => handleSelectedNodeDataChange('color', e.target.value)}
+              className={formFieldClasses.colorInput}
+            />
+          </div>
+          <div>
+            <label className={formFieldClasses.label}>
+              Roles <span className="text-red-500">*</span>
+            </label>
+            <div className={`${formFieldClasses.rolesContainer} ${
+              editNodeErrors.roles ? 'border-red-500' : ''
+            }`}>
+              {roles.map((role) => (
+                <div key={role.id} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`edit-role-${role.id}`}
+                    checked={selectedNodeData.roles?.includes(role.id)}
+                    onChange={(e) => {
+                      const updatedRoles = e.target.checked
+                        ? [...(selectedNodeData.roles || []), role.id]
+                        : (selectedNodeData.roles || []).filter(id => id !== role.id);
+                      handleSelectedNodeDataChange('roles', updatedRoles);
+                    }}
+                    className={formFieldClasses.checkbox}
+                  />
+                  <label
+                    htmlFor={`edit-role-${role.id}`}
+                    className={formFieldClasses.checkboxLabel}
+                  >
+                    {role.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+            {editNodeErrors.roles && (
+              <p className="mt-1 text-sm text-red-500">
+                {editNodeErrors.roles[0]}
+              </p>
+            )}
+          </div>
+        </div>
+      </Popup>
+
+      {/* Save Workflow Modal */}
+      <Popup
+        isOpen={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        title="Save Workflow"
+      >
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="name" className={formFieldClasses.label}>
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className={formFieldClasses.input}
+              placeholder="Enter workflow name"
+            />
+          </div>
+          <div>
+            <label htmlFor="description" className={formFieldClasses.label}>
               Description
             </label>
             <textarea
+              id="description"
               value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              className={`${formFieldClasses.input} min-h-[100px] resize-y`}
-              placeholder="Enter workflow description"
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className={formFieldClasses.input}
               rows={3}
+              placeholder="Enter workflow description"
             />
           </div>
           <div>
-            <label className={formFieldClasses.label}>
+            <label htmlFor="status" className={formFieldClasses.label}>
               Status
             </label>
             <select
+              id="status"
               value={formData.status}
-              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as WorkflowStatus }))}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value as WorkflowStatus })}
               className={formFieldClasses.select}
             >
               <option value="draft">Draft</option>
               <option value="active">Active</option>
-              <option value="archived">Archived</option>
+              <option value="inactive">Inactive</option>
             </select>
+          </div>
+          <div className="flex justify-end gap-2 mt-4">
+            <button
+              onClick={() => setShowSaveModal(false)}
+              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-150 ease-in-out"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={async () => {
+                await handleSave();
+                setShowSaveModal(false);
+              }}
+              disabled={isSaving}
+              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition duration-150 ease-in-out"
+            >
+              {isSaving ? 'Saving...' : 'Save'}
+            </button>
           </div>
         </div>
       </Popup>

@@ -10,4 +10,16 @@ export interface Workflow {
   assignedTo: string;
   dueDate?: string;
   labels: string[];
+}
+
+export interface WorkflowNodeData {
+  name: string;
+  label?: string;
+  color: string;
+  roles: number[];
+  type?: string;
+}
+
+export interface EdgeData {
+  actions: string[];
 } 

@@ -1,64 +1,89 @@
-import { Node, Edge } from 'reactflow';
+import { Node, Edge, XYPosition } from 'reactflow';
 import axiosApi from './axios_api';
+import { WorkflowNodeData, EdgeData } from '../models/Workflow';
+import { WorkflowData, WorkflowTransitions, saveWorkflowWithTransitions } from './workflow_transitions';
 
-export type WorkflowStatus = 'draft' | 'active' | 'archived';
+export type WorkflowStatus = 'draft' | 'active' | 'inactive';
 
 export interface Workflow {
   id: number;
   name: string;
-  description?: string;
-  created_by: number;
-  created_by_name: string;
+  description: string;
+  status: WorkflowStatus;
+  data: {
+    nodes: Node<WorkflowNodeData>[];
+    edges: Edge<EdgeData>[];
+    transitions: WorkflowTransitions;
+  };
   created_at: string;
   updated_at: string;
-  data: WorkflowData;
+  created_by_name: string;
   version: number;
-  status: WorkflowStatus;
-}
-
-export interface WorkflowData {
-  nodes: Node[];
-  edges: Edge[];
 }
 
 export interface CreateWorkflowPayload {
   name: string;
-  description?: string;
-  data: WorkflowData;
+  description: string;
   status: WorkflowStatus;
+  data: {
+    nodes: Node<WorkflowNodeData>[];
+    edges: Edge<EdgeData>[];
+    transitions: WorkflowTransitions;
+  };
 }
 
-export interface UpdateWorkflowPayload extends CreateWorkflowPayload {
-  id: number;
+export interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
+export interface WorkflowListParams {
+  page?: number;
+  page_size?: number;
+  ordering?: string;
 }
 
 export const workflowService = {
-  getWorkflows: async (params?: { page?: number; page_size?: number; ordering?: string }): Promise<{ results: Workflow[]; count: number }> => {
-    const response = await axiosApi.get('/api/workflows/workflows/', { params });
+  async createWorkflow(data: CreateWorkflowPayload): Promise<Workflow> {
+    const response = await axiosApi.post<Workflow>('/api/workflows/workflows/', data);
     return response.data;
   },
 
-  getWorkflow: async (id: number): Promise<Workflow> => {
-    const response = await axiosApi.get(`/api/workflows/workflows/${id}/`);
+  async updateWorkflow(id: number, data: CreateWorkflowPayload): Promise<Workflow> {
+    const response = await axiosApi.put<Workflow>(`/api/workflows/workflows/${id}/`, data);
     return response.data;
   },
 
-  createWorkflow: async (workflow: CreateWorkflowPayload): Promise<Workflow> => {
-    const response = await axiosApi.post('/api/workflows/workflows/', workflow);
+  async getWorkflow(id: number): Promise<Workflow> {
+    const response = await axiosApi.get<Workflow>(`/api/workflows/workflows/${id}/`);
     return response.data;
   },
 
-  updateWorkflow: async (id: number, workflow: CreateWorkflowPayload): Promise<Workflow> => {
-    const response = await axiosApi.put(`/api/workflows/workflows/${id}/`, workflow);
+  async getWorkflows(params?: WorkflowListParams): Promise<PaginatedResponse<Workflow>> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) {
+      queryParams.append('page', params.page.toString());
+    }
+    if (params?.page_size) {
+      queryParams.append('page_size', params.page_size.toString());
+    }
+    if (params?.ordering) {
+      queryParams.append('ordering', params.ordering);
+    }
+
+    const url = `/api/workflows/workflows/${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const response = await axiosApi.get<PaginatedResponse<Workflow>>(url);
     return response.data;
   },
 
-  deleteWorkflow: async (id: number): Promise<void> => {
+  async deleteWorkflow(id: number): Promise<void> {
     await axiosApi.delete(`/api/workflows/workflows/${id}/`);
   },
 
-  duplicateWorkflow: async (id: number): Promise<Workflow> => {
-    const response = await axiosApi.post(`/api/workflows/workflows/${id}/duplicate/`);
+  async duplicateWorkflow(id: number): Promise<Workflow> {
+    const response = await axiosApi.post<Workflow>(`/api/workflows/workflows/${id}/duplicate/`);
     return response.data;
   }
 }; 
