@@ -27,11 +27,28 @@ import { AxiosError } from 'axios';
 
 interface WorkflowNode {
   name: string;
+  actions?: string[];
+  roles?: number[];
 }
 
 interface WorkflowNodeData extends WorkflowNode {
   type: 'task';
 }
+
+interface Role {
+  id: number;
+  name: string;
+  description: string;
+  severity: string;
+  hierarchy_position: number;
+  status: 'Active' | 'Inactive';
+}
+
+interface EdgeData {
+  actions: string[];
+}
+
+type WorkflowEdge = Edge<EdgeData>;
 
 // Custom handle styles
 const handleStyle = {
@@ -44,74 +61,225 @@ const handleStyle = {
 const TaskNode = ({ data, id }: NodeProps<WorkflowNodeData>) => {
   const [isEditing, setIsEditing] = useState(false);
   const [nodeName, setNodeName] = useState(data.name);
+  const [nodeActions, setNodeActions] = useState<string[]>(data.actions || []);
+  const [nodeRoles, setNodeRoles] = useState<number[]>(data.roles || []);
+  const [newAction, setNewAction] = useState('');
+  const [roles, setRoles] = useState<Role[]>([]);
+
+  useEffect(() => {
+    // Fetch available roles when the edit popup opens
+    if (isEditing) {
+      const fetchRoles = async () => {
+        try {
+          const response = await fetch('/api/roles/roles/');
+          const data = await response.json();
+          setRoles(data.results || data);
+        } catch (error) {
+          console.error('Error fetching roles:', error);
+          toast.error('Failed to load roles');
+        }
+      };
+      fetchRoles();
+    }
+  }, [isEditing]);
 
   const handleEdit = (e: React.FormEvent) => {
     e.preventDefault();
     if (nodeName.trim()) {
       data.name = nodeName.trim();
+      data.actions = nodeActions;
+      data.roles = nodeRoles;
       setIsEditing(false);
+    }
+  };
+
+  const handleAddAction = () => {
+    if (newAction.trim()) {
+      setNodeActions([...nodeActions, newAction.trim()]);
+      setNewAction('');
+    }
+  };
+
+  const handleRemoveAction = (index: number) => {
+    setNodeActions(nodeActions.filter((_, i) => i !== index));
+  };
+
+  const handleRoleChange = (roleId: number) => {
+    if (nodeRoles.includes(roleId)) {
+      setNodeRoles(nodeRoles.filter(id => id !== roleId));
+    } else {
+      setNodeRoles([...nodeRoles, roleId]);
     }
   };
 
   return (
     <div className="relative bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700 min-w-[200px]">
-      {/* Top Handle */}
+      {/* Handles */}
       <Handle
         id="top"
         type="target"
         position={Position.Top}
         style={{ ...handleStyle, left: '50%' }}
       />
-
-      {/* Left Handle */}
       <Handle
         id="left"
         type="target"
         position={Position.Left}
         style={{ ...handleStyle, top: '50%' }}
       />
-
-      {/* Right Handle */}
       <Handle
         id="right"
         type="source"
         position={Position.Right}
         style={{ ...handleStyle, top: '50%' }}
       />
-
-      {/* Node Content */}
-      <div className="flex items-center justify-between">
-        {isEditing ? (
-          <form onSubmit={handleEdit} className="flex-1">
-            <input
-              type="text"
-              value={nodeName}
-              onChange={(e) => setNodeName(e.target.value)}
-              className="w-full px-2 py-1 text-sm border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              autoFocus
-              onBlur={handleEdit}
-            />
-          </form>
-        ) : (
-          <>
-            <div className="text-sm font-medium text-gray-900 dark:text-white">{data.name}</div>
-            <button
-              onClick={() => setIsEditing(true)}
-              className="ml-2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-            >
-              <Edit2 className="h-3 w-3 text-gray-500" />
-            </button>
-          </>
-        )}
-      </div>
-
-      {/* Bottom Handle */}
       <Handle
         id="bottom"
         type="source"
         position={Position.Bottom}
         style={{ ...handleStyle, left: '50%' }}
       />
+
+      {/* Node Content */}
+      <div className="flex flex-col">
+        <div className="flex items-center justify-between mb-2">
+          <div className="text-sm font-medium text-gray-900 dark:text-white">{data.name}</div>
+          <button
+            onClick={() => setIsEditing(true)}
+            className="ml-2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+          >
+            <Edit2 className="h-3 w-3 text-gray-500" />
+          </button>
+        </div>
+        <div className="flex gap-2 text-xs text-gray-500">
+          <span>{data.actions?.length || 0} actions</span>
+          <span>•</span>
+          <span>{data.roles?.length || 0} roles</span>
+        </div>
+      </div>
+
+      {/* Edit Popup */}
+      <Popup
+        isOpen={isEditing}
+        onClose={() => {
+          setIsEditing(false);
+          setNodeName(data.name);
+          setNodeActions(data.actions || []);
+          setNodeRoles(data.roles || []);
+        }}
+        title="Edit Node"
+        size="modal-md"
+        position="modal-center"
+        contentClass="space-y-4"
+        footer={
+          <>
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              onClick={() => {
+                setIsEditing(false);
+                setNodeName(data.name);
+                setNodeActions(data.actions || []);
+                setNodeRoles(data.roles || []);
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600"
+              onClick={handleEdit}
+              disabled={!nodeName.trim()}
+            >
+              Save
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          {/* Name Field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Node Name
+            </label>
+            <input
+              type="text"
+              value={nodeName}
+              onChange={(e) => setNodeName(e.target.value)}
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Enter node name"
+            />
+          </div>
+
+          {/* Actions Field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Actions
+            </label>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newAction}
+                  onChange={(e) => setNewAction(e.target.value)}
+                  className="flex-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  placeholder="Enter action"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddAction();
+                    }
+                  }}
+                />
+                <button
+                  onClick={handleAddAction}
+                  disabled={!newAction.trim()}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                >
+                  Add
+                </button>
+              </div>
+              <div className="space-y-1">
+                {nodeActions.map((action, index) => (
+                  <div key={index} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
+                    <span className="text-sm text-gray-700">{action}</span>
+                    <button
+                      onClick={() => handleRemoveAction(index)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Roles Field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Roles
+            </label>
+            <div className="space-y-2 max-h-40 overflow-y-auto">
+              {roles.map((role) => (
+                <div key={role.id} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`role-${role.id}`}
+                    checked={nodeRoles.includes(role.id)}
+                    onChange={() => handleRoleChange(role.id)}
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor={`role-${role.id}`}
+                    className="ml-2 block text-sm text-gray-700"
+                  >
+                    {role.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Popup>
     </div>
   );
 };
@@ -131,6 +299,7 @@ const edgeOptions = {
     width: 20,
     height: 20,
   },
+  data: { actions: [] } as EdgeData,
 };
 
 interface ApiErrorResponse {
@@ -148,11 +317,14 @@ const WorkflowDesigner = () => {
   const { id } = useParams();
   const [workflowName, setWorkflowName] = useState('');
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeData>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [newNode, setNewNode] = useState<WorkflowNode>({ name: '' });
-  const [selectedEdge, setSelectedEdge] = useState<Edge | null>(null);
+  const [selectedEdge, setSelectedEdge] = useState<WorkflowEdge | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [edgeActions, setEdgeActions] = useState<string[]>([]);
+  const [newAction, setNewAction] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<WorkflowFormData>({
@@ -189,7 +361,10 @@ const WorkflowDesigner = () => {
       const processedEdges = workflow.data.edges.map(edge => ({
         ...edge,
         ...edgeOptions,
-      }));
+        data: {
+          actions: edge.data?.actions || []
+        }
+      })) as Edge<EdgeData>[];
 
       setNodes(processedNodes);
       setEdges(processedEdges);
@@ -241,7 +416,7 @@ const WorkflowDesigner = () => {
       if (validateConnection(connection)) {
         // Ensure connection has required source and target
         if (connection.source && connection.target) {
-          const newEdge: Edge = {
+          const newEdge: Edge<EdgeData> = {
             ...connection,
             source: connection.source,
             target: connection.target,
@@ -257,13 +432,58 @@ const WorkflowDesigner = () => {
 
   const onEdgeClick: EdgeMouseHandler = (event, edge) => {
     event.stopPropagation();
-    setSelectedEdge(edge);
+    const typedEdge = edge as Edge<EdgeData>;
+    setSelectedEdge(typedEdge);
+    setEdgeActions(typedEdge.data?.actions || []);
+    setIsEditing(true);
+  };
+
+  const handleAddEdgeAction = () => {
+    if (newAction.trim()) {
+      const updatedActions = [...edgeActions, newAction.trim()];
+      setEdgeActions(updatedActions);
+      setNewAction('');
+      
+      // Update the edge data
+      if (selectedEdge) {
+        setEdges(eds => 
+          eds.map(e => 
+            e.id === selectedEdge.id 
+              ? { ...e, data: { ...e.data, actions: updatedActions } }
+              : e
+          ) as Edge<EdgeData>[]
+        );
+      }
+    }
+  };
+
+  const handleRemoveEdgeAction = (index: number) => {
+    const updatedActions = edgeActions.filter((_, i) => i !== index);
+    setEdgeActions(updatedActions);
+    
+    // Update the edge data
+    if (selectedEdge) {
+      setEdges(eds => 
+        eds.map(e => 
+          e.id === selectedEdge.id 
+            ? { ...e, data: { ...e.data, actions: updatedActions } }
+            : e
+        ) as Edge<EdgeData>[]
+      );
+    }
+  };
+
+  const handleSaveEdge = () => {
+    setIsEditing(false);
+    setSelectedEdge(null);
+    setNewAction('');
   };
 
   const onEdgeDelete = useCallback(() => {
     if (selectedEdge) {
       setEdges((eds) => eds.filter((e) => e.id !== selectedEdge.id));
       setSelectedEdge(null);
+      setIsEditing(false);
     }
   }, [selectedEdge, setEdges]);
 
@@ -282,7 +502,7 @@ const WorkflowDesigner = () => {
         id: newNodeId,
         type: 'task',
         position,
-        data: { ...newNode, type: 'task' },
+        data: { ...newNode, type: 'task', actions: [], roles: [] },
         className: 'group',
       }
     ]);
@@ -345,12 +565,15 @@ const WorkflowDesigner = () => {
             position,
             data
           })),
-          edges: edges.map(({ id, source, target, sourceHandle, targetHandle }) => ({
+          edges: edges.map(({ id, source, target, sourceHandle, targetHandle, data }) => ({
             id,
             source,
             target,
             sourceHandle,
-            targetHandle
+            targetHandle,
+            data: {
+              actions: data?.actions || []
+            }
           }))
         }
       };
@@ -383,10 +606,6 @@ const WorkflowDesigner = () => {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const onPaneClick = () => {
-    setSelectedEdge(null);
   };
 
   return (
@@ -447,7 +666,10 @@ const WorkflowDesigner = () => {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onEdgeClick={onEdgeClick}
-          onPaneClick={onPaneClick}
+          onPaneClick={() => {
+            setSelectedEdge(null);
+            setIsEditing(false);
+          }}
           nodeTypes={nodeTypes}
           connectionMode={ConnectionMode.Loose}
         >
@@ -584,32 +806,89 @@ const WorkflowDesigner = () => {
         </div>
       </Popup>
 
-      {/* Delete Edge Modal */}
+      {/* Edge Actions Modal */}
       <Popup
-        isOpen={!!selectedEdge}
-        onClose={() => setSelectedEdge(null)}
-        title="Delete Connection"
-        size="modal-sm"
+        isOpen={isEditing && !!selectedEdge}
+        onClose={() => {
+          setIsEditing(false);
+          setSelectedEdge(null);
+          setNewAction('');
+        }}
+        title="Edit Edge Actions"
+        size="modal-md"
         position="modal-center"
         contentClass="space-y-4"
         footer={
           <>
             <button
               className="px-4 py-2 text-gray-600 hover:text-gray-800"
-              onClick={() => setSelectedEdge(null)}
+              onClick={() => {
+                setIsEditing(false);
+                setSelectedEdge(null);
+                setNewAction('');
+              }}
             >
               Cancel
             </button>
             <button
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mr-2"
               onClick={onEdgeDelete}
             >
-              Delete
+              Delete Edge
+            </button>
+            <button
+              className="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600"
+              onClick={handleSaveEdge}
+            >
+              Save
             </button>
           </>
         }
       >
-        <p>Are you sure you want to delete this connection?</p>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Edge Actions
+            </label>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newAction}
+                  onChange={(e) => setNewAction(e.target.value)}
+                  className="flex-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  placeholder="Enter action"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddEdgeAction();
+                    }
+                  }}
+                />
+                <button
+                  onClick={handleAddEdgeAction}
+                  disabled={!newAction.trim()}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                >
+                  Add
+                </button>
+              </div>
+              <div className="space-y-1">
+                {edgeActions.map((action, index) => (
+                  <div key={index} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
+                    <span className="text-sm text-gray-700">{action}</span>
+                    <button
+                      onClick={() => handleRemoveEdgeAction(index)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </Popup>
     </div>
   );
