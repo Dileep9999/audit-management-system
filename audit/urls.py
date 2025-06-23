@@ -63,6 +63,7 @@ urlpatterns = [
     path("api/files/", include("apps.files.urls")),
     path("api/roles/", include("roles.urls")),
     path("api/workflows/", include("workflows.urls")),
+    path("api/audits/", include("apps.audits.urls")),
 ]
 
 if settings.DEBUG:

@@ -4,6 +4,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Dashboard from "../views/dashboard/Dashboard";
 import Audits from "../views/audits/Audits";
 import AuditDetails from "../views/audits/AuditDetails";
+import CreateAudit from "../views/audits/CreateAudit";
+import EditAudit from "../views/audits/EditAudit";
 import Admins from "../views/admins/Admins";
 import Users from "../views/admins/Users";
 import WorkflowList from "../views/admins/WorkflowList";
@@ -42,6 +44,22 @@ const routes: IRoute[] = [
     component: (
       <ProtectedRoute>
         <Audits />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/audits/new", 
+    component: (
+      <ProtectedRoute>
+        <CreateAudit />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/audits/:id/edit", 
+    component: (
+      <ProtectedRoute>
+        <EditAudit />
       </ProtectedRoute>
     ) 
   },

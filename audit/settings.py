@@ -22,6 +22,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5174",
     "http://127.0.0.1:5174",
+    "http://localhost:5173",  # Vite default dev server
 ]
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -113,6 +114,7 @@ INSTALLED_APPS = [
     "apps.translation",
     "apps.notifications",
     "apps.files",
+    "apps.audits.apps.AuditsConfig",
     "roles.apps.RolesConfig",
     "workflows.apps.WorkflowsConfig",
 ]
