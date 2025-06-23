@@ -1,11 +1,12 @@
 from django.utils.translation import gettext as _
 from rest_framework.response import Response
-from rest_framework.generics import RetrieveAPIView, ListAPIView
+from rest_framework.generics import RetrieveAPIView, ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
+from django.shortcuts import get_object_or_404
 
-from apps.user.serializers import UserSerializer
+from apps.user.serializers import UserSerializer, UserCreateSerializer, UserUpdateSerializer
 from apps.utils.filters.include_exclude import IncludeExcludeFilterSet
 from apps.utils.pagination import SearchPagination
 from apps.utils.views import ListSearchSerializersView
@@ -91,6 +92,112 @@ class AuthToken(ObtainAuthToken):
         )
 
 
+class CreateUserView(CreateAPIView):
+    """
+    Create a new user.
+    Requires authentication and staff permissions.
+    """
+    serializer_class = UserCreateSerializer
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        
+        # Return user data using the standard UserSerializer
+        user_serializer = UserSerializer(user)
+        headers = self.get_success_headers(serializer.data)
+        
+        return Response(
+            {
+                "message": _("User created successfully."),
+                "user": user_serializer.data
+            },
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
+
+
+class GetUserView(RetrieveAPIView):
+    """
+    Retrieve a specific user by ID.
+    """
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_object(self):
+        user_id = self.kwargs.get('pk')
+        return get_object_or_404(User, pk=user_id, is_deleted=False)
+
+
+class UpdateUserView(UpdateAPIView):
+    """
+    Update an existing user.
+    Requires authentication and staff permissions.
+    """
+    serializer_class = UserUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    
+    def get_object(self):
+        user_id = self.kwargs.get('pk')
+        return get_object_or_404(User, pk=user_id, is_deleted=False)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        
+        # Return user data using the standard UserSerializer
+        user_serializer = UserSerializer(user)
+        
+        return Response(
+            {
+                "message": _("User updated successfully."),
+                "user": user_serializer.data
+            }
+        )
+
+
+class DeleteUserView(DestroyAPIView):
+    """
+    Soft delete a user (sets is_deleted=True).
+    Requires authentication and staff permissions.
+    """
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    
+    def get_object(self):
+        user_id = self.kwargs.get('pk')
+        return get_object_or_404(User, pk=user_id, is_deleted=False)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        
+        # Prevent deletion of superusers and self-deletion
+        if instance.is_superuser:
+            return Response(
+                {"error": _("Cannot delete a superuser.")},
+                status=status.HTTP_403_FORBIDDEN
+            )
+            
+        if instance == request.user:
+            return Response(
+                {"error": _("Cannot delete your own account.")},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Soft delete
+        instance.is_deleted = True
+        instance.deleted_by = request.user
+        instance.save()
+        
+        return Response(
+            {"message": _("User deleted successfully.")},
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
 class ListUsersView(ListSearchSerializersView):
     """
     Returns a list of all users with search, include and exclude.
@@ -102,6 +209,7 @@ class ListUsersView(ListSearchSerializersView):
     filterset_class = IncludeExcludeFilterSet
     ordering_fields = ("id", "is_active")
     pagination_class = SearchPagination
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class UserProfilePictureUpdateView(generics.UpdateAPIView):

@@ -4,8 +4,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
-from .models import Audit, AuditType, AuditStatus, CustomAuditType
+from .models import Audit, AuditType, CustomAuditType
 from .serializers import AuditSerializer, CustomAuditTypeSerializer
+from workflows.models import Workflow
 import logging
 
 logger = logging.getLogger(__name__)
@@ -121,6 +122,62 @@ class AuditViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def audit_statuses(self, request):
         """
-        Return all available audit statuses
+        Return all available audit statuses from active workflows
         """
-        return Response([{'id': s[0], 'name': s[1]} for s in AuditStatus.choices])
+        statuses = set()
+        
+        # Get all unique statuses from existing audits
+        existing_statuses = Audit.objects.values_list('status', flat=True).distinct()
+        statuses.update(existing_statuses)
+        
+        # Get all possible statuses from active workflows
+        active_workflows = Workflow.objects.filter(status='active')
+        for workflow in active_workflows:
+            if workflow.data and 'nodes' in workflow.data:
+                for node in workflow.data['nodes']:
+                    if 'data' in node and 'name' in node['data']:
+                        statuses.add(node['data']['name'])
+        
+        # If no workflows exist, provide default statuses
+        if not statuses:
+            statuses = {'Draft', 'In Progress', 'Review', 'Completed'}
+        
+        # Convert to list of dictionaries for consistent API response
+        status_list = [{'id': status, 'name': status} for status in sorted(statuses)]
+        return Response(status_list)
+
+    @action(detail=True, methods=['get'])
+    def available_transitions(self, request, pk=None):
+        """
+        Get available status transitions for a specific audit
+        """
+        audit = self.get_object()
+        transitions = audit.get_available_transitions()
+        return Response(transitions)
+
+    @action(detail=True, methods=['post'])
+    def transition_status(self, request, pk=None):
+        """
+        Transition audit status to a new state
+        """
+        audit = self.get_object()
+        new_status = request.data.get('status')
+        
+        if not new_status:
+            return Response(
+                {'detail': 'Status is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        available_transitions = audit.get_available_transitions()
+        if new_status not in available_transitions:
+            return Response(
+                {'detail': f'Invalid transition. Available transitions: {available_transitions}'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        audit.status = new_status
+        audit.save()
+        
+        serializer = self.get_serializer(audit)
+        return Response(serializer.data)

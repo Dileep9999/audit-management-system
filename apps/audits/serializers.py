@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from django.utils.translation import gettext_lazy as _
-from .models import Audit, AuditType, AuditStatus, CustomAuditType
+from django.contrib.auth import get_user_model
+from .models import Audit, AuditType, CustomAuditType
+
+User = get_user_model()
 
 class CustomAuditTypeSerializer(serializers.ModelSerializer):
     created_by_name = serializers.SerializerMethodField()
@@ -8,34 +10,23 @@ class CustomAuditTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomAuditType
         fields = [
-            'id',
-            'name',
-            'description',
-            'created_by',
-            'created_by_name',
-            'created_at',
-            'updated_at',
-            'is_active'
+            'id', 'name', 'description', 'is_active',
+            'created_by', 'created_by_name', 'created_at', 'updated_at'
         ]
         read_only_fields = ['created_by', 'created_at', 'updated_at']
 
     def get_created_by_name(self, obj):
-        """
-        Return the user's full name if available, otherwise username
-        """
-        if obj.created_by:
-            full_name = obj.created_by.get_full_name()
-            if full_name.strip():
-                return full_name
-            return obj.created_by.username
-        return ""
+        if not obj.created_by:
+            return ''
+        full_name = obj.created_by.get_full_name()
+        return full_name.strip() if full_name.strip() else obj.created_by.username
 
     def validate_name(self, value):
         """
         Check that the audit type name is unique (case-insensitive)
         """
         if CustomAuditType.objects.filter(name__iexact=value).exists():
-            raise serializers.ValidationError(_('An audit type with this name already exists.'))
+            raise serializers.ValidationError('An audit type with this name already exists.')
         return value
 
     def create(self, validated_data):
@@ -43,44 +34,44 @@ class CustomAuditTypeSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 class AuditSerializer(serializers.ModelSerializer):
-    audit_type_display = serializers.CharField(source='get_audit_type_display', read_only=True)
-    status_display = serializers.CharField(source='get_status_display', read_only=True)
     created_by_name = serializers.SerializerMethodField()
-    custom_audit_type_name = serializers.CharField(source='custom_audit_type.name', read_only=True)
+    assigned_users_details = serializers.SerializerMethodField()
+    workflow_name = serializers.SerializerMethodField()
+    # Add status display for better presentation
+    status_display = serializers.CharField(source='status', read_only=True)
+    # Make status optional since it will be auto-set by the model
+    status = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = Audit
         fields = [
-            'id',
-            'reference_number',
-            'title',
-            'audit_type',
-            'audit_type_display',
-            'custom_audit_type',
-            'custom_audit_type_name',
-            'scope',
-            'objectives',
-            'status',
-            'status_display',
-            'period_from',
-            'period_to',
-            'created_by',
-            'created_by_name',
-            'created_at',
-            'updated_at'
+            'id', 'reference_number', 'title', 'audit_type', 'custom_audit_type',
+            'scope', 'objectives', 'status', 'status_display', 'period_from', 'period_to',
+            'assigned_users', 'assigned_users_details', 'workflow', 'workflow_name',
+            'created_by', 'created_by_name', 'created_at', 'updated_at'
         ]
         read_only_fields = ['reference_number', 'created_by', 'created_at', 'updated_at']
 
     def get_created_by_name(self, obj):
-        """
-        Return the user's full name if available, otherwise username
-        """
-        if obj.created_by:
-            full_name = obj.created_by.get_full_name()
-            if full_name.strip():
-                return full_name
-            return obj.created_by.username
-        return ""
+        if not obj.created_by:
+            return ''
+        full_name = obj.created_by.get_full_name()
+        return full_name.strip() if full_name.strip() else obj.created_by.username
+
+    def get_assigned_users_details(self, obj):
+        return [
+            {
+                'id': user.id,
+                'username': user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+            }
+            for user in obj.assigned_users.all()
+        ]
+
+    def get_workflow_name(self, obj):
+        return obj.workflow.name if obj.workflow else None
 
     def validate(self, data):
         """
@@ -91,7 +82,7 @@ class AuditSerializer(serializers.ModelSerializer):
         if data.get('period_from') and data.get('period_to'):
             if data['period_to'] < data['period_from']:
                 raise serializers.ValidationError({
-                    'period_to': _('End date must be after start date.')
+                    'period_to': 'End date must be after start date.'
                 })
 
         audit_type = data.get('audit_type')
@@ -99,19 +90,41 @@ class AuditSerializer(serializers.ModelSerializer):
 
         if audit_type and custom_audit_type:
             raise serializers.ValidationError(
-                _('Please provide either a system audit type or a custom audit type, not both.')
+                'Please provide either a system audit type or a custom audit type, not both.'
             )
 
         if not audit_type and not custom_audit_type:
             raise serializers.ValidationError(
-                _('Please provide either a system audit type or a custom audit type.')
+                'Please provide either a system audit type or a custom audit type.'
             )
 
         return data
 
     def create(self, validated_data):
-        """
-        Set the created_by field to the current user
-        """
+        # Extract many-to-many field data
+        assigned_users_data = validated_data.pop('assigned_users', [])
+        
+        # Set the creator
         validated_data['created_by'] = self.context['request'].user
-        return super().create(validated_data) 
+        
+        # Create the audit instance
+        audit = super().create(validated_data)
+        
+        # Set assigned users
+        if assigned_users_data:
+            audit.assigned_users.set(assigned_users_data)
+        
+        return audit
+
+    def update(self, instance, validated_data):
+        # Extract many-to-many field data
+        assigned_users_data = validated_data.pop('assigned_users', None)
+        
+        # Update the audit instance
+        audit = super().update(instance, validated_data)
+        
+        # Update assigned users if provided
+        if assigned_users_data is not None:
+            audit.assigned_users.set(assigned_users_data)
+        
+        return audit 

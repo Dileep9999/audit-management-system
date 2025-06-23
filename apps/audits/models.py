@@ -11,12 +11,6 @@ class AuditType(models.TextChoices):
     IT = 'it', _('IT')
     PERFORMANCE = 'performance', _('Performance')
 
-class AuditStatus(models.TextChoices):
-    PLANNED = 'planned', _('Planned')
-    IN_PROGRESS = 'in_progress', _('In Progress')
-    COMPLETED = 'completed', _('Completed')
-    CLOSED = 'closed', _('Closed')
-
 class CustomAuditType(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
@@ -55,12 +49,25 @@ class Audit(models.Model):
     scope = models.TextField()
     objectives = models.TextField()
     status = models.CharField(
-        max_length=20,
-        choices=AuditStatus.choices,
-        default=AuditStatus.PLANNED
+        max_length=100,
+        help_text='Current workflow state name'
     )
     period_from = models.DateField()
     period_to = models.DateField()
+    assigned_users = models.ManyToManyField(
+        User,
+        blank=True,
+        related_name='assigned_audits',
+        help_text='Users assigned to work on this audit'
+    )
+    workflow = models.ForeignKey(
+        'workflows.Workflow',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='audits',
+        help_text='Workflow to be followed for this audit'
+    )
     created_by = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
@@ -68,6 +75,34 @@ class Audit(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_available_transitions(self):
+        """
+        Get available status transitions based on the assigned workflow
+        """
+        if not self.workflow or not self.workflow.data:
+            return []
+        
+        workflow_data = self.workflow.data
+        if 'transitions' not in workflow_data:
+            return []
+        
+        transitions = workflow_data['transitions']
+        current_transitions = transitions.get(self.status, [])
+        return [transition['to'] for transition in current_transitions]
+
+    def get_initial_status(self):
+        """
+        Get the initial status from the workflow (first node)
+        """
+        if not self.workflow or not self.workflow.data:
+            return 'Draft'  # Default fallback
+        
+        workflow_data = self.workflow.data
+        nodes = workflow_data.get('nodes', [])
+        if nodes:
+            return nodes[0].get('data', {}).get('name', 'Draft')
+        return 'Draft'
 
     def save(self, *args, **kwargs):
         if not self.reference_number:
@@ -78,6 +113,47 @@ class Audit(models.Model):
                 self.reference_number = f'AU-{latest_number + 1:04d}'
             else:
                 self.reference_number = 'AU-0001'
+        
+        # Set initial status if creating new audit and no status is set
+        if not self.pk and (not self.status or self.status.strip() == ''):
+            # If workflow is available, get initial status from it
+            if self.workflow_id:
+                try:
+                    from workflows.models import Workflow
+                    workflow = Workflow.objects.get(id=self.workflow_id)
+                    if workflow.data and 'nodes' in workflow.data:
+                        nodes = workflow.data.get('nodes', [])
+                        if nodes:
+                            # Get the name from the first node's data
+                            first_node = nodes[0]
+                            node_data = first_node.get('data', {})
+                            self.status = node_data.get('name') or node_data.get('label') or 'Draft'
+                        else:
+                            self.status = 'Draft'
+                    else:
+                        self.status = 'Draft'
+                except Exception as e:
+                    print(f"Error getting workflow initial status: {e}")
+                    self.status = 'Draft'
+            elif self.workflow:
+                # If workflow object is available but not workflow_id
+                try:
+                    if self.workflow.data and 'nodes' in self.workflow.data:
+                        nodes = self.workflow.data.get('nodes', [])
+                        if nodes:
+                            first_node = nodes[0]
+                            node_data = first_node.get('data', {})
+                            self.status = node_data.get('name') or node_data.get('label') or 'Draft'
+                        else:
+                            self.status = 'Draft'
+                    else:
+                        self.status = 'Draft'
+                except Exception as e:
+                    print(f"Error getting workflow initial status: {e}")
+                    self.status = 'Draft'
+            else:
+                self.status = 'Draft'
+        
         super().save(*args, **kwargs)
 
     def __str__(self):
