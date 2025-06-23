@@ -323,22 +323,32 @@ export default function EditAudit() {
   const statusStyling = getStatusStyling(auditData.status);
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit Audit</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Reference: {auditData.id} | Workflow: {auditData.workflow_name || 'No Workflow'}
-            </p>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <button
+                onClick={() => navigate('/audits')}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 mr-4"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <div>
+                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Edit Audit</h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Reference: {auditData.id} | Workflow: {auditData.workflow_name || 'No Workflow'}
+                </p>
+              </div>
+            </div>
           </div>
-          <button
-            onClick={() => navigate('/audits')}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-          >
-            <X className="w-6 h-6" />
-          </button>
         </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
 
         {/* Current Status and Transitions */}
         <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -370,22 +380,23 @@ export default function EditAudit() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Title */}
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Title *
-              </label>
-              <input
-                type="text"
-                {...register('title', { required: 'Title is required' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                placeholder="Enter audit title"
-              />
-              {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
-            </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          {/* Title - Full Width */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Audit Title *
+            </label>
+            <input
+              type="text"
+              {...register('title', { required: 'Title is required' })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-lg"
+              placeholder="Enter a descriptive audit title"
+            />
+            {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
+          </div>
 
+          {/* Basic Information - Row 1 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Audit Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -420,19 +431,17 @@ export default function EditAudit() {
                 <option value="">Select workflow</option>
                 {workflows.filter(w => w.status === 'active').map((workflow) => (
                   <option key={workflow.id} value={workflow.id}>
-                    {workflow.name} {workflow.description && `- ${workflow.description.substring(0, 50)}...`}
+                    {workflow.name} ✓
                   </option>
                 ))}
               </select>
               {errors.workflow && <p className="mt-1 text-sm text-red-600">{errors.workflow.message}</p>}
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Changing workflow may affect available status transitions
-              </p>
             </div>
           </div>
 
-          {/* Period */}
+          {/* Period Information - Row 2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Period From */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Period From *
@@ -445,6 +454,7 @@ export default function EditAudit() {
               {errors.period_from && <p className="mt-1 text-sm text-red-600">{errors.period_from.message}</p>}
             </div>
 
+            {/* Period To */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Period To *
@@ -458,45 +468,47 @@ export default function EditAudit() {
             </div>
           </div>
 
-          {/* Scope */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Scope *
-            </label>
-            <textarea
-              {...register('scope', { required: 'Scope is required' })}
-              rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              placeholder="Describe the audit scope"
-            />
-            {errors.scope && <p className="mt-1 text-sm text-red-600">{errors.scope.message}</p>}
-          </div>
+          {/* Content Areas Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Scope */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Audit Scope *
+              </label>
+              <textarea
+                {...register('scope', { required: 'Scope is required' })}
+                rows={6}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white resize-none"
+                placeholder="Define the scope and boundaries of this audit. Include areas, processes, systems, or departments to be covered..."
+              />
+              {errors.scope && <p className="mt-1 text-sm text-red-600">{errors.scope.message}</p>}
+            </div>
 
-          {/* Objectives - Rich Text Editor */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Objectives *
-            </label>
-            <Controller
-              name="objectives"
-              control={control}
-              rules={{ required: 'Objectives are required' }}
-              render={({ field }) => (
-                <div className="border border-gray-300 rounded-md dark:border-gray-600">
-                  <ReactQuill
-                    theme="snow"
-                    value={field.value}
-                    onChange={field.onChange}
-                    modules={quillModules}
-                    formats={quillFormats}
-                    placeholder="Describe the audit objectives..."
-                    className="dark:text-white"
-                    style={{ height: '200px', marginBottom: '50px' }}
-                  />
-                </div>
-              )}
-            />
-            {errors.objectives && <p className="mt-1 text-sm text-red-600">{errors.objectives.message}</p>}
+            {/* Objectives - Rich Text Editor */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Audit Objectives *
+              </label>
+              <Controller
+                name="objectives"
+                control={control}
+                rules={{ required: 'Objectives are required' }}
+                render={({ field }) => (
+                  <div className="min-h-[156px] border border-gray-300 rounded-md dark:border-gray-600">
+                    <ReactQuill
+                      theme="snow"
+                      value={field.value}
+                      onChange={field.onChange}
+                      modules={quillModules}
+                      formats={quillFormats}
+                      placeholder="Describe the main objectives and expected outcomes of this audit..."
+                      className="h-[126px] dark:text-white"
+                    />
+                  </div>
+                )}
+              />
+              {errors.objectives && <p className="mt-1 text-sm text-red-600">{errors.objectives.message}</p>}
+            </div>
           </div>
 
           {/* Assign Users */}
@@ -582,6 +594,7 @@ export default function EditAudit() {
             </button>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

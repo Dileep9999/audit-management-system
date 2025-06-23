@@ -425,12 +425,8 @@ const WorkflowDesigner = () => {
             }
           };
 
-          // Add the edge and select it for editing
+          // Add the edge
           setEdges((eds) => addEdge(newEdge, eds));
-          setSelectedEdge(newEdge);
-          setEdgeActions([]);
-          setNewAction('');
-          setIsEditing(true);
         }
       }
     },
@@ -737,9 +733,9 @@ console.log("fdsv ",payload);
     } catch (error: unknown) {
       console.error('Error saving workflow:', error);
       if (error instanceof ApiError) {
-        const apiError = error as ApiError<ApiErrorResponse>;
-        if (apiError.body) {
-          Object.entries(apiError.body).forEach(([field, messages]) => {
+        const apiError = error as ApiError;
+        if (apiError.data) {
+          Object.entries(apiError.data).forEach(([field, messages]) => {
             if (Array.isArray(messages)) {
               toast.error(`${field}: ${messages.join(', ')}`);
             }

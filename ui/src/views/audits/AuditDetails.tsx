@@ -1,8 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { BookOpen, CheckSquare, User, X, Rocket, ChevronUp, ChevronDown, Plus, Trash2, Check, Search, UserPlus } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { 
+  BookOpen, 
+  CheckSquare, 
+  User, 
+  X, 
+  ChevronUp, 
+  ChevronDown, 
+  Plus, 
+  Trash2, 
+  Check, 
+  Search, 
+  UserPlus,
+  Settings,
+  FileText,
+  BarChart3,
+  Brain,
+  Shield,
+  ArrowLeft,
+  ArrowRight,
+  Users,
+  Clock,
+  Tag,
+  Cog,
+  Filter,
+  MoreHorizontal,
+  Bell,
+  Share,
+  Eye,
+  EyeOff
+} from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { toast } from 'react-hot-toast';
+import { getAudit, getWorkflows, getAvailableTransitions, transitionAuditStatus } from '../../utils/api_service';
 
 interface TabProps {
   label: string;
@@ -24,18 +55,34 @@ const Tab: React.FC<TabProps> = ({ label, isActive, onClick, className = '' }) =
   </button>
 );
 
-const sideTabs = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'assignTo', label: 'Assign To' },
-  { id: 'checklist', label: 'Checklist' },
+// Left sidebar navigation items (GitHub style)
+const sidebarNavigation = [
+  { 
+    id: 'overview', 
+    label: 'Overview', 
+    icon: BookOpen,
+    description: 'General audit information'
+  },
+  { 
+    id: 'assignTo', 
+    label: 'Collaborators', 
+    icon: Users,
+    description: 'Manage team access'
+  },
+  { 
+    id: 'checklist', 
+    label: 'Checklist', 
+    icon: CheckSquare,
+    description: 'Tasks and progress'
+  },
 ];
 
 const overviewTabs = [
-  { id: 'content', label: 'Content' },
-  { id: 'reports', label: 'Reports' },
-  { id: 'modelAudit', label: 'Model Audit' },
-  { id: 'controlSelection', label: 'Control Selection' },
-  { id: 'settings', label: 'Settings' },
+  { id: 'content', label: 'Content', icon: FileText },
+  { id: 'reports', label: 'Reports', icon: BarChart3 },
+  { id: 'modelAudit', label: 'Model Audit', icon: Brain },
+  { id: 'controlSelection', label: 'Control Selection', icon: Shield },
+  { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
 // Quill editor modules configuration
@@ -87,13 +134,89 @@ const statusOptions = [
   { value: 'Cancelled', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' }
 ];
 
+interface Workflow {
+  id: number;
+  name: string;
+  description: string;
+  status: string;
+}
+
+interface AuditData {
+  id: number;
+  reference_number: string;
+  title: string;
+  audit_type: string;
+  scope: string;
+  objectives: string;
+  status: string;
+  period_from: string;
+  period_to: string;
+  assigned_users: number[];
+  assigned_users_details?: any[];
+  workflow: number;
+  workflow_name?: string;
+  created_by_name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Dynamic status color assignment based on common status patterns
+const getStatusStyling = (status: string) => {
+  const statusLower = status.toLowerCase();
+  
+  if (statusLower.includes('draft') || statusLower.includes('plan')) {
+    return {
+      bgColor: 'bg-blue-100 dark:bg-blue-900/20',
+      textColor: 'text-blue-800 dark:text-blue-400'
+    };
+  } else if (statusLower.includes('progress') || statusLower.includes('active') || statusLower.includes('ongoing')) {
+    return {
+      bgColor: 'bg-orange-100 dark:bg-orange-900/20',
+      textColor: 'text-orange-800 dark:text-orange-400'
+    };
+  } else if (statusLower.includes('review') || statusLower.includes('pending')) {
+    return {
+      bgColor: 'bg-yellow-100 dark:bg-yellow-900/20',
+      textColor: 'text-yellow-800 dark:text-yellow-400'
+    };
+  } else if (statusLower.includes('complete') || statusLower.includes('done') || statusLower.includes('finish')) {
+    return {
+      bgColor: 'bg-green-100 dark:bg-green-900/20',
+      textColor: 'text-green-800 dark:text-green-400'
+    };
+  } else if (statusLower.includes('closed') || statusLower.includes('archive')) {
+    return {
+      bgColor: 'bg-gray-100 dark:bg-gray-900/20',
+      textColor: 'text-gray-800 dark:text-gray-400'
+    };
+  } else {
+    return {
+      bgColor: 'bg-purple-100 dark:bg-purple-900/20',
+      textColor: 'text-purple-800 dark:text-purple-400'
+    };
+  }
+};
+
 const AuditDetails: React.FC = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [activeSideTab, setActiveSideTab] = useState('overview');
   const [activeOverviewTab, setActiveOverviewTab] = useState('content');
-  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
   const [editorContent, setEditorContent] = useState('');
+  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
+
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Real data states
+  const [auditData, setAuditData] = useState<AuditData | null>(null);
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
+  const [availableTransitions, setAvailableTransitions] = useState<string[]>([]);
+  const [currentWorkflow, setCurrentWorkflow] = useState<Workflow | null>(null);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
   const [users] = useState<User[]>([
     { id: 1, name: 'John Doe', department: 'Finance', email: 'john@example.com', canRead: true, canWrite: true },
     { id: 2, name: 'Jane Smith', department: 'Compliance', email: 'jane@example.com', canRead: true, canWrite: false },
@@ -136,20 +259,101 @@ const AuditDetails: React.FC = () => {
 
   useEffect(() => {
     if (searchParams.get('sidebar') === 'open') {
-      setIsRightSidebarOpen(true);
+      // Handle any specific URL parameters if needed
     }
   }, [searchParams]);
 
-  // Mock data - replace with actual data fetching
-  const auditData = {
-    id: parseInt(id || '0'),
-    assignedTo: 'John Doe',
-    checklist: [
-      { id: 1, task: 'Initial Assessment', completed: true },
-      { id: 2, task: 'Document Review', completed: false },
-      { id: 3, task: 'Stakeholder Interviews', completed: false },
-    ]
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        if (isStatusDropdownOpen) {
+          setIsStatusDropdownOpen(false);
+        }
+      }
+    };
+
+    if (isStatusDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isStatusDropdownOpen]);
+
+  // Load audit data and workflow info
+  useEffect(() => {
+    if (id) {
+      loadAuditData();
+    }
+  }, [id]);
+
+  const loadAuditData = async () => {
+    if (!id) return;
+    
+    setIsLoadingData(true);
+    try {
+      const [auditResponse, workflowsData] = await Promise.all([
+        getAudit(parseInt(id)),
+        getWorkflows()
+      ]);
+
+      setAuditData(auditResponse);
+      setWorkflows(workflowsData);
+
+      // Set current workflow from audit data
+      if (auditResponse.workflow) {
+        const workflow = workflowsData.find((w: Workflow) => w.id === auditResponse.workflow);
+        if (workflow) {
+          setCurrentWorkflow(workflow);
+        }
+      }
+
+      // Load available transitions
+      try {
+        const transitionsResponse = await getAvailableTransitions(parseInt(id));
+        setAvailableTransitions(transitionsResponse.data || []);
+      } catch (error) {
+        console.error('Error loading transitions:', error);
+        setAvailableTransitions([]);
+      }
+
+    } catch (error) {
+      console.error('Error loading audit data:', error);
+      toast.error('Failed to load audit data');
+    } finally {
+      setIsLoadingData(false);
+    }
   };
+
+  const handleStatusTransition = async (newStatus: string) => {
+    if (!id || !auditData) return;
+    
+    setIsTransitioning(true);
+    try {
+      await transitionAuditStatus(parseInt(id), newStatus);
+      
+      // Reload audit data to get updated status and transitions
+      await loadAuditData();
+      
+      toast.success(`Status updated to ${newStatus}`);
+    } catch (error: any) {
+      console.error('Error transitioning status:', error);
+      let errorMessage = 'Failed to update status';
+      if (error?.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      } else if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      toast.error(errorMessage);
+    } finally {
+      setIsTransitioning(false);
+    }
+  };
+
+
 
   const handleEditorChange = (content: string) => {
     setEditorContent(content);
@@ -202,64 +406,35 @@ const AuditDetails: React.FC = () => {
   };
 
   const handleAssignUser = (checklistId: number, userId: number) => {
-    console.log('Before update - Checklist ID:', checklistId, 'User ID:', userId);
-    
-    setChecklists((prevChecklists: ChecklistItem[]) => {
-      // Deep clone the previous state to avoid any reference issues
-      const newChecklists = JSON.parse(JSON.stringify(prevChecklists)) as ChecklistItem[];
-      
-      // Find the checklist to update
-      const checklistIndex = newChecklists.findIndex((item: ChecklistItem) => item.id === checklistId);
-      if (checklistIndex === -1) {
-        console.error('Checklist not found:', checklistId);
-        return prevChecklists;
+    setChecklists(checklists.map(item => {
+      if (item.id === checklistId) {
+        const isAssigned = item.assignedUsers.includes(userId);
+        return {
+          ...item,
+          assignedUsers: isAssigned 
+            ? item.assignedUsers.filter(id => id !== userId)
+            : [...item.assignedUsers, userId]
+        };
       }
-
-      // Get the current assigned users
-      const currentAssignedUsers = [...newChecklists[checklistIndex].assignedUsers];
-      console.log('Current assigned users:', currentAssignedUsers);
-
-      // Update the assigned users array
-      let updatedAssignedUsers;
-      if (currentAssignedUsers.includes(userId)) {
-        updatedAssignedUsers = currentAssignedUsers.filter(id => id !== userId);
-        console.log('Removing user:', userId);
-      } else {
-        updatedAssignedUsers = [...currentAssignedUsers, userId];
-        console.log('Adding user:', userId);
-      }
-
-      console.log('Updated assigned users:', updatedAssignedUsers);
-
-      // Update the checklist with the new assigned users
-      newChecklists[checklistIndex] = {
-        ...newChecklists[checklistIndex],
-        assignedUsers: updatedAssignedUsers
-      };
-
-      console.log('Final checklist state:', newChecklists[checklistIndex]);
-      return newChecklists;
-    });
+      return item;
+    }));
   };
 
   const handleTitleChange = (id: number, title: string) => {
-    setChecklists(checklists.map(item =>
+    setChecklists(checklists.map(item => 
       item.id === id ? { ...item, title } : item
     ));
   };
 
   const handleDeleteChecklist = (id: number) => {
-    if (window.confirm('Are you sure you want to delete this checklist item?')) {
-      setChecklists(checklists.filter(item => item.id !== id));
-    }
+    setChecklists(checklists.filter(item => item.id !== id));
   };
 
   const handleBulkAssign = () => {
-    const updatedChecklists = checklists.map(checklist => ({
-      ...checklist,
-      assignedUsers: [...new Set([...checklist.assignedUsers, ...selectedUsers])]
-    }));
-    setChecklists(updatedChecklists);
+    setChecklists(checklists.map(item => ({
+      ...item,
+      assignedUsers: [...new Set([...item.assignedUsers, ...selectedUsers])]
+    })));
     setSelectedUsers([]);
     setIsAssignModalOpen(false);
   };
@@ -273,7 +448,7 @@ const AuditDetails: React.FC = () => {
   };
 
   const handleSearchQueryChange = (id: number, query: string) => {
-    setChecklists(checklists.map(item =>
+    setChecklists(checklists.map(item => 
       item.id === id ? { ...item, searchQuery: query } : item
     ));
   };
@@ -282,88 +457,107 @@ const AuditDetails: React.FC = () => {
     setChecklists(checklists.map(item =>
       item.id === id ? { ...item, status: newStatus } : item
     ));
+    setStatusDropdownId(null);
   };
 
   const renderOverviewTabContent = () => {
     switch (activeOverviewTab) {
       case 'content':
         return (
-          <div className="p-6">
-            <h3 className="text-lg font-medium mb-4">Content Information</h3>
-            <div className="space-y-4">
-              <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                <div className="dark:bg-gray-800">
-                  <ReactQuill
-                    theme="snow"
-                    value={editorContent}
-                    onChange={handleEditorChange}
-                    modules={modules}
-                    formats={formats}
-                    className="bg-white dark:bg-gray-800 [&_.ql-toolbar]:bg-gray-50 dark:[&_.ql-toolbar]:bg-gray-700 [&_.ql-toolbar]:border-gray-200 dark:[&_.ql-toolbar]:border-gray-600 [&_.ql-container]:border-gray-200 dark:[&_.ql-container]:border-gray-600 [&_.ql-editor]:min-h-[400px] [&_.ql-editor]:text-gray-900 dark:[&_.ql-editor]:text-gray-100"
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end space-x-3 mt-4">
-                <button
-                  onClick={handleSaveDraft}
-                  className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-md"
-                >
-                  Save Draft
-                </button>
-                <button
-                  onClick={handlePublish}
-                  className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
-                >
-                  Publish
-                </button>
-              </div>
+          <div className="space-y-6">
+            <div className="border-b border-gray-200 dark:border-gray-700 pb-6">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Audit Content</h3>
+              <ReactQuill
+                theme="snow"
+                value={editorContent}
+                onChange={handleEditorChange}
+                modules={modules}
+                formats={formats}
+                className="bg-white dark:bg-gray-800"
+                style={{ height: '400px', marginBottom: '50px' }}
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={handleSaveDraft}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+              >
+                Save Draft
+              </button>
+              <button
+                onClick={handlePublish}
+                className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
+              >
+                Publish
+              </button>
             </div>
           </div>
         );
       case 'reports':
         return (
-          <div className="p-6">
-            <h3 className="text-lg font-medium mb-4">Reports</h3>
-            <div className="space-y-4">
-              <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                <h4 className="font-medium mb-2">Generated Reports</h4>
-                <p className="text-gray-600 dark:text-gray-400">No reports generated yet</p>
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Reports</h3>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <div className="text-center py-8">
+                <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No reports generated yet</h4>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">Generate your first audit report to get started.</p>
+                <button className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600">
+                  Generate Report
+                </button>
               </div>
             </div>
           </div>
         );
       case 'modelAudit':
         return (
-          <div className="p-6">
-            <h3 className="text-lg font-medium mb-4">Model Audit</h3>
-            <div className="space-y-4">
-              <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                <h4 className="font-medium mb-2">Audit Models</h4>
-                <p className="text-gray-600 dark:text-gray-400">Select a model to begin audit</p>
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Model Audit</h3>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <div className="text-center py-8">
+                <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Select a model to begin audit</h4>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">Choose from available models to start the audit process.</p>
+                <button className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600">
+                  Select Model
+                </button>
               </div>
             </div>
           </div>
         );
       case 'controlSelection':
         return (
-          <div className="p-6">
-            <h3 className="text-lg font-medium mb-4">Control Selection</h3>
-            <div className="space-y-4">
-              <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                <h4 className="font-medium mb-2">Available Controls</h4>
-                <p className="text-gray-600 dark:text-gray-400">No controls selected</p>
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Control Selection</h3>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <div className="text-center py-8">
+                <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No controls selected</h4>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">Select controls to include in your audit scope.</p>
+                <button className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600">
+                  Select Controls
+                </button>
               </div>
             </div>
           </div>
         );
       case 'settings':
         return (
-          <div className="p-6">
-            <h3 className="text-lg font-medium mb-4">Settings</h3>
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Audit Settings</h3>
             <div className="space-y-4">
               <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                <h4 className="font-medium mb-2">Audit Settings</h4>
-                <p className="text-gray-600 dark:text-gray-400">Configure audit parameters</p>
+                <h4 className="text-base font-medium text-gray-900 dark:text-white mb-2">General Settings</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm text-gray-700 dark:text-gray-300">Email notifications</label>
+                    <input type="checkbox" className="rounded border-gray-300" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm text-gray-700 dark:text-gray-300">Auto-save drafts</label>
+                    <input type="checkbox" className="rounded border-gray-300" defaultChecked />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -375,194 +569,295 @@ const AuditDetails: React.FC = () => {
 
   const renderChecklistContent = () => {
     return (
-      <div className="flex-1">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <div className="space-y-6">
-            {/* Header Section */}
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">Audit Checklist</h2>
-              <button
-                onClick={handleAddChecklist}
-                className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 flex items-center gap-2"
-              >
-                <Plus className="h-5 w-5" />
-                Add Checklist
-              </button>
-            </div>
+      <div className="space-y-6">
+        {/* Header Section */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Audit Checklist</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Track progress and manage audit tasks</p>
+          </div>
+          <button
+            onClick={handleAddChecklist}
+            className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add Task
+          </button>
+        </div>
 
-            {/* Checklist Items */}
-            <div className="space-y-6">
-              {checklists.map((item) => (
-                <div 
-                  key={item.id}
-                  className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
-                >
-                  <div className="bg-gray-50 dark:bg-gray-700 p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 flex-1">
-                        <button
-                          onClick={() => handleChecklistComplete(item.id)}
-                          className={`p-1 rounded-md transition-colors ${
-                            item.completed 
-                              ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400' 
-                              : 'bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-400'
-                          }`}
-                        >
-                          <CheckSquare className="h-5 w-5" />
-                        </button>
-                        <input
-                          type="text"
-                          value={item.title}
-                          onChange={(e) => handleTitleChange(item.id, e.target.value)}
-                          className="flex-1 bg-transparent border-none focus:ring-0 text-gray-900 dark:text-gray-100 font-medium"
-                        />
-                      </div>
-                      <div className="flex items-center gap-4">
-                        {/* Status Dropdown */}
-                        <div className="relative status-dropdown">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setStatusDropdownId(statusDropdownId === item.id ? null : item.id);
-                            }}
-                            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                              statusOptions.find(option => option.value === item.status)?.color
-                            }`}
-                          >
-                            {item.status}
-                            <ChevronDown className="ml-1 h-4 w-4" />
-                          </button>
-                          {statusDropdownId === item.id && (
-                            <div className="fixed z-10 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 z-[9999]">
-                              <div className="py-1" role="menu" aria-orientation="vertical">
-                                {statusOptions.map((option) => (
-                                  <button
-                                    key={option.value}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleStatusChange(item.id, option.value as ChecklistItem['status']);
-                                      setStatusDropdownId(null);
-                                    }}
-                                    className={`block w-full text-left px-4 py-2 text-sm ${option.color} hover:bg-opacity-80`}
-                                    role="menuitem"
-                                  >
-                                    {option.value}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                          
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex -space-x-2">
-                            {item.assignedUsers.map(userId => {
-                              const user = users.find(u => u.id === userId);
-                              return user ? (
-                                <div 
-                                  key={user.id}
-                                  className="h-8 w-8 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center border-2 border-white dark:border-gray-800"
-                                  title={user.name}
-                                >
-                                  <span className="text-primary-700 dark:text-primary-300 text-sm font-medium">
-                                    {user.name.split(' ').map(n => n[0]).join('')}
-                                  </span>
-                                </div>
-                              ) : null;
-                            })}
-                          </div>
-                          <button
-                            onClick={() => handleChecklistExpand(item.id)}
-                            className="p-1 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md"
-                          >
-                            {item.isExpanded ? (
-                              <ChevronUp className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                            ) : (
-                              <ChevronDown className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                            )}
-                          </button>
-                        </div>
-                        <button
-                          onClick={() => {
-                            if (window.confirm('Are you sure you want to delete this checklist item?')) {
-                              setChecklists(checklists.filter(c => c.id !== item.id));
-                            }
-                          }}
-                          className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-md"
-                        >
-                          <Trash2 className="h-5 w-5" />
-                        </button>
-                      </div>
+        {/* Checklist Items */}
+        <div className="space-y-4">
+          {checklists.map((item) => {
+            const statusOption = statusOptions.find(s => s.value === item.status);
+            const assignedUserNames = item.assignedUsers.map(userId => 
+              users.find(user => user.id === userId)?.name
+            ).filter(Boolean);
+
+            return (
+              <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded-lg">
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3 flex-1">
+                      <button
+                        onClick={() => handleChecklistComplete(item.id)}
+                        className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center ${
+                          item.completed 
+                            ? 'bg-green-500 border-green-500 text-white' 
+                            : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                      >
+                        {item.completed && <Check className="h-3 w-3" />}
+                      </button>
+                      
+                      <input
+                        type="text"
+                        value={item.title}
+                        onChange={(e) => handleTitleChange(item.id, e.target.value)}
+                        className={`flex-1 bg-transparent border-none outline-none text-sm font-medium ${
+                          item.completed 
+                            ? 'line-through text-gray-500 dark:text-gray-400' 
+                            : 'text-gray-900 dark:text-white'
+                        }`}
+                      />
                     </div>
 
-                    {item.isExpanded && (
-                      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                        <div className="space-y-4">
-                          <ReactQuill
-                            theme="snow"
-                            value={item.content}
-                            onChange={(content) => handleChecklistContentChange(item.id, content)}
-                            modules={modules}
-                            formats={formats}
-                            className="bg-white dark:bg-gray-800 [&_.ql-toolbar]:bg-gray-50 dark:[&_.ql-toolbar]:bg-gray-700 [&_.ql-toolbar]:border-gray-200 dark:[&_.ql-toolbar]:border-gray-600 [&_.ql-container]:border-gray-200 dark:[&_.ql-container]:border-gray-600 [&_.ql-editor]:min-h-[200px] [&_.ql-editor]:text-gray-900 dark:[&_.ql-editor]:text-gray-100"
-                          />
-                          
-                          <div className="mt-4 relative">
-                            <div className="flex justify-between items-center mb-3">
-                              <h4 className="font-medium text-gray-900 dark:text-gray-100">Assigned Users</h4>
-                              <div className="relative w-72">
-                                <input
-                                  type="text"
-                                  placeholder="Search users..."
-                                  value={item.searchQuery}
-                                  onChange={(e) => handleSearchQueryChange(item.id, e.target.value)}
-                                  className="w-full px-4 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-                                />
-                                <Search className="fixed right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 z[9999]" />
-                                
-                                {/* Search Results Dropdown */}
-                                {item.searchQuery && (
-                                  <div 
-                                    className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-700 rounded-md shadow-lg border border-gray-200 dark:border-gray-600 max-h-48 overflow-y-auto"
-                                  >
-                                    {users
-                                      .filter(user => 
-                                        (user.name.toLowerCase().includes(item.searchQuery.toLowerCase()) ||
-                                        user.department.toLowerCase().includes(item.searchQuery.toLowerCase())) &&
-                                        !item.assignedUsers.includes(user.id)
-                                      )
-                                      .map(user => (
-                                        <div
-                                          key={user.id}
-                                          onClick={() => {
-                                            console.log('Clicking user:', user.id, 'for checklist:', item.id);
-                                            handleAssignUser(item.id, user.id);
-                                            handleSearchQueryChange(item.id, '');
-                                          }}
-                                          className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 flex items-center gap-2 cursor-pointer"
-                                        >
-                                          <div className="h-8 w-8 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center flex-shrink-0">
-                                            <span className="text-primary-700 dark:text-primary-300 text-sm font-medium">
-                                              {user.name.split(' ').map(n => n[0]).join('')}
-                                            </span>
-                                          </div>
-                                          <div>
-                                            <div className="font-medium text-gray-900 dark:text-gray-100">{user.name}</div>
-                                            <div className="text-sm text-gray-500 dark:text-gray-400">{user.department}</div>
-                                          </div>
-                                        </div>
-                                      ))}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
+                    <div className="flex items-center gap-2">
+                      {/* Status Badge */}
+                      <div className="relative">
+                        <button
+                          onClick={() => setStatusDropdownId(statusDropdownId === item.id ? null : item.id)}
+                          className={`px-2 py-1 text-xs font-medium rounded-full ${statusOption?.color}`}
+                        >
+                          {item.status}
+                        </button>
+                        
+                        {statusDropdownId === item.id && (
+                          <div className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10 min-w-32">
+                            {statusOptions.map((option) => (
+                              <button
+                                key={option.value}
+                                onClick={() => handleStatusChange(item.id, option.value as ChecklistItem['status'])}
+                                className="block w-full text-left px-3 py-2 text-xs hover:bg-gray-100 dark:hover:bg-gray-700"
+                              >
+                                {option.value}
+                              </button>
+                            ))}
                           </div>
+                        )}
+                      </div>
+
+                      {/* Assigned Users */}
+                      {assignedUserNames.length > 0 && (
+                        <div className="flex items-center gap-1">
+                          <User className="h-3 w-3 text-gray-400" />
+                          <span className="text-xs text-gray-600 dark:text-gray-400">
+                            {assignedUserNames.join(', ')}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Expand/Collapse */}
+                      <button
+                        onClick={() => handleChecklistExpand(item.id)}
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                      >
+                        {item.isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </button>
+
+                      {/* Delete */}
+                      <button
+                        onClick={() => handleDeleteChecklist(item.id)}
+                        className="text-gray-400 hover:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Expanded Content */}
+                  {item.isExpanded && (
+                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Description
+                        </label>
+                        <textarea
+                          value={item.content}
+                          onChange={(e) => handleChecklistContentChange(item.id, e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                          rows={3}
+                          placeholder="Add a description for this task..."
+                        />
+                      </div>
+
+                      {/* Assign Users */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Assign to users
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {users.map((user) => (
+                            <button
+                              key={user.id}
+                              onClick={() => handleAssignUser(item.id, user.id)}
+                              className={`px-3 py-1 text-xs rounded-full border ${
+                                item.assignedUsers.includes(user.id)
+                                  ? 'bg-primary-100 text-primary-700 border-primary-300 dark:bg-primary-900 dark:text-primary-300'
+                                  : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600'
+                              }`}
+                            >
+                              {user.name}
+                            </button>
+                          ))}
                         </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {checklists.length === 0 && (
+          <div className="text-center py-12 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <CheckSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No checklist items yet</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">Create your first checklist item to get started.</p>
+            <button
+              onClick={handleAddChecklist}
+              className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 flex items-center gap-2 mx-auto"
+            >
+              <Plus className="h-4 w-4" />
+              Add First Task
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderCollaboratorsContent = () => {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Manage access</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Control who can view and edit this audit</p>
+        </div>
+
+        {/* Search and Add Users */}
+        <div className="flex gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search users by name or department..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            />
+          </div>
+          <button className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 flex items-center gap-2">
+            <UserPlus className="h-4 w-4" />
+            Add collaborator
+          </button>
+        </div>
+
+        {/* Users Table */}
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  User
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Department
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Access
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+              {filteredUsers.map((user) => (
+                <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          {user.name.charAt(0)}
+                        </span>
+                      </div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    {user.department}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-4">
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={user.canRead}
+                          onChange={(e) => handlePermissionChange(user.id, 'read', e.target.checked)}
+                          className="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
+                        />
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Read</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={user.canWrite}
+                          onChange={(e) => handlePermissionChange(user.id, 'write', e.target.checked)}
+                          className="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
+                        />
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Write</span>
+                      </label>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                      Remove
+                    </button>
+                  </td>
+                </tr>
               ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Recent Activities */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Recent activity</h3>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 text-sm">
+              <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+              <span className="text-gray-600 dark:text-gray-400">
+                <strong>Jane Smith</strong> was granted read access
+              </span>
+              <span className="text-gray-400 text-xs">2 days ago</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
+              <span className="text-gray-600 dark:text-gray-400">
+                <strong>Mike Johnson</strong> was granted read access
+              </span>
+              <span className="text-gray-400 text-xs">3 days ago</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <div className="h-2 w-2 bg-orange-500 rounded-full"></div>
+              <span className="text-gray-600 dark:text-gray-400">
+                <strong>John Doe</strong> was granted write access
+              </span>
+              <span className="text-gray-400 text-xs">1 week ago</span>
             </div>
           </div>
         </div>
@@ -574,124 +869,34 @@ const AuditDetails: React.FC = () => {
     switch (activeSideTab) {
       case 'overview':
         return (
-          <div className="flex-1">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex gap-4">
-                  {overviewTabs.map((tab) => (
-                    <Tab
+          <div className="space-y-6">
+            {/* Sub-navigation for Overview */}
+            <div className="border-b border-gray-200 dark:border-gray-700">
+              <nav className="flex space-x-8">
+                {overviewTabs.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
                       key={tab.id}
-                      label={tab.label}
-                      isActive={activeOverviewTab === tab.id}
                       onClick={() => setActiveOverviewTab(tab.id)}
-                    />
-                  ))}
-                </div>
-              </div>
-              {renderOverviewTabContent()}
+                      className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${
+                        activeOverviewTab === tab.id
+                          ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </nav>
             </div>
+            {renderOverviewTabContent()}
           </div>
         );
       case 'assignTo':
-        return (
-          <div className="flex-1">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold">Assignment Details</h2>
-                <button className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 flex items-center gap-2">
-                  <span className="text-xl">+</span> Add User
-                </button>
-              </div>
-              
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        User
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        Department
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        Permissions
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    {users.map((user) => (
-                      <tr key={user.id}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10">
-                              <div className="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
-                                <span className="text-primary-700 dark:text-primary-300 font-medium">
-                                  {user.name.split(' ').map(n => n[0]).join('')}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                {user.name}
-                              </div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400">
-                                {user.email}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                            {user.department}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          <div className="flex items-center gap-4">
-                            <label className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                checked={user.canRead}
-                                onChange={(e) => handlePermissionChange(user.id, 'read', e.target.checked)}
-                                className="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
-                              />
-                              <span>Read</span>
-                            </label>
-                            <label className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                checked={user.canWrite}
-                                onChange={(e) => handlePermissionChange(user.id, 'write', e.target.checked)}
-                                className="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
-                              />
-                              <span>Write</span>
-                            </label>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="mt-6">
-                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Recent Activities</h3>
-                <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <p>• Jane Smith granted read access - 2 days ago</p>
-                  <p>• Mike Johnson granted read access - 3 days ago</p>
-                  <p>• John Doe granted write access - 1 week ago</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
+        return renderCollaboratorsContent();
       case 'checklist':
         return renderChecklistContent();
       default:
@@ -699,156 +904,376 @@ const AuditDetails: React.FC = () => {
     }
   };
 
+  if (isLoadingData) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-lg">Loading audit details...</div>
+      </div>
+    );
+  }
+
+  if (!auditData) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-lg text-red-600">Audit not found</div>
+      </div>
+    );
+  }
+
+  const statusStyling = getStatusStyling(auditData.status);
+
   return (
-    <div className="flex h-screen">
-      {/* Main content */}
-      <div className={`flex-1 transition-all duration-300 ${isRightSidebarOpen ? 'mr-80' : ''}`}>
-        <div className="mx-auto px-4 py-8">
-          <div className="flex gap-8">
-            {/* Left Sidebar with Tabs */}
-            <div className="w-80 flex-shrink-0">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-                <div className="p-4">
-                  <div className="flex flex-col gap-2">
-                    {sideTabs.map((tab) => (
-                      <Tab
-                        key={tab.id}
-                        label={tab.label}
-                        isActive={activeSideTab === tab.id}
-                        onClick={() => setActiveSideTab(tab.id)}
-                        className="w-full justify-start"
-                      />
-                    ))}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="px-3 sm:px-4 lg:px-6">
+          <div className="flex items-center justify-between h-14">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate('/audits')}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <div>
+                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  {auditData.title}
+                </h1>
+                <div className="flex items-center gap-4 mt-1">
+                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500">
+                    <Tag className="h-4 w-4" />
+                    {auditData.reference_number}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500">
+                    <User className="h-4 w-4" />
+                    Created by {auditData.created_by_name}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-gray-500 dark:text-gray-500" />
+                    <div className="relative" ref={dropdownRef}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsStatusDropdownOpen(!isStatusDropdownOpen);
+                          console.log('Status dropdown clicked:', !isStatusDropdownOpen, 'Available transitions:', availableTransitions);
+                        }}
+                        className={`inline-flex items-center gap-1 px-3 py-1 text-sm font-medium rounded-full transition-colors hover:opacity-80 ${statusStyling.bgColor} ${statusStyling.textColor}`}
+                      >
+                        {auditData.status}
+                        <ChevronDown className="h-3 w-3" />
+                      </button>
+                      
+                      {isStatusDropdownOpen && (
+                        <div className="absolute z-50 top-full left-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg min-w-48">
+                          <div className="py-1">
+                            {availableTransitions.length > 0 ? (
+                              <>
+                                <div className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide border-b border-gray-100 dark:border-gray-700">
+                                  Available Transitions
+                                </div>
+                                {availableTransitions.map((transition) => (
+                                  <button
+                                    key={transition}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleStatusTransition(transition);
+                                      setIsStatusDropdownOpen(false);
+                                    }}
+                                    disabled={isTransitioning}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+                                  >
+                                    <ArrowRight className="h-3 w-3" />
+                                    {transition}
+                                  </button>
+                                ))}
+                              </>
+                            ) : (
+                              <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+                                No transitions available
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* Main Content Area */}
-            {renderContent()}
+            <div className="flex items-center">
+              <button
+                onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
+                className="px-2 py-1.5 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded"
+              >
+                {isRightSidebarOpen ? 'Hide Details' : 'Show Details'}
+              </button>
+            </div>
           </div>
         </div>
-
-        {/* QuickStart Button */}
-        <button
-          onClick={() => setIsRightSidebarOpen(true)}
-          className={`fixed bottom-8 right-8 bg-primary-500 text-white p-4 rounded-full shadow-lg hover:bg-primary-600 transform hover:scale-105 transition-all duration-200 flex items-center gap-2 z-50 ${
-            isRightSidebarOpen ? 'hidden' : ''
-          }`}
-        >
-          <Rocket className="h-5 w-5" />
-          <span>QuickStart</span>
-        </button>
       </div>
 
-      {/* Right sidebar */}
-      {isRightSidebarOpen && (
-        <div className="fixed top-0 right-0 w-80 h-full bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 z-40">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-              Quick Start Guide
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Follow these steps to complete your audit
-            </p>
+      <div className="px-3 sm:px-4 lg:px-6 py-4">
+        <div className="flex gap-3">
+          {/* Left Sidebar - GitHub style */}
+          <div className="w-64 flex-shrink-0">
+            <nav className="space-y-0.5">
+              {sidebarNavigation.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveSideTab(item.id)}
+                    className={`w-full flex items-center px-2 py-1.5 text-sm font-medium rounded ${
+                      activeSideTab === item.id
+                        ? 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white'
+                    }`}
+                  >
+                    <Icon className="h-5 w-5 mr-3" />
+                    <div className="text-left">
+                      <div>{item.label}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 font-normal">
+                        {item.description}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </nav>
           </div>
 
-          <div className="p-6 space-y-6 overflow-y-auto h-[calc(100%-10rem)]">
-            <div className="space-y-6">
-              {/* Overview Section */}
-              <div className="transform transition-all duration-200 hover:scale-102">
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-5 border border-gray-200 dark:border-gray-600">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                      <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-300" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white mb-1">1. Overview</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Review basic audit information and set initial status</p>
-                      <button className="mt-3 text-sm text-primary-500 hover:text-primary-600 font-medium">
-                        View Details →
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Team Section */}
-              <div className="transform transition-all duration-200 hover:scale-102">
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-5 border border-gray-200 dark:border-gray-600">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-                      <User className="h-5 w-5 text-green-600 dark:text-green-300" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white mb-1">2. Assign Team</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Add team members and define their roles</p>
-                      <button className="mt-3 text-sm text-primary-500 hover:text-primary-600 font-medium">
-                        Manage Team →
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Checklist Section */}
-              <div className="transform transition-all duration-200 hover:scale-102">
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-5 border border-gray-200 dark:border-gray-600">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                      <CheckSquare className="h-5 w-5 text-purple-600 dark:text-purple-300" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white mb-1">3. Checklist</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Set up audit tasks and track progress</p>
-                      <button className="mt-3 text-sm text-primary-500 hover:text-primary-600 font-medium">
-                        View Checklist →
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Documentation Section */}
-              <div className="transform transition-all duration-200 hover:scale-102">
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-5 border border-gray-200 dark:border-gray-600">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
-                      <BookOpen className="h-5 w-5 text-orange-600 dark:text-orange-300" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white mb-1">4. Documentation</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Upload and organize audit documents</p>
-                      <button className="mt-3 text-sm text-primary-500 hover:text-primary-600 font-medium">
-                        Manage Docs →
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Help Section */}
-            <div className="mt-8 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-xl border border-primary-100 dark:border-primary-800">
-              <h4 className="font-medium text-primary-900 dark:text-primary-300 mb-2">Need Help?</h4>
-              <p className="text-sm text-primary-700 dark:text-primary-400">
-                Check our documentation or contact support for assistance with your audit process.
-              </p>
+          {/* Main Content Area */}
+          <div className="flex-1 min-w-0">
+            <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 p-2">
+              {renderContent()}
             </div>
           </div>
 
-          {/* Bottom Close Button */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-            <button
-              onClick={() => setIsRightSidebarOpen(false)}
-              className="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-            >
-              <X className="h-5 w-5" />
-              Dismiss QuickStart
-            </button>
-          </div>
+          {/* Right Sidebar - Jira style */}
+          {isRightSidebarOpen && (
+            <div className="w-80 flex-shrink-0">
+              <div className="space-y-3">
+              {/* Status Card */}
+              <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 p-2">
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Status</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Current Status</span>
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusStyling.bgColor} ${statusStyling.textColor}`}>
+                      {auditData.status}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Reference</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">{auditData.reference_number}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Type</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white capitalize">{auditData.audit_type.replace('_', ' ')}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Workflow</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">{currentWorkflow?.name || 'No Workflow'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Workflow Card */}
+              <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 p-2">
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Workflow</h3>
+                <div className="space-y-2">
+                  <div>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Current Workflow</label>
+                    <div className="mt-1 px-2 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded">
+                      <div className="text-left">
+                        <div className="font-medium text-gray-900 dark:text-white">{currentWorkflow?.name}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{currentWorkflow?.description}</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Current Status</label>
+                    <div className="mt-1 flex items-center gap-2">
+                      <div className={`h-2 w-2 rounded-full ${statusStyling.bgColor.includes('blue') ? 'bg-blue-500' : 
+                        statusStyling.bgColor.includes('orange') ? 'bg-orange-500' : 
+                        statusStyling.bgColor.includes('yellow') ? 'bg-yellow-500' : 
+                        statusStyling.bgColor.includes('green') ? 'bg-green-500' : 'bg-gray-500'}`}></div>
+                      <span className="text-sm text-gray-900 dark:text-white">{auditData.status}</span>
+                    </div>
+                  </div>
+
+                  {availableTransitions.length > 0 && (
+                    <div>
+                      <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Available Transitions</label>
+                      <div className="mt-1 space-y-1">
+                        {availableTransitions.map((transition) => (
+                          <button
+                            key={transition}
+                            onClick={() => handleStatusTransition(transition)}
+                            disabled={isTransitioning}
+                            className="w-full flex items-center gap-2 text-xs px-2 py-1 bg-gray-50 dark:bg-gray-700 rounded hover:bg-gray-100 dark:hover:bg-gray-600 disabled:opacity-50"
+                          >
+                            <ArrowRight className="h-3 w-3" />
+                            <span className="text-gray-700 dark:text-gray-300">{transition}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                   <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                     <div className="flex gap-1">
+                       <button 
+                         onClick={() => navigate(`/audits/${id}/edit`)}
+                         className="flex-1 px-2 py-1.5 bg-primary-500 text-white text-xs rounded hover:bg-primary-600"
+                       >
+                         Edit Audit
+                       </button>
+                       <button className="flex-1 px-2 py-1.5 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+                         Share
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+
+              {/* Details Card */}
+              <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 p-2">
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Details</h3>
+                <div className="space-y-2">
+                  <div>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Assignees</label>
+                    <div className="mt-1 space-y-1">
+                      {auditData.assigned_users_details && auditData.assigned_users_details.length > 0 ? (
+                        auditData.assigned_users_details.map((user: any) => (
+                          <div key={user.id} className="flex items-center gap-2">
+                            <div className="h-6 w-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                              <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                                {user.first_name?.charAt(0) || user.username?.charAt(0) || 'U'}
+                              </span>
+                            </div>
+                            <span className="text-sm text-gray-900 dark:text-white">
+                              {user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.username}
+                            </span>
+                          </div>
+                        ))
+                      ) : (
+                        <span className="text-sm text-gray-500 dark:text-gray-400">No assignees</span>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Period End</label>
+                    <p className="text-sm text-gray-900 dark:text-white mt-1">{new Date(auditData.period_to).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Created</label>
+                    <p className="text-sm text-gray-900 dark:text-white mt-1">{new Date(auditData.created_at).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Created By</label>
+                    <p className="text-sm text-gray-900 dark:text-white mt-1">{auditData.created_by_name}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Team Card */}
+              <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 p-2">
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Team</h3>
+                <div className="space-y-1.5">
+                  {users.slice(0, 4).map((user) => (
+                    <div key={user.id} className="flex items-center gap-2">
+                      <div className="h-6 w-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                          {user.name.charAt(0)}
+                        </span>
+                      </div>
+                      <span className="text-sm text-gray-900 dark:text-white">{user.name}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">
+                        {user.canWrite ? 'Write' : 'Read'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 p-2">
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Quick Actions</h3>
+                <div className="space-y-1">
+                  <button className="w-full text-left px-1.5 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                    📋 Clone audit
+                  </button>
+                  <button className="w-full text-left px-1.5 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                    📧 Send reminder
+                  </button>
+                  <button className="w-full text-left px-1.5 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                    📊 Generate report
+                  </button>
+                  <button className="w-full text-left px-1.5 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                    🔗 Share audit
+                  </button>
+                </div>
+              </div>
+
+              {/* Activity Feed */}
+              <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 p-2">
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Recent Activity</h3>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <div className="h-2 w-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      <span className="font-medium">John Doe</span> completed task "Review Documentation"
+                      <div className="text-gray-500 mt-1">2 hours ago</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="h-2 w-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      <span className="font-medium">Jane Smith</span> added comment
+                      <div className="text-gray-500 mt-1">4 hours ago</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="h-2 w-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      <span className="font-medium">Mike Johnson</span> was assigned to audit
+                      <div className="text-gray-500 mt-1">1 day ago</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="h-2 w-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      <span className="font-medium">Sarah Wilson</span> updated status to "In Progress"
+                      <div className="text-gray-500 mt-1">2 days ago</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Attachments */}
+              <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 p-2">
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Attachments</h3>
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 p-1.5 border border-gray-200 dark:border-gray-600 rounded">
+                    <FileText className="h-4 w-4 text-blue-500" />
+                    <span className="text-sm text-gray-900 dark:text-white">audit-checklist.pdf</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-1.5 border border-gray-200 dark:border-gray-600 rounded">
+                    <FileText className="h-4 w-4 text-green-500" />
+                    <span className="text-sm text-gray-900 dark:text-white">financial-data.xlsx</span>
+                  </div>
+                  <button className="w-full p-1.5 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded text-sm text-gray-500 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500">
+                    + Add attachment
+                  </button>
+                </div>
+              </div>
+            </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
