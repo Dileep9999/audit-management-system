@@ -115,6 +115,7 @@ INSTALLED_APPS = [
     "apps.notifications",
     "apps.files",
     "apps.audits.apps.AuditsConfig",
+    "apps.checklists.apps.ChecklistsConfig",
     "roles.apps.RolesConfig",
     "workflows.apps.WorkflowsConfig",
 ]

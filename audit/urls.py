@@ -64,6 +64,7 @@ urlpatterns = [
     path("api/roles/", include("roles.urls")),
     path("api/workflows/", include("workflows.urls")),
     path("api/audits/", include("apps.audits.urls")),
+    path("api/checklists/", include("apps.checklists.urls")),
 ]
 
 if settings.DEBUG:

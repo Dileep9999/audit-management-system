@@ -34,6 +34,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { toast } from 'react-hot-toast';
 import { getAudit, getWorkflows, getAvailableTransitions, transitionAuditStatus } from '../../utils/api_service';
+import AuditTasks from './AuditTasks';
 
 interface TabProps {
   label: string;
@@ -70,10 +71,16 @@ const sidebarNavigation = [
     description: 'Manage team access'
   },
   { 
+    id: 'tasks', 
+    label: 'Tasks', 
+    icon: CheckSquare,
+    description: 'Audit checklists and tasks'
+  },
+  { 
     id: 'checklist', 
     label: 'Checklist', 
     icon: CheckSquare,
-    description: 'Tasks and progress'
+    description: 'Legacy checklist (deprecated)'
   },
 ];
 
@@ -260,6 +267,12 @@ const AuditDetails: React.FC = () => {
   useEffect(() => {
     if (searchParams.get('sidebar') === 'open') {
       // Handle any specific URL parameters if needed
+    }
+    
+    // Handle tab parameter for direct navigation to specific tabs
+    const tabParam = searchParams.get('tab');
+    if (tabParam && sidebarNavigation.some(nav => nav.id === tabParam)) {
+      setActiveSideTab(tabParam);
     }
   }, [searchParams]);
 
@@ -897,6 +910,17 @@ const AuditDetails: React.FC = () => {
         );
       case 'assignTo':
         return renderCollaboratorsContent();
+      case 'tasks':
+        return auditData ? (
+          <AuditTasks 
+            auditId={auditData.id} 
+            auditTitle={auditData.title}
+            onTaskCreated={() => {
+              // Optionally refresh audit data to show updated task counts
+              loadAuditData();
+            }}
+          />
+        ) : null;
       case 'checklist':
         return renderChecklistContent();
       default:

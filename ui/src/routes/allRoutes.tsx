@@ -15,6 +15,9 @@ import AddRole from "../views/admins/AddRole";
 import EditRole from "../views/admins/EditRole";
 import FAQ from "../views/faq/FAQ";
 import Entities from "../views/entities/Entities";
+import TemplateManager from "../views/checklists/TemplateManager";
+import CreateTemplate from "../views/checklists/CreateTemplate";
+import ChecklistFilling from "../views/audits/ChecklistFilling";
 import NotFound from "../components/NotFound";
 
 interface IRoute {
@@ -148,6 +151,30 @@ const routes: IRoute[] = [
     component: (
       <ProtectedRoute>
         <Entities />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/templates", 
+    component: (
+      <ProtectedRoute>
+        <TemplateManager />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/templates/create", 
+    component: (
+      <ProtectedRoute>
+        <CreateTemplate />
+      </ProtectedRoute>
+    ) 
+  },
+  { 
+    path: "/audit-tasks/:taskId/fill", 
+    component: (
+      <ProtectedRoute>
+        <ChecklistFilling />
       </ProtectedRoute>
     ) 
   },
