@@ -76,12 +76,13 @@ const sidebarNavigation = [
     icon: CheckSquare,
     description: 'Audit checklists and tasks'
   },
-  { 
-    id: 'checklist', 
-    label: 'Checklist', 
-    icon: CheckSquare,
-    description: 'Legacy checklist (deprecated)'
-  },
+  // Checklist tab hidden - replaced by Tasks tab
+  // { 
+  //   id: 'checklist', 
+  //   label: 'Checklist', 
+  //   icon: CheckSquare,
+  //   description: 'Legacy checklist (deprecated)'
+  // },
 ];
 
 const overviewTabs = [
@@ -273,6 +274,9 @@ const AuditDetails: React.FC = () => {
     const tabParam = searchParams.get('tab');
     if (tabParam && sidebarNavigation.some(nav => nav.id === tabParam)) {
       setActiveSideTab(tabParam);
+    } else if (tabParam === 'checklist') {
+      // Redirect checklist tab to tasks tab since checklist is hidden
+      setActiveSideTab('tasks');
     }
   }, [searchParams]);
 
@@ -921,8 +925,9 @@ const AuditDetails: React.FC = () => {
             }}
           />
         ) : null;
-      case 'checklist':
-        return renderChecklistContent();
+      // Checklist case removed - functionality moved to Tasks tab
+      // case 'checklist':
+      //   return renderChecklistContent();
       default:
         return null;
     }

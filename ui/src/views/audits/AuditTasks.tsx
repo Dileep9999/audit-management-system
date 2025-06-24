@@ -190,6 +190,20 @@ const NewTaskModal: React.FC<{
     }
   }, [isOpen]);
 
+  // Handle Esc key to close modal
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscKey);
+      return () => document.removeEventListener('keydown', handleEscKey);
+    }
+  }, [isOpen, onClose]);
+
   const handleTemplateSelect = (templateId: string) => {
     const template = templates.find(t => t.id.toString() === templateId);
     setSelectedTemplate(template || null);
@@ -238,224 +252,275 @@ const NewTaskModal: React.FC<{
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
-        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 rounded-t-xl">
-          <div className="flex justify-between items-center">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Create New Audit Task
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                Select a checklist template and configure your audit task
-              </p>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[1004] p-4 animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-gray-200 dark:border-gray-700 animate-in slide-in-from-bottom-4 duration-300">
+        {/* Enhanced Header */}
+        <div className="sticky top-0 bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-700 dark:to-primary-800 px-8 py-6 border-b border-primary-500/20">
+          <div className="flex justify-between items-start">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+                <Plus className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white">
+                  Create New Audit Task
+                </h3>
+                <p className="text-primary-100 mt-1 text-sm">
+                  Select a checklist template and configure your audit task
+                </p>
+              </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-105 group"
+              title="Close (Esc)"
             >
-              <X className="w-5 h-5" />
+              <X className="w-7 h-7 group-hover:rotate-90 transition-transform duration-200" />
             </button>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Template Selection */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Checklist Template <span className="text-red-500">*</span>
-            </label>
-            <div className="flex gap-2">
-              <select
-                value={formData.template_id}
-                onChange={(e) => handleTemplateSelect(e.target.value)}
-                className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
-                required
-              >
-                <option value="">Select a template...</option>
-                {templates.map((template) => (
-                  <option key={template.id} value={template.id}>
-                    {template.name} ({template.field_count} fields) - {template.category}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                onClick={onCreateTemplate}
-                className="flex items-center justify-center px-4 py-3 text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
-                title="Create new template"
-              >
-                <Plus className="w-5 h-5" />
-              </button>
-            </div>
-            {selectedTemplate && (
-              <div className="mt-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <div className="flex items-start gap-3">
-                  <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm text-blue-900 dark:text-blue-100 font-medium">
-                      {selectedTemplate.name}
-                    </p>
-                    <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                      {selectedTemplate.description}
-                    </p>
-                    <div className="flex gap-4 mt-2 text-xs text-blue-600 dark:text-blue-400">
-                      <span className="flex items-center gap-1">
-                        <CheckCircle className="w-3 h-3" />
-                        {selectedTemplate.field_count} fields
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        ~{selectedTemplate.estimated_duration} min
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Target className="w-3 h-3" />
-                        Used {selectedTemplate.usage_count} times
-                      </span>
+        {/* Scrollable Content */}
+        <div className="overflow-y-auto max-h-[calc(90vh-180px)]">
+          <form onSubmit={handleSubmit} className="p-8 space-y-8">
+            {/* Template Selection Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
+                  <FileText className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                </div>
+                <div>
+                  <label className="block text-lg font-semibold text-gray-900 dark:text-white">
+                    Checklist Template <span className="text-red-500">*</span>
+                  </label>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Choose a template to base your task on</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <select
+                  value={formData.template_id}
+                  onChange={(e) => handleTemplateSelect(e.target.value)}
+                  className="flex-1 px-4 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all duration-200 text-sm font-medium hover:border-primary-300 dark:hover:border-primary-600"
+                  required
+                >
+                  <option value="">Select a template...</option>
+                  {templates.map((template) => (
+                    <option key={template.id} value={template.id}>
+                      {template.name} ({template.field_count} fields) - {template.category}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={onCreateTemplate}
+                  className="flex items-center justify-center px-5 py-4 text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-700 rounded-xl hover:bg-primary-100 dark:hover:bg-primary-900/30 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200 hover:scale-105"
+                  title="Create new template"
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
+              </div>
+              {selectedTemplate && (
+                <div className="mt-4 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800 shadow-sm">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-blue-100 dark:bg-blue-800/50 rounded-lg">
+                      <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-100">
+                        {selectedTemplate.name}
+                      </h4>
+                      <p className="text-sm text-blue-700 dark:text-blue-300 mt-1 leading-relaxed">
+                        {selectedTemplate.description}
+                      </p>
+                      <div className="flex flex-wrap gap-6 mt-4">
+                        <span className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-800/30 px-3 py-1.5 rounded-lg">
+                          <CheckCircle className="w-4 h-4" />
+                          {selectedTemplate.field_count} fields
+                        </span>
+                        <span className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-800/30 px-3 py-1.5 rounded-lg">
+                          <Clock className="w-4 h-4" />
+                          ~{selectedTemplate.estimated_duration} min
+                        </span>
+                        <span className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-800/30 px-3 py-1.5 rounded-lg">
+                          <Target className="w-4 h-4" />
+                          Used {selectedTemplate.usage_count} times
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-
-          {/* Task Name */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Task Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={formData.task_name}
-              onChange={(e) => setFormData({ ...formData, task_name: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
-              placeholder="Enter a descriptive task name"
-              required
-            />
-          </div>
-
-          {/* Description */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Description
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={3}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
-              placeholder="Provide additional context or instructions for this task"
-            />
-          </div>
-
-          {/* Assigned To */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Assign To
-            </label>
-            <select
-              value={formData.assigned_to}
-              onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
-            >
-              <option value="">Select a user (optional)</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.full_name || `${user.first_name} ${user.last_name}`.trim() || user.username} ({user.email})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Priority and Risk Level */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Priority Level
-              </label>
-              <select
-                value={formData.priority}
-                onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
-              >
-                <option value="low">Low Priority</option>
-                <option value="medium">Medium Priority</option>
-                <option value="high">High Priority</option>
-                <option value="critical">Critical Priority</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Risk Level
-              </label>
-              <select
-                value={formData.risk_level}
-                onChange={(e) => setFormData({ ...formData, risk_level: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
-              >
-                <option value="low">Low Risk</option>
-                <option value="medium">Medium Risk</option>
-                <option value="high">High Risk</option>
-                <option value="critical">Critical Risk</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Control Area */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Control Area
-            </label>
-            <input
-              type="text"
-              value={formData.control_area}
-              onChange={(e) => setFormData({ ...formData, control_area: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
-              placeholder="e.g., Financial Controls, IT Security, Compliance, Operations"
-            />
-          </div>
-
-          {/* Due Date */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Due Date
-            </label>
-            <input
-              type="datetime-local"
-              value={formData.due_date}
-              onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
-            />
-          </div>
-
-          {/* Actions */}
-          <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-3 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
-            >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Creating...
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Plus className="w-4 h-4" />
-                  Create Task
-                </div>
               )}
-            </button>
-          </div>
-        </form>
+            </div>
+
+            {/* Task Details Section */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                  <Target className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Task Details</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Configure your audit task</p>
+                </div>
+              </div>
+
+              {/* Task Name */}
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Task Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.task_name}
+                  onChange={(e) => setFormData({ ...formData, task_name: e.target.value })}
+                  className="w-full px-4 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all duration-200 text-sm font-medium hover:border-primary-300 dark:hover:border-primary-600"
+                  placeholder="Enter a descriptive task name"
+                  required
+                />
+              </div>
+
+              {/* Description */}
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Description
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={4}
+                  className="w-full px-4 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all duration-200 text-sm font-medium hover:border-primary-300 dark:hover:border-primary-600 resize-none"
+                  placeholder="Provide additional context or instructions for this task"
+                />
+              </div>
+            </div>
+
+            {/* Assignment & Configuration Section */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                  <User className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Assignment & Configuration</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Set priority, risk level, and assignments</p>
+                </div>
+              </div>
+
+              {/* Assigned To */}
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Assign To
+                </label>
+                <select
+                  value={formData.assigned_to}
+                  onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
+                  className="w-full px-4 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all duration-200 text-sm font-medium hover:border-primary-300 dark:hover:border-primary-600"
+                >
+                  <option value="">Select a user (optional)</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.full_name || `${user.first_name} ${user.last_name}`.trim() || user.username} ({user.email})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Priority and Risk Level */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Priority Level
+                  </label>
+                  <select
+                    value={formData.priority}
+                    onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                    className="w-full px-4 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all duration-200 text-sm font-medium hover:border-primary-300 dark:hover:border-primary-600"
+                  >
+                    <option value="low">🟢 Low Priority</option>
+                    <option value="medium">🟡 Medium Priority</option>
+                    <option value="high">🟠 High Priority</option>
+                    <option value="critical">🔴 Critical Priority</option>
+                  </select>
+                </div>
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Risk Level
+                  </label>
+                  <select
+                    value={formData.risk_level}
+                    onChange={(e) => setFormData({ ...formData, risk_level: e.target.value })}
+                    className="w-full px-4 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all duration-200 text-sm font-medium hover:border-primary-300 dark:hover:border-primary-600"
+                  >
+                    <option value="low">🟢 Low Risk</option>
+                    <option value="medium">🟡 Medium Risk</option>
+                    <option value="high">🟠 High Risk</option>
+                    <option value="critical">🔴 Critical Risk</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Control Area */}
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Control Area
+                </label>
+                <input
+                  type="text"
+                  value={formData.control_area}
+                  onChange={(e) => setFormData({ ...formData, control_area: e.target.value })}
+                  className="w-full px-4 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all duration-200 text-sm font-medium hover:border-primary-300 dark:hover:border-primary-600"
+                  placeholder="e.g., Financial Controls, IT Security, Compliance, Operations"
+                />
+              </div>
+
+              {/* Due Date */}
+              <div className="space-y-3">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Due Date
+                </label>
+                <input
+                  type="datetime-local"
+                  value={formData.due_date}
+                  onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
+                  className="w-full px-4 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:text-white transition-all duration-200 text-sm font-medium hover:border-primary-300 dark:hover:border-primary-600"
+                />
+              </div>
+            </div>
+
+            {/* Enhanced Actions */}
+            <div className="flex justify-between items-center pt-8 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 -mx-8 -mb-8 px-8 py-6 rounded-b-2xl">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                All fields marked with <span className="text-red-500">*</span> are required
+              </div>
+              <div className="flex space-x-4">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-6 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 hover:scale-105 shadow-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-8 py-3 text-sm font-semibold text-white bg-gradient-to-r from-primary-600 to-primary-700 border border-transparent rounded-xl hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 disabled:hover:scale-100"
+                >
+                  {loading ? (
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Creating Task...
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <Plus className="w-5 h-5" />
+                      Create Task
+                    </div>
+                  )}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
