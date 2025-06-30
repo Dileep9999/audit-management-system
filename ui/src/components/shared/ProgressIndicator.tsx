@@ -1,432 +1,199 @@
 import React from 'react';
-import { CheckCircle, Clock, AlertTriangle, TrendingUp, Target, Activity } from 'lucide-react';
+import { CheckCircle, Clock, AlertCircle, TrendingUp } from 'lucide-react';
 
 interface ProgressIndicatorProps {
-  value: number; // 0-100
-  total?: number;
+  current: number;
+  total: number;
   completed?: number;
-  variant?: 'linear' | 'circular' | 'ring' | 'steps' | 'gauge';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  showPercentage?: boolean;
-  showLabel?: boolean;
-  label?: string;
-  color?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
-  animated?: boolean;
-  thickness?: 'thin' | 'medium' | 'thick';
-  gradient?: boolean;
-  showMilestones?: boolean;
-  milestones?: number[];
-  status?: 'on-track' | 'at-risk' | 'behind' | 'ahead';
+  pending?: number;
+  inProgress?: number;
   className?: string;
+  showNumbers?: boolean;
+  showStatus?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  color?: 'primary' | 'green' | 'blue' | 'orange';
+  animate?: boolean;
 }
-
-interface CircularProgressProps {
-  value: number;
-  size: number;
-  strokeWidth: number;
-  color: string;
-  gradient?: boolean;
-  animated?: boolean;
-}
-
-const CircularProgress: React.FC<CircularProgressProps> = ({
-  value,
-  size,
-  strokeWidth,
-  color,
-  gradient,
-  animated
-}) => {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const strokeDasharray = circumference;
-  const strokeDashoffset = circumference - (value / 100) * circumference;
-
-  const gradientId = `gradient-${Math.random().toString(36).substr(2, 9)}`;
-
-  return (
-    <div className="relative">
-      <svg
-        width={size}
-        height={size}
-        className={`transform -rotate-90 ${animated ? 'transition-all duration-1000 ease-out' : ''}`}
-      >
-        {gradient && (
-          <defs>
-            <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-              <stop offset="100%" stopColor={color} stopOpacity="1" />
-            </linearGradient>
-          </defs>
-        )}
-        
-        {/* Background circle */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          fill="none"
-          className="text-gray-200 dark:text-gray-700"
-        />
-        
-        {/* Progress circle */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke={gradient ? `url(#${gradientId})` : color}
-          strokeWidth={strokeWidth}
-          fill="none"
-          strokeDasharray={strokeDasharray}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-          className={`${animated ? 'transition-all duration-1000 ease-out' : ''}`}
-          style={{
-            filter: gradient ? 'drop-shadow(0 0 6px rgba(59, 130, 246, 0.5))' : 'none'
-          }}
-        />
-      </svg>
-    </div>
-  );
-};
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
-  value,
+  current,
   total,
-  completed,
-  variant = 'linear',
+  completed = 0,
+  pending = 0,
+  inProgress = 0,
+  className = '',
+  showNumbers = true,
+  showStatus = true,
   size = 'md',
-  showPercentage = true,
-  showLabel = false,
-  label,
   color = 'primary',
-  animated = true,
-  thickness = 'medium',
-  gradient = false,
-  showMilestones = false,
-  milestones = [25, 50, 75],
-  status,
-  className = ''
+  animate = true
 }) => {
-  // Ensure value is between 0 and 100
-  const clampedValue = Math.max(0, Math.min(100, value));
+  const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
   
-  // Color mapping
-  const colorMap = {
-    primary: {
-      bg: 'bg-primary-500',
-      text: 'text-primary-600',
-      stroke: '#3B82F6',
-      ring: 'ring-primary-500/20'
+  // Size configurations
+  const sizeConfig = {
+    sm: {
+      height: 'h-1.5',
+      iconSize: 'h-3 w-3',
+      textSize: 'text-xs',
+      padding: 'px-2 py-1'
     },
-    success: {
-      bg: 'bg-green-500',
-      text: 'text-green-600',
-      stroke: '#10B981',
-      ring: 'ring-green-500/20'
+    md: {
+      height: 'h-2.5',
+      iconSize: 'h-4 w-4',
+      textSize: 'text-sm',
+      padding: 'px-3 py-1.5'
     },
-    warning: {
-      bg: 'bg-yellow-500',
-      text: 'text-yellow-600',
-      stroke: '#F59E0B',
-      ring: 'ring-yellow-500/20'
-    },
-    danger: {
-      bg: 'bg-red-500',
-      text: 'text-red-600',
-      stroke: '#EF4444',
-      ring: 'ring-red-500/20'
-    },
-    info: {
-      bg: 'bg-blue-500',
-      text: 'text-blue-600',
-      stroke: '#06B6D4',
-      ring: 'ring-blue-500/20'
+    lg: {
+      height: 'h-3',
+      iconSize: 'h-5 w-5',
+      textSize: 'text-base',
+      padding: 'px-4 py-2'
     }
   };
 
-  // Size mapping
-  const sizeMap = {
-    sm: { height: 'h-2', width: 60, stroke: 4 },
-    md: { height: 'h-3', width: 80, stroke: 6 },
-    lg: { height: 'h-4', width: 100, stroke: 8 },
-    xl: { height: 'h-6', width: 120, stroke: 10 }
+  // Color configurations
+  const colorConfig = {
+    primary: {
+      bg: 'bg-primary-500',
+      text: 'text-primary-600 dark:text-primary-400',
+      bgLight: 'bg-primary-100 dark:bg-primary-900/20'
+    },
+    green: {
+      bg: 'bg-green-500',
+      text: 'text-green-600 dark:text-green-400',
+      bgLight: 'bg-green-100 dark:bg-green-900/20'
+    },
+    blue: {
+      bg: 'bg-blue-500',
+      text: 'text-blue-600 dark:text-blue-400',
+      bgLight: 'bg-blue-100 dark:bg-blue-900/20'
+    },
+    orange: {
+      bg: 'bg-orange-500',
+      text: 'text-orange-600 dark:text-orange-400',
+      bgLight: 'bg-orange-100 dark:bg-orange-900/20'
+    }
   };
 
-  // Thickness mapping
-  const thicknessMap = {
-    thin: 'h-1',
-    medium: 'h-2',
-    thick: 'h-3'
+  const config = sizeConfig[size];
+  const colors = colorConfig[color];
+
+  // Status indicator
+  const getStatusIcon = () => {
+    if (percentage === 100) {
+      return <CheckCircle className={`${config.iconSize} text-green-500`} />;
+    } else if (percentage >= 50) {
+      return <TrendingUp className={`${config.iconSize} text-blue-500`} />;
+    } else if (percentage > 0) {
+      return <Clock className={`${config.iconSize} text-orange-500`} />;
+    } else {
+      return <AlertCircle className={`${config.iconSize} text-gray-400`} />;
+    }
   };
 
-  // Status icon mapping
-  const statusIcons = {
-    'on-track': <CheckCircle className="w-4 h-4 text-green-500" />,
-    'at-risk': <AlertTriangle className="w-4 h-4 text-yellow-500" />,
-    'behind': <Clock className="w-4 h-4 text-red-500" />,
-    'ahead': <TrendingUp className="w-4 h-4 text-blue-500" />
+  const getStatusText = () => {
+    if (percentage === 100) return 'Completed';
+    if (percentage >= 75) return 'Nearly Done';
+    if (percentage >= 50) return 'In Progress';
+    if (percentage >= 25) return 'Getting Started';
+    if (percentage > 0) return 'Started';
+    return 'Not Started';
   };
 
-  const currentColor = colorMap[color];
-  const currentSize = sizeMap[size];
+  const getStatusColor = () => {
+    if (percentage === 100) return 'text-green-600 dark:text-green-400';
+    if (percentage >= 50) return 'text-blue-600 dark:text-blue-400';
+    if (percentage > 0) return 'text-orange-600 dark:text-orange-400';
+    return 'text-gray-500 dark:text-gray-400';
+  };
 
-  // Linear Progress Bar
-  if (variant === 'linear') {
-    return (
-      <div className={`w-full ${className}`}>
-        {(showLabel || status) && (
-          <div className="flex items-center justify-between mb-2">
+  return (
+    <div className={`space-y-3 ${className}`}>
+      {/* Progress Bar */}
+      <div className="space-y-2">
+        {showNumbers && (
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {showLabel && label && (
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {label}
-                </span>
-              )}
-              {status && statusIcons[status]}
-            </div>
-            {showPercentage && (
-              <span className={`text-sm font-semibold ${currentColor.text}`}>
-                {clampedValue.toFixed(0)}%
+              {showStatus && getStatusIcon()}
+              <span className={`font-medium ${colors.text} ${config.textSize}`}>
+                Progress
               </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={`font-bold ${colors.text} ${config.textSize}`}>
+                {percentage}%
+              </span>
+              <span className={`text-gray-500 dark:text-gray-400 ${config.textSize}`}>
+                ({current}/{total})
+              </span>
+            </div>
+          </div>
+        )}
+        
+        <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full ${config.height} overflow-hidden`}>
+          <div
+            className={`${config.height} ${colors.bg} rounded-full transition-all duration-500 ease-out ${
+              animate ? 'animate-pulse' : ''
+            }`}
+            style={{ 
+              width: `${percentage}%`,
+              boxShadow: percentage > 0 ? `0 0 8px ${color === 'primary' ? '#3B82F6' : '#10B981'}33` : 'none'
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Status breakdown */}
+      {showStatus && (completed > 0 || pending > 0 || inProgress > 0) && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <span className={`${getStatusColor()} font-medium ${config.textSize}`}>
+              {getStatusText()}
+            </span>
+          </div>
+          
+          <div className="flex items-center gap-4 text-xs">
+            {completed > 0 && (
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-gray-600 dark:text-gray-400">
+                  {completed} done
+                </span>
+              </div>
+            )}
+            {inProgress > 0 && (
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <span className="text-gray-600 dark:text-gray-400">
+                  {inProgress} active
+                </span>
+              </div>
+            )}
+            {pending > 0 && (
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                <span className="text-gray-600 dark:text-gray-400">
+                  {pending} pending
+                </span>
+              </div>
             )}
           </div>
-        )}
-        
-        <div className="relative">
-          <div className={`w-full ${thicknessMap[thickness]} bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden`}>
-            <div
-              className={`${thicknessMap[thickness]} ${currentColor.bg} rounded-full transition-all duration-1000 ease-out ${
-                gradient ? 'bg-gradient-to-r from-opacity-60 to-opacity-100' : ''
-              } ${animated ? 'animate-pulse' : ''}`}
-              style={{ 
-                width: `${clampedValue}%`,
-                boxShadow: gradient ? `0 0 10px ${currentColor.stroke}40` : 'none'
-              }}
-            />
-          </div>
-          
-          {/* Milestones */}
-          {showMilestones && milestones.map((milestone, index) => (
-            <div
-              key={index}
-              className="absolute top-0 w-0.5 h-full bg-gray-400 dark:bg-gray-500"
-              style={{ left: `${milestone}%` }}
-            >
-              <div className="absolute -top-6 -left-2 text-xs text-gray-500 dark:text-gray-400">
-                {milestone}%
-              </div>
-            </div>
-          ))}
         </div>
-        
-        {(total && completed !== undefined) && (
-          <div className="flex justify-between mt-1 text-xs text-gray-500 dark:text-gray-400">
-            <span>{completed} completed</span>
-            <span>{total} total</span>
-          </div>
-        )}
-      </div>
-    );
-  }
+      )}
 
-  // Circular Progress
-  if (variant === 'circular') {
-    return (
-      <div className={`flex flex-col items-center ${className}`}>
-        <div className="relative">
-          <CircularProgress
-            value={clampedValue}
-            size={currentSize.width}
-            strokeWidth={currentSize.stroke}
-            color={currentColor.stroke}
-            gradient={gradient}
-            animated={animated}
-          />
-          
-          {/* Center content */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              {showPercentage && (
-                <div className={`text-lg font-bold ${currentColor.text}`}>
-                  {clampedValue.toFixed(0)}%
-                </div>
-              )}
-              {status && (
-                <div className="mt-1">
-                  {statusIcons[status]}
-                </div>
-              )}
-            </div>
-          </div>
+      {/* Milestone indicators for large progress bars */}
+      {size === 'lg' && total > 5 && (
+        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+          <span>Start</span>
+          <span>25%</span>
+          <span>50%</span>
+          <span>75%</span>
+          <span>Complete</span>
         </div>
-        
-        {showLabel && label && (
-          <span className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            {label}
-          </span>
-        )}
-      </div>
-    );
-  }
-
-  // Ring Progress (Thin circular)
-  if (variant === 'ring') {
-    return (
-      <div className={`inline-flex items-center gap-3 ${className}`}>
-        <div className="relative">
-          <CircularProgress
-            value={clampedValue}
-            size={40}
-            strokeWidth={3}
-            color={currentColor.stroke}
-            gradient={gradient}
-            animated={animated}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className={`text-xs font-semibold ${currentColor.text}`}>
-              {clampedValue.toFixed(0)}%
-            </span>
-          </div>
-        </div>
-        
-        {showLabel && label && (
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {label}
-          </span>
-        )}
-        
-        {status && statusIcons[status]}
-      </div>
-    );
-  }
-
-  // Steps Progress
-  if (variant === 'steps' && total) {
-    const steps = Array.from({ length: total }, (_, i) => i + 1);
-    const completedSteps = Math.floor((clampedValue / 100) * total);
-    
-    return (
-      <div className={`w-full ${className}`}>
-        {showLabel && label && (
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {label}
-            </span>
-            <span className={`text-sm font-semibold ${currentColor.text}`}>
-              {completedSteps} of {total} completed
-            </span>
-          </div>
-        )}
-        
-        <div className="flex items-center">
-          {steps.map((step, index) => (
-            <React.Fragment key={step}>
-              <div className="flex flex-col items-center">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
-                    index < completedSteps
-                      ? `${currentColor.bg} text-white shadow-lg ring-4 ${currentColor.ring}`
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-                  }`}
-                >
-                  {index < completedSteps ? (
-                    <CheckCircle className="w-4 h-4" />
-                  ) : (
-                    step
-                  )}
-                </div>
-                <span className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Step {step}
-                </span>
-              </div>
-              
-              {index < steps.length - 1 && (
-                <div
-                  className={`flex-1 h-1 mx-2 rounded transition-all duration-300 ${
-                    index < completedSteps - 1
-                      ? currentColor.bg
-                      : 'bg-gray-200 dark:bg-gray-700'
-                  }`}
-                />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  // Gauge Progress
-  if (variant === 'gauge') {
-    const gaugeValue = (clampedValue / 100) * 180; // 180 degrees for half circle
-    
-    return (
-      <div className={`flex flex-col items-center ${className}`}>
-        <div className="relative">
-          <svg width="120" height="80" viewBox="0 0 120 80">
-            {/* Background arc */}
-            <path
-              d="M 20 60 A 40 40 0 0 1 100 60"
-              stroke="currentColor"
-              strokeWidth="8"
-              fill="none"
-              className="text-gray-200 dark:text-gray-700"
-            />
-            
-            {/* Progress arc */}
-            <path
-              d="M 20 60 A 40 40 0 0 1 100 60"
-              stroke={currentColor.stroke}
-              strokeWidth="8"
-              fill="none"
-              strokeDasharray="125.66" // Half circumference of circle with radius 40
-              strokeDashoffset={125.66 - (clampedValue / 100) * 125.66}
-              strokeLinecap="round"
-              className={animated ? 'transition-all duration-1000 ease-out' : ''}
-            />
-            
-            {/* Needle */}
-            <line
-              x1="60"
-              y1="60"
-              x2={60 + 35 * Math.cos((gaugeValue - 90) * (Math.PI / 180))}
-              y2={60 + 35 * Math.sin((gaugeValue - 90) * (Math.PI / 180))}
-              stroke={currentColor.stroke}
-              strokeWidth="2"
-              strokeLinecap="round"
-              className={animated ? 'transition-all duration-1000 ease-out' : ''}
-            />
-            
-            {/* Center dot */}
-            <circle
-              cx="60"
-              cy="60"
-              r="3"
-              fill={currentColor.stroke}
-            />
-          </svg>
-          
-          {/* Value display */}
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-            <div className={`text-lg font-bold ${currentColor.text}`}>
-              {clampedValue.toFixed(0)}%
-            </div>
-          </div>
-        </div>
-        
-        {showLabel && label && (
-          <span className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            {label}
-          </span>
-        )}
-      </div>
-    );
-  }
-
-  return null;
+      )}
+    </div>
+  );
 };
 
 export default ProgressIndicator; 

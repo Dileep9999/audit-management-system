@@ -199,8 +199,18 @@ class Checklist(SoftDeleteModel):
     assigned_to = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
+        null=True,
+        blank=True,
         related_name='assigned_checklists',
-        verbose_name=_('Assigned To')
+        verbose_name=_('Assigned To'),
+        help_text=_('Legacy single user assignment - use assigned_users for multiple assignments')
+    )
+    assigned_users = models.ManyToManyField(
+        User,
+        blank=True,
+        related_name='assigned_checklists_multi',
+        verbose_name=_('Assigned Users'),
+        help_text=_('Multiple users can be assigned to work on this checklist')
     )
     created_by = models.ForeignKey(
         User,
@@ -257,6 +267,17 @@ class Checklist(SoftDeleteModel):
             self.completed_at = None
         
         super().save(*args, **kwargs)
+        
+        # Sync single assignment to multiple assignments after save
+        if self.assigned_to and not self.assigned_users.exists():
+            self.assigned_users.add(self.assigned_to)
+        
+        # Sync multiple assignments to single assignment after save
+        # If we have assigned_users but no assigned_to, set assigned_to to first user
+        if not self.assigned_to and self.assigned_users.exists():
+            self.assigned_to = self.assigned_users.first()
+            # Update without triggering save recursion
+            Checklist.objects.filter(pk=self.pk).update(assigned_to=self.assigned_to)
     
     def update_progress(self):
         """Update progress based on completed responses"""

@@ -595,13 +595,12 @@ const ChecklistFilling: React.FC = () => {
     const updateValue = (newValue: any) => {
       setResponses(prev => prev.map(r => 
         r.id === response.id 
-          ? { ...r, value: newValue || {} }
+          ? { ...r, value: newValue, hasChanges: true }
           : r
       ));
     };
 
     const markAsChanged = () => {
-      // Just mark that this field has been changed, don't save immediately
       setResponses(prev => prev.map(r => 
         r.id === response.id 
           ? { ...r, hasChanges: true }
@@ -617,10 +616,8 @@ const ChecklistFilling: React.FC = () => {
           <input
             type="text"
             value={response.value?.text || ''}
-            onChange={(e) => {
-              updateValue({ text: e.target.value });
-              markAsChanged();
-            }}
+            onChange={(e) => updateValue({ text: e.target.value })}
+            onBlur={() => markAsChanged()}
             className={baseInputClasses}
             placeholder={field.help_text || `Enter ${field.label.toLowerCase()}`}
           />
@@ -630,10 +627,8 @@ const ChecklistFilling: React.FC = () => {
         return (
           <textarea
             value={response.value?.text || ''}
-            onChange={(e) => {
-              updateValue({ text: e.target.value });
-              markAsChanged();
-            }}
+            onChange={(e) => updateValue({ text: e.target.value })}
+            onBlur={() => markAsChanged()}
             rows={4}
             className={baseInputClasses}
             placeholder={field.help_text || `Enter ${field.label.toLowerCase()}`}
@@ -645,10 +640,8 @@ const ChecklistFilling: React.FC = () => {
           <input
             type="number"
             value={response.value?.number || ''}
-            onChange={(e) => {
-              updateValue({ number: parseFloat(e.target.value) || 0 });
-              markAsChanged();
-            }}
+            onChange={(e) => updateValue({ number: parseFloat(e.target.value) || 0 })}
+            onBlur={() => markAsChanged()}
             className={baseInputClasses}
             placeholder={field.help_text || `Enter ${field.label.toLowerCase()}`}
           />
@@ -659,10 +652,8 @@ const ChecklistFilling: React.FC = () => {
           <input
             type="email"
             value={response.value?.email || ''}
-            onChange={(e) => {
-              updateValue({ email: e.target.value });
-              markAsChanged();
-            }}
+            onChange={(e) => updateValue({ email: e.target.value })}
+            onBlur={() => markAsChanged()}
             className={baseInputClasses}
             placeholder={field.help_text || `Enter ${field.label.toLowerCase()}`}
           />
@@ -673,10 +664,8 @@ const ChecklistFilling: React.FC = () => {
           <input
             type="date"
             value={response.value?.date || ''}
-            onChange={(e) => {
-              updateValue({ date: e.target.value });
-              markAsChanged();
-            }}
+            onChange={(e) => updateValue({ date: e.target.value })}
+            onBlur={() => markAsChanged()}
             className={baseInputClasses}
           />
         );
@@ -686,10 +675,8 @@ const ChecklistFilling: React.FC = () => {
           <input
             type="datetime-local"
             value={response.value?.datetime || ''}
-            onChange={(e) => {
-              updateValue({ datetime: e.target.value });
-              markAsChanged();
-            }}
+            onChange={(e) => updateValue({ datetime: e.target.value })}
+            onBlur={() => markAsChanged()}
             className={baseInputClasses}
           />
         );
@@ -698,10 +685,8 @@ const ChecklistFilling: React.FC = () => {
         return (
           <select
             value={response.value?.selected || ''}
-            onChange={(e) => {
-              updateValue({ selected: e.target.value });
-              markAsChanged();
-            }}
+            onChange={(e) => updateValue({ selected: e.target.value })}
+            onBlur={() => markAsChanged()}
             className={baseInputClasses}
           >
             <option value="">Select an option...</option>
@@ -736,6 +721,51 @@ const ChecklistFilling: React.FC = () => {
         );
 
       case 'checkbox':
+        // Handle simple boolean checkbox for fields without options
+        if (!field.options || field.options.length === 0) {
+          return (
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={response.value?.checked || false}
+                onChange={(e) => {
+                  updateValue({ checked: e.target.checked });
+                  markAsChanged();
+                }}
+                className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded"
+              />
+              <span className="text-gray-700 dark:text-gray-300">{field.label}</span>
+            </label>
+          );
+        }
+        
+        // Handle multiple checkboxes with options
+        return (
+          <div className="space-y-3">
+            {field.options.map((option, index) => (
+              <label key={index} className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  value={option}
+                  checked={Array.isArray(response.value?.selected) && response.value.selected.includes(option)}
+                  onChange={(e) => {
+                    const currentSelected = Array.isArray(response.value?.selected) ? response.value.selected : [];
+                    const newSelected = e.target.checked
+                      ? [...currentSelected, option]
+                      : currentSelected.filter((item: string) => item !== option);
+                    const newValue = { selected: newSelected };
+                    updateValue(newValue);
+                    markAsChanged();
+                  }}
+                  className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded"
+                />
+                <span className="text-gray-700 dark:text-gray-300">{option}</span>
+              </label>
+            ))}
+          </div>
+        );
+
+      case 'multi_select':
         return (
           <div className="space-y-3">
             {field.options?.map((option, index) => (
@@ -801,15 +831,15 @@ const ChecklistFilling: React.FC = () => {
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) {
-                  updateValue({ file: file.name, file_size: file.size });
+                  updateValue({ file_name: file.name, file_size: file.size });
                   markAsChanged();
                 }
               }}
               className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/20 dark:file:text-primary-400"
             />
-            {response.value?.file && (
+            {response.value?.file_name && (
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                Uploaded: {response.value.file}
+                Uploaded: {response.value.file_name}
               </div>
             )}
           </div>
@@ -847,10 +877,8 @@ const ChecklistFilling: React.FC = () => {
           <input
             type="text"
             value={response.value?.text || ''}
-            onChange={(e) => {
-              updateValue({ text: e.target.value });
-              markAsChanged();
-            }}
+            onChange={(e) => updateValue({ text: e.target.value })}
+            onBlur={() => markAsChanged()}
             className={baseInputClasses}
             placeholder={field.help_text || `Enter ${field.label.toLowerCase()}`}
           />
@@ -890,10 +918,10 @@ const ChecklistFilling: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading checklist...</p>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading checklist...</p>
         </div>
       </div>
     );
@@ -901,20 +929,16 @@ const ChecklistFilling: React.FC = () => {
 
   if (!task) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Task Not Found
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            The requested audit task could not be found.
-          </p>
+          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Task not found</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">The audit task you're looking for doesn't exist.</p>
           <button
-            onClick={() => navigate(-1)}
-            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            onClick={() => navigate('/audits')}
+            className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
           >
-            Go Back
+            Back to Audits
           </button>
         </div>
       </div>
@@ -927,369 +951,322 @@ const ChecklistFilling: React.FC = () => {
   const unsavedChanges = responses.filter(r => r.hasChanges).length;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate(`/audits/${task.audit_id}?tab=tasks`)}
-            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {task.task_name}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Fill out the checklist form and track your progress
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleSaveAll}
-            disabled={saving || unsavedChanges === 0}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {saving ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Save className="w-4 h-4" />
-            )}
-            {saving ? 'Saving...' : `Save All${unsavedChanges > 0 ? ` (${unsavedChanges})` : ''}`}
-          </button>
-          <button
-            onClick={handleSubmitChecklist}
-            disabled={submitting || task.checklist.status === 'completed'}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {submitting ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <CheckCircle className="w-4 h-4" />
-            )}
-            {submitting ? 'Submitting...' : task.checklist.status === 'completed' ? 'Completed' : 'Submit Checklist'}
-          </button>
-        </div>
-      </div>
-
-      {/* Task Information */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Task Information
-        </h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="flex items-center gap-3">
-            <User className="w-5 h-5 text-gray-400" />
-            <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Assigned To</p>
-              <p className="font-medium text-gray-900 dark:text-white">
-                {task.assigned_to_name || 'Unassigned'}
-              </p>
-            </div>
-          </div>
-
-          {task.due_date && (
-            <div className="flex items-center gap-3">
-              <Calendar className="w-5 h-5 text-gray-400" />
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <button
+                onClick={() => navigate(`/audits/${task.audit_id}?tab=tasks`)}
+                className="mr-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Due Date</p>
-                <p className="font-medium text-gray-900 dark:text-white">
-                  {new Date(task.due_date).toLocaleDateString()}
+                <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {task.task_name}
+                </h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {task.checklist.template.name}
                 </p>
               </div>
             </div>
-          )}
-
-          <div className="flex items-center gap-3">
-            <Target className="w-5 h-5 text-gray-400" />
-            <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Control Area</p>
-              <p className="font-medium text-gray-900 dark:text-white">
-                {task.control_area || 'Not specified'}
-              </p>
+            <div className="flex items-center space-x-3">
+              {responses.some(r => r.hasChanges) && (
+                <button
+                  onClick={handleSaveAll}
+                  disabled={saving}
+                  className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 disabled:opacity-50 flex items-center gap-2"
+                >
+                  <Save className="h-4 w-4" />
+                  {saving ? 'Saving...' : 'Save Changes'}
+                </button>
+              )}
+              <button
+                onClick={handleSubmitChecklist}
+                disabled={submitting || task.checklist.status === 'completed'}
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 flex items-center gap-2"
+              >
+                <CheckCircle className="h-4 w-4" />
+                {submitting ? 'Submitting...' : 'Complete Task'}
+              </button>
             </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Shield className="w-5 h-5 text-gray-400" />
-            <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Priority</p>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
-                {task.priority.toUpperCase()}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-gray-400" />
-            <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Risk Level</p>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(task.risk_level)}`}>
-                {task.risk_level.toUpperCase()}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <FileText className="w-5 h-5 text-gray-400" />
-            <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Template</p>
-              <p className="font-medium text-gray-900 dark:text-white">
-                {task.checklist.template.name}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {task.description && (
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Description</p>
-            <p className="text-gray-900 dark:text-white">{task.description}</p>
-          </div>
-        )}
-      </div>
-
-      {/* Progress Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Progress
-          </h2>
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <Clock className="w-4 h-4" />
-            <span>~{task.checklist.template.estimated_duration} min</span>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-            <span>Completed Fields</span>
-            <span className="font-semibold">{completedFields}/{totalFields}</span>
-          </div>
-          
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-            <div
-              className="bg-gradient-to-r from-primary-500 to-primary-600 h-3 rounded-full transition-all duration-500"
-              style={{ width: `${progressPercentage}%` }}
-            ></div>
-          </div>
-          
-          <div className="text-right">
-            <span className="text-lg font-bold text-primary-600 dark:text-primary-400">
-              {progressPercentage.toFixed(1)}%
-            </span>
           </div>
         </div>
       </div>
 
-      {/* Checklist Form */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-          Checklist Form
-        </h2>
-
-        <div className="space-y-8">
-          {responses.map((response, index) => (
-            <div key={response.id} className="border-b border-gray-200 dark:border-gray-700 pb-8 last:border-b-0 last:pb-0">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Task Overview Card */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="flex items-center justify-center w-8 h-8 bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-full text-sm font-medium">
-                      {index + 1}
-                    </span>
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                      {response.field.label}
-                      {response.field.is_required && (
-                        <span className="text-red-500 ml-1">*</span>
-                      )}
-                      {response.hasChanges && (
-                        <span className="text-orange-500 ml-2 text-sm font-normal">• Unsaved changes</span>
-                      )}
-                      {recentlySavedFields.has(response.field.id) && (
-                        <span className="text-green-500 ml-2 text-sm font-normal">✓ Saved</span>
-                      )}
-                    </h3>
-                  </div>
-                  
-                  {response.field.help_text && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 ml-11 mb-4">
-                      {response.field.help_text}
-                    </p>
-                  )}
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    Task Details
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {task.description || 'No description provided'}
+                  </p>
                 </div>
-
-                <div className="flex items-center gap-2 ml-4">
-                  {response.hasChanges && (
-                    <button
-                      onClick={async () => {
-                        if (savingFields.has(response.field.id)) return; // Prevent multiple clicks
-                        
-                        setSavingFields(prev => new Set(prev).add(response.field.id));
-                        
-                        try {
-                          const currentResponse = responses.find(r => r.field.id === response.field.id);
-                          const valueToSave = currentResponse?.value || response.value || {};
-                          const commentsToSave = currentResponse?.comments || response.comments || '';
-                          const completedStatus = currentResponse?.is_completed || response.is_completed || false;
-                          
-                          await handleFieldResponse(response.field.id, valueToSave, completedStatus, commentsToSave, false);
-                          
-                          // Remove hasChanges flag and show success state
-                          setResponses(prev => prev.map(r => 
-                            r.id === response.id 
-                              ? { ...r, hasChanges: false }
-                              : r
-                          ));
-                          
-                          // Show brief success state
-                          setRecentlySavedFields(prev => new Set(prev).add(response.field.id));
-                          setTimeout(() => {
-                            setRecentlySavedFields(prev => {
-                              const newSet = new Set(prev);
-                              newSet.delete(response.field.id);
-                              return newSet;
-                            });
-                          }, 2000); // Show success state for 2 seconds
-                        } finally {
-                          setSavingFields(prev => {
-                            const newSet = new Set(prev);
-                            newSet.delete(response.field.id);
-                            return newSet;
-                          });
-                        }
-                      }}
-                      disabled={savingFields.has(response.field.id)}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="Save changes"
-                    >
-                      {savingFields.has(response.field.id) ? (
-                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <Save className="w-4 h-4" />
-                      )}
-                      {savingFields.has(response.field.id) ? 'Saving...' : 'Save'}
-                    </button>
-                  )}
-                  <button
-                    onClick={() => {
-                      const newCompleted = !response.is_completed;
-                      setResponses(prev => prev.map(r => 
-                        r.id === response.id 
-                          ? { ...r, is_completed: newCompleted }
-                          : r
-                      ));
-                      handleFieldResponse(response.field.id, response.value, newCompleted, response.comments);
-                    }}
-                    className={`p-2 rounded-lg transition-colors ${
-                      response.is_completed
-                        ? 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400'
-                        : 'bg-gray-100 text-gray-400 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-500 dark:hover:bg-gray-600'
-                    }`}
-                    title={response.is_completed ? 'Mark as incomplete' : 'Mark as complete'}
-                  >
-                    <CheckCircle className="w-5 h-5" />
-                  </button>
+                <div className="flex flex-col items-end space-y-2">
+                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${getPriorityColor(task.priority)}`}>
+                    {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
+                  </span>
+                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${getRiskColor(task.risk_level)}`}>
+                    {task.risk_level.charAt(0).toUpperCase() + task.risk_level.slice(1)} Risk
+                  </span>
                 </div>
               </div>
 
-              <div className="ml-11 space-y-4">
-                {/* Field Input */}
-                <div>
-                  {renderFieldInput(response)}
+              {/* Progress Bar */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Progress</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    {task.checklist.completed_fields} of {task.checklist.total_fields} fields completed
+                  </span>
                 </div>
-
-                {/* Comments */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Comments (Optional)
-                  </label>
-                  <textarea
-                    value={response.comments || ''}
-                    onChange={(e) => {
-                      setResponses(prev => prev.map(r => 
-                        r.id === response.id 
-                          ? { ...r, comments: e.target.value, hasChanges: true }
-                          : r
-                      ));
-                    }}
-                    rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white text-sm"
-                    placeholder="Add any additional notes or comments..."
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div
+                    className="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${task.checklist.completion_percentage}%` }}
                   />
                 </div>
+                <div className="text-right mt-1">
+                  <span className="text-lg font-semibold text-primary-600 dark:text-primary-400">
+                    {Math.round(task.checklist.completion_percentage)}%
+                  </span>
+                </div>
+              </div>
 
-                {/* Evidence Upload Section */}
-                <EvidenceUploadSection fieldId={response.field.id} />
+              {/* Task Metadata */}
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
+                  <User className="h-4 w-4 mr-2" />
+                  <span>Assigned to: {task.assigned_to_name || 'Unassigned'}</span>
+                </div>
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  <span>Due: {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date'}</span>
+                </div>
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
+                  <Target className="h-4 w-4 mr-2" />
+                  <span>Control Area: {task.control_area || 'General'}</span>
+                </div>
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
+                  <Clock className="h-4 w-4 mr-2" />
+                  <span>Status: {task.task_status.charAt(0).toUpperCase() + task.task_status.slice(1)}</span>
+                </div>
+              </div>
+            </div>
 
-                {/* Response Metadata */}
-                {response.responded_at && (
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Last updated: {new Date(response.responded_at).toLocaleString()}
-                    {response.responded_by && (
-                      <span className="ml-2">
-                        by {response.responded_by.full_name || response.responded_by.username}
-                      </span>
-                    )}
+            {/* Checklist Fields */}
+            <div className="space-y-6">
+              {responses
+                .sort((a, b) => a.field.order - b.field.order)
+                .map((response) => (
+                  <div
+                    key={response.id}
+                    className={`bg-white dark:bg-gray-800 rounded-lg shadow border-2 transition-all duration-200 ${
+                      response.is_completed 
+                        ? 'border-green-200 dark:border-green-800' 
+                        : response.hasChanges 
+                        ? 'border-yellow-200 dark:border-yellow-800' 
+                        : 'border-gray-200 dark:border-gray-700'
+                    }`}
+                  >
+                    <div className="p-6">
+                      {/* Field Header */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <button
+                              onClick={() => {
+                                const newCompleted = !response.is_completed;
+                                handleFieldResponse(
+                                  response.field.id, 
+                                  response.value, 
+                                  newCompleted, 
+                                  response.comments,
+                                  true
+                                );
+                              }}
+                              className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
+                                response.is_completed
+                                  ? 'bg-green-500 border-green-500 text-white'
+                                  : 'border-gray-300 hover:border-green-400 dark:border-gray-600'
+                              }`}
+                            >
+                              {response.is_completed && <CheckCircle className="h-4 w-4" />}
+                            </button>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                              {response.field.label}
+                              {response.field.is_required && <span className="text-red-500 ml-1">*</span>}
+                            </h3>
+                            {response.hasChanges && (
+                              <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 rounded-full">
+                                Unsaved
+                              </span>
+                            )}
+                          </div>
+                          {response.field.help_text && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                              {response.field.help_text}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                          Field {response.field.order}
+                        </div>
+                      </div>
+
+                      {/* Field Input */}
+                      <div className="mb-4">
+                        {renderFieldInput(response)}
+                      </div>
+
+                      {/* Comments */}
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Comments (Optional)
+                        </label>
+                        <textarea
+                          value={response.comments}
+                          onChange={(e) => {
+                            setResponses(prev => prev.map(r => 
+                              r.id === response.id 
+                                ? { ...r, comments: e.target.value, hasChanges: true }
+                                : r
+                            ));
+                          }}
+                          rows={2}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          placeholder="Add any comments or notes for this field..."
+                        />
+                      </div>
+
+                      {/* Evidence Upload */}
+                      <EvidenceUploadSection fieldId={response.field.id} />
+
+                      {/* Response Metadata */}
+                      {response.responded_at && (
+                        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Last updated: {new Date(response.responded_at).toLocaleString()}
+                            {response.responded_by && ` by ${response.responded_by.full_name || response.responded_by.username}`}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Quick Actions */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
+              <div className="space-y-3">
+                <button
+                  onClick={handleSaveAll}
+                  disabled={saving || !responses.some(r => r.hasChanges)}
+                  className="w-full px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  <Save className="h-4 w-4" />
+                  Save Progress
+                </button>
+                <button
+                  onClick={handleSubmitChecklist}
+                  disabled={submitting || task.checklist.status === 'completed'}
+                  className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                  Complete Task
+                </button>
+                <button
+                  onClick={() => navigate(`/audits/${task.audit_id}`)}
+                  className="w-full px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 flex items-center justify-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Audit
+                </button>
+              </div>
+            </div>
+
+            {/* Evidence Summary */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Evidence</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600 dark:text-gray-400">Total Files:</span>
+                  <span className="font-medium text-gray-900 dark:text-white">{evidence.length}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600 dark:text-gray-400">Verified:</span>
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {evidence.filter(e => e.is_verified).length}
+                  </span>
+                </div>
+                {evidence.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Recent Evidence</h4>
+                    <div className="space-y-2">
+                      {evidence.slice(0, 3).map((item) => (
+                        <div key={item.id} className="flex items-center justify-between text-xs">
+                          <span className="text-gray-600 dark:text-gray-400 truncate">{item.title}</span>
+                          {item.is_verified && (
+                            <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0 ml-2" />
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
             </div>
-          ))}
-        </div>
 
-        {responses.length === 0 && (
-          <div className="text-center py-12">
-            <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              No Fields Found
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              This checklist doesn't have any fields to fill out.
-            </p>
+            {/* Progress Summary */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Progress Summary</h3>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center justify-between text-sm mb-1">
+                    <span className="text-gray-600 dark:text-gray-400">Completion</span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {Math.round(task.checklist.completion_percentage)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div
+                      className="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${task.checklist.completion_percentage}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-600 dark:text-gray-400">Completed:</span>
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {task.checklist.completed_fields} fields
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-gray-600 dark:text-gray-400">Remaining:</span>
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {task.checklist.total_fields - task.checklist.completed_fields} fields
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
       </div>
-
-      {/* Footer Actions */}
-      {responses.length > 0 && (
-        <div className="flex justify-between items-center p-6 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            <span className="font-medium">{completedFields}</span> of{' '}
-            <span className="font-medium">{totalFields}</span> fields completed
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleSaveAll}
-              disabled={saving || unsavedChanges === 0}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {saving ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Save className="w-4 h-4" />
-              )}
-              {saving ? 'Saving...' : `Save All${unsavedChanges > 0 ? ` (${unsavedChanges})` : ''}`}
-            </button>
-            
-            <button
-              onClick={handleSubmitChecklist}
-              disabled={submitting || task.checklist.status === 'completed'}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-            >
-              {submitting ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <CheckCircle className="w-4 h-4" />
-              )}
-              {submitting ? 'Submitting...' : task.checklist.status === 'completed' ? 'Completed' : 'Submit Checklist'}
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

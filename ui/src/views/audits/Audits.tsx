@@ -274,12 +274,22 @@ const Audits: React.FC = () => {
                                             className="hover:bg-gray-50 dark:hover:bg-gray-700"
                                         >
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-300">
+                                                <button
+                                                        onClick={() => navigate(`/audits/${audit.id}`)}
+                                                        className=" hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                                        title="View audit"
+                                                    >
                                                 {audit.reference_number}
+                                                </button>
                                             </td>
                                             <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300 max-w-xs">
-                                                <div className="truncate" title={audit.title}>
+                                                <button
+                                                    onClick={() => navigate(`/audits/${audit.id}`)}
+                                                    className="truncate text-left cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                                    title={`View audit: ${audit.title}`}
+                                                >
                                                     {audit.title}
-                                                </div>
+                                                </button>
                                             </td>
                                             <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
                                                 {getAuditTypeName(audit)}

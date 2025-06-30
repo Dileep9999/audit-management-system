@@ -227,7 +227,15 @@ class AuditTask(models.Model):
         null=True,
         blank=True,
         related_name='assigned_audit_tasks',
-        verbose_name=_('Assigned To')
+        verbose_name=_('Assigned To'),
+        help_text=_('Legacy single user assignment - use assigned_users for multiple assignments')
+    )
+    assigned_users = models.ManyToManyField(
+        User,
+        blank=True,
+        related_name='assigned_audit_tasks_multi',
+        verbose_name=_('Assigned Users'),
+        help_text=_('Multiple users can be assigned to work on this task')
     )
     due_date = models.DateTimeField(null=True, blank=True, verbose_name=_('Due Date'))
     
@@ -298,6 +306,17 @@ class AuditTask(models.Model):
                 pass  # Handle case where checklist doesn't exist yet
         
         super().save(*args, **kwargs)
+        
+        # Sync single assignment to multiple assignments after save
+        if self.assigned_to and not self.assigned_users.exists():
+            self.assigned_users.add(self.assigned_to)
+        
+        # Sync multiple assignments to single assignment after save
+        # If we have assigned_users but no assigned_to, set assigned_to to first user
+        if not self.assigned_to and self.assigned_users.exists():
+            self.assigned_to = self.assigned_users.first()
+            # Update without triggering save recursion
+            AuditTask.objects.filter(pk=self.pk).update(assigned_to=self.assigned_to)
 
     def get_task_status(self):
         """Get task status based on checklist status"""
@@ -691,3 +710,356 @@ class ReviewTemplate(SoftDeleteModel):
         """Increment usage count when template is used"""
         self.usage_count += 1
         self.save(update_fields=['usage_count'])
+
+
+class AuditFinding(SoftDeleteModel):
+    """Findings discovered during audit tasks"""
+    
+    SEVERITY_CHOICES = [
+        ('low', _('Low')),
+        ('medium', _('Medium')),
+        ('high', _('High')),
+        ('critical', _('Critical')),
+    ]
+    
+    FINDING_TYPE_CHOICES = [
+        ('control_deficiency', _('Control Deficiency')),
+        ('compliance_issue', _('Compliance Issue')),
+        ('process_improvement', _('Process Improvement')),
+        ('observation', _('Observation')),
+        ('best_practice', _('Best Practice')),
+    ]
+    
+    STATUS_CHOICES = [
+        ('open', _('Open')),
+        ('in_progress', _('In Progress')),
+        ('resolved', _('Resolved')),
+        ('closed', _('Closed')),
+        ('not_applicable', _('Not Applicable')),
+    ]
+    
+    # Basic finding information
+    title = models.CharField(max_length=255, verbose_name=_('Finding Title'))
+    description = models.TextField(verbose_name=_('Description'))
+    
+    # Classification
+    severity = models.CharField(
+        max_length=20,
+        choices=SEVERITY_CHOICES,
+        verbose_name=_('Severity')
+    )
+    finding_type = models.CharField(
+        max_length=30,
+        choices=FINDING_TYPE_CHOICES,
+        verbose_name=_('Finding Type')
+    )
+    
+    # Audit context
+    audit = models.ForeignKey(
+        Audit,
+        on_delete=models.CASCADE,
+        related_name='findings',
+        verbose_name=_('Audit')
+    )
+    audit_task = models.ForeignKey(
+        AuditTask,
+        on_delete=models.CASCADE,
+        related_name='findings',
+        null=True,
+        blank=True,
+        verbose_name=_('Audit Task')
+    )
+    
+    # Risk and control information
+    control_area = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_('Control Area')
+    )
+    risk_level = models.CharField(
+        max_length=20,
+        choices=[
+            ('low', _('Low Risk')),
+            ('medium', _('Medium Risk')),
+            ('high', _('High Risk')),
+            ('critical', _('Critical Risk')),
+        ],
+        default='medium',
+        verbose_name=_('Risk Level')
+    )
+    
+    # Status and assignment
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='open',
+        verbose_name=_('Status')
+    )
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_findings',
+        verbose_name=_('Assigned To')
+    )
+    
+    # Timeline
+    due_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Due Date')
+    )
+    
+    # Tracking
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name='created_findings',
+        verbose_name=_('Created By')
+    )
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = _('Audit Finding')
+        verbose_name_plural = _('Audit Findings')
+    
+    def __str__(self):
+        return f"{self.audit.reference_number} - {self.title}"
+
+
+class Team(SoftDeleteModel):
+    """Teams for organizing audit work"""
+    
+    TEAM_TYPE_CHOICES = [
+        ('audit', _('Audit Team')),
+        ('review', _('Review Team')),
+        ('management', _('Management Team')),
+        ('technical', _('Technical Team')),
+        ('compliance', _('Compliance Team')),
+    ]
+    
+    name = models.CharField(
+        max_length=255,
+        verbose_name=_('Team Name'),
+        help_text=_('Name of the team')
+    )
+    
+    type = models.CharField(
+        max_length=20,
+        choices=TEAM_TYPE_CHOICES,
+        default='audit',
+        verbose_name=_('Team Type'),
+        help_text=_('Type of team based on its function')
+    )
+    
+    description = models.TextField(
+        blank=True,
+        verbose_name=_('Description'),
+        help_text=_('Optional description of the team purpose and responsibilities')
+    )
+    
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name='owned_teams',
+        verbose_name=_('Team Owner'),
+        help_text=_('User who owns and manages this team')
+    )
+    
+    members = models.ManyToManyField(
+        User,
+        through='TeamMember',
+        through_fields=('team', 'user'),
+        related_name='team_memberships',
+        verbose_name=_('Team Members'),
+        help_text=_('Users who are members of this team')
+    )
+    
+    # Team settings
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_('Is Active'),
+        help_text=_('Whether this team is currently active')
+    )
+    
+    # Audit assignment
+    audits = models.ManyToManyField(
+        'Audit',
+        blank=True,
+        related_name='assigned_teams',
+        verbose_name=_('Assigned Audits'),
+        help_text=_('Audits this team is assigned to work on')
+    )
+    
+    # Metadata
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name='created_teams',
+        verbose_name=_('Created By')
+    )
+    
+    class Meta:
+        ordering = ['name']
+        verbose_name = _('Team')
+        verbose_name_plural = _('Teams')
+        indexes = [
+            models.Index(fields=['type', 'is_active']),
+            models.Index(fields=['owner', 'is_active']),
+        ]
+    
+    def __str__(self):
+        return f"{self.name} ({self.get_type_display()})"
+    
+    def get_all_members(self):
+        """Get all team members including the owner"""
+        member_ids = list(self.members.values_list('id', flat=True))
+        if self.owner_id not in member_ids:
+            member_ids.append(self.owner_id)
+        return User.objects.filter(id__in=member_ids)
+    
+    def add_member(self, user, role='member', added_by=None):
+        """Add a user to the team with specified role"""
+        team_member, created = TeamMember.objects.get_or_create(
+            team=self,
+            user=user,
+            defaults={
+                'role': role,
+                'added_by': added_by or self.owner,
+            }
+        )
+        return team_member, created
+    
+    def remove_member(self, user):
+        """Remove a user from the team"""
+        return TeamMember.objects.filter(team=self, user=user).delete()
+    
+    def get_member_count(self):
+        """Get total number of team members including owner"""
+        return self.members.count() + (1 if self.owner else 0)
+    
+    def is_member(self, user):
+        """Check if a user is a member of this team or the owner"""
+        return user == self.owner or self.members.filter(id=user.id).exists()
+    
+    def can_manage(self, user):
+        """Check if a user can manage this team"""
+        if user == self.owner:
+            return True
+        
+        # Check if user is a team manager
+        return TeamMember.objects.filter(
+            team=self,
+            user=user,
+            role__in=['manager', 'admin']
+        ).exists()
+
+
+class TeamMember(models.Model):
+    """Through model for team membership with additional metadata"""
+    
+    ROLE_CHOICES = [
+        ('member', _('Member')),
+        ('lead', _('Team Lead')),
+        ('manager', _('Manager')),
+        ('admin', _('Admin')),
+    ]
+    
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.CASCADE,
+        related_name='team_memberships',
+        verbose_name=_('Team')
+    )
+    
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='user_team_memberships',
+        verbose_name=_('User')
+    )
+    
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='member',
+        verbose_name=_('Role'),
+        help_text=_('Role of the user in this team')
+    )
+    
+    # Permissions for this team membership
+    can_assign_tasks = models.BooleanField(
+        default=False,
+        verbose_name=_('Can Assign Tasks'),
+        help_text=_('Whether this member can assign tasks to other team members')
+    )
+    
+    can_review = models.BooleanField(
+        default=False,
+        verbose_name=_('Can Review'),
+        help_text=_('Whether this member can review work from other team members')
+    )
+    
+    can_manage_team = models.BooleanField(
+        default=False,
+        verbose_name=_('Can Manage Team'),
+        help_text=_('Whether this member can add/remove other team members')
+    )
+    
+    # Metadata
+    added_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name='added_team_members',
+        verbose_name=_('Added By'),
+        help_text=_('User who added this member to the team')
+    )
+    
+    joined_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Joined At')
+    )
+    
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_('Is Active'),
+        help_text=_('Whether this team membership is currently active')
+    )
+    
+    # Optional metadata
+    notes = models.TextField(
+        blank=True,
+        verbose_name=_('Notes'),
+        help_text=_('Optional notes about this team membership')
+    )
+    
+    class Meta:
+        unique_together = ['team', 'user']
+        ordering = ['-joined_at']
+        verbose_name = _('Team Member')
+        verbose_name_plural = _('Team Members')
+        indexes = [
+            models.Index(fields=['team', 'role']),
+            models.Index(fields=['user', 'is_active']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.get_full_name()} - {self.team.name} ({self.get_role_display()})"
+    
+    def save(self, *args, **kwargs):
+        # Auto-set permissions based on role
+        if self.role == 'admin':
+            self.can_assign_tasks = True
+            self.can_review = True
+            self.can_manage_team = True
+        elif self.role == 'manager':
+            self.can_assign_tasks = True
+            self.can_review = True
+            self.can_manage_team = True
+        elif self.role == 'lead':
+            self.can_assign_tasks = True
+            self.can_review = True
+            self.can_manage_team = False
+        
+        super().save(*args, **kwargs)

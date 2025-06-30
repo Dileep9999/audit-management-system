@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
-from .models import CustomAuditType, Audit, AuditTask, AuditEvidence
+from .models import CustomAuditType, Audit, AuditTask, AuditEvidence, Team, TeamMember
 
 
 class AuditTaskInline(admin.TabularInline):
@@ -144,4 +144,87 @@ class AuditEvidenceAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if not change:  # Creating new evidence
             obj.collected_by = request.user
+        super().save_model(request, obj, form, change)
+
+
+# Team Admin Classes
+class TeamMemberInline(admin.TabularInline):
+    model = TeamMember
+    extra = 1
+    fields = ['user', 'role', 'can_assign_tasks', 'can_review', 'can_manage_team', 'is_active']
+    readonly_fields = ['added_by', 'joined_at']
+
+
+@admin.register(Team)
+class TeamAdmin(admin.ModelAdmin):
+    list_display = [
+        'name', 'type', 'owner', 'get_member_count', 'is_active', 
+        'created_by', 'created_at'
+    ]
+    list_filter = ['type', 'is_active', 'created_at']
+    search_fields = ['name', 'description', 'owner__username', 'owner__first_name', 'owner__last_name']
+    readonly_fields = ['created_by', 'created_at', 'updated_at']
+    filter_horizontal = ['audits']
+    inlines = [TeamMemberInline]
+    
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'type', 'description', 'owner')
+        }),
+        (_('Settings'), {
+            'fields': ('is_active',)
+        }),
+        (_('Audit Assignments'), {
+            'fields': ('audits',),
+            'classes': ('collapse',)
+        }),
+        (_('Metadata'), {
+            'fields': ('created_by', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def get_member_count(self, obj):
+        """Get total member count including owner"""
+        return obj.get_member_count()
+    get_member_count.short_description = _('Member Count')
+    
+    def save_model(self, request, obj, form, change):
+        if not change:  # Only set created_by for new objects
+            obj.created_by = request.user
+        super().save_model(request, obj, form, change)
+
+
+@admin.register(TeamMember)
+class TeamMemberAdmin(admin.ModelAdmin):
+    list_display = [
+        'user', 'team', 'role', 'can_assign_tasks', 'can_review', 
+        'can_manage_team', 'is_active', 'added_by', 'joined_at'
+    ]
+    list_filter = ['role', 'is_active', 'can_assign_tasks', 'can_review', 'can_manage_team', 'joined_at']
+    search_fields = [
+        'user__username', 'user__first_name', 'user__last_name', 
+        'team__name', 'added_by__username'
+    ]
+    readonly_fields = ['added_by', 'joined_at']
+    
+    fieldsets = (
+        (None, {
+            'fields': ('team', 'user', 'role')
+        }),
+        (_('Permissions'), {
+            'fields': ('can_assign_tasks', 'can_review', 'can_manage_team')
+        }),
+        (_('Status & Notes'), {
+            'fields': ('is_active', 'notes')
+        }),
+        (_('Metadata'), {
+            'fields': ('added_by', 'joined_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def save_model(self, request, obj, form, change):
+        if not change:  # Only set added_by for new objects
+            obj.added_by = request.user
         super().save_model(request, obj, form, change)

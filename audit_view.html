@@ -1,0 +1,181 @@
+graph TB
+    %% User Management Layer
+    subgraph "User Management & RBAC"
+        A[User Registration/Login] --> B[Role Assignment]
+        B --> C{Permission Check}
+        C --> D[Admin]
+        C --> E[Audit Manager]
+        C --> F[Senior Auditor]
+        C --> G[Junior Auditor]
+        C --> H[Client]
+        C --> I[Reviewer]
+    end
+
+    %% Audit Lifecycle
+    subgraph "Audit Creation & Planning"
+        J[Audit Request] --> K[Scope Definition]
+        K --> L[Resource Allocation]
+        L --> M[Timeline Planning]
+        M --> N[Stakeholder Assignment]
+        N --> O[Risk Assessment]
+        O --> P{Audit Plan Approval}
+        P -->|Approved| Q[Audit Execution]
+        P -->|Rejected| K
+    end
+
+    %% Main Audit Workflow
+    subgraph "Audit Execution Workflow"
+        Q --> R[Stage 1: Preparation]
+        R --> S[Document Collection]
+        S --> T[Team Briefing]
+        T --> U[Stage 2: Fieldwork]
+        U --> V[Evidence Gathering]
+        V --> W[Testing Procedures]
+        W --> X[Interviews]
+        X --> Y[Stage 3: Review & Analysis]
+        Y --> Z[Evidence Evaluation]
+        Z --> AA[Finding Identification]
+        AA --> BB[Risk Rating]
+        BB --> CC[Stage 4: Reporting]
+        CC --> DD[Draft Report]
+        DD --> EE[Client Discussion]
+        EE --> FF[Final Report]
+        FF --> GG[Stage 5: Follow-up]
+        GG --> HH[Action Plan Monitoring]
+        HH --> II[Closure]
+    end
+
+    %% Approval Workflows
+    subgraph "Approval & Review System"
+        JJ[Document Submission] --> KK{Quality Check}
+        KK -->|Pass| LL[Supervisor Review]
+        KK -->|Fail| MM[Return for Revision]
+        MM --> JJ
+        LL --> NN{Approval Decision}
+        NN -->|Approve| OO[Next Stage]
+        NN -->|Reject| PP[Rework Required]
+        PP --> JJ
+        NN -->|Escalate| QQ[Senior Management]
+        QQ --> NN
+    end
+
+    %% Communication System
+    subgraph "Communication & Notifications"
+        RR[Event Trigger] --> SS[Notification Engine]
+        SS --> TT[Email Alerts]
+        SS --> UU[In-App Messages]
+        SS --> VV[SMS Notifications]
+        SS --> WW[Dashboard Updates]
+        SS --> XX[Client Portal Updates]
+    end
+
+    %% Document Management
+    subgraph "Document Management"
+        YY[Document Upload] --> ZZ[Version Control]
+        ZZ --> AAA[Classification]
+        AAA --> BBB[Access Control]
+        BBB --> CCC[Review Process]
+        CCC --> DDD{Approval Status}
+        DDD -->|Approved| EEE[Document Library]
+        DDD -->|Rejected| FFF[Revision Required]
+        FFF --> YY
+    end
+
+    %% Quality Control
+    subgraph "Quality Assurance"
+        GGG[QA Checkpoint] --> HHH{Quality Standards Met}
+        HHH -->|Yes| III[Proceed]
+        HHH -->|No| JJJ[Quality Issues Identified]
+        JJJ --> KKK[Corrective Actions]
+        KKK --> GGG
+        III --> LLL[QA Documentation]
+    end
+
+    %% Reporting System
+    subgraph "Reporting & Analytics"
+        MMM[Data Collection] --> NNN[Report Generation]
+        NNN --> OOO[Dashboard Updates]
+        OOO --> PPP[Performance Metrics]
+        PPP --> QQQ[Analytics Engine]
+        QQQ --> RRR[Insights & Trends]
+        RRR --> SSS[Management Reports]
+    end
+
+    %% Client Portal
+    subgraph "Client Management"
+        TTT[Client Onboarding] --> UUU[Portal Access]
+        UUU --> VVV[Document Sharing]
+        VVV --> WWW[Progress Tracking]
+        WWW --> XXX[Feedback Collection]
+        XXX --> YYY[Communication Log]
+    end
+
+    %% Integration Points
+    subgraph "System Integration"
+        ZZZ[External Systems] --> AAAA[API Gateway]
+        AAAA --> BBBB[Data Validation]
+        BBBB --> CCCC[Data Transformation]
+        CCCC --> DDDD[System Updates]
+    end
+
+    %% Key Connections
+    D --> J
+    E --> J
+    F --> R
+    G --> V
+    H --> XXX
+    I --> LL
+
+    %% Workflow Dependencies
+    O --> RR
+    P --> RR
+    NN --> RR
+    DDD --> RR
+    HHH --> RR
+
+    %% Quality Gates
+    R --> GGG
+    Y --> GGG
+    CC --> GGG
+    
+    %% Document Flow
+    S --> YY
+    V --> YY
+    DD --> YY
+    FF --> YY
+
+    %% Reporting Connections
+    II --> MMM
+    OO --> MMM
+    LLL --> MMM
+
+    %% Client Integration
+    EE --> VVV
+    FF --> VVV
+    HH --> WWW
+
+    %% System Integration Points
+    MMM --> AAAA
+    EEE --> AAAA
+    SSS --> AAAA
+
+    %% Styling
+    classDef userMgmt fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef auditCore fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef approval fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef communication fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef document fill:#fff8e1,stroke:#f57f17,stroke-width:2px
+    classDef quality fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef reporting fill:#e0f2f1,stroke:#004d40,stroke-width:2px
+    classDef client fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    classDef integration fill:#fafafa,stroke:#424242,stroke-width:2px
+
+    class A,B,C,D,E,F,G,H,I userMgmt
+    class J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,AA,BB,CC,DD,EE,FF,GG,HH,II auditCore
+    class JJ,KK,LL,MM,NN,OO,PP,QQ approval
+    class RR,SS,TT,UU,VV,WW,XX communication
+    class YY,ZZ,AAA,BBB,CCC,DDD,EEE,FFF document
+    class GGG,HHH,III,JJJ,KKK,LLL quality
+    class MMM,NNN,OOO,PPP,QQQ,RRR,SSS reporting
+    class TTT,UUU,VVV,WWW,XXX,YYY client
+    class ZZZ,AAAA,BBBB,CCCC,DDDD integration

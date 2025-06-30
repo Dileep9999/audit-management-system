@@ -9,10 +9,7 @@ import { X } from 'lucide-react';
 
 type AuditType = 'internal' | 'external' | 'compliance' | 'financial' | 'operational' | 'it' | 'performance';
 
-interface AuditTypeConfig {
-  id: AuditType;
-  display: string;
-}
+// Remove duplicate - using the one defined after imports
 
 interface User {
   id: number;
@@ -30,16 +27,15 @@ interface Workflow {
   status: string;
 }
 
-// Static data for audit types
-const AUDIT_TYPES: AuditTypeConfig[] = [
-  { id: 'internal', display: 'Internal' },
-  { id: 'external', display: 'External' },
-  { id: 'compliance', display: 'Compliance' },
-  { id: 'financial', display: 'Financial' },
-  { id: 'operational', display: 'Operational' },
-  { id: 'it', display: 'IT' },
-  { id: 'performance', display: 'Performance' }
-];
+// Import audit types from API service
+import { AUDIT_TYPES } from '../../utils/api_service';
+type AuditTypeConfig = { id: string; display: string };
+
+// Convert API audit types to component format
+const AUDIT_TYPE_CONFIGS: AuditTypeConfig[] = AUDIT_TYPES.map(type => ({
+  id: type.id,
+  display: type.name
+}));
 
 interface FormData {
   title: string;
@@ -253,7 +249,7 @@ export default function CreateAudit() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value="">Select audit type</option>
-                {AUDIT_TYPES.map((type) => (
+                {AUDIT_TYPE_CONFIGS.map((type) => (
                   <option key={type.id} value={type.id}>
                     {type.display}
                   </option>

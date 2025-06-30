@@ -788,41 +788,29 @@ const AuditTasks: React.FC<AuditTasksProps> = ({ auditId, auditTitle, onTaskCrea
             {/* Linear Progress with Milestones */}
             <div className="lg:col-span-2">
               <ProgressIndicator
-                value={taskSummary.progress.percentage}
+                current={taskSummary.progress.completed}
                 total={taskSummary.progress.total}
                 completed={taskSummary.progress.completed}
-                variant="linear"
+                pending={taskSummary.progress.total - taskSummary.progress.completed}
                 size="lg"
-                label="Overall Progress"
                 color="primary"
-                gradient={true}
-                showMilestones={true}
-                milestones={[25, 50, 75]}
-                status={
-                  taskSummary.progress.percentage >= 90 ? 'ahead' :
-                  taskSummary.progress.percentage >= 70 ? 'on-track' :
-                  taskSummary.progress.percentage >= 50 ? 'at-risk' : 'behind'
-                }
-                animated={true}
-                thickness="thick"
+                animate={true}
+                showNumbers={true}
+                showStatus={true}
               />
             </div>
 
             {/* Circular Progress */}
             <div className="flex justify-center">
               <ProgressIndicator
-                value={taskSummary.progress.percentage}
-                variant="circular"
+                current={taskSummary.progress.completed}
+                total={taskSummary.progress.total}
+                completed={taskSummary.progress.completed}
                 size="lg"
-                label="Completion"
-                color="success"
-                gradient={true}
-                animated={true}
-                status={
-                  taskSummary.progress.percentage >= 90 ? 'ahead' :
-                  taskSummary.progress.percentage >= 70 ? 'on-track' :
-                  taskSummary.progress.percentage >= 50 ? 'at-risk' : 'behind'
-                }
+                color="green"
+                animate={true}
+                showNumbers={true}
+                showStatus={true}
               />
             </div>
           </div>
@@ -1116,23 +1104,18 @@ const AuditTasks: React.FC<AuditTasksProps> = ({ auditId, auditTitle, onTaskCrea
               {/* Enhanced Progress */}
               <div className="space-y-3">
                 <ProgressIndicator
-                  value={task.completion_percentage}
-                  variant="linear"
+                  current={task.completion_percentage}
+                  total={100}
+                  completed={task.completion_percentage}
                   size="md"
-                  label="Task Progress"
                   color={
-                    task.completion_percentage >= 90 ? 'success' :
+                    task.completion_percentage >= 90 ? 'green' :
                     task.completion_percentage >= 70 ? 'primary' :
-                    task.completion_percentage >= 50 ? 'warning' : 'danger'
+                    task.completion_percentage >= 50 ? 'orange' : 'orange'
                   }
-                  gradient={true}
-                  animated={true}
-                  thickness="medium"
-                  status={
-                    task.completion_percentage >= 90 ? 'ahead' :
-                    task.completion_percentage >= 70 ? 'on-track' :
-                    task.completion_percentage >= 50 ? 'at-risk' : 'behind'
-                  }
+                  animate={true}
+                  showNumbers={true}
+                  showStatus={false}
                 />
               </div>
             </div>

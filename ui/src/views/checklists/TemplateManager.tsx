@@ -142,6 +142,18 @@ const TemplateManager: React.FC = () => {
     }
   };
 
+  const loadTemplateFields = async (templateId: number) => {
+    try {
+      const templateData = await getChecklistTemplate(templateId);
+      if (templateData.fields) {
+        setFields(templateData.fields);
+      }
+    } catch (error) {
+      toast.error('Failed to load template fields');
+      console.error('Error loading template fields:', error);
+    }
+  };
+
   const handleCreateTemplate = () => {
     // Navigate to the dedicated create template page
     window.location.href = '/templates/create?return_to=/templates';
@@ -161,39 +173,8 @@ const TemplateManager: React.FC = () => {
       is_active: template.is_active
     });
     
-    // Load template fields - mock data for now
-    const mockFields: ChecklistField[] = [
-      {
-        id: 1,
-        label: 'Audit Title',
-        field_type: 'text',
-        help_text: 'Enter the audit title',
-        placeholder: 'e.g., Q1 Financial Review',
-        is_required: true,
-        is_readonly: false,
-        default_value: '',
-        options: [],
-        order: 1,
-        css_class: '',
-        conditional_logic: {}
-      },
-      {
-        id: 2,
-        label: 'Audit Date',
-        field_type: 'date',
-        help_text: 'Select the audit date',
-        placeholder: '',
-        is_required: true,
-        is_readonly: false,
-        default_value: '',
-        options: [],
-        order: 2,
-        css_class: '',
-        conditional_logic: {}
-      }
-    ];
-    
-    setFields(mockFields);
+    // Load real template fields
+    loadTemplateFields(template.id);
     setView('edit');
   };
 
@@ -204,22 +185,12 @@ const TemplateManager: React.FC = () => {
 
   const handleDuplicateTemplate = async (template: ChecklistTemplate) => {
     try {
-      // Mock duplication - replace with actual API call
-      const newTemplate = {
-        ...template,
-        id: Math.max(...templates.map(t => t.id)) + 1,
-        name: `Copy of ${template.name}`,
-        is_frozen: false,
-        usage_count: 0,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        can_edit: true
-      };
-      
-      setTemplates([newTemplate, ...templates]);
+      const duplicatedTemplate = await duplicateChecklistTemplate(template.id);
+      await loadTemplates(); // Reload templates to get the updated list
       toast.success('Template duplicated successfully');
     } catch (error) {
       toast.error('Failed to duplicate template');
+      console.error('Error duplicating template:', error);
     }
   };
 
@@ -227,20 +198,28 @@ const TemplateManager: React.FC = () => {
     if (!confirm(`Are you sure you want to delete "${template.name}"?`)) return;
     
     try {
-      setTemplates(templates.filter(t => t.id !== template.id));
+      await deleteChecklistTemplate(template.id);
+      await loadTemplates(); // Reload templates to get the updated list
       toast.success('Template deleted successfully');
     } catch (error) {
       toast.error('Failed to delete template');
+      console.error('Error deleting template:', error);
     }
   };
 
   const handleToggleFreeze = async (template: ChecklistTemplate) => {
     try {
-      const updatedTemplate = { ...template, is_frozen: !template.is_frozen };
-      setTemplates(templates.map(t => t.id === template.id ? updatedTemplate : t));
-      toast.success(`Template ${template.is_frozen ? 'unfrozen' : 'frozen'} successfully`);
+      if (template.is_frozen) {
+        await unfreezeChecklistTemplate(template.id);
+        toast.success('Template unfrozen successfully');
+      } else {
+        await freezeChecklistTemplate(template.id);
+        toast.success('Template frozen successfully');
+      }
+      await loadTemplates(); // Reload templates to get the updated list
     } catch (error) {
       toast.error('Failed to update template status');
+      console.error('Error updating template freeze status:', error);
     }
   };
 
@@ -258,37 +237,18 @@ const TemplateManager: React.FC = () => {
       };
 
       if (view === 'create') {
-        // Mock creation - replace with actual API call
-        const newTemplate: ChecklistTemplate = {
-          id: Math.max(...templates.map(t => t.id), 0) + 1,
-          ...templateForm,
-          created_by: { id: 1, username: 'current', full_name: 'Current User' },
-          is_frozen: false,
-          usage_count: 0,
-          fields_count: fields.length,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          can_edit: true
-        };
-        
-        setTemplates([newTemplate, ...templates]);
+        await createChecklistTemplate(templateData);
         toast.success('Template created successfully');
       } else if (view === 'edit' && selectedTemplate) {
-        // Mock update - replace with actual API call
-        const updatedTemplate = { 
-          ...selectedTemplate, 
-          ...templateForm,
-          fields_count: fields.length,
-          updated_at: new Date().toISOString()
-        };
-        
-        setTemplates(templates.map(t => t.id === selectedTemplate.id ? updatedTemplate : t));
+        await updateChecklistTemplate(selectedTemplate.id, templateData);
         toast.success('Template updated successfully');
       }
 
+      await loadTemplates(); // Reload templates to get the updated list
       setView('list');
     } catch (error) {
       toast.error('Failed to save template');
+      console.error('Error saving template:', error);
     } finally {
       setSaving(false);
     }

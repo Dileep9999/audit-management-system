@@ -54,6 +54,12 @@ const menu: MegaMenu[] = [
         lang: "Workflows", 
         link: "/admins/workflows",
         children: [],
+      },
+      {
+        title: "Templates",
+        lang: "Templates",
+        link: "/templates",
+        children: [],
       }
     ],
   },
