@@ -39,7 +39,7 @@ class AuditAdmin(admin.ModelAdmin):
     
     fieldsets = (
         (_('Basic Information'), {
-            'fields': ('reference_number', 'title', 'audit_type', 'custom_audit_type')
+            'fields': ('reference_number', 'title', 'audit_type', 'custom_audit_type', 'audit_item')
         }),
         (_('Details'), {
             'fields': ('scope', 'objectives', 'period_from', 'period_to')

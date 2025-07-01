@@ -41,6 +41,7 @@ const AUDIT_TYPE_CONFIGS: AuditTypeConfig[] = AUDIT_TYPES.map(type => ({
 interface FormData {
   title: string;
   audit_type: AuditType;
+  audit_item: string;
   scope: string;
   objectives: string;
   period_from: string;
@@ -288,6 +289,20 @@ export default function CreateAudit() {
               </select>
               {errors.workflow && <p className="mt-1 text-sm text-red-600">{errors.workflow.message}</p>}
             </div>
+          </div>
+
+          {/* Audit Item - Full Width */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('audits.form.item.label', 'Audit Item')}
+            </label>
+            <input
+              type="text"
+              {...register('audit_item')}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              placeholder={t('audits.form.item.placeholder', 'Specify the audit item or area (e.g., Financial Statements, IT Security Controls, Quality Management System)')}
+            />
+            {errors.audit_item && <p className="mt-1 text-sm text-red-600">{errors.audit_item.message}</p>}
           </div>
 
           {/* Period Information - Row 2 */}

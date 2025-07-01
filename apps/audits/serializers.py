@@ -301,7 +301,7 @@ class AuditSerializer(serializers.ModelSerializer):
         model = Audit
         fields = [
             'id', 'reference_number', 'title', 'audit_type', 'custom_audit_type',
-            'scope', 'objectives', 'status', 'status_display', 'period_from', 'period_to',
+            'audit_item', 'scope', 'objectives', 'status', 'status_display', 'period_from', 'period_to',
             'assigned_users', 'assigned_users_details', 'workflow', 'workflow_name',
             'created_by', 'created_by_name', 'created_at', 'updated_at',
             'task_progress', 'tasks_summary'

@@ -47,6 +47,12 @@ class Audit(models.Model):
         blank=True,
         related_name='audits'
     )
+    audit_item = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name=_('Audit Item'),
+        help_text=_('Specific item, process, or area being audited (e.g., Financial Statements, IT Security Controls, Quality Management System)')
+    )
     scope = models.TextField()
     objectives = models.TextField()
     status = models.CharField(

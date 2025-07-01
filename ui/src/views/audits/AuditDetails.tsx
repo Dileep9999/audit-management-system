@@ -212,6 +212,7 @@ interface AuditData {
   reference_number: string;
   title: string;
   audit_type: string;
+  audit_item?: string;
   scope: string;
   objectives: string;
   status: string;

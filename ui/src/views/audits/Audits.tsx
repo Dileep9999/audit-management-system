@@ -16,6 +16,7 @@ interface Audit {
     reference_number: string;
     title: string;
     audit_type: string;
+    audit_item?: string;
     custom_audit_type: number | null;
     status: string; // Now dynamic workflow state name
     status_display: string;
