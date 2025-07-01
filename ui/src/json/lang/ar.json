@@ -366,8 +366,10 @@
     "overview": {
       "status": "الحالة",
       "current_audit_status": "حالة التدقيق الحالية",
-      "progress": "التقدم",
-      "tasks_completed": "من {{total}} مهام مكتملة",
+      "progress": {
+        "title": "التقدم",
+        "tasksCompleted": "{{completed}} من {{total}} مهام مكتملة"
+      },
       "team": "الفريق",
       "assigned_team_members": "أعضاء الفريق المعينين",
       "audit_information": "معلومات التدقيق",
