@@ -91,9 +91,9 @@ const SignInBasic = () => {
               <div className="mb-5 text-center">
                 <Link to="#">
                   <img
-                    src={LogoMain}
+                    src="/images/uae-federal-authority-logo.jpeg"
                     alt="LogoMain"
-                    className="h-8 mx-auto dark:hidden"
+                    className="h-8 mx-auto dark:hidden h-full w-full"
                     width={175}
                     height={32}
                   />
@@ -105,9 +105,9 @@ const SignInBasic = () => {
                 </Link>
               </div>
               <h4 className="mb-2 font-bold leading-relaxed text-center text-transparent drop-shadow-lg ltr:bg-gradient-to-r rtl:bg-gradient-to-l from-primary-500 vie-purple-500 to-pink-500 bg-clip-text">
-                Welcome Back!
+                {/* Welcome Back! */}
               </h4>
-              <p className="mb-5 text-center text-gray-500 dark:text-dark-500">
+              {/* <p className="mb-5 text-center text-gray-500 dark:text-dark-500">
                 Don't have an account?{" "}
                 <button
                   onClick={async () => {
@@ -149,7 +149,7 @@ const SignInBasic = () => {
                 >
                   Sign Up
                 </button>
-              </p>
+              </p> */}
               {alert.isVisible && (
                 <div
                   className={`relative py-3 text-sm rounded-md ltr:pl-5 rtl:pr-5 ltr:pr-7 rtl:pl-7 ${alert.type}`}

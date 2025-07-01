@@ -124,7 +124,7 @@ const TopBar: React.FC<TopBarProps> = ({
               <div className="logos">
                 <Link to="/dashboard" className="flex items-center">
                   <img
-                    src={uaeGovLogo}
+                    src="/images/uae-eagle-logo.jpeg"
                     alt="UAE Government"
                     className="h-12 w-auto"
                   />

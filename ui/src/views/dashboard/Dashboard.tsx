@@ -1200,9 +1200,9 @@ const Dashboard: React.FC = () => {
 };
 
 const DashboardWithDirection: React.FC = () => (
-  <DirectionHandler>
+  // <DirectionHandler>
     <Dashboard />
-  </DirectionHandler>
+  // </DirectionHandler>
 );
 
 export default DashboardWithDirection; 
