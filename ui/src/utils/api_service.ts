@@ -1055,4 +1055,37 @@ export const TEAM_MEMBER_ROLES = [
     { id: 'admin', name: 'Admin' }
 ] as const;
 
-export type TeamMemberRoleId = typeof TEAM_MEMBER_ROLES[number]['id']; 
+export type TeamMemberRoleId = typeof TEAM_MEMBER_ROLES[number]['id'];
+
+// ======================== TRANSLATION API ========================
+
+// Translation management
+export const getTranslations = async (languageCode: string, app?: string) => {
+    try {
+        let url = `${API_BASE_URL}/translation/${languageCode}`;
+        if (app) {
+            url += `?app=${app}`;
+        }
+        const response = await axiosApi.get(url);
+        return response.data;
+    } catch (error) {
+        throw handleApiError(error);
+    }
+};
+
+export const setUserLanguage = async (language: string) => {
+    try {
+        const response = await axiosApi.post(`${API_BASE_URL}/setlang`, { language });
+        return response.data;
+    } catch (error) {
+        throw handleApiError(error);
+    }
+};
+
+// Language constants
+export const SUPPORTED_LANGUAGES = [
+    { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸', rtl: false },
+    { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦', rtl: true }
+] as const;
+
+export type SupportedLanguageCode = typeof SUPPORTED_LANGUAGES[number]['code']; 

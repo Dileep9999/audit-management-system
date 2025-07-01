@@ -10,6 +10,7 @@ import DeleteToast from '../../components/custom/toast/deleteToast';
 import ErrorToast from '../../components/custom/toast/errorToast';
 import UpdateToast from '../../components/custom/toast/updateToast';
 import { useNavigate } from 'react-router-dom';
+import useTranslation from '../../hooks/useTranslation';
 
 interface Permission {
   id: number;
@@ -58,30 +59,9 @@ const emptyRole: Role = {
   updated_at: '',
 };
 
-// Helper function to extract error message
-const getErrorMessage = (err: any, defaultMessage: string) => {
-  if (!err.response?.data) return defaultMessage;
-  
-  if (typeof err.response.data === 'string') {
-    return err.response.data;
-  }
-  if (err.response.data.detail) {
-    return err.response.data.detail;
-  }
-  if (err.response.data.message) {
-    return err.response.data.message;
-  }
-  if (typeof err.response.data === 'object') {
-    const errors = Object.entries(err.response.data)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join(', ');
-    return errors || defaultMessage;
-  }
-  return defaultMessage;
-};
-
 const RolesPermissions = () => {
   const navigate = useNavigate();
+  const { t, isRTL } = useTranslation();
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissionCategories, setPermissionCategories] = useState<PermissionCategory[]>([]);
   const [deleteRoleId, setDeleteRoleId] = useState<number | null>(null);
@@ -126,7 +106,7 @@ const RolesPermissions = () => {
         setCurrentPage(res.data.current_page || 1);
       } else {
         setRoles([]);
-        ErrorToast('No roles found');
+        ErrorToast(t('roles.error', 'No roles found'));
       }
     } catch (err: any) {
       console.error('Error fetching roles:', err);
@@ -210,7 +190,7 @@ const RolesPermissions = () => {
         role_id: r.id, 
         new_position: r.hierarchy_position
       })));
-      UpdateToast('Roles reordered successfully');
+      UpdateToast(t('roles.actions.reordered', 'Roles reordered successfully'));
     } catch (err: any) {
       const errorMessage = getErrorMessage(err, 'Failed to reorder roles');
       ErrorToast(errorMessage);
@@ -243,7 +223,7 @@ const RolesPermissions = () => {
       try {
         await rolesApi.deleteRole(deleteRoleId);
         setRoles(Array.isArray(roles) ? roles.filter(role => role.id !== deleteRoleId) : []);
-        DeleteToast('Role deleted successfully');
+        DeleteToast(t('roles.actions.deleted', 'Role deleted successfully'));
       } catch (err: any) {
         const errorMessage = getErrorMessage(err, 'Failed to delete role');
         ErrorToast(errorMessage);
@@ -290,180 +270,202 @@ const RolesPermissions = () => {
           updated_at: undefined
         }
       });
-      AddToast('Role cloned successfully');
+      AddToast(t('roles.actions.cloned', 'Role cloned successfully'));
     } catch (err: any) {
       const errorMessage = getErrorMessage(err, 'Failed to clone role');
       ErrorToast(errorMessage);
     }
   };
 
+  // Update error message handling to use translations
+  const getErrorMessage = (err: any, defaultMessage: string) => {
+    if (!err.response?.data) return t('roles.error', defaultMessage);
+    
+    if (typeof err.response.data === 'string') {
+      return err.response.data;
+    }
+    if (err.response.data.detail) {
+      return err.response.data.detail;
+    }
+    if (err.response.data.message) {
+      return err.response.data.message;
+    }
+    if (typeof err.response.data === 'object') {
+      const errors = Object.entries(err.response.data)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(', ');
+      return errors || t('roles.error', defaultMessage);
+    }
+    return t('roles.error', defaultMessage);
+  };
+
   return (
-    <div className="p-4 relative min-h-screen">
+    <div className="p-4 relative min-h-screen" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
-        <div className="flex items-center justify-between w-full">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Roles and Permissions</h1>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={fetchAllRoles}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-              title="Refresh roles"
-            >
-              <RefreshCw className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center">
-          <input
-            type="text"
-            placeholder="Filter by name, description, severity, status..."
-            value={filter}
-            onChange={handleFilterChange}
-            className="border border-gray-300 rounded px-3 py-2 w-64"
-          />
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
+          {t('roles.title', 'Roles & Permissions')}
+        </h1>
+        <div className="flex items-center gap-2">
           <button
-            className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             onClick={() => navigate('/admins/roles-permissions/add')}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
-            New Role
+            {t('roles.add_role', 'Add Role')}
+          </button>
+          <button
+            onClick={fetchAllRoles}
+            className="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+            title={t('roles.actions.refresh', 'Refresh')}
+          >
+            <RefreshCw className="w-5 h-5" />
           </button>
         </div>
       </div>
-      {loading && <div className="text-center py-8">Loading roles...</div>}
-      {error && <div className="text-center text-red-500 py-4">{error}</div>}
-      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden min-h-[400px] flex flex-col">
-        <div className="overflow-x-auto flex-grow">
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-12"></th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Role Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Permissions</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <Droppable droppableId="roles-table">
-                {(provided) => (
-                  <tbody
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className="divide-y divide-gray-200 dark:divide-gray-600"
-                  >
-                    {paginatedRoles.length === 0 ? (
+
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder={t('roles.filter_placeholder', 'Filter by name, description, severity, status...')}
+          value={filter}
+          onChange={handleFilterChange}
+          className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+        />
+      </div>
+
+      {loading ? (
+        <div className="text-center py-4">{t('roles.loading', 'Loading roles...')}</div>
+      ) : error ? (
+        <div className="text-center text-red-600 py-4">{error}</div>
+      ) : paginatedRoles.length === 0 ? (
+        <div className="text-center py-4">{t('roles.no_roles', 'No roles found')}</div>
+      ) : (
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="roles">
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-800">
                       <tr>
-                        <td colSpan={6} className="py-16 text-center">
-                          <div className="flex flex-col items-center justify-center">
-                            <UserX className="w-10 h-10 mb-2 text-gray-300" />
-                            <span className="text-lg font-semibold text-gray-400">No roles found</span>
-                          </div>
-                        </td>
+                        <th scope="col" className="w-10"></th>
+                        <th scope="col" className="px-6 py-3 text-start">
+                          {t('roles.table.name', 'Name')}
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-start">
+                          {t('roles.table.description', 'Description')}
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-start">
+                          {t('roles.table.severity', 'Severity')}
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-start">
+                          {t('roles.table.status', 'Status')}
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-start">
+                          {t('roles.table.permissions', 'Permissions')}
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-start">
+                          {t('roles.table.created_by', 'Created By')}
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-start">
+                          {t('roles.table.created_at', 'Created At')}
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-start">
+                          {t('roles.table.actions', 'Actions')}
+                        </th>
                       </tr>
-                    ) : (
-                      paginatedRoles.map((role, index) => (
-                        <Draggable key={role.id} draggableId={role.id.toString()} index={index}>
-                          {(provided, snapshot) => (
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                      {paginatedRoles.map((role, index) => (
+                        <Draggable key={role.id} draggableId={String(role.id)} index={index}>
+                          {(provided) => (
                             <tr
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              className={`hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer ${
-                                snapshot.isDragging ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                              }`}
+                              className="hover:bg-gray-50 dark:hover:bg-gray-700"
                             >
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-                                <div {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing">
-                                  <GripVertical className="h-5 w-5 text-gray-400" />
-                                </div>
+                              <td className="w-10 px-2" {...provided.dragHandleProps}>
+                                <GripVertical className="w-5 h-5 text-gray-400" />
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-300">
-                                {role.name}
+                              <td className="px-6 py-4 whitespace-nowrap">{role.name}</td>
+                              <td className="px-6 py-4">{role.description}</td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {t(`roles.severity.${role.severity.toLowerCase()}`, role.severity)}
                               </td>
-                              <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300 max-w-xs truncate">
-                                {role.description}
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {t(`roles.status.${role.status.toLowerCase()}`, role.status)}
                               </td>
-                              <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">
-                                <div className="flex flex-wrap gap-1">
-                                  {role.permissions_count ? (
-                                    <span className="inline-flex px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded dark:bg-blue-900/20 dark:text-blue-400">
-                                      {role.permissions_count} permissions
-                                    </span>
-                                  ) : (
-                                    <span className="inline-flex px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded dark:bg-gray-700 dark:text-gray-400">
-                                      No permissions
-                                    </span>
-                                  )}
-                                </div>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {role.permissions_count || 0}
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                  role.status === 'Active' 
-                                    ? 'text-green-800 bg-green-100 dark:text-green-400 dark:bg-green-900/20' 
-                                    : 'text-red-800 bg-red-100 dark:text-red-400 dark:bg-red-900/20'
-                                }`}>
-                                  {role.status}
-                                </span>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {role.created_by_username}
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div className="flex justify-end items-center space-x-2" onClick={e => e.stopPropagation()}>
-                                  <button
-                                    onClick={() => handleClone(role)}
-                                    className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
-                                    title="Clone"
-                                  >
-                                    <Copy className="h-5 w-5" />
-                                  </button>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {new Date(role.created_at).toLocaleDateString()}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center gap-2">
                                   <button
                                     onClick={() => handleEdit(role)}
-                                    className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                                    title="Edit"
+                                    className="text-blue-600 hover:text-blue-900"
+                                    title={t('roles.actions.edit', 'Edit Role')}
                                   >
-                                    <Edit2 className="h-5 w-5" />
+                                    <Edit2 className="w-5 h-5" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleClone(role)}
+                                    className="text-green-600 hover:text-green-900"
+                                    title={t('roles.actions.clone', 'Clone Role')}
+                                  >
+                                    <Copy className="w-5 h-5" />
                                   </button>
                                   <button
                                     onClick={() => handleDelete(role.id)}
-                                    className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                                    title="Delete"
+                                    className="text-red-600 hover:text-red-900"
+                                    title={t('roles.actions.delete', 'Delete Role')}
                                   >
-                                    <Trash2 className="h-5 w-5" />
+                                    <Trash2 className="w-5 h-5" />
                                   </button>
                                 </div>
                               </td>
                             </tr>
                           )}
                         </Draggable>
-                      ))
-                    )}
-                    {provided.placeholder}
-                  </tbody>
-                )}
-              </Droppable>
-            </table>
-          </DragDropContext>
-        </div>
-        {/* Pagination Controls */}
+                      ))}
+                      {provided.placeholder}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      )}
+
+      <div className="mt-4">
         <Pagination
           currentPage={currentPage}
           totalItems={totalCount}
           pageSize={pageSize}
           pageSizeOptions={PAGE_SIZE_OPTIONS}
-          onPageChange={(newPage) => setCurrentPage(newPage)}
-          onPageSizeChange={(newSize) => {
-            setPageSize(newSize);
-            setCurrentPage(1); // Reset to first page when changing page size
-          }}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
         />
       </div>
-      {/* Delete Confirm Dialog */}
-      <Confirm
-        isOpen={showDeleteDialog}
-        title="Confirm Delete"
-        message={<span>Are you sure you want to delete <span className="font-semibold">{roleToDelete?.name}</span>?</span>}
-        onCancel={() => { setShowDeleteDialog(false); setDeleteRoleId(null); }}
-        onConfirm={confirmDelete}
-        confirmText="Confirm"
-        cancelText="Cancel"
-      />
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteDialog && (
+        <Confirm
+          isOpen={showDeleteDialog}
+          title={t('roles.actions.delete', 'Delete Role')}
+          message={t('roles.actions.confirm_delete', 'Are you sure you want to delete this role?')}
+          onConfirm={confirmDelete}
+          onCancel={() => {
+            setShowDeleteDialog(false);
+            setDeleteRoleId(null);
+          }}
+        />
+      )}
     </div>
   );
 };

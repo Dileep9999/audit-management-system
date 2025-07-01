@@ -35,6 +35,7 @@ import LanguageDropdown from "@src/components/common/languageDropdown";
 import CardSidebar from "../components/layout/cardSidebar";
 import { changeSettingModalOpen } from "@src/slices/layout/reducer";
 import Flatpickr from "react-flatpickr";
+import useTranslation from "@src/hooks/useTranslation";
 
 interface TopBarProps {
   searchMenu: (value: string) => void;
@@ -47,6 +48,7 @@ const TopBar: React.FC<TopBarProps> = ({
   searchText,
   toggleSidebar,
 }) => {
+  const { t, isRTL } = useTranslation();
   const { layoutMode, isSettingModalOpen, layoutSidebarColor } = useSelector(
     (state: RootState) => state.Layout,
   );
@@ -122,22 +124,7 @@ const TopBar: React.FC<TopBarProps> = ({
             <div className="navbar-brand">
               <div className="logos">
                 <Link to="/dashboard">
-                  <img
-                    src={logo}
-                    aria-label="Read more about Seminole tax hike"
-                    alt="logo"
-                    className="h-6 group-data-[layout=modern]:hidden inline-block dark:hidden"
-                    height={24}
-                    width={132}
-                  />
-                  <img
-                    src={logoWhite}
-                    aria-label="Read more about Seminole tax hike"
-                    alt="logoWhite"
-                    className="h-6 hidden dark:inline-block group-data-[layout=modern]:hidden"
-                    height={24}
-                    width={132}
-                  />
+                  <span className="text-2xl font-bold text-primary-500 dark:text-white">AMS</span>
                 </Link>
               </div>
               <button
@@ -155,11 +142,13 @@ const TopBar: React.FC<TopBarProps> = ({
               <input
                 type="search"
                 className="border-0 w-72 ltr:pl-8 rtl:pr-8 form-input focus:outline-none group-data-[nav-type=pattern]:bg-transparent group-data-[nav-type=pattern]:placeholder:text-white/50 group-data-[nav-type=pattern]:text-white"
-                placeholder="Search for AMS..."
+                // placeholder={t("common.search.text")}
+                placeholder="...البحث في الصلاحيات"
                 value={searchText}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   searchMenu(e.target.value)
                 }
+                dir={isRTL ? "rtl" : "ltr"}
               />
             </div>
 

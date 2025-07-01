@@ -32,6 +32,7 @@ import { toast } from 'react-toastify';
 import { ApiError } from '../../utils/api_error';
 import { WorkflowNodeData, EdgeData } from '../../models/Workflow';
 import { validateWorkflowData, WorkflowData, saveWorkflowWithTransitions, getNextStates, isValidTransition } from '../../utils/workflow_transitions';
+import useTranslation from '../../hooks/useTranslation';
 
 // Custom handle styles
 const handleStyle = {
@@ -96,6 +97,8 @@ type TaskNodeProps = NodeProps<WorkflowNodeData> & {
 };
 
 const TaskNode = ({ data, id, setSelectedNode }: TaskNodeProps) => {
+  const { t } = useTranslation();
+  
   return (
     <div 
       className="relative bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700 min-w-[200px]" 
@@ -142,13 +145,14 @@ const TaskNode = ({ data, id, setSelectedNode }: TaskNodeProps) => {
           </div>
           <button
             onClick={() => setSelectedNode(id)}
-            className="ml-2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+            className="ms-2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+            title={t('workflows.actions.edit_node', 'Edit Node')}
           >
             <Edit2 className="h-3 w-3 text-gray-700 dark:text-gray-300" />
           </button>
         </div>
         <div className="flex gap-2 text-xs text-gray-700 dark:text-gray-300">
-          <span>{data.roles?.length || 0} roles</span>
+          <span>{data.roles?.length || 0} {t('roles.title', 'roles')}</span>
         </div>
       </div>
     </div>
@@ -251,6 +255,7 @@ const defaultNodeData: Required<WorkflowNodeData> = {
 const WorkflowDesigner = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { t, isRTL } = useTranslation();
   const [workflowName, setWorkflowName] = useState('');
   const [nodes, setNodes, onNodesChange] = useNodesState<WorkflowNodeData>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<EdgeData>([]);
@@ -789,43 +794,38 @@ console.log("fdsv ",payload);
   };
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/admins/workflows')}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition duration-150 ease-in-out"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
+            title={t('workflows.actions.back', 'Back')}
           >
-            <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <ArrowLeft className="h-5 w-5" />
           </button>
-          <div>
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {workflow ? `Edit Workflow hhh: ${workflow.name}` : 'Create New Workflow'}
-            </h1>
-            {workflow && (
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                Last modified: {new Date(workflow.updated_at).toLocaleString()}
-              </div>
-            )}
-          </div>
+          <h1 className="text-2xl font-bold">{t('workflows.designer.title', 'Workflow Designer')}</h1>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition duration-150 ease-in-out"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
           >
-            Add Node
+            <Plus className="h-4 w-4" />
+            <span>{t('workflows.actions.add_node', 'Add Node')}</span>
           </button>
           <button
             onClick={() => setShowSaveModal(true)}
-            className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition duration-150 ease-in-out"
+            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
           >
-            Save Workflow
+            <Save className="h-4 w-4" />
+            <span>{t('workflows.actions.save', 'Save')}</span>
           </button>
         </div>
       </div>
 
+      {/* Flow Container */}
       <div className="flex-1 h-0">
         <ReactFlow
           nodes={nodes}
@@ -833,28 +833,14 @@ console.log("fdsv ",payload);
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          onEdgeClick={onEdgeClick}
-          onPaneClick={() => {
-            setSelectedEdge(null);
-            setIsEditing(false);
-          }}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           connectionMode={ConnectionMode.Loose}
+          onEdgeClick={onEdgeClick}
+          fitView
         >
-          <Background color="#e2e8f0" gap={16} size={1} />
           <Controls />
-          <Panel position="top-left" className="flex gap-2">
-            <div className="text-sm text-gray-500">
-              {workflow ? (
-                <>
-                  
-                </>
-              ) : (
-                <div>New Workflow</div>
-              )}
-            </div>
-          </Panel>
+          <Background />
         </ReactFlow>
       </div>
 
@@ -862,63 +848,40 @@ console.log("fdsv ",payload);
       <Popup
         isOpen={showAddModal}
         onClose={handleCloseAddModal}
-        title="Add Node"
-        size="modal-sm"
+        title={t('workflows.designer.node_form.title', 'Node Details')}
+        size="modal-md"
         position="modal-center"
-        contentClass="space-y-6"
-        footer={
-          <>
-            <button
-              className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition duration-150 ease-in-out"
-              onClick={handleCloseAddModal}
-            >
-              Cancel
-            </button>
-            <button
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition duration-150 ease-in-out"
-              onClick={handleAddNode}
-            >
-              Add
-            </button>
-          </>
-        }
       >
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div>
             <label className={formFieldClasses.label}>
-              Node Name <span className="text-red-500">*</span>
+              {t('workflows.designer.node_form.name.label', 'Name')}
             </label>
             <input
               type="text"
               value={newNode.name}
               onChange={(e) => setNewNode({ ...newNode, name: e.target.value })}
-              className={`${formFieldClasses.input} ${
-                addNodeErrors.name ? 'border-red-500 focus:ring-red-500' : ''
-              }`}
-              placeholder="Enter node name"
-              autoFocus
+              placeholder={t('workflows.designer.node_form.name.placeholder', 'Enter node name')}
+              className={formFieldClasses.input}
             />
-            {addNodeErrors.name && (
-              <p className="mt-1 text-sm text-red-500">
-                {addNodeErrors.name[0]}
-              </p>
-            )}
           </div>
+
           <div>
             <label className={formFieldClasses.label}>
-              Label
+              {t('workflows.designer.node_form.label.label', 'Label')}
             </label>
             <input
               type="text"
               value={newNode.label}
               onChange={(e) => setNewNode({ ...newNode, label: e.target.value })}
+              placeholder={t('workflows.designer.node_form.label.placeholder', 'Enter node label')}
               className={formFieldClasses.input}
-              placeholder="Enter display label"
             />
           </div>
+
           <div>
             <label className={formFieldClasses.label}>
-              Color
+              {t('workflows.designer.node_form.color.label', 'Color')}
             </label>
             <input
               type="color"
@@ -927,41 +890,47 @@ console.log("fdsv ",payload);
               className={formFieldClasses.colorInput}
             />
           </div>
+
           <div>
             <label className={formFieldClasses.label}>
-              Roles <span className="text-red-500">*</span>
+              {t('workflows.designer.node_form.roles.label', 'Roles')}
             </label>
-            <div className={`${formFieldClasses.rolesContainer} ${
-              addNodeErrors.roles ? 'border-red-500' : ''
-            }`}>
+            <div className={formFieldClasses.rolesContainer}>
               {roles.map((role) => (
                 <div key={role.id} className="flex items-center">
                   <input
                     type="checkbox"
-                    id={`new-role-${role.id}`}
-                    checked={newNode.roles?.includes(role.id)}
+                    id={`role-${role.id}`}
+                    checked={(newNode.roles || []).includes(role.id)}
                     onChange={(e) => {
-                      const updatedRoles = e.target.checked
+                      const newRoles = e.target.checked
                         ? [...(newNode.roles || []), role.id]
                         : (newNode.roles || []).filter(id => id !== role.id);
-                      setNewNode({ ...newNode, roles: updatedRoles });
+                      setNewNode({ ...newNode, roles: newRoles });
                     }}
                     className={formFieldClasses.checkbox}
                   />
-                  <label
-                    htmlFor={`new-role-${role.id}`}
-                    className={formFieldClasses.checkboxLabel}
-                  >
+                  <label htmlFor={`role-${role.id}`} className={formFieldClasses.checkboxLabel}>
                     {role.name}
                   </label>
                 </div>
               ))}
             </div>
-            {addNodeErrors.roles && (
-              <p className="mt-1 text-sm text-red-500">
-                {addNodeErrors.roles[0]}
-              </p>
-            )}
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={handleCloseAddModal}
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+            >
+              {t('workflows.actions.cancel', 'Cancel')}
+            </button>
+            <button
+              onClick={handleAddNode}
+              className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
+            >
+              {t('workflows.actions.add_node', 'Add Node')}
+            </button>
           </div>
         </div>
       </Popup>
@@ -970,63 +939,40 @@ console.log("fdsv ",payload);
       <Popup
         isOpen={!!selectedNode}
         onClose={handleCloseEditModal}
-        title="Edit Node"
-        size="modal-sm"
+        title={t('workflows.designer.node_form.title', 'Node Details')}
+        size="modal-md"
         position="modal-center"
-        contentClass="space-y-4"
-        footer={
-          <>
-            <button
-              className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition duration-150 ease-in-out"
-              onClick={handleCloseEditModal}
-            >
-              Cancel
-            </button>
-            <button
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition duration-150 ease-in-out"
-              onClick={handleEditNode}
-            >
-              Save
-            </button>
-          </>
-        }
       >
         <div className="space-y-4">
           <div>
             <label className={formFieldClasses.label}>
-              Node Name <span className="text-red-500">*</span>
+              {t('workflows.designer.node_form.name.label', 'Name')}
             </label>
             <input
               type="text"
               value={selectedNodeData.name}
               onChange={(e) => handleSelectedNodeDataChange('name', e.target.value)}
-              className={`${formFieldClasses.input} ${
-                editNodeErrors.name ? 'border-red-500 focus:ring-red-500' : ''
-              }`}
-              placeholder="Enter node name"
-              autoFocus
+              placeholder={t('workflows.designer.node_form.name.placeholder', 'Enter node name')}
+              className={formFieldClasses.input}
             />
-            {editNodeErrors.name && (
-              <p className="mt-1 text-sm text-red-500">
-                {editNodeErrors.name[0]}
-              </p>
-            )}
           </div>
+
           <div>
             <label className={formFieldClasses.label}>
-              Label
+              {t('workflows.designer.node_form.label.label', 'Label')}
             </label>
             <input
               type="text"
               value={selectedNodeData.label}
               onChange={(e) => handleSelectedNodeDataChange('label', e.target.value)}
+              placeholder={t('workflows.designer.node_form.label.placeholder', 'Enter node label')}
               className={formFieldClasses.input}
-              placeholder="Enter display label"
             />
           </div>
+
           <div>
             <label className={formFieldClasses.label}>
-              Color
+              {t('workflows.designer.node_form.color.label', 'Color')}
             </label>
             <input
               type="color"
@@ -1035,41 +981,119 @@ console.log("fdsv ",payload);
               className={formFieldClasses.colorInput}
             />
           </div>
+
           <div>
             <label className={formFieldClasses.label}>
-              Roles <span className="text-red-500">*</span>
+              {t('workflows.designer.node_form.roles.label', 'Roles')}
             </label>
-            <div className={`${formFieldClasses.rolesContainer} ${
-              editNodeErrors.roles ? 'border-red-500' : ''
-            }`}>
+            <div className={formFieldClasses.rolesContainer}>
               {roles.map((role) => (
                 <div key={role.id} className="flex items-center">
                   <input
                     type="checkbox"
-                    id={`edit-role-${role.id}`}
-                    checked={selectedNodeData.roles?.includes(role.id)}
+                    id={`role-${role.id}`}
+                    checked={(selectedNodeData.roles || []).includes(role.id)}
                     onChange={(e) => {
-                      const updatedRoles = e.target.checked
+                      const newRoles = e.target.checked
                         ? [...(selectedNodeData.roles || []), role.id]
                         : (selectedNodeData.roles || []).filter(id => id !== role.id);
-                      handleSelectedNodeDataChange('roles', updatedRoles);
+                      handleSelectedNodeDataChange('roles', newRoles);
                     }}
                     className={formFieldClasses.checkbox}
                   />
-                  <label
-                    htmlFor={`edit-role-${role.id}`}
-                    className={formFieldClasses.checkboxLabel}
-                  >
+                  <label htmlFor={`role-${role.id}`} className={formFieldClasses.checkboxLabel}>
                     {role.name}
                   </label>
                 </div>
               ))}
             </div>
-            {editNodeErrors.roles && (
-              <p className="mt-1 text-sm text-red-500">
-                {editNodeErrors.roles[0]}
-              </p>
-            )}
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={handleCloseEditModal}
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+            >
+              {t('workflows.actions.cancel', 'Cancel')}
+            </button>
+            <button
+              onClick={handleEditNode}
+              className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
+            >
+              {t('workflows.actions.save', 'Save')}
+            </button>
+          </div>
+        </div>
+      </Popup>
+
+      {/* Edge Actions Modal */}
+      <Popup
+        isOpen={!!selectedEdge}
+        onClose={() => {
+          setSelectedEdge(null);
+          setEdgeActions([]);
+          setNewAction('');
+        }}
+        title={t('workflows.designer.edge_form.title', 'Transition Details')}
+        size="modal-md"
+        position="modal-center"
+      >
+        <div className="space-y-4">
+          <div className={formFieldClasses.actionsContainer}>
+            {edgeActions.map((action, index) => (
+              <div key={index} className={formFieldClasses.actionItem}>
+                <span className={formFieldClasses.actionText}>{action}</span>
+                <button
+                  onClick={() => handleRemoveEdgeAction(index)}
+                  className={formFieldClasses.deleteButton}
+                  title={t('workflows.actions.remove_action', 'Remove Action')}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={newAction}
+              onChange={(e) => setNewAction(e.target.value)}
+              placeholder={t('workflows.designer.edge_form.action.placeholder', 'Enter action name')}
+              className={formFieldClasses.actionInput}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddEdgeAction();
+                }
+              }}
+            />
+            <button
+              onClick={handleAddEdgeAction}
+              disabled={!newAction.trim()}
+              className={formFieldClasses.actionButton}
+            >
+              {t('workflows.actions.add_action', 'Add Action')}
+            </button>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => {
+                setSelectedEdge(null);
+                setEdgeActions([]);
+                setNewAction('');
+              }}
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+            >
+              {t('workflows.actions.cancel', 'Cancel')}
+            </button>
+            <button
+              onClick={handleSaveEdge}
+              className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
+            >
+              {t('workflows.actions.save', 'Save')}
+            </button>
           </div>
         </div>
       </Popup>
@@ -1078,152 +1102,65 @@ console.log("fdsv ",payload);
       <Popup
         isOpen={showSaveModal}
         onClose={() => setShowSaveModal(false)}
-        title="Save Workflow"
+        title={t('workflows.form.title', 'Save Workflow')}
+        size="modal-md"
+        position="modal-center"
       >
         <div className="space-y-4">
           <div>
-            <label htmlFor="name" className={formFieldClasses.label}>
-              Name
+            <label className={formFieldClasses.label}>
+              {t('workflows.form.name.label', 'Name')}
             </label>
             <input
               type="text"
-              id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder={t('workflows.form.name.placeholder', 'Enter workflow name')}
               className={formFieldClasses.input}
-              placeholder="Enter workflow name"
             />
           </div>
+
           <div>
-            <label htmlFor="description" className={formFieldClasses.label}>
-              Description
+            <label className={formFieldClasses.label}>
+              {t('workflows.form.description.label', 'Description')}
             </label>
             <textarea
-              id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className={formFieldClasses.input}
-              rows={3}
-              placeholder="Enter workflow description"
+              placeholder={t('workflows.form.description.placeholder', 'Enter workflow description')}
+              className={`${formFieldClasses.input} min-h-[100px]`}
             />
           </div>
+
           <div>
-            <label htmlFor="status" className={formFieldClasses.label}>
-              Status
+            <label className={formFieldClasses.label}>
+              {t('workflows.form.status.label', 'Status')}
             </label>
             <select
-              id="status"
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as WorkflowStatus })}
               className={formFieldClasses.select}
             >
-              <option value="draft">Draft</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
+              <option value="draft">{t('workflows.status.draft', 'Draft')}</option>
+              <option value="active">{t('workflows.status.active', 'Active')}</option>
+              <option value="inactive">{t('workflows.status.inactive', 'Inactive')}</option>
             </select>
           </div>
-          <div className="flex justify-end gap-2 mt-4">
+
+          <div className="flex justify-end gap-3">
             <button
               onClick={() => setShowSaveModal(false)}
-              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-150 ease-in-out"
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
             >
-              Cancel
+              {t('workflows.actions.cancel', 'Cancel')}
             </button>
             <button
-              onClick={async () => {
-                await handleSave();
-                setShowSaveModal(false);
-              }}
+              onClick={handleSave}
               disabled={isSaving}
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition duration-150 ease-in-out"
+              className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 disabled:opacity-50"
             >
-              {isSaving ? 'Saving...' : 'Save'}
+              {isSaving ? t('common.saving', 'Saving...') : t('workflows.actions.save', 'Save')}
             </button>
-          </div>
-        </div>
-      </Popup>
-
-      {/* Edge Actions Modal */}
-      <Popup
-        isOpen={isEditing && !!selectedEdge}
-        onClose={() => {
-          setIsEditing(false);
-          setSelectedEdge(null);
-          setNewAction('');
-        }}
-        title="Edit Edge Actions"
-        size="modal-md"
-        position="modal-center"
-        contentClass="space-y-6"
-        footer={
-          <>
-            <button
-              className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition duration-150 ease-in-out"
-              onClick={() => {
-                setIsEditing(false);
-                setSelectedEdge(null);
-                setNewAction('');
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 mr-2 transition duration-150 ease-in-out"
-              onClick={onEdgeDelete}
-            >
-              Delete Edge
-            </button>
-            <button
-              className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition duration-150 ease-in-out"
-              onClick={handleSaveEdge}
-            >
-              Save
-            </button>
-          </>
-        }
-      >
-        <div className="space-y-6">
-          <div>
-            <label className={formFieldClasses.label}>
-              Edge Actions
-            </label>
-            <div className={formFieldClasses.actionsContainer}>
-              <div className="flex gap-3">
-                <input
-                  type="text"
-                  value={newAction}
-                  onChange={(e) => setNewAction(e.target.value)}
-                  className={formFieldClasses.actionInput}
-                  placeholder="Enter action"
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      handleAddEdgeAction();
-                    }
-                  }}
-                />
-                <button
-                  onClick={handleAddEdgeAction}
-                  disabled={!newAction.trim()}
-                  className={formFieldClasses.actionButton}
-                >
-                  Add
-                </button>
-              </div>
-              <div className="space-y-2 mt-3">
-                {edgeActions.map((action, index) => (
-                  <div key={index} className={formFieldClasses.actionItem}>
-                    <span className={formFieldClasses.actionText}>{action}</span>
-                    <button
-                      onClick={() => handleRemoveEdgeAction(index)}
-                      className={formFieldClasses.deleteButton}
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </Popup>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Plus,
   Search,
@@ -29,7 +30,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import FieldDesigner from './FieldDesigner';
-import TemplatePreview from './TemplatePreview';
+import TemplatePreview from '../../views/checklists/TemplatePreview';
+import useTranslation from '../../hooks/useTranslation';
 import {
   getChecklistTemplates,
   getChecklistTemplate,
@@ -67,7 +69,6 @@ interface ChecklistTemplate {
 }
 
 interface ChecklistField {
-  id?: number;
   label: string;
   field_type: string;
   help_text: string;
@@ -76,31 +77,32 @@ interface ChecklistField {
   is_readonly: boolean;
   default_value: string;
   options: string[];
-  min_length?: number;
-  max_length?: number;
-  min_value?: number;
-  max_value?: number;
   order: number;
   css_class: string;
   conditional_logic: any;
 }
 
-const FIELD_TYPES = [
-  { value: 'text', label: 'Text Input', icon: Type, description: 'Single line text input' },
-  { value: 'textarea', label: 'Text Area', icon: Type, description: 'Multi-line text input' },
+interface FieldType {
+  value: string;
+  label: string;
+  icon: React.ComponentType;
+  description: string;
+}
+
+const FIELD_TYPES: FieldType[] = [
+  { value: 'text', label: 'Text', icon: Type, description: 'Single line text input' },
   { value: 'number', label: 'Number', icon: Hash, description: 'Numeric input with validation' },
   { value: 'email', label: 'Email', icon: Mail, description: 'Email address validation' },
   { value: 'date', label: 'Date', icon: Calendar, description: 'Date picker' },
-  { value: 'datetime', label: 'Date & Time', icon: Calendar, description: 'Date and time picker' },
   { value: 'checkbox', label: 'Checkbox', icon: CheckSquare, description: 'Boolean yes/no checkbox' },
-  { value: 'select', label: 'Select Dropdown', icon: List, description: 'Single selection dropdown' },
-  { value: 'multi_select', label: 'Multi Select', icon: List, description: 'Multiple selection' },
-  { value: 'radio', label: 'Radio Buttons', icon: CheckSquare, description: 'Single choice from options' },
+  { value: 'select', label: 'Select', icon: List, description: 'Single selection dropdown' },
   { value: 'file', label: 'File Upload', icon: Upload, description: 'File attachment' },
-  { value: 'rating', label: 'Rating', icon: Star, description: 'Rating scale (1-10)' },
+  { value: 'rating', label: 'Rating', icon: Star, description: 'Rating scale (1-5)' }
 ];
 
 const TemplateManager: React.FC = () => {
+  const navigate = useNavigate();
+  const { t, isRTL } = useTranslation();
   const [view, setView] = useState<'list' | 'create' | 'edit' | 'preview'>('list');
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<ChecklistTemplate | null>(null);
@@ -135,7 +137,7 @@ const TemplateManager: React.FC = () => {
       const templatesData = await getChecklistTemplates();
       setTemplates(templatesData);
     } catch (error) {
-      toast.error('Failed to load templates');
+      toast.error(t('templates.messages.load_error'));
       console.error('Error loading templates:', error);
     } finally {
       setLoading(false);
@@ -149,19 +151,18 @@ const TemplateManager: React.FC = () => {
         setFields(templateData.fields);
       }
     } catch (error) {
-      toast.error('Failed to load template fields');
+      toast.error(t('templates.messages.load_error'));
       console.error('Error loading template fields:', error);
     }
   };
 
   const handleCreateTemplate = () => {
-    // Navigate to the dedicated create template page
-    window.location.href = '/templates/create?return_to=/templates';
+    navigate('/templates/create?return_to=/templates');
   };
 
   const handleEditTemplate = (template: ChecklistTemplate) => {
     if (!template.can_edit) {
-      toast.error('Cannot edit this template - it may be frozen or you lack permissions');
+      toast.error(t('templates.messages.cannot_edit'));
       return;
     }
     
@@ -185,24 +186,24 @@ const TemplateManager: React.FC = () => {
 
   const handleDuplicateTemplate = async (template: ChecklistTemplate) => {
     try {
-      const duplicatedTemplate = await duplicateChecklistTemplate(template.id);
+      await duplicateChecklistTemplate(template.id);
       await loadTemplates(); // Reload templates to get the updated list
-      toast.success('Template duplicated successfully');
+      toast.success(t('templates.messages.duplicate_success'));
     } catch (error) {
-      toast.error('Failed to duplicate template');
+      toast.error(t('templates.messages.duplicate_error'));
       console.error('Error duplicating template:', error);
     }
   };
 
   const handleDeleteTemplate = async (template: ChecklistTemplate) => {
-    if (!confirm(`Are you sure you want to delete "${template.name}"?`)) return;
+    if (!confirm(t('templates.actions.confirm_delete'))) return;
     
     try {
       await deleteChecklistTemplate(template.id);
       await loadTemplates(); // Reload templates to get the updated list
-      toast.success('Template deleted successfully');
+      toast.success(t('templates.messages.delete_success'));
     } catch (error) {
-      toast.error('Failed to delete template');
+      toast.error(t('templates.messages.delete_error'));
       console.error('Error deleting template:', error);
     }
   };
@@ -211,21 +212,21 @@ const TemplateManager: React.FC = () => {
     try {
       if (template.is_frozen) {
         await unfreezeChecklistTemplate(template.id);
-        toast.success('Template unfrozen successfully');
+        toast.success(t('templates.messages.unfreeze_success'));
       } else {
         await freezeChecklistTemplate(template.id);
-        toast.success('Template frozen successfully');
+        toast.success(t('templates.messages.freeze_success'));
       }
       await loadTemplates(); // Reload templates to get the updated list
     } catch (error) {
-      toast.error('Failed to update template status');
+      toast.error(template.is_frozen ? t('templates.messages.unfreeze_error') : t('templates.messages.freeze_error'));
       console.error('Error updating template freeze status:', error);
     }
   };
 
   const handleSaveTemplate = async () => {
     if (!templateForm.name.trim()) {
-      toast.error('Template name is required');
+      toast.error(t('templates.form.name.required'));
       return;
     }
 
@@ -238,16 +239,16 @@ const TemplateManager: React.FC = () => {
 
       if (view === 'create') {
         await createChecklistTemplate(templateData);
-        toast.success('Template created successfully');
+        toast.success(t('templates.messages.create_success'));
       } else if (view === 'edit' && selectedTemplate) {
         await updateChecklistTemplate(selectedTemplate.id, templateData);
-        toast.success('Template updated successfully');
+        toast.success(t('templates.messages.update_success'));
       }
 
       await loadTemplates(); // Reload templates to get the updated list
       setView('list');
     } catch (error) {
-      toast.error('Failed to save template');
+      toast.error(view === 'create' ? t('templates.messages.create_error') : t('templates.messages.update_error'));
       console.error('Error saving template:', error);
     } finally {
       setSaving(false);
@@ -297,6 +298,12 @@ const TemplateManager: React.FC = () => {
     setFields(newFields);
   };
 
+  const duplicateField = (index: number) => {
+    const fieldToDuplicate = fields[index];
+    const duplicatedField = { ...fieldToDuplicate, order: fields.length + 1 };
+    setFields([...fields, duplicatedField]);
+  };
+
   const filteredTemplates = templates.filter(template => {
     const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          template.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -308,10 +315,10 @@ const TemplateManager: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div dir={isRTL ? 'rtl' : 'ltr'} className="flex items-center justify-center h-64">
         <div className="flex flex-col items-center gap-4">
           <div className="w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading templates...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t('templates.loading')}</p>
         </div>
       </div>
     );
@@ -319,16 +326,16 @@ const TemplateManager: React.FC = () => {
 
   if (view === 'list') {
     return (
-      <div className="space-y-6">
+      <div dir={isRTL ? 'rtl' : 'ltr'} className="space-y-6">
         {/* Header */}
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-start mb-6">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Checklist Templates
+                {t('templates.title')}
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
-                Create and manage reusable checklist templates with custom fields
+                {t('templates.description')}
               </p>
             </div>
             <button
@@ -336,7 +343,7 @@ const TemplateManager: React.FC = () => {
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 shadow-sm font-medium"
             >
               <Plus className="w-5 h-5" />
-              Create Template
+              {t('templates.create')}
             </button>
           </div>
 
@@ -347,7 +354,7 @@ const TemplateManager: React.FC = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search templates by name or description..."
+                  placeholder={t('templates.search_placeholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white transition-colors"
@@ -362,7 +369,7 @@ const TemplateManager: React.FC = () => {
               >
                 {categories.map(category => (
                   <option key={category} value={category}>
-                    {category === 'all' ? 'All Categories' : category}
+                    {category === 'all' ? t('templates.filter_by_category') : category}
                   </option>
                 ))}
               </select>
@@ -385,7 +392,7 @@ const TemplateManager: React.FC = () => {
                     )}
                     {!template.is_active && (
                       <div className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded-full">
-                        Inactive
+                        {t('templates.status.inactive')}
                       </div>
                     )}
                   </div>
@@ -405,11 +412,11 @@ const TemplateManager: React.FC = () => {
               <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
                 <span className="flex items-center gap-1">
                   <Settings className="w-3 h-3" />
-                  {template.fields_count} fields
+                  {t('templates.list.fields')}: {template.fields_count}
                 </span>
                 <span className="flex items-center gap-1">
                   <BarChart3 className="w-3 h-3" />
-                  Used {template.usage_count} times
+                  {t('templates.list.usage')}: {template.usage_count}
                 </span>
               </div>
 
@@ -429,7 +436,7 @@ const TemplateManager: React.FC = () => {
                   className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
                 >
                   <Eye className="w-4 h-4" />
-                  Preview
+                  {t('templates.actions.preview')}
                 </button>
                 
                 {template.can_edit && (
@@ -438,14 +445,14 @@ const TemplateManager: React.FC = () => {
                     className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
                   >
                     <Edit className="w-4 h-4" />
-                    Edit
+                    {t('templates.actions.edit')}
                   </button>
                 )}
                 
                 <button
                   onClick={() => handleDuplicateTemplate(template)}
                   className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                  title="Duplicate template"
+                  title={t('templates.actions.duplicate')}
                 >
                   <Copy className="w-4 h-4" />
                 </button>
@@ -454,7 +461,7 @@ const TemplateManager: React.FC = () => {
                   <button
                     onClick={() => handleToggleFreeze(template)}
                     className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                    title={template.is_frozen ? "Unfreeze template" : "Freeze template"}
+                    title={template.is_frozen ? t('templates.actions.unfreeze') : t('templates.actions.freeze')}
                   >
                     {template.is_frozen ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
                   </button>
@@ -463,7 +470,7 @@ const TemplateManager: React.FC = () => {
                 <button
                   onClick={() => handleDeleteTemplate(template)}
                   className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                  title="Delete template"
+                  title={t('templates.actions.delete')}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -478,12 +485,12 @@ const TemplateManager: React.FC = () => {
               <Settings className="w-16 h-16 mx-auto" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              No templates found
+              {t('templates.no_templates')}
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
               {templates.length === 0 
-                ? "Get started by creating your first checklist template with custom fields." 
-                : "No templates match your current filters. Try adjusting your search criteria."
+                ? t('templates.empty_state.description')
+                : t('templates.no_results.description')
               }
             </p>
             {templates.length === 0 && (
@@ -492,7 +499,7 @@ const TemplateManager: React.FC = () => {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 shadow-sm font-medium"
               >
                 <Plus className="w-5 h-5" />
-                Create First Template
+                {t('templates.create_first')}
               </button>
             )}
           </div>

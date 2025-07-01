@@ -6,6 +6,7 @@ import { FAQItem, FAQCategory } from "@src/dtos/apps/faq";
 import { addFAQItem, updateFAQItem } from "@src/slices/faq/reducer";
 import Select, { SingleValue } from "react-select";
 import { X } from "lucide-react";
+import useTranslation from "@src/hooks/useTranslation";
 
 interface OptionType {
   label: string;
@@ -28,6 +29,7 @@ const AddEditFAQModal: React.FC<AddEditFAQModalProps> = ({
   categories,
 }) => {
   const dispatch = useDispatch();
+  const { t, isRTL } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -79,13 +81,13 @@ const AddEditFAQModal: React.FC<AddEditFAQModalProps> = ({
   };
 
   const modalContent = (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
       <div>
-        <label className="block text-sm font-medium mb-1">Question</label>
+        <label className="block text-sm font-medium mb-1">{t('faq.form.question.label')}</label>
         <input
-          {...register("question", { required: "Question is required" })}
+          {...register("question", { required: t('faq.form.question.required') })}
           className="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
-          placeholder="Enter the question"
+          placeholder={t('faq.form.question.placeholder')}
         />
         {errors.question && (
           <p className="text-red-500 text-sm mt-1">{errors.question.message}</p>
@@ -93,11 +95,11 @@ const AddEditFAQModal: React.FC<AddEditFAQModalProps> = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Answer</label>
+        <label className="block text-sm font-medium mb-1">{t('faq.form.answer.label')}</label>
         <textarea
-          {...register("answer", { required: "Answer is required" })}
+          {...register("answer", { required: t('faq.form.answer.required') })}
           className="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 min-h-[100px]"
-          placeholder="Enter the answer"
+          placeholder={t('faq.form.answer.placeholder')}
         />
         {errors.answer && (
           <p className="text-red-500 text-sm mt-1">{errors.answer.message}</p>
@@ -105,7 +107,7 @@ const AddEditFAQModal: React.FC<AddEditFAQModalProps> = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Category</label>
+        <label className="block text-sm font-medium mb-1">{t('faq.form.category.label')}</label>
         <Select
           options={categoryOptions}
           value={categoryOptions.find(
@@ -115,6 +117,8 @@ const AddEditFAQModal: React.FC<AddEditFAQModalProps> = ({
             setValue("category", selected?.value || "");
           }}
           className="dark:bg-gray-700"
+          placeholder={t('faq.form.category.placeholder')}
+          isRtl={isRTL}
         />
       </div>
 
@@ -122,37 +126,37 @@ const AddEditFAQModal: React.FC<AddEditFAQModalProps> = ({
         <input
           type="checkbox"
           {...register("isPublished")}
-          className="mr-2"
+          className={`${isRTL ? 'ml-2' : 'mr-2'}`}
           id="isPublished"
         />
         <label htmlFor="isPublished" className="text-sm">
-          Published
+          {t('faq.form.published')}
         </label>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Display Order</label>
+        <label className="block text-sm font-medium mb-1">{t('faq.form.display_order.label')}</label>
         <input
           type="number"
-          {...register("order", { min: 1 })}
+          {...register("order", { min: { value: 1, message: t('faq.form.display_order.min') } })}
           className="w-24 p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
           min="1"
         />
       </div>
 
-      <div className="flex justify-end space-x-3 pt-4 border-t dark:border-gray-700">
+      <div className={`flex ${isRTL ? 'justify-start space-x-reverse' : 'justify-end space-x-3'} pt-4 border-t dark:border-gray-700`}>
         <button
           type="button"
           onClick={onClose}
           className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
         >
-          Cancel
+          {t('faq.modal.cancel')}
         </button>
         <button
           type="submit"
           className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
         >
-          {editMode ? "Update" : "Create"}
+          {editMode ? t('faq.modal.update') : t('faq.modal.create')}
         </button>
       </div>
     </form>
@@ -164,7 +168,7 @@ const AddEditFAQModal: React.FC<AddEditFAQModalProps> = ({
       onClose={onClose}
       position="modal-center"
       size="modal-lg"
-      title={editMode ? "Edit FAQ" : "Add New FAQ"}
+      title={editMode ? t('faq.modal.edit_title') : t('faq.modal.add_title')}
       content={modalContent}
     />
   );

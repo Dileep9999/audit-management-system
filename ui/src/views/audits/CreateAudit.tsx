@@ -6,6 +6,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { createAudit, getUsers, getWorkflows } from '../../utils/api_service';
 import { X } from 'lucide-react';
+import useTranslation from '../../hooks/useTranslation';
 
 type AuditType = 'internal' | 'external' | 'compliance' | 'financial' | 'operational' | 'it' | 'performance';
 
@@ -75,6 +76,7 @@ export default function CreateAudit() {
   const [userSearchTerm, setUserSearchTerm] = useState('');
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -176,7 +178,7 @@ export default function CreateAudit() {
       console.error('Error response:', error?.response);
       console.error('Error data:', error?.response?.data);
       
-      let errorMessage = 'Failed to create audit';
+      let errorMessage = t('audits.errors.create_failed', 'Failed to create audit');
       if (error?.response?.data?.detail) {
         errorMessage = error.response.data.detail;
       } else if (error?.response?.data?.message) {
@@ -212,7 +214,7 @@ export default function CreateAudit() {
               >
                 <X className="h-5 w-5" />
               </button>
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Create New Audit</h1>
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{t('audits.create.title', 'Create New Audit')}</h1>
             </div>
           </div>
         </div>
@@ -226,13 +228,13 @@ export default function CreateAudit() {
           {/* Title - Full Width */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Audit Title *
+              {t('audits.form.title.label', 'Audit Title')} *
             </label>
             <input
               type="text"
-              {...register('title', { required: 'Title is required' })}
+              {...register('title', { required: t('audits.form.title.required', 'Title is required') })}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-lg"
-              placeholder="Enter a descriptive audit title"
+              placeholder={t('audits.form.title.placeholder', 'Enter a descriptive audit title')}
             />
             {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
           </div>
@@ -242,16 +244,16 @@ export default function CreateAudit() {
             {/* Audit Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Audit Type *
+                {t('audits.form.type.label', 'Audit Type')} *
               </label>
               <select
-                {...register('audit_type', { required: 'Audit type is required' })}
+                {...register('audit_type', { required: t('audits.form.type.required', 'Audit type is required') })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
-                <option value="">Select audit type</option>
+                <option value="">{t('audits.form.type.placeholder', 'Select audit type')}</option>
                 {AUDIT_TYPE_CONFIGS.map((type) => (
                   <option key={type.id} value={type.id}>
-                    {type.display}
+                    {t(`audits.types.${type.id}`, type.display)}
                   </option>
                 ))}
               </select>
@@ -261,16 +263,16 @@ export default function CreateAudit() {
             {/* Workflow */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Workflow *
+                {t('audits.form.workflow.label', 'Workflow')} *
               </label>
               <select
                 {...register('workflow', { 
-                  required: 'Workflow is required',
+                  required: t('audits.form.workflow.required', 'Workflow is required'),
                   valueAsNumber: true 
                 })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
-                <option value="">Select workflow</option>
+                <option value="">{t('audits.form.workflow.placeholder', 'Select workflow')}</option>
                 {workflows
                   .filter(w => w.status !== 'archived')
                   .sort((a, b) => {
@@ -280,7 +282,7 @@ export default function CreateAudit() {
                   })
                   .map((workflow) => (
                   <option key={workflow.id} value={workflow.id}>
-                    {workflow.name} {workflow.status === 'active' ? '✓' : '(Draft)'}
+                    {workflow.name} {workflow.status === 'active' ? t('audits.form.workflow.active', '✓') : t('audits.form.workflow.draft', '(Draft)')}
                   </option>
                 ))}
               </select>
@@ -293,11 +295,11 @@ export default function CreateAudit() {
             {/* Period From */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Period From *
+                {t('audits.form.period_from.label', 'Period From')} *
               </label>
               <input
                 type="date"
-                {...register('period_from', { required: 'Start date is required' })}
+                {...register('period_from', { required: t('audits.form.period_from.required', 'Start date is required') })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
               {errors.period_from && <p className="mt-1 text-sm text-red-600">{errors.period_from.message}</p>}
@@ -306,11 +308,11 @@ export default function CreateAudit() {
             {/* Period To */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Period To *
+                {t('audits.form.period_to.label', 'Period To')} *
               </label>
               <input
                 type="date"
-                {...register('period_to', { required: 'End date is required' })}
+                {...register('period_to', { required: t('audits.form.period_to.required', 'End date is required') })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
               {errors.period_to && <p className="mt-1 text-sm text-red-600">{errors.period_to.message}</p>}
@@ -322,13 +324,13 @@ export default function CreateAudit() {
             {/* Scope */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Scope *
+                {t('audits.form.scope.label', 'Scope')} *
               </label>
               <textarea
-                {...register('scope', { required: 'Scope is required' })}
+                {...register('scope', { required: t('audits.form.scope.required', 'Scope is required') })}
                 rows={6}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                placeholder="Describe the audit scope"
+                placeholder={t('audits.form.scope.placeholder', 'Describe the audit scope')}
               />
               {errors.scope && <p className="mt-1 text-sm text-red-600">{errors.scope.message}</p>}
             </div>
@@ -336,12 +338,12 @@ export default function CreateAudit() {
             {/* Objectives - Rich Text Editor */}
             <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Objectives *
+              {t('audits.form.objectives.label', 'Objectives')} *
             </label>
             <Controller
               name="objectives"
               control={control}
-              rules={{ required: 'Objectives are required' }}
+              rules={{ required: t('audits.form.objectives.required', 'Objectives are required') }}
               render={({ field }) => (
                 <div className="border border-gray-300 rounded-md dark:border-gray-600">
                   <ReactQuill
@@ -350,7 +352,7 @@ export default function CreateAudit() {
                     onChange={field.onChange}
                     modules={quillModules}
                     formats={quillFormats}
-                    placeholder="Describe the audit objectives..."
+                    placeholder={t('audits.form.objectives.placeholder', 'Describe the audit objectives...')}
                     className="dark:text-white"
                     style={{ height: '200px', marginBottom: '50px' }}
                   />
@@ -364,7 +366,7 @@ export default function CreateAudit() {
           {/* Assign Users */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Assign Users
+              {t('audits.form.assign_users.label', 'Assign Users')}
             </label>
             
             {/* Search Input with Autocomplete */}
@@ -374,7 +376,7 @@ export default function CreateAudit() {
                 value={userSearchTerm}
                 onChange={handleUserSearchChange}
                 onFocus={() => setShowUserDropdown(true)}
-                placeholder="Search users by name, email, or username..."
+                placeholder={t('audits.form.assign_users.search_placeholder', 'Search users by name, email, or username...')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
               
@@ -403,7 +405,7 @@ export default function CreateAudit() {
             {selectedUsers.length > 0 && (
               <div className="mb-4">
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Selected Users ({selectedUsers.length})
+                  {t('audits.form.assign_users.selected_label', 'Selected Users')} ({selectedUsers.length})
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedUsers.map((user) => (
@@ -416,6 +418,7 @@ export default function CreateAudit() {
                         type="button"
                         onClick={() => handleUserRemove(user.id)}
                         className="ml-2 text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-200"
+                        aria-label={t('audits.form.assign_users.remove_user', 'Remove user')}
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -433,14 +436,14 @@ export default function CreateAudit() {
               onClick={() => navigate('/audits')}
               className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
             >
-              Cancel
+              {t('common.cancel', 'Cancel')}
             </button>
             <button
               type="submit"
               disabled={isLoading}
               className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Creating...' : 'Create Audit'}
+              {isLoading ? t('audits.form.creating', 'Creating...') : t('audits.actions.create', 'Create Audit')}
             </button>
           </div>
         </form>

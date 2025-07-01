@@ -22,6 +22,7 @@ import {
   Eye
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import useTranslation from '../../hooks/useTranslation';
 import { getChecklistTemplate, duplicateChecklistTemplate } from '../../utils/api_service';
 
 interface ChecklistTemplate {
@@ -55,6 +56,7 @@ const ViewTemplate: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t, isRTL } = useTranslation();
   const [template, setTemplate] = useState<ChecklistTemplate | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -118,10 +120,10 @@ const ViewTemplate: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading template...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t('templates.loading')}</p>
         </div>
       </div>
     );
@@ -129,22 +131,22 @@ const ViewTemplate: React.FC = () => {
 
   if (error || !template) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="text-red-500 mb-4">
             <AlertCircle className="w-16 h-16 mx-auto" />
           </div>
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Template Not Found
+            {t('templates.messages.not_found')}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {error || 'The requested template could not be found.'}
+            {error || t('templates.messages.not_found_description')}
           </p>
           <button
             onClick={handleBack}
-            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+            className="btn btn-primary"
           >
-            Go Back
+            {t('common.back')}
           </button>
         </div>
       </div>
@@ -152,7 +154,7 @@ const ViewTemplate: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4">

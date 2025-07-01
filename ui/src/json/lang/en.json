@@ -198,36 +198,925 @@
 
   "pe-apextree": "Apextree",
   "pe-top-to-bottom": "Top to Bottom",
-  "pe-bottom-to-top": "Bottom to Top",
   "pe-left-to-right": "Left to Right",
+  "pe-bottom-to-top": "Bottom to Top",
   "pe-right-to-left": "Right to Left",
-  "pe-collapse-expand": "Collapse Expand",
-  "pe-apexsankey": "ApexSankey",
-
-  "pe-area": "Area",
-  "pe-bar": "Bar",
-  "pe-box-whisher": "Box Whisher",
-  "pe-bubble": "Bubble",
-  "pe-candlestick": "Candlestick",
-  "pe-column": "Column",
-  "pe-funnel": "Funnel",
-  "pe-heatmap": "Heatmap",
-  "pe-line": "Line",
-  "pe-mixed": "Mixed",
-  "pe-pie": "Pie",
-  "pe-polar-area": "Polar Area",
-  "pe-radar": "Radar",
-  "pe-radialbar": "Radialbar",
-  "pe-range-area": "Range Area",
-  "pe-scatter": "Scatter",
-  "pe-slope": "Slope",
-  "pe-treemap": "Treemap",
-  "pe-echarts": "Echarts",
-  "pe-maps": "Maps",
+  "pe-apexsankey": "Apexsankey",
   "pe-google-maps": "Google Maps",
+  "pe-leaflet": "Leaflet",
   "pe-vector": "Vector",
-  "pe-docs-changeLog": "Docs & ChangeLog",
-  "pe-support": "Support",
-  "pe-documentation": "Documentation",
-  "pe-changelog": "ChangeLog"
+  
+  "menu": "MENU",
+  "Dashboard": "Dashboard",
+  "Audits": "Audits",
+  "Administrator": "Administrator",
+  "Users": "Users",
+  "Users and Permissions": "Users and Permissions",
+  "Roles and Permissions": "Roles and Permissions",
+  "Workflows": "Workflows",
+  "Templates": "Templates",
+  "FAQ": "FAQ",
+  "Entities": "Entities",
+  
+  "dashboard": {
+    "title": "Audit Management Dashboard",
+    "description": "Monitor audit progress, track performance, and manage timelines",
+    "stats": {
+      "total_audits": "Total Audits", 
+      "active_audits": "Active Audits",
+      "completed": "Completed",
+      "teams": "Teams"
+    },
+    "charts": {
+      "audit_status_distribution": "Audit Status Distribution",
+      "audit_timeline": "Audit Timeline (30 Days)",
+      "audit_types": "Audit Types",
+      "team_performance": "Team Performance",
+      "recent_activity": "Recent Activity",
+      "audit_timeline_scheduling": "Audit Timeline & Scheduling",
+      "visual_timeline_description": "Visual timeline of all audit projects and their progress",
+      "monthly_trends": "Monthly Trends",
+      "capacity_utilization": "Capacity Utilization",
+      "findings_trends": "Findings Trends Over Time",
+      "risk_assessment": "Risk Assessment Distribution",
+      "department_performance": "Department Performance",
+      "completion_trends": "Completion Trends",
+      "performance_metrics": "Performance Metrics",
+      "team_capacity_planning": "Team Capacity Planning",
+      "audit_findings_trends": "Audit Findings Trends (Last 6 Months)",
+      "monthly_performance_overview": "Monthly Performance Overview"
+    },
+    "date_range": {
+      "last_7_days": "Last 7 days",
+      "last_30_days": "Last 30 days", 
+      "last_90_days": "Last 90 days",
+      "last_year": "Last year"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "gantt_chart": "Gantt Chart",
+      "analytics": "Analytics"
+    },
+    "legend": {
+      "completed": "Completed",
+      "in_progress": "In Progress", 
+      "overdue": "Overdue",
+      "planned": "Planned"
+    },
+    "summary": {
+      "on_schedule": "On Schedule",
+      "delayed": "Delayed",
+      "total_duration": "Total Duration", 
+      "avg_completion": "Avg Completion",
+      "avg_duration": "Avg Duration"
+    },
+    "status": {
+      "draft": "Draft",
+      "in_progress": "In Progress",
+      "review": "Review",
+      "completed": "Completed",
+      "overdue": "Overdue",
+      "on_hold": "On Hold"
+    },
+    "metrics": {
+      "success_rate": "Success Rate",
+      "active_audits": "Active Audits",
+      "avg_hours": "Avg Hours",
+      "active_teams": "Active Teams",
+      "audits": "audits",
+      "current_load": "Current Load",
+      "planned_capacity": "Planned Capacity",
+      "number_of_findings": "Number of Findings",
+      "completion_rate": "Completion Rate (%)",
+      "response_time": "Response Time (Days)",
+      "completed_audits": "Completed Audits"
+    },
+    "risk_levels": {
+      "high_risk": "High Risk",
+      "medium_risk": "Medium Risk",
+      "low_risk": "Low Risk"
+    },
+    "loading": {
+      "dashboard": "Loading dashboard..."
+    }
+  },
+  
+  "audits": {
+    "title": "Audits",
+    "new_audit": "New Audit",
+    "refresh_audits": "Refresh audits",
+    "loading": "Loading audits...",
+    "filter_placeholder": "Filter by reference, title, type, status, creator...",
+    "no_audits": "No audits found",
+    "failed_to_load": "Failed to load audit data",
+    "table": {
+      "reference": "Reference",
+      "title": "Title",
+      "type": "Type",
+      "status": "Status",
+      "creator": "Creator",
+      "created_date": "Created Date",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View audit",
+      "edit": "Edit audit",
+      "delete": "Delete audit",
+      "confirm_delete": "Are you sure you want to delete this audit?",
+      "deleting": "Deleting...",
+      "delete_success": "Audit deleted successfully",
+      "delete_error": "Failed to delete audit"
+    },
+    "status": {
+      "draft": "Draft",
+      "in_progress": "In Progress",
+      "review": "Review",
+      "completed": "Completed",
+      "overdue": "Overdue",
+      "on_hold": "On Hold"
+    },
+    "types": {
+      "internal": "Internal",
+      "external": "External",
+      "compliance": "Compliance",
+      "financial": "Financial",
+      "operational": "Operational",
+      "it": "IT"
+    }
+  },
+  
+  "auditDetails": {
+    "loading": "Loading audit data...",
+    "failed_to_load": "Failed to load audit data",
+    "back_to_audits": "Back to Audits",
+    "edit_audit": "Edit Audit",
+    "share": "Share",
+    "navigation": {
+      "overview": "Overview",
+      "audit_items": "Audit Items", 
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "status": {
+      "current_status": "Current Status",
+      "available_transitions": "Available Transitions",
+      "transition_status": "Transition Status",
+      "transitioning": "Transitioning...",
+      "transition_success": "Status updated successfully",
+      "transition_error": "Failed to update status"
+    },
+    "overview": {
+      "status": {
+        "title": "Status",
+        "description": "Current audit status"
+      },
+      "progress": {
+        "title": "Progress",
+        "tasksCompleted": "{completed} of {total} tasks completed",
+        "noTasks": "No tasks found"
+      },
+      "team": {
+        "title": "Team",
+        "description": "Assigned team members"
+      },
+      "information": {
+        "title": "Audit Information",
+        "referenceNumber": "Reference Number",
+        "auditType": "Audit Type",
+        "periodFrom": "Period From",
+        "periodTo": "Period To",
+        "scope": "Scope",
+        "objectives": "Objectives",
+        "notSpecified": "Not specified",
+        "noScopeDefined": "No scope defined",
+        "noObjectivesDefined": "No objectives defined"
+      },
+      "workflow": {
+        "title": "Workflow Information",
+        "name": "Workflow Name",
+        "status": "Workflow Status",
+        "description": "Description",
+        "noDescription": "No description available"
+      }
+    },
+    "tasks": {
+      "title": "Audit Items",
+      "search_placeholder": "Search tasks...",
+      "filter": {
+        "all": "All",
+        "completed": "Completed",
+        "in_progress": "In Progress",
+        "not_started": "Not Started",
+        "overdue": "Overdue"
+      },
+      "create_task": "Create Task",
+      "no_tasks": "No tasks found",
+      "loading_tasks": "Loading tasks...",
+      "failed_to_load": "Failed to load tasks",
+      "task_created": "Task created successfully",
+      "task_updated": "Task updated successfully",
+      "task_error": "Failed to update task",
+      "status": {
+        "not_started": "Not Started",
+        "in_progress": "In Progress", 
+        "completed": "Completed",
+        "overdue": "Overdue"
+      },
+      "priority": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "assign": {
+        "assign_users": "Assign Users",
+        "assign_team": "Assign Team",
+        "search_users": "Search users...",
+        "search_teams": "Search teams...",
+        "no_users_found": "No users found",
+        "no_teams_found": "No teams found",
+        "assigned_successfully": "Task assigned successfully",
+        "assignment_failed": "Failed to assign task"
+      }
+    },
+    "reports": {
+      "title": "Audit Reports",
+      "description": "Generate and view comprehensive audit reports",
+      "generateReport": "Generate Report",
+      "noReports": "No reports available",
+      "downloadReport": "Download Report",
+      "viewReport": "View Report",
+      "reportTypes": {
+        "summary": "Summary Report",
+        "detailed": "Detailed Report",
+        "findings": "Findings Report",
+        "recommendations": "Recommendations Report"
+      },
+      "status": {
+        "generating": "Generating report...",
+        "ready": "Report ready",
+        "failed": "Report generation failed"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "tabs": {
+        "general": "General",
+        "permissions": "Permissions",
+        "notifications": "Notifications"
+      },
+      "general": {
+        "title": "General Settings",
+        "email_notifications": {
+          "title": "Email Notifications",
+          "description": "Receive email updates for audit progress"
+        },
+        "auto_save": {
+          "title": "Auto-save Drafts",
+          "description": "Automatically save changes as drafts"
+        },
+        "real_time": {
+          "title": "Real-time Collaboration",
+          "description": "Enable real-time updates for team members"
+        },
+        "audit_settings": "Audit Settings",
+        "audit_title": "Audit Title",
+        "audit_description": "Audit Description",
+        "audit_priority": "Audit Priority",
+        "audit_category": "Audit Category",
+        "deadline": "Deadline",
+        "budget": "Budget",
+        "access_control": "Access Control",
+        "restrict_edit_access": "Restrict Edit Access",
+        "restrict_edit_description": "Only assigned users can edit this audit",
+        "public_visibility": "Public Visibility",
+        "public_visibility_description": "Make audit visible to all users in organization",
+        "data_export": "Data & Export",
+        "data_retention_period": "Data Retention Period",
+        "export_format_preference": "Export Format Preference",
+        "reset_to_default": "Reset to Default",
+        "save_settings": "Save Settings"
+      },
+      "access_control": {
+        "title": "Access Control",
+        "restrict_edit": {
+          "title": "Restrict Edit Access",
+          "description": "Only assigned users can edit this audit"
+        },
+        "public_visibility": {
+          "title": "Public Visibility",
+          "description": "Make audit visible to all users in organization"
+        }
+      },
+      "data_export": {
+        "title": "Data & Export",
+        "retention_period": {
+          "title": "Data Retention Period",
+          "options": {
+            "one_year": "1 year",
+            "two_years": "2 years",
+            "five_years": "5 years",
+            "indefinite": "Indefinite"
+          }
+        },
+        "export_format": {
+          "title": "Export Format Preference",
+          "options": {
+            "pdf": "PDF",
+            "excel": "Excel",
+            "word": "Word",
+            "json": "JSON"
+          }
+        }
+      },
+      "actions": {
+        "reset": "Reset to Default",
+        "save": "Save Settings"
+      },
+      "teams": {
+        "title": "Teams & Users Management",
+        "description": "Manage teams and user access for this audit project",
+        "stats": {
+          "teams": "teams",
+          "total_members": "total members"
+        },
+        "create_team": "Create Team",
+        "created_teams": "Created Teams",
+        "team_types": {
+          "audit": "Audit Team",
+          "review": "Review Team",
+          "management": "Management Team",
+          "technical": "Technical Team",
+          "compliance": "Compliance Team"
+        },
+        "members": "members",
+        "no_teams": {
+          "title": "No teams created yet",
+          "description": "Create teams to organize your audit workflow"
+        }
+      }
+    },
+    "team": {
+      "create_team": "Create Team",
+      "team_name": "Team Name",
+      "team_type": "Team Type",
+      "team_owner": "Team Owner",
+      "team_members": "Team Members",
+      "search_members": "Search by name, email, or department...",
+      "department_filter": "All Departments",
+      "selected_members": "Selected Members",
+      "total_users": "Total Users",
+      "filtered_results": "Filtered Results",
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing",
+      "of": "of",
+      "users": "users",
+      "create": "Create",
+      "cancel": "Cancel",
+      "creating": "Creating...",
+      "team_created": "Team created successfully",
+      "team_creation_failed": "Failed to create team"
+    },
+    "ui": {
+      "collapse_details": "Collapse details",
+      "expand_details": "Expand details",
+      "view_task_details": "View Task Details",
+      "delete_audit_item": "Delete audit item",
+      "description_notes": "Description & Notes",
+      "description_placeholder": "Add detailed description, notes, or requirements for this audit task...",
+      "assignments": "Assignments",
+      "user": "User",
+      "team_text": "Team",
+      "members": "members",
+      "remove_user_assignment": "Remove user assignment",
+      "remove_team_assignment": "Remove team assignment",
+      "no_assignments": "No users or teams assigned",
+      "search_assign_placeholder": "Search users and teams to assign...",
+      "no_available_found": "No available users or teams found",
+      "users": "Users",
+      "teams": "Teams",
+      "edit_team": "Edit team",
+      "assign_team_audit": "Assign team to audit",
+      "delete_team": "Delete team",
+      "remove_member": "Remove member",
+      "unassign_from_audit": "Unassign from audit",
+      "team_owner": "Team Owner",
+      "team_members": "Team Members",
+      "unassign": "Unassign",
+      "created": "Created",
+      "no_teams_created": "No teams created yet",
+      "create_teams_organize": "Create teams to organize your audit workflow",
+      "individual_users": "Individual Users",
+      "assigned_users": "assigned users",
+      "no_individual_users": "No individual users assigned",
+      "search_users_individually": "Search users to add individually...",
+      "individual_user": "Individual User",
+      "no_department": "No Department",
+      "add": "Add",
+      "removed_from_audit": "removed from audit",
+      "added_to_audit": "added to audit",
+      "publish_audit_item": "Publish audit item for team access",
+      "create_new_template": "Create new template",
+      "enter_task_name": "Enter a descriptive task name",
+      "priority_options": {
+        "low": "🟢 Low Priority",
+        "medium": "🟡 Medium Priority", 
+        "high": "🟠 High Priority",
+        "critical": "🔴 Critical Priority"
+      },
+      "risk_options": {
+        "low": "🟢 Low Risk",
+        "medium": "🟡 Medium Risk",
+        "high": "🟠 High Risk", 
+        "critical": "🔴 Critical Risk"
+      },
+      "all_departments": "All Departments",
+      "show_details": "Show Details",
+      "hide_details": "Hide Details"
+    },
+    "items": {
+      "task_name_placeholder": "Enter audit task name...",
+      "status": {
+        "available_transitions": "Available Transitions",
+        "no_transitions": "No transitions available",
+        "transitions": {
+          "in_progress": "In Progress",
+          "on_hold": "On Hold",
+          "completed": "Completed",
+          "cancelled": "Cancelled",
+          "pending": "Pending",
+          "draft": "Draft",
+          "published": "Published",
+          "under_review": "Under Review",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        }
+      },
+      "priority": {
+        "critical": "CRITICAL",
+        "high": "HIGH",
+        "medium": "MEDIUM",
+        "low": "LOW"
+      },
+      "publish_status": {
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "assignments": {
+        "title": "Assignments",
+        "user": "User",
+        "team": "Team",
+        "members": "members",
+        "no_assignments": "No users or teams assigned",
+        "search_placeholder": "Search users and teams to assign...",
+        "no_available_found": "No available users or teams found",
+        "users_section": "Users",
+        "teams_section": "Teams",
+        "remove_user": "Remove user assignment",
+        "remove_team": "Remove team assignment"
+      },
+      "quick_actions": {
+        "title": "Quick Actions",
+        "view_details": "View Details",
+        "fill_checklist": "Fill Checklist",
+        "view_history": "View History",
+        "export_data": "Export Data"
+      },
+      "description": {
+        "title": "Description & Notes",
+        "placeholder": "Add detailed description, notes, or requirements for this audit task..."
+      },
+      "assignments_section": {
+        "title": "Assignments",
+        "users_title": "Assigned Users",
+        "teams_title": "Assigned Teams",
+        "search_users": "Search users to assign...",
+        "search_teams": "Search teams to assign...",
+        "no_users_found": "No users found",
+        "no_teams_found": "No teams found",
+        "remove_user": "Remove user",
+        "remove_team": "Remove team"
+      },
+      "create_task_modal": {
+        "title": "Create New Audit Task",
+        "description": "Select a checklist template and configure your audit task",
+        "close_title": "Close (Esc)",
+        "template_section": {
+          "title": "Checklist Template",
+          "description": "Choose a template to base your task on",
+          "select_placeholder": "Select a template...",
+          "create_new": "Create new template"
+        },
+        "task_details": {
+          "title": "Task Details",
+          "description": "Configure your audit task",
+          "task_name": {
+            "label": "Task Name",
+            "placeholder": "Enter a descriptive task name"
+          }
+        },
+        "assignment": {
+          "title": "Assignment & Configuration",
+          "description": "Set priority, assignments, and scheduling",
+          "assign_to": {
+            "label": "Assign To",
+            "placeholder": "Select a user (optional)"
+          },
+          "priority": {
+            "label": "Priority Level",
+            "options": {
+              "low": "🟢 Low Priority",
+              "medium": "🟡 Medium Priority",
+              "high": "🟠 High Priority",
+              "critical": "🔴 Critical Priority"
+            }
+          },
+          "risk": {
+            "label": "Risk Level",
+            "options": {
+              "low": "🟢 Low Risk",
+              "medium": "🟡 Medium Risk",
+              "high": "🟠 High Risk",
+              "critical": "🔴 Critical Risk"
+            }
+          },
+          "due_date": "Due Date"
+        },
+        "footer": {
+          "required_fields": "All fields marked with * are required",
+          "cancel": "Cancel",
+          "create": "Create Task"
+        }
+      },
+      "task_details_modal": {
+        "title": "Task Details",
+        "status": "Status",
+        "priority": "Priority",
+        "due_date": "Due Date",
+        "assigned_to": "Assigned To",
+        "completion": "Completion",
+        "created_at": "Created At",
+        "updated_at": "Updated At",
+        "close": "Close"
+      },
+      "sidebar": {
+        "hide_details": "Hide Details",
+        "show_details": "Show Details",
+        "status": {
+          "title": "Status",
+          "current_status": "Current Status",
+          "reference": "Reference",
+          "type": "Type",
+          "workflow": "Workflow",
+          "no_workflow": "No Workflow"
+        },
+        "workflow": {
+          "title": "Workflow",
+          "current_workflow": "Current Workflow",
+          "current_status": "Current Status"
+        },
+        "activity": {
+          "title": "Recent Activity",
+          "completed_task": "completed task",
+          "added_comment": "added comment",
+          "assigned_to_audit": "was assigned to audit",
+          "updated_status": "updated status to",
+          "time_ago": {
+            "hours_ago": "2 hours ago",
+            "day_ago": "1 day ago",
+            "days_ago": "2 days ago"
+          }
+        },
+        "attachments": {
+          "title": "Attachments",
+          "audit_checklist": "audit-checklist.pdf",
+          "financial_data": "financial-data.xlsx",
+          "add_attachment": "Add attachment"
+        }
+      },
+      "audit_types": {
+        "internal": "Internal",
+        "external": "External",
+        "compliance": "Compliance",
+        "financial": "Financial",
+        "operational": "Operational",
+        "it": "IT",
+        "security": "Security",
+        "performance": "Performance"
+      },
+      "team_modal": {
+        "team_name": "Team Name",
+        "team_name_placeholder": "Enter team name...",
+        "team_type": "Team Type",
+        "team_types": {
+          "audit": "Audit Team",
+          "review": "Review Team",
+          "management": "Management Team",
+          "technical": "Technical Team",
+          "compliance": "Compliance Team"
+        },
+        "team_owner": "Team Owner",
+        "select_team_owner": "Select team owner...",
+        "selected_members": "Selected Team Members",
+        "clear_all": "Clear All"
+      }
+    },
+    "details": {
+      "title": "Details",
+      "assignees": "Assignees",
+      "no_assignees": "No assignees",
+      "period_end": "Period End",
+      "created": "Created",
+      "created_by": "Created By"
+    }
+  },
+  
+  "auditReport": {
+    "title": "Audit Report",
+    "loading": "Loading audit report...",
+    "not_found": "Audit not found",
+    "not_found_description": "The audit you're looking for doesn't exist.",
+    "back_to_audits": "Back to Audits",
+    "back_to_audit": "Back to Audit",
+    "pdf_report": "PDF Report",
+    "excel_report": "Excel Report",
+    "pdf_coming_soon": "PDF report generation feature coming soon",
+    "excel_coming_soon": "Excel report generation feature coming soon",
+    "tabs": {
+      "overview": "Overview",
+      "tasks": "Tasks", 
+      "findings": "Findings",
+      "analysis": "Analysis"
+    },
+    "statistics": {
+      "audit_information": "Audit Information",
+      "reference_number": "Reference Number",
+      "type": "Type",
+      "status": "Status",
+      "created_date": "Created Date",
+      "completion_date": "Completion Date", 
+      "assigned_team": "Assigned Team",
+      "task_summary": "Task Summary",
+      "total_tasks": "Total Tasks",
+      "completed_tasks": "Completed Tasks",
+      "in_progress_tasks": "In Progress Tasks",
+      "pending_tasks": "Pending Tasks",
+      "completion_rate": "Completion Rate",
+      "findings_summary": "Findings Summary",
+      "total_findings": "Total Findings",
+      "high_risk_findings": "High Risk Findings",
+      "medium_risk_findings": "Medium Risk Findings",
+      "low_risk_findings": "Low Risk Findings"
+    }
+  },
+  
+  "sidebar": {
+    "user": {
+      "hello": "Hello",
+      "logout": "Log Out"
+    }
+  },
+  
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "create": "Create",
+    "update": "Update",
+    "refresh": "Refresh",
+    "search": "Search for AMS",
+    "filter": "Filter",
+    "all": "All",
+    "none": "None",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "reset": "Reset",
+    "clear": "Clear",
+    "select": "Select",
+    "unselect": "Unselect",
+    "upload": "Upload",
+    "download": "Download",
+    "export": "Export",
+    "import": "Import",
+    "print": "Print",
+    "share": "Share",
+    "copy": "Copy",
+    "cut": "Cut",
+    "paste": "Paste",
+    "undo": "Undo",
+    "redo": "Redo"
+  },
+
+  "templates": {
+    "title": "Checklist Templates",
+    "description": "Create and manage reusable checklist templates with custom fields",
+    "create": "Create Template",
+    "create_first": "Create First Template",
+    "loading": "Loading templates...",
+    "no_templates": "No templates found",
+    "search_placeholder": "Search templates by name or description...",
+    "filter_by_category": "All Categories",
+    "empty_state": {
+      "description": "Get started by creating your first checklist template with custom fields."
+    },
+    "no_results": {
+      "description": "No templates match your current filters. Try adjusting your search criteria."
+    },
+    "list": {
+      "name": "Name",
+      "description": "Description",
+      "category": "Category",
+      "fields": "Fields",
+      "created_by": "Created By",
+      "created_at": "Created At",
+      "usage": "Usage",
+      "usage_times": "times"
+    },
+    "actions": {
+      "preview": "Preview",
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "delete": "Delete",
+      "freeze": "Freeze",
+      "unfreeze": "Unfreeze",
+      "export": "Export",
+      "create_checklist": "Create Checklist",
+      "confirm_delete": "Are you sure you want to delete this template?"
+    },
+    "messages": {
+      "load_error": "Failed to load templates",
+      "cannot_edit": "Cannot edit this template - it may be frozen or you lack permissions",
+      "duplicate_success": "Template duplicated successfully",
+      "duplicate_error": "Failed to duplicate template",
+      "delete_success": "Template deleted successfully",
+      "delete_error": "Failed to delete template",
+      "freeze_success": "Template frozen successfully",
+      "unfreeze_success": "Template unfrozen successfully",
+      "freeze_error": "Failed to freeze template",
+      "unfreeze_error": "Failed to unfreeze template",
+      "create_success": "Template created successfully",
+      "update_success": "Template updated successfully",
+      "create_error": "Failed to create template",
+      "update_error": "Failed to update template",
+      "export_success": "Template exported successfully",
+      "export_error": "Failed to export template",
+      "create_checklist_success": "Checklist created successfully",
+      "create_checklist_error": "Failed to create checklist"
+    },
+    "form": {
+      "name": {
+        "label": "Template Name",
+        "placeholder": "Enter template name",
+        "required": "Template name is required"
+      },
+      "description": {
+        "label": "Template Description",
+        "placeholder": "Enter template description"
+      },
+      "category": {
+        "label": "Template Category",
+        "placeholder": "Choose template category"
+      }
+    },
+    "preview": {
+      "form_view": "Form View",
+      "field_view": "Field View"
+    },
+    "field_types": {
+      "text": {
+        "label": "Text",
+        "placeholder": "Enter text"
+      },
+      "number": {
+        "label": "Number",
+        "placeholder": "Enter number"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter email"
+      },
+      "date": {
+        "label": "Date",
+        "placeholder": "Choose date"
+      },
+      "checkbox": {
+        "label": "Checkbox",
+        "placeholder": "Check this option"
+      },
+      "select": {
+        "label": "Select",
+        "placeholder": "Choose an option"
+      },
+      "file": {
+        "label": "File",
+        "placeholder": "Choose file",
+        "upload_text": "Click to upload or drag and drop",
+        "allowed_types": "Allowed files: PDF, DOC, DOCX, XLS, XLSX"
+      },
+      "rating": {
+        "label": "Rating",
+        "placeholder": "Choose rating"
+      }
+    },
+    "field_form": {
+      "is_required": {
+        "label": "Required"
+      },
+      "width": {
+        "full": "Full Width",
+        "half": "Half Width",
+        "third": "Third Width"
+      },
+      "options": {
+        "count": "options"
+      }
+    }
+  },
+
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "description": "Find answers to common questions about the audit management system",
+    "add_faq": "Add FAQ",
+    "no_faqs": "No FAQs found",
+    "search_placeholder": "Search FAQs by question or category...",
+    "delete_confirm": "Are you sure you want to delete this FAQ?",
+    "form": {
+      "question": {
+        "label": "Question",
+        "placeholder": "Enter the question",
+        "required": "Question is required"
+      },
+      "answer": {
+        "label": "Answer",
+        "placeholder": "Enter the answer",
+        "required": "Answer is required"
+      },
+      "category": {
+        "label": "Category",
+        "placeholder": "Select a category"
+      },
+      "published": "Published",
+      "display_order": {
+        "label": "Display Order",
+        "min": "Must be greater than 0"
+      }
+    },
+    "modal": {
+      "add_title": "Add New FAQ",
+      "edit_title": "Edit FAQ",
+      "cancel": "Cancel",
+      "create": "Create",
+      "update": "Update"
+    },
+    "actions": {
+      "edit": "Edit FAQ",
+      "delete": "Delete FAQ"
+    }
+  },
+
+  "workflows": {
+    "title": "Workflows",
+    "status": {
+      "draft": "Draft",
+      "active": "Active",
+      "inactive": "Inactive",
+      "in_progress": "In Progress",
+      "on_hold": "On Hold",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "pending": "Pending",
+      "under_review": "Under Review",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "transitions": {
+      "success": "Status updated successfully",
+      "error": "Failed to update status",
+      "not_available": "No transitions available",
+      "invalid": "Invalid transition",
+      "permission_denied": "You do not have permission to change workflow status",
+      "server_error": "Server error occurred during status transition"
+    },
+    "messages": {
+      "load_error": "Failed to load workflows",
+      "create_success": "Workflow created successfully",
+      "update_success": "Workflow updated successfully",
+      "delete_success": "Workflow deleted successfully",
+      "create_error": "Failed to create workflow",
+      "update_error": "Failed to update workflow",
+      "delete_error": "Failed to delete workflow"
+    }
+  }
 }

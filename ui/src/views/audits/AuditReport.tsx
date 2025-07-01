@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getAudit, getAuditTasks, getAuditFindings } from '../../utils/api_service';
+import useTranslation from '../../hooks/useTranslation';
+import DirectionalIcon from '../../components/common/DirectionalIcon';
 
 interface AuditData {
   id: number;
@@ -77,6 +79,7 @@ interface FindingData {
 const AuditReport: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const [auditData, setAuditData] = useState<AuditData | null>(null);
   const [tasks, setTasks] = useState<TaskData[]>([]);
@@ -106,7 +109,7 @@ const AuditReport: React.FC = () => {
       setFindings(findingsResponse);
     } catch (error) {
       console.error('Error loading report data:', error);
-      toast.error('Failed to load audit report data');
+      toast.error(t('auditReport.error_loading', 'Failed to load audit report data'));
     } finally {
       setLoading(false);
     }
@@ -114,12 +117,12 @@ const AuditReport: React.FC = () => {
 
   const generatePDFReport = () => {
     // TODO: Implement PDF generation
-    toast.success('PDF report generation feature coming soon');
+    toast.success(t('auditReport.pdf_coming_soon', 'PDF report generation feature coming soon'));
   };
 
   const generateExcelReport = () => {
     // TODO: Implement Excel generation
-    toast.success('Excel report generation feature coming soon');
+    toast.success(t('auditReport.excel_coming_soon', 'Excel report generation feature coming soon'));
   };
 
   // Calculate statistics
@@ -184,7 +187,7 @@ const AuditReport: React.FC = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading audit report...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">{t('auditReport.loading', 'Loading audit report...')}</p>
         </div>
       </div>
     );
@@ -195,13 +198,13 @@ const AuditReport: React.FC = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Audit not found</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">The audit you're looking for doesn't exist.</p>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{t('auditReport.not_found', 'Audit not found')}</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">{t('auditReport.not_found_description', "The audit you're looking for doesn't exist.")}</p>
           <button
             onClick={() => navigate('/audits')}
             className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600"
           >
-            Back to Audits
+            {t('auditReport.back_to_audits', 'Back to Audits')}
           </button>
         </div>
       </div>
@@ -217,33 +220,35 @@ const AuditReport: React.FC = () => {
             <div className="flex items-center">
               <button
                 onClick={() => navigate(`/audits/${id}`)}
-                className="mr-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="ltr:mr-4 rtl:ml-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
-                <ArrowLeft className="h-5 w-5" />
+                <DirectionalIcon>
+                  <ArrowLeft className="h-5 w-5" />
+                </DirectionalIcon>
               </button>
               <div>
                 <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Audit Report - {auditData.reference_number}
+                  {t('auditReport.title', 'Audit Report')} - {auditData.reference_number}
                 </h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {auditData.title}
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center ltr:space-x-3 rtl:space-x-reverse rtl:gap-3">
               <button
                 onClick={generatePDFReport}
                 className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 flex items-center gap-2"
               >
                 <Download className="h-4 w-4" />
-                PDF Report
+                {t('auditReport.pdf_report', 'PDF Report')}
               </button>
               <button
                 onClick={generateExcelReport}
                 className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 flex items-center gap-2"
               >
                 <Download className="h-4 w-4" />
-                Excel Report
+                {t('auditReport.excel_report', 'Excel Report')}
               </button>
             </div>
           </div>
@@ -253,12 +258,12 @@ const AuditReport: React.FC = () => {
       {/* Tab Navigation */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8">
+          <nav className="flex ltr:space-x-8 rtl:space-x-reverse rtl:gap-8">
             {[
-              { id: 'overview', label: 'Overview', icon: BarChart3 },
-              { id: 'tasks', label: 'Tasks', icon: CheckCircle },
-              { id: 'findings', label: 'Findings', icon: AlertCircle },
-              { id: 'analysis', label: 'Analysis', icon: TrendingUp },
+              { id: 'overview', label: t('auditReport.overview_tab', 'Overview'), icon: BarChart3 },
+              { id: 'tasks', label: t('auditReport.tasks_tab', 'Tasks'), icon: CheckCircle },
+              { id: 'findings', label: t('auditReport.findings_tab', 'Findings'), icon: AlertCircle },
+              { id: 'analysis', label: t('auditReport.analysis_tab', 'Analysis'), icon: TrendingUp },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -283,82 +288,82 @@ const AuditReport: React.FC = () => {
           <div className="space-y-8">
             {/* Executive Summary */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Executive Summary</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">{t('auditReport.executive_summary', 'Executive Summary')}</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">
                     {Math.round(completionRate)}%
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Overall Progress</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">{t('auditReport.overall_progress', 'Overall Progress')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-green-600 dark:text-green-400">
                     {completedTasks}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Completed Tasks</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">{t('auditReport.completed_tasks', 'Completed Tasks')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-red-600 dark:text-red-400">
                     {openFindings}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Open Findings</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">{t('auditReport.open_findings', 'Open Findings')}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
                     {criticalFindings + highFindings}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">High/Critical Issues</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">{t('auditReport.high_critical_issues', 'High/Critical Issues')}</div>
                 </div>
               </div>
             </div>
 
             {/* Audit Information */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Audit Information</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">{t('auditReport.audit_information', 'Audit Information')}</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Reference Number</div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('auditReport.reference_number', 'Reference Number')}</div>
                     <div className="text-lg text-gray-900 dark:text-white">{auditData.reference_number}</div>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Type</div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('auditReport.type', 'Type')}</div>
                     <div className="text-lg text-gray-900 dark:text-white capitalize">{auditData.audit_type}</div>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('auditReport.status', 'Status')}</div>
                     <div className="text-lg text-gray-900 dark:text-white">{auditData.status}</div>
                   </div>
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Period</div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('auditReport.period', 'Period')}</div>
                     <div className="text-lg text-gray-900 dark:text-white">
                       {new Date(auditData.period_from).toLocaleDateString()} - {new Date(auditData.period_to).toLocaleDateString()}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Created</div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('auditReport.created', 'Created')}</div>
                     <div className="text-lg text-gray-900 dark:text-white">
                       {new Date(auditData.created_at).toLocaleDateString()}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Team Size</div>
-                    <div className="text-lg text-gray-900 dark:text-white">{auditData.assigned_users.length} members</div>
+                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('auditReport.team_size', 'Team Size')}</div>
+                    <div className="text-lg text-gray-900 dark:text-white">{auditData.assigned_users.length} {t('auditReport.members', 'members')}</div>
                   </div>
                 </div>
               </div>
 
               <div className="mt-6 space-y-4">
                 <div>
-                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Scope</div>
+                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('auditReport.scope', 'Scope')}</div>
                   <div className="text-gray-900 dark:text-white mt-1">{auditData.scope}</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Objectives</div>
+                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('auditReport.objectives', 'Objectives')}</div>
                   <div className="text-gray-900 dark:text-white mt-1">{auditData.objectives}</div>
                 </div>
               </div>
@@ -370,24 +375,24 @@ const AuditReport: React.FC = () => {
         {activeTab === 'tasks' && (
           <div className="space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Task Summary</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">{t('auditReport.task_summary', 'Task Summary')}</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                   <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{totalTasks}</div>
-                  <div className="text-sm text-blue-600 dark:text-blue-400">Total Tasks</div>
+                  <div className="text-sm text-blue-600 dark:text-blue-400">{t('auditReport.total_tasks', 'Total Tasks')}</div>
                 </div>
                 <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">{completedTasks}</div>
-                  <div className="text-sm text-green-600 dark:text-green-400">Completed</div>
+                  <div className="text-sm text-green-600 dark:text-green-400">{t('auditReport.completed', 'Completed')}</div>
                 </div>
                 <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
                   <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{inProgressTasks}</div>
-                  <div className="text-sm text-yellow-600 dark:text-yellow-400">In Progress</div>
+                  <div className="text-sm text-yellow-600 dark:text-yellow-400">{t('auditReport.in_progress', 'In Progress')}</div>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                   <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">{pendingTasks}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Pending</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">{t('auditReport.pending', 'Pending')}</div>
                 </div>
               </div>
 
@@ -395,12 +400,12 @@ const AuditReport: React.FC = () => {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-gray-200 dark:border-gray-700">
-                      <th className="text-left py-3 text-gray-900 dark:text-white">Task</th>
-                      <th className="text-left py-3 text-gray-900 dark:text-white">Priority</th>
-                      <th className="text-left py-3 text-gray-900 dark:text-white">Status</th>
-                      <th className="text-left py-3 text-gray-900 dark:text-white">Progress</th>
-                      <th className="text-left py-3 text-gray-900 dark:text-white">Assigned To</th>
-                      <th className="text-left py-3 text-gray-900 dark:text-white">Due Date</th>
+                      <th className="text-left py-3 text-gray-900 dark:text-white">{t('auditReport.task', 'Task')}</th>
+                      <th className="text-left py-3 text-gray-900 dark:text-white">{t('auditReport.priority', 'Priority')}</th>
+                      <th className="text-left py-3 text-gray-900 dark:text-white">{t('auditReport.status', 'Status')}</th>
+                      <th className="text-left py-3 text-gray-900 dark:text-white">{t('auditReport.progress', 'Progress')}</th>
+                      <th className="text-left py-3 text-gray-900 dark:text-white">{t('auditReport.assigned_to', 'Assigned To')}</th>
+                      <th className="text-left py-3 text-gray-900 dark:text-white">{t('auditReport.due_date', 'Due Date')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -434,10 +439,10 @@ const AuditReport: React.FC = () => {
                           </div>
                         </td>
                         <td className="py-3 text-gray-600 dark:text-gray-400">
-                          {task.assigned_to_name || 'Unassigned'}
+                          {task.assigned_to_name || t('auditReport.unassigned', 'Unassigned')}
                         </td>
                         <td className="py-3 text-gray-600 dark:text-gray-400">
-                          {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date'}
+                          {task.due_date ? new Date(task.due_date).toLocaleDateString() : t('auditReport.no_due_date', 'No due date')}
                         </td>
                       </tr>
                     ))}
@@ -452,24 +457,24 @@ const AuditReport: React.FC = () => {
         {activeTab === 'findings' && (
           <div className="space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Findings Summary</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">{t('auditReport.findings_summary', 'Findings Summary')}</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
                   <div className="text-2xl font-bold text-red-600 dark:text-red-400">{criticalFindings}</div>
-                  <div className="text-sm text-red-600 dark:text-red-400">Critical</div>
+                  <div className="text-sm text-red-600 dark:text-red-400">{t('auditReport.critical', 'Critical')}</div>
                 </div>
                 <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
                   <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{highFindings}</div>
-                  <div className="text-sm text-orange-600 dark:text-orange-400">High</div>
+                  <div className="text-sm text-orange-600 dark:text-orange-400">{t('auditReport.high', 'High')}</div>
                 </div>
                 <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                   <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{totalFindings}</div>
-                  <div className="text-sm text-blue-600 dark:text-blue-400">Total Findings</div>
+                  <div className="text-sm text-blue-600 dark:text-blue-400">{t('auditReport.total_findings', 'Total Findings')}</div>
                 </div>
                 <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
                   <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{openFindings}</div>
-                  <div className="text-sm text-yellow-600 dark:text-yellow-400">Open</div>
+                  <div className="text-sm text-yellow-600 dark:text-yellow-400">{t('auditReport.open', 'Open')}</div>
                 </div>
               </div>
 
@@ -505,7 +510,7 @@ const AuditReport: React.FC = () => {
               ) : (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No findings recorded for this audit.</p>
+                  <p>{t('auditReport.no_findings', 'No findings recorded for this audit.')}</p>
                 </div>
               )}
             </div>
@@ -516,11 +521,11 @@ const AuditReport: React.FC = () => {
         {activeTab === 'analysis' && (
           <div className="space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Risk Analysis</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">{t('auditReport.risk_analysis', 'Risk Analysis')}</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-4">Task Risk Distribution</h3>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-4">{t('auditReport.task_risk_distribution', 'Task Risk Distribution')}</h3>
                   <div className="space-y-3">
                     {['critical', 'high', 'medium', 'low'].map((risk) => {
                       const count = tasks.filter(t => t.risk_level === risk).length;
@@ -548,14 +553,14 @@ const AuditReport: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-4">Control Areas</h3>
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-4">{t('auditReport.control_areas', 'Control Areas')}</h3>
                   <div className="space-y-2">
                     {Array.from(new Set(tasks.map(t => t.control_area || 'General'))).map((area) => {
                       const count = tasks.filter(t => (t.control_area || 'General') === area).length;
                       return (
                         <div key={area} className="flex items-center justify-between text-sm">
                           <span className="text-gray-700 dark:text-gray-300">{area}</span>
-                          <span className="text-gray-600 dark:text-gray-400">{count} tasks</span>
+                          <span className="text-gray-600 dark:text-gray-400">{count} {t('auditReport.tasks', 'tasks')}</span>
                         </div>
                       );
                     })}
@@ -565,28 +570,28 @@ const AuditReport: React.FC = () => {
             </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Recommendations</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">{t('auditReport.recommendations', 'Recommendations')}</h2>
               
               <div className="space-y-4">
                 {completionRate < 50 && (
-                  <div className="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                    <Clock className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mt-0.5" />
-                    <div>
-                      <div className="font-medium text-yellow-800 dark:text-yellow-300">Low Completion Rate</div>
-                      <div className="text-sm text-yellow-700 dark:text-yellow-400">
-                        Consider reviewing task assignments and deadlines to improve completion rate.
+                                      <div className="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                      <Clock className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mt-0.5" />
+                      <div>
+                        <div className="font-medium text-yellow-800 dark:text-yellow-300">{t('auditReport.low_completion_rate', 'Low Completion Rate')}</div>
+                        <div className="text-sm text-yellow-700 dark:text-yellow-400">
+                          {t('auditReport.low_completion_suggestion', 'Consider reviewing task assignments and deadlines to improve completion rate.')}
+                        </div>
                       </div>
                     </div>
-                  </div>
                 )}
                 
                 {criticalFindings > 0 && (
                   <div className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
                     <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mt-0.5" />
                     <div>
-                      <div className="font-medium text-red-800 dark:text-red-300">Critical Findings Detected</div>
+                      <div className="font-medium text-red-800 dark:text-red-300">{t('auditReport.critical_findings_detected', 'Critical Findings Detected')}</div>
                       <div className="text-sm text-red-700 dark:text-red-400">
-                        Immediate attention required for {criticalFindings} critical finding(s).
+{t('auditReport.critical_findings_attention', 'Immediate attention required for')} {criticalFindings} {t('auditReport.critical_findings', 'critical finding(s).')}
                       </div>
                     </div>
                   </div>
@@ -596,9 +601,9 @@ const AuditReport: React.FC = () => {
                   <div className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                     <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5" />
                     <div>
-                      <div className="font-medium text-green-800 dark:text-green-300">All Findings Addressed</div>
+                      <div className="font-medium text-green-800 dark:text-green-300">{t('auditReport.all_findings_addressed', 'All Findings Addressed')}</div>
                       <div className="text-sm text-green-700 dark:text-green-400">
-                        Excellent work! All identified findings have been resolved.
+                        {t('auditReport.excellent_work', 'Excellent work! All identified findings have been resolved.')}
                       </div>
                     </div>
                   </div>
@@ -608,9 +613,9 @@ const AuditReport: React.FC = () => {
                   <div className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                     <Star className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5" />
                     <div>
-                      <div className="font-medium text-green-800 dark:text-green-300">Audit Complete</div>
+                      <div className="font-medium text-green-800 dark:text-green-300">{t('auditReport.audit_complete', 'Audit Complete')}</div>
                       <div className="text-sm text-green-700 dark:text-green-400">
-                        All audit tasks have been completed. Ready for final review.
+                        {t('auditReport.ready_for_review', 'All audit tasks have been completed. Ready for final review.')}
                       </div>
                     </div>
                   </div>
@@ -620,9 +625,9 @@ const AuditReport: React.FC = () => {
                   <div className="flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <Target className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
                     <div>
-                      <div className="font-medium text-blue-800 dark:text-blue-300">No Tasks Created</div>
+                      <div className="font-medium text-blue-800 dark:text-blue-300">{t('auditReport.no_tasks_created', 'No Tasks Created')}</div>
                       <div className="text-sm text-blue-700 dark:text-blue-400">
-                        Consider creating audit tasks using checklist templates to structure the audit process.
+                        {t('auditReport.consider_creating_tasks', 'Consider creating audit tasks using checklist templates to structure the audit process.')}
                       </div>
                     </div>
                   </div>

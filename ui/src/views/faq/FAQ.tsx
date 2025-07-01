@@ -6,6 +6,7 @@ import { setFAQItems, setFAQCategories, deleteFAQItem } from '@src/slices/faq/re
 import { mockFAQItems, mockFAQCategories } from '@src/data/faq/mock_data';
 import { FAQItem, FAQCategory } from '@src/dtos/apps/faq';
 import AddEditFAQModal from './AddEditFAQModal';
+import useTranslation from '@src/hooks/useTranslation';
 
 const FAQ = () => {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ const FAQ = () => {
   const [selectedFAQ, setSelectedFAQ] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFAQ, setEditingFAQ] = useState<FAQItem | undefined>(undefined);
+  const { t, isRTL } = useTranslation();
 
   useEffect(() => {
     // Initialize with mock data
@@ -31,7 +33,7 @@ const FAQ = () => {
   };
 
   const handleDeleteFAQ = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this FAQ?')) {
+    if (window.confirm(t('faq.delete_confirm'))) {
       dispatch(deleteFAQItem(id));
     }
   };
@@ -45,16 +47,20 @@ const FAQ = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">FAQ</h1>
+        <h1 className="text-3xl font-bold">{t('faq.title')}</h1>
         <button
           onClick={handleAddFAQ}
           className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600"
         >
-          Add FAQ
+          {t('faq.add_faq')}
         </button>
       </div>
+
+      <p className="text-gray-600 dark:text-gray-400 mb-8">
+        {t('faq.description')}
+      </p>
 
       <div className="space-y-8">
         {categories.map((category: FAQCategory) => (
@@ -70,26 +76,28 @@ const FAQ = () => {
                 >
                   <div className="flex justify-between items-start">
                     <button
-                      className="flex-1 flex items-center justify-between text-left"
+                      className="flex-1 flex items-center justify-between text-start"
                       onClick={() => toggleFAQ(faq.id)}
                     >
                       <h3 className="text-lg font-semibold">{faq.question}</h3>
                       {selectedFAQ === faq.id ? (
-                        <ChevronUp className="h-5 w-5" />
+                        <ChevronUp className={`h-5 w-5 ${isRTL ? 'transform rotate-180' : ''}`} />
                       ) : (
-                        <ChevronDown className="h-5 w-5" />
+                        <ChevronDown className={`h-5 w-5 ${isRTL ? 'transform rotate-180' : ''}`} />
                       )}
                     </button>
-                    <div className="flex space-x-2 ml-4">
+                    <div className={`flex space-x-2 ${isRTL ? 'space-x-reverse mr-4' : 'ml-4'}`}>
                       <button
                         onClick={() => handleEditFAQ(faq)}
                         className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        title={t('faq.actions.edit')}
                       >
                         <Edit2 className="h-5 w-5" />
                       </button>
                       <button
                         onClick={() => handleDeleteFAQ(faq.id)}
                         className="text-red-500 hover:text-red-700"
+                        title={t('faq.actions.delete')}
                       >
                         <Trash2 className="h-5 w-5" />
                       </button>
@@ -106,6 +114,12 @@ const FAQ = () => {
           </div>
         ))}
       </div>
+
+      {categories.length === 0 || faqs.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500 dark:text-gray-400">{t('faq.no_faqs')}</p>
+        </div>
+      )}
 
       <AddEditFAQModal
         isOpen={isModalOpen}

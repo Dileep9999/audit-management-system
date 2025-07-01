@@ -5,13 +5,14 @@ import { workflowService, Workflow, WorkflowStatus } from '../../utils/workflow_
 import { toast } from 'react-toastify';
 import Popup from '../../components/shared/Popup';
 import { AxiosError } from 'axios';
+import useTranslation from '../../hooks/useTranslation';
 
 const PAGE_SIZE = 10;
 
 const statusIcons = {
   draft: <FileEdit className="h-4 w-4 text-gray-500" />,
   active: <CheckCircle2 className="h-4 w-4 text-green-500" />,
-  archived: <Archive className="h-4 w-4 text-gray-500" />
+  inactive: <Archive className="h-4 w-4 text-gray-500" />
 };
 
 const statusLabels = {
@@ -22,6 +23,7 @@ const statusLabels = {
 
 const WorkflowList = () => {
   const navigate = useNavigate();
+  const { t, isRTL } = useTranslation();
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -46,9 +48,9 @@ const WorkflowList = () => {
     } catch (error) {
       console.error('Error loading workflows:', error);
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.detail || 'Failed to load workflows');
+        toast.error(error.response?.data?.detail || t('workflows.messages.load_error'));
       } else {
-        toast.error('Failed to load workflows');
+        toast.error(t('workflows.messages.load_error'));
       }
       setWorkflows([]);
     } finally {
@@ -63,7 +65,7 @@ const WorkflowList = () => {
       setIsLoading(true);
       await workflowService.deleteWorkflow(selectedWorkflow.id);
       setWorkflows(prevWorkflows => prevWorkflows.filter(w => w.id !== selectedWorkflow.id));
-      toast.success('Workflow deleted successfully');
+      toast.success(t('workflows.messages.delete_success'));
       setShowDeleteModal(false);
       setSelectedWorkflow(null);
       
@@ -76,9 +78,9 @@ const WorkflowList = () => {
     } catch (error) {
       console.error('Error deleting workflow:', error);
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.detail || 'Failed to delete workflow');
+        toast.error(error.response?.data?.detail || t('workflows.messages.delete_error'));
       } else {
-        toast.error('Failed to delete workflow');
+        toast.error(t('workflows.messages.delete_error'));
       }
     } finally {
       setIsLoading(false);
@@ -89,14 +91,14 @@ const WorkflowList = () => {
     try {
       setIsLoading(true);
       await workflowService.duplicateWorkflow(workflow.id);
-      toast.success('Workflow duplicated successfully');
-      loadWorkflows(); // Reload to get the new workflow
+      toast.success(t('workflows.messages.duplicate_success'));
+      loadWorkflows();
     } catch (error) {
       console.error('Error duplicating workflow:', error);
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.detail || 'Failed to duplicate workflow');
+        toast.error(error.response?.data?.detail || t('workflows.messages.duplicate_error'));
       } else {
-        toast.error('Failed to duplicate workflow');
+        toast.error(t('workflows.messages.duplicate_error'));
       }
     } finally {
       setIsLoading(false);
@@ -110,16 +112,16 @@ const WorkflowList = () => {
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
-    <div className="p-4">
+    <div className="p-4" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Workflows</h1>
+        <h1 className="text-2xl font-bold">{t('workflows.title')}</h1>
         <button
           onClick={() => navigate('/admins/workflows/designer')}
           className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 disabled:opacity-50"
           disabled={isLoading}
         >
           <Plus className="h-4 w-4" />
-          <span>Create Workflow</span>
+          <span>{t('workflows.create')}</span>
         </button>
       </div>
 
@@ -129,13 +131,13 @@ const WorkflowList = () => {
         </div>
       ) : workflows.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64">
-          <p className="text-gray-500 mb-4">No workflows found</p>
+          <p className="text-gray-500 mb-4">{t('workflows.no_workflows')}</p>
           <button
             onClick={() => navigate('/admins/workflows/designer')}
             className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
           >
             <Plus className="h-4 w-4" />
-            <span>Create your first workflow</span>
+            <span>{t('workflows.create_first')}</span>
           </button>
         </div>
       ) : (
@@ -152,13 +154,15 @@ const WorkflowList = () => {
                       {workflow.name}
                       {statusIcons[workflow.status]}
                     </h3>
-                    <div className="text-sm text-gray-500">v{workflow.version}</div>
+                    <div className="text-sm text-gray-500">
+                      {t('workflows.list.version')} {workflow.version}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleDuplicate(workflow)}
                       className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded disabled:opacity-50"
-                      title="Duplicate"
+                      title={t('workflows.actions.duplicate')}
                       disabled={isLoading}
                     >
                       <Copy className="h-4 w-4 text-gray-500" />
@@ -166,7 +170,7 @@ const WorkflowList = () => {
                     <button
                       onClick={() => handleEdit(workflow)}
                       className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded disabled:opacity-50"
-                      title="Edit"
+                      title={t('workflows.actions.edit')}
                       disabled={isLoading}
                     >
                       <Edit2 className="h-4 w-4 text-gray-500" />
@@ -177,7 +181,7 @@ const WorkflowList = () => {
                         setShowDeleteModal(true);
                       }}
                       className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded disabled:opacity-50"
-                      title="Delete"
+                      title={t('workflows.actions.delete')}
                       disabled={isLoading || workflow.status === 'active'}
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
@@ -190,24 +194,24 @@ const WorkflowList = () => {
                   </p>
                 )}
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  Created by: {workflow.created_by_name}
+                  {t('workflows.list.created_by')}: {workflow.created_by_name}
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Created: {new Date(workflow.created_at).toLocaleDateString()}
+                  {t('workflows.list.created_at')}: {new Date(workflow.created_at).toLocaleDateString()}
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Last modified: {new Date(workflow.updated_at).toLocaleDateString()}
+                  {t('workflows.list.last_modified')}: {new Date(workflow.updated_at).toLocaleDateString()}
                 </div>
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  Nodes: {workflow.data.nodes.length} | Connections: {workflow.data.edges.length}
+                  {t('workflows.list.nodes')}: {workflow.data.nodes.length} | {t('workflows.list.connections')}: {workflow.data.edges.length}
                 </div>
                 <div className="mt-2 text-sm">
                   <span className={`px-2 py-1 rounded-full ${
                     workflow.status === 'active' ? 'bg-green-100 text-green-800' :
-                    workflow.status === 'archived' ? 'bg-gray-100 text-gray-800' :
+                    workflow.status === 'inactive' ? 'bg-gray-100 text-gray-800' :
                     'bg-yellow-100 text-yellow-800'
                   }`}>
-                    {statusLabels[workflow.status]}
+                    {workflow.status}
                   </span>
                 </div>
               </div>
@@ -221,17 +225,17 @@ const WorkflowList = () => {
                 disabled={currentPage === 1 || isLoading}
                 className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
               >
-                Previous
+                {isRTL ? t('common.next') : t('common.previous')}
               </button>
               <span className="px-3 py-1">
-                Page {currentPage} of {totalPages}
+                {t('common.page_of')} {currentPage} {t('common.of')} {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages || isLoading}
                 className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
               >
-                Next
+                {isRTL ? t('common.previous') : t('common.next')}
               </button>
             </div>
           )}
@@ -244,36 +248,31 @@ const WorkflowList = () => {
           setShowDeleteModal(false);
           setSelectedWorkflow(null);
         }}
-        title="Delete Workflow"
+        title={t('workflows.actions.delete')}
         size="modal-sm"
         position="modal-center"
         contentClass="space-y-4"
-        footer={
-          <>
-            <button
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
-              onClick={() => {
-                setShowDeleteModal(false);
-                setSelectedWorkflow(null);
-              }}
-              disabled={isLoading}
-            >
-              Cancel
-            </button>
-            <button
-              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:opacity-50"
-              onClick={handleDelete}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Deleting...' : 'Delete'}
-            </button>
-          </>
-        }
       >
-        <p>
-          Are you sure you want to delete the workflow "{selectedWorkflow?.name}"?
-          This action cannot be undone.
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {t('common.confirm_delete')}
         </p>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={() => {
+              setShowDeleteModal(false);
+              setSelectedWorkflow(null);
+            }}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+          >
+            {t('common.cancel')}
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md shadow-sm hover:bg-red-700"
+          >
+            {t('workflows.actions.delete')}
+          </button>
+        </div>
       </Popup>
     </div>
   );

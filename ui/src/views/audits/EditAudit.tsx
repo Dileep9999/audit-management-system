@@ -6,6 +6,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { getAudit, updateAudit, getUsers, getWorkflows, getAvailableTransitions, transitionAuditStatus } from '../../utils/api_service';
 import { X, ArrowRight } from 'lucide-react';
+import useTranslation from '../../hooks/useTranslation';
 
 type AuditType = 'internal' | 'external' | 'compliance' | 'financial' | 'operational' | 'it' | 'performance';
 
@@ -133,6 +134,7 @@ export default function EditAudit() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -202,7 +204,7 @@ export default function EditAudit() {
       }
     } catch (error: any) {
       console.error('Error loading data:', error);
-      toast.error('Failed to load audit data');
+      toast.error(t('audits.errors.load_failed', 'Failed to load audit data'));
       navigate('/audits');
     } finally {
       setIsLoadingData(false);
@@ -267,7 +269,7 @@ export default function EditAudit() {
     
     setIsLoading(true);
     try {
-      console.log('Updating audit data:', {
+      console.log(t('audits.logs.updating_data', 'Updating audit data:'), {
         ...data,
         assigned_users: selectedUsers.map(u => u.id),
         custom_audit_type: null
@@ -282,18 +284,18 @@ export default function EditAudit() {
       });
       
       console.log('Audit updated successfully:', result);
-      toast.success('Audit updated successfully');
+      toast.success(t('audits.messages.update_success', 'Audit updated successfully'));
       navigate('/audits');
     } catch (error: any) {
       console.error('Error updating audit:', error);
       
-      let errorMessage = 'Failed to update audit';
+      let errorMessage = t('audits.errors.update_failed', 'Failed to update audit');
       if (error?.response?.data?.detail) {
-        errorMessage = error.response.data.detail;
+        errorMessage = t('audits.errors.server_detail', error.response.data.detail);
       } else if (error?.response?.data?.message) {
-        errorMessage = error.response.data.message;
+        errorMessage = t('audits.errors.server_message', error.response.data.message);
       } else if (error?.message) {
-        errorMessage = error.message;
+        errorMessage = t('audits.errors.general', error.message);
       }
       
       toast.error(errorMessage);
@@ -305,7 +307,7 @@ export default function EditAudit() {
   if (isLoadingData) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">{t('common.loading', 'Loading...')}</div>
       </div>
     );
   }
@@ -313,7 +315,7 @@ export default function EditAudit() {
   if (!auditData) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="text-lg text-red-600">Audit not found</div>
+        <div className="text-lg text-red-600">{t('audits.errors.not_found', 'Audit not found')}</div>
       </div>
     );
   }
@@ -334,9 +336,9 @@ export default function EditAudit() {
                 <X className="h-5 w-5" />
               </button>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Edit Audit</h1>
+                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{t('audits.edit.title', 'Edit Audit')}</h1>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Reference: {auditData.id} | Workflow: {auditData.workflow_name || 'No Workflow'}
+                  {t('audits.edit.reference', 'Reference')}: {auditData.id} | {t('audits.edit.workflow', 'Workflow')}: {auditData.workflow_name || t('audits.edit.no_workflow', 'No Workflow')}
                 </p>
               </div>
             </div>
@@ -352,14 +354,14 @@ export default function EditAudit() {
         <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Status</h3>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('audits.edit.current_status', 'Current Status')}</h3>
               <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${statusStyling.bgColor} ${statusStyling.textColor}`}>
-                {auditData.status}
+                {t(`audits.status.${auditData.status.toLowerCase()}`, auditData.status)}
               </span>
             </div>
             {availableTransitions.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Available Transitions</h3>
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('audits.edit.available_transitions', 'Available Transitions')}</h3>
                 <div className="flex gap-2">
                   {availableTransitions.map((transition) => (
                     <button
@@ -369,7 +371,7 @@ export default function EditAudit() {
                       className="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <ArrowRight className="w-3 h-3 mr-1" />
-                      {transition}
+                      {t(`audits.transitions.${transition.toLowerCase()}`, transition)}
                     </button>
                   ))}
                 </div>
@@ -382,13 +384,13 @@ export default function EditAudit() {
           {/* Title - Full Width */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Audit Title *
+              {t('audits.form.title.label', 'Audit Title')} *
             </label>
             <input
               type="text"
-              {...register('title', { required: 'Title is required' })}
+              {...register('title', { required: t('audits.form.title.required', 'Title is required') })}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-lg"
-              placeholder="Enter a descriptive audit title"
+              placeholder={t('audits.form.title.placeholder', 'Enter a descriptive audit title')}
             />
             {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
           </div>
@@ -398,16 +400,16 @@ export default function EditAudit() {
             {/* Audit Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Audit Type *
+                {t('audits.form.type.label', 'Audit Type')} *
               </label>
               <select
-                {...register('audit_type', { required: 'Audit type is required' })}
+                {...register('audit_type', { required: t('audits.form.type.required', 'Audit type is required') })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
-                <option value="">Select audit type</option>
+                <option value="">{t('audits.form.type.placeholder', 'Select audit type')}</option>
                 {AUDIT_TYPE_CONFIGS.map((type) => (
                   <option key={type.id} value={type.id}>
-                    {type.display}
+                    {t(`audits.types.${type.id}`, type.display)}
                   </option>
                 ))}
               </select>
@@ -417,19 +419,19 @@ export default function EditAudit() {
             {/* Workflow */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Workflow *
+                {t('audits.form.workflow.label', 'Workflow')} *
               </label>
               <select
                 {...register('workflow', { 
-                  required: 'Workflow is required',
+                  required: t('audits.form.workflow.required', 'Workflow is required'),
                   valueAsNumber: true 
                 })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
-                <option value="">Select workflow</option>
+                <option value="">{t('audits.form.workflow.placeholder', 'Select workflow')}</option>
                 {workflows.filter(w => w.status === 'active').map((workflow) => (
                   <option key={workflow.id} value={workflow.id}>
-                    {workflow.name} ✓
+                    {workflow.name} {t('audits.form.workflow.active', '✓')}
                   </option>
                 ))}
               </select>
@@ -442,11 +444,11 @@ export default function EditAudit() {
             {/* Period From */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Period From *
+                {t('audits.form.period_from.label', 'Period From')} *
               </label>
               <input
                 type="date"
-                {...register('period_from', { required: 'Start date is required' })}
+                {...register('period_from', { required: t('audits.form.period_from.required', 'Start date is required') })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
               {errors.period_from && <p className="mt-1 text-sm text-red-600">{errors.period_from.message}</p>}
@@ -455,11 +457,11 @@ export default function EditAudit() {
             {/* Period To */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Period To *
+                {t('audits.form.period_to.label', 'Period To')} *
               </label>
               <input
                 type="date"
-                {...register('period_to', { required: 'End date is required' })}
+                {...register('period_to', { required: t('audits.form.period_to.required', 'End date is required') })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
               {errors.period_to && <p className="mt-1 text-sm text-red-600">{errors.period_to.message}</p>}
@@ -471,13 +473,13 @@ export default function EditAudit() {
             {/* Scope */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Audit Scope *
+                {t('audits.form.scope.label', 'Audit Scope')} *
               </label>
               <textarea
-                {...register('scope', { required: 'Scope is required' })}
+                {...register('scope', { required: t('audits.form.scope.required', 'Scope is required') })}
                 rows={6}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white resize-none"
-                placeholder="Define the scope and boundaries of this audit. Include areas, processes, systems, or departments to be covered..."
+                placeholder={t('audits.form.scope.placeholder', 'Define the scope and boundaries of this audit. Include areas, processes, systems, or departments to be covered...')}
               />
               {errors.scope && <p className="mt-1 text-sm text-red-600">{errors.scope.message}</p>}
             </div>
@@ -485,12 +487,12 @@ export default function EditAudit() {
             {/* Objectives - Rich Text Editor */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Audit Objectives *
+                {t('audits.form.objectives.label', 'Audit Objectives')} *
               </label>
               <Controller
                 name="objectives"
                 control={control}
-                rules={{ required: 'Objectives are required' }}
+                rules={{ required: t('audits.form.objectives.required', 'Objectives are required') }}
                 render={({ field }) => (
                   <div className="min-h-[156px] border border-gray-300 rounded-md dark:border-gray-600">
                     <ReactQuill
@@ -499,7 +501,7 @@ export default function EditAudit() {
                       onChange={field.onChange}
                       modules={quillModules}
                       formats={quillFormats}
-                      placeholder="Describe the main objectives and expected outcomes of this audit..."
+                      placeholder={t('audits.form.objectives.placeholder', 'Describe the main objectives and expected outcomes of this audit...')}
                       className="h-[126px] dark:text-white"
                     />
                   </div>
@@ -512,7 +514,7 @@ export default function EditAudit() {
           {/* Assign Users */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Assign Users
+              {t('audits.form.assign_users.label', 'Assign Users')}
             </label>
             
             {/* Search Input with Autocomplete */}
@@ -522,7 +524,7 @@ export default function EditAudit() {
                 value={userSearchTerm}
                 onChange={handleUserSearchChange}
                 onFocus={() => setShowUserDropdown(true)}
-                placeholder="Search users by name, email, or username..."
+                placeholder={t('audits.form.assign_users.search_placeholder', 'Search users by name, email, or username...')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
               
@@ -551,7 +553,7 @@ export default function EditAudit() {
             {selectedUsers.length > 0 && (
               <div className="mb-4">
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Selected Users ({selectedUsers.length})
+                  {t('audits.form.assign_users.selected_label', 'Selected Users')} ({selectedUsers.length})
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedUsers.map((user) => (
@@ -564,6 +566,7 @@ export default function EditAudit() {
                         type="button"
                         onClick={() => handleUserRemove(user.id)}
                         className="ml-2 text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-200"
+                        aria-label={t('audits.form.assign_users.remove_user', 'Remove user')}
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -581,14 +584,14 @@ export default function EditAudit() {
               onClick={() => navigate('/audits')}
               className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
             >
-              Cancel
+              {t('common.cancel', 'Cancel')}
             </button>
             <button
               type="submit"
               disabled={isLoading}
               className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Updating...' : 'Update Audit'}
+              {isLoading ? t('audits.form.updating', 'Updating...') : t('audits.actions.update', 'Update Audit')}
             </button>
           </div>
         </form>

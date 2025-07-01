@@ -1,0 +1,490 @@
+/* RTL (Right-to-Left) Support for Arabic Language */
+
+/* HTML Direction */
+html[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] body {
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Flexbox RTL adjustments */
+html[dir="rtl"] .flex {
+  direction: rtl;
+}
+
+html[dir="rtl"] .flex-row-reverse {
+  flex-direction: row;
+}
+
+html[dir="rtl"] .flex-row {
+  flex-direction: row-reverse;
+}
+
+/* Text alignment */
+html[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+html[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+/* Margins and padding */
+html[dir="rtl"] .ml-1 { margin-right: 0.25rem; margin-left: 0; }
+html[dir="rtl"] .ml-2 { margin-right: 0.5rem; margin-left: 0; }
+html[dir="rtl"] .ml-3 { margin-right: 0.75rem; margin-left: 0; }
+html[dir="rtl"] .ml-4 { margin-right: 1rem; margin-left: 0; }
+html[dir="rtl"] .ml-5 { margin-right: 1.25rem; margin-left: 0; }
+html[dir="rtl"] .ml-6 { margin-right: 1.5rem; margin-left: 0; }
+
+html[dir="rtl"] .mr-1 { margin-left: 0.25rem; margin-right: 0; }
+html[dir="rtl"] .mr-2 { margin-left: 0.5rem; margin-right: 0; }
+html[dir="rtl"] .mr-3 { margin-left: 0.75rem; margin-right: 0; }
+html[dir="rtl"] .mr-4 { margin-left: 1rem; margin-right: 0; }
+html[dir="rtl"] .mr-5 { margin-left: 1.25rem; margin-right: 0; }
+html[dir="rtl"] .mr-6 { margin-left: 1.5rem; margin-right: 0; }
+
+html[dir="rtl"] .pl-1 { padding-right: 0.25rem; padding-left: 0; }
+html[dir="rtl"] .pl-2 { padding-right: 0.5rem; padding-left: 0; }
+html[dir="rtl"] .pl-3 { padding-right: 0.75rem; padding-left: 0; }
+html[dir="rtl"] .pl-4 { padding-right: 1rem; padding-left: 0; }
+html[dir="rtl"] .pl-5 { padding-right: 1.25rem; padding-left: 0; }
+html[dir="rtl"] .pl-6 { padding-right: 1.5rem; padding-left: 0; }
+
+html[dir="rtl"] .pr-1 { padding-left: 0.25rem; padding-right: 0; }
+html[dir="rtl"] .pr-2 { padding-left: 0.5rem; padding-right: 0; }
+html[dir="rtl"] .pr-3 { padding-left: 0.75rem; padding-right: 0; }
+html[dir="rtl"] .pr-4 { padding-left: 1rem; padding-right: 0; }
+html[dir="rtl"] .pr-5 { padding-left: 1.25rem; padding-right: 0; }
+html[dir="rtl"] .pr-6 { padding-left: 1.5rem; padding-right: 0; }
+
+/* Borders */
+html[dir="rtl"] .border-l { border-right: 1px solid; border-left: none; }
+html[dir="rtl"] .border-r { border-left: 1px solid; border-right: none; }
+html[dir="rtl"] .border-l-2 { border-right: 2px solid; border-left: none; }
+html[dir="rtl"] .border-r-2 { border-left: 2px solid; border-right: none; }
+
+/* Rounded corners */
+html[dir="rtl"] .rounded-l { border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+html[dir="rtl"] .rounded-r { border-top-left-radius: 0.25rem; border-bottom-left-radius: 0.25rem; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+html[dir="rtl"] .rounded-tl { border-top-right-radius: 0.25rem; border-top-left-radius: 0; }
+html[dir="rtl"] .rounded-tr { border-top-left-radius: 0.25rem; border-top-right-radius: 0; }
+html[dir="rtl"] .rounded-bl { border-bottom-right-radius: 0.25rem; border-bottom-left-radius: 0; }
+html[dir="rtl"] .rounded-br { border-bottom-left-radius: 0.25rem; border-bottom-right-radius: 0; }
+
+/* Positioning */
+html[dir="rtl"] .left-0 { right: 0; left: auto; }
+html[dir="rtl"] .right-0 { left: 0; right: auto; }
+html[dir="rtl"] .left-1 { right: 0.25rem; left: auto; }
+html[dir="rtl"] .right-1 { left: 0.25rem; right: auto; }
+html[dir="rtl"] .left-2 { right: 0.5rem; left: auto; }
+html[dir="rtl"] .right-2 { left: 0.5rem; right: auto; }
+html[dir="rtl"] .left-3 { right: 0.75rem; left: auto; }
+html[dir="rtl"] .right-3 { left: 0.75rem; right: auto; }
+html[dir="rtl"] .left-4 { right: 1rem; left: auto; }
+html[dir="rtl"] .right-4 { left: 1rem; right: auto; }
+
+/* Transforms */
+html[dir="rtl"] .transform {
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"] .transform svg {
+  transform: scaleX(-1);
+}
+
+/* Chart RTL adjustments */
+html[dir="rtl"] .apexcharts-legend {
+  direction: rtl;
+}
+
+html[dir="rtl"] .apexcharts-legend-text {
+  text-align: right;
+}
+
+html[dir="rtl"] .apexcharts-tooltip {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] .apexcharts-xaxis-label,
+html[dir="rtl"] .apexcharts-yaxis-label {
+  text-anchor: end;
+}
+
+/* Navigation and menus */
+html[dir="rtl"] .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+
+html[dir="rtl"] .dropdown-menu-right {
+  right: auto;
+  left: 0;
+}
+
+/* Icons that should not be flipped */
+html[dir="rtl"] .icon-no-flip {
+  transform: scaleX(-1);
+}
+
+/* Dashboard specific RTL styles */
+html[dir="rtl"] .dashboard-grid {
+  direction: rtl;
+}
+
+html[dir="rtl"] .stat-card {
+  text-align: right;
+}
+
+html[dir="rtl"] .chart-container {
+  direction: rtl;
+}
+
+/* Language selector specific styles */
+html[dir="rtl"] .language-selector {
+  direction: ltr; /* Keep language selector LTR for consistency */
+}
+
+/* Custom spacing for RTL */
+html[dir="rtl"] .space-x-1 > :not([hidden]) ~ :not([hidden]) {
+  margin-right: 0.25rem;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .space-x-3 > :not([hidden]) ~ :not([hidden]) {
+  margin-right: 0.75rem;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+  margin-right: 1rem;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .space-x-6 > :not([hidden]) ~ :not([hidden]) {
+  margin-right: 1.5rem;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .space-x-8 > :not([hidden]) ~ :not([hidden]) {
+  margin-right: 2rem;
+  margin-left: 0;
+}
+
+/* Custom RTL utility classes */
+.rtl-flip {
+  transform: scaleX(-1);
+}
+
+.ltr-content {
+  direction: ltr;
+  text-align: left;
+}
+
+.rtl-content {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Animations for RTL */
+html[dir="rtl"] .slide-in-right {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+html[dir="rtl"] .slide-in-left {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Table RTL support */
+html[dir="rtl"] table {
+  direction: rtl;
+}
+
+html[dir="rtl"] th,
+html[dir="rtl"] td {
+  text-align: right;
+}
+
+html[dir="rtl"] th:first-child,
+html[dir="rtl"] td:first-child {
+  text-align: right;
+}
+
+/* Form RTL support */
+html[dir="rtl"] .form-input,
+html[dir="rtl"] .form-select,
+html[dir="rtl"] .form-textarea {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Audit Management RTL Support */
+
+/* Audit listing page RTL fixes */
+html[dir="rtl"] .audit-table th:first-child,
+html[dir="rtl"] .audit-table td:first-child {
+  text-align: right;
+}
+
+html[dir="rtl"] .audit-actions {
+  direction: ltr; /* Keep action buttons in logical order */
+}
+
+/* Audit details RTL fixes */
+html[dir="rtl"] .audit-sidebar {
+  direction: rtl;
+}
+
+html[dir="rtl"] .audit-sidebar .nav-link {
+  text-align: right;
+}
+
+html[dir="rtl"] .audit-content {
+  direction: rtl;
+}
+
+/* Progress bars RTL support */
+html[dir="rtl"] .progress-bar {
+  direction: ltr; /* Keep progress direction consistent */
+}
+
+/* Status badges RTL support */
+html[dir="rtl"] .status-badge {
+  direction: ltr; /* Keep status text readable */
+}
+
+/* Search inputs RTL fixes */
+html[dir="rtl"] .search-input-container .search-icon {
+  right: 0.75rem;
+  left: auto;
+}
+
+html[dir="rtl"] .search-input-container input {
+  padding-right: 2.5rem;
+  padding-left: 1rem;
+}
+
+/* Dropdown menus RTL fixes */
+html[dir="rtl"] .dropdown-trigger {
+  text-align: right;
+}
+
+html[dir="rtl"] .dropdown-content {
+  right: 0;
+  left: auto;
+}
+
+/* Navigation breadcrumbs RTL fixes */
+html[dir="rtl"] .breadcrumb {
+  direction: rtl;
+}
+
+html[dir="rtl"] .breadcrumb-separator {
+  transform: scaleX(-1);
+}
+
+/* File upload RTL fixes */
+html[dir="rtl"] .file-upload-area {
+  text-align: right;
+}
+
+/* Audit cards RTL fixes */
+html[dir="rtl"] .audit-card {
+  text-align: right;
+}
+
+html[dir="rtl"] .audit-card .card-actions {
+  direction: ltr; /* Keep action buttons in logical order */
+}
+
+/* Modal RTL fixes */
+html[dir="rtl"] .modal-content {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] .modal-header {
+  text-align: right;
+}
+
+html[dir="rtl"] .modal-close {
+  right: auto;
+  left: 1rem;
+}
+
+/* Timeline RTL fixes */
+html[dir="rtl"] .timeline {
+  direction: rtl;
+}
+
+html[dir="rtl"] .timeline-item {
+  text-align: right;
+}
+
+html[dir="rtl"] .timeline-connector {
+  right: 0;
+  left: auto;
+}
+
+/* Data tables RTL fixes */
+html[dir="rtl"] .data-table {
+  direction: rtl;
+}
+
+html[dir="rtl"] .data-table th,
+html[dir="rtl"] .data-table td {
+  text-align: right;
+}
+
+html[dir="rtl"] .data-table .table-actions {
+  direction: ltr; /* Keep action buttons in logical order */
+}
+
+/* Checklist RTL fixes */
+html[dir="rtl"] .checklist-item {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] .checklist-checkbox {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+/* Assignment RTL fixes */
+html[dir="rtl"] .assignment-card {
+  text-align: right;
+}
+
+html[dir="rtl"] .user-avatar-group {
+  direction: ltr; /* Keep avatar stacking consistent */
+}
+
+/* Workflow RTL fixes */
+html[dir="rtl"] .workflow-step {
+  text-align: right;
+}
+
+html[dir="rtl"] .workflow-connector {
+  transform: scaleX(-1);
+}
+
+/* Report RTL fixes */
+html[dir="rtl"] .report-chart {
+  direction: ltr; /* Keep charts readable */
+}
+
+html[dir="rtl"] .report-stats {
+  text-align: right;
+}
+
+/* Specific icon flips for RTL */
+html[dir="rtl"] .icon-arrow-left {
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"] .icon-arrow-right {
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"] .icon-chevron-left {
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"] .icon-chevron-right {
+  transform: scaleX(-1);
+}
+
+/* Sidebar RTL fixes */
+html[dir="rtl"] .audit-details-sidebar {
+  direction: rtl;
+}
+
+html[dir="rtl"] .sidebar-section {
+  text-align: right;
+}
+
+html[dir="rtl"] .sidebar-section .section-title {
+  text-align: right;
+}
+
+/* Navigation tabs RTL fixes */
+html[dir="rtl"] .nav-tabs {
+  direction: rtl;
+}
+
+html[dir="rtl"] .nav-tab {
+  text-align: right;
+}
+
+/* Form fields RTL fixes for audit forms */
+html[dir="rtl"] .audit-form .form-group {
+  text-align: right;
+}
+
+html[dir="rtl"] .audit-form .form-label {
+  text-align: right;
+}
+
+html[dir="rtl"] .audit-form .form-control {
+  text-align: right;
+}
+
+/* Button groups RTL fixes */
+html[dir="rtl"] .button-group {
+  direction: ltr; /* Keep button order logical */
+}
+
+html[dir="rtl"] .button-group.rtl-reverse {
+  direction: rtl; /* Allow override when needed */
+}
+
+/* Comments and notes RTL fixes */
+html[dir="rtl"] .comment-item {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] .comment-meta {
+  text-align: right;
+}
+
+/* Audit metadata RTL fixes */
+html[dir="rtl"] .audit-metadata {
+  text-align: right;
+}
+
+html[dir="rtl"] .metadata-item {
+  text-align: right;
+}
+
+html[dir="rtl"] .metadata-label {
+  text-align: right;
+}

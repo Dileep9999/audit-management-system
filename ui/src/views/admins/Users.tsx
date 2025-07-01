@@ -4,6 +4,7 @@ import Pagination from '../../components/shared/Pagination';
 import { Admin } from '../../models/Admin';
 import Popup from '../../components/shared/Popup';
 import Confirm from '../../components/shared/Confirm';
+import useTranslation from '../../hooks/useTranslation';
 
 const dummyUsers: Admin[] = [
   { id: 1, name: 'Alice Smith', email: 'alice@example.com', group: 'HR', status: 'Active', lastActive: '05-01-2024 14:23' },
@@ -28,6 +29,7 @@ const emptyUser: Admin = {
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
 
 const Users = () => {
+  const { t, isRTL } = useTranslation();
   const [users, setUsers] = useState<Admin[]>(dummyUsers);
   const [editUser, setEditUser] = useState<Admin | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -153,8 +155,8 @@ const Users = () => {
   };
 
   // Page size change
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPageSize(Number(e.target.value));
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
     setPage(1);
   };
 
@@ -167,13 +169,13 @@ const Users = () => {
   const userToDelete = users.find(a => a.id === deleteUserId);
 
   return (
-    <div className="p-4 relative min-h-screen">
+    <div className="p-4 relative min-h-screen" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Users</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{t('users.title', 'Users')}</h1>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center">
           <input
             type="text"
-            placeholder="Filter by name, email, group, status..."
+            placeholder={t('users.filter_placeholder', 'Filter by name, email, group, status...')}
             value={filter}
             onChange={handleFilterChange}
             className="border border-gray-300 rounded px-3 py-2 w-64"
@@ -182,7 +184,7 @@ const Users = () => {
             className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             onClick={() => setShowAddModal(true)}
           >
-            Add User
+            {t('users.add_user', 'Add User')}
           </button>
         </div>
       </div>
@@ -191,12 +193,12 @@ const Users = () => {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Group</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Last Active</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('users.table.name', 'Name')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('users.table.email', 'Email')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('users.table.group', 'Group')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('users.table.status', 'Status')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('users.table.last_active', 'Last Active')}</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{t('users.table.actions', 'Actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
@@ -205,7 +207,7 @@ const Users = () => {
                   <td colSpan={6} className="py-16 text-center">
                     <div className="flex flex-col items-center justify-center">
                       <UserX className="w-10 h-10 mb-2 text-gray-300" />
-                      <span className="text-lg font-semibold text-gray-400">No users found</span>
+                      <span className="text-lg font-semibold text-gray-400">{t('users.no_users', 'No users found')}</span>
                     </div>
                   </td>
                 </tr>
@@ -214,28 +216,28 @@ const Users = () => {
                   <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{user.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{user.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{user.group}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{user.status}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{t(`users.groups.${user.group.toLowerCase()}`, user.group)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{t(`users.status.${user.status.toLowerCase()}`, user.status)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">{user.lastActive}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end items-center space-x-2" onClick={e => e.stopPropagation()}>
                         <button
                           onClick={() => handleEdit(user)}
                           className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                          title="Edit"
+                          title={t('users.actions.edit', 'Edit User')}
                         >
                           <Edit2 className="h-5 w-5" />
                         </button>
                         <button
                           onClick={() => handleDelete(user.id)}
                           className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                          title="Delete"
+                          title={t('users.actions.delete', 'Delete User')}
                         >
                           <Trash2 className="h-5 w-5" />
                         </button>
                         <button
                           className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
-                          title="More"
+                          title={t('users.actions.more', 'More')}
                         >
                           <MoreVertical className="h-5 w-5" />
                         </button>
@@ -247,199 +249,230 @@ const Users = () => {
             </tbody>
           </table>
         </div>
+        
         {/* Pagination Controls */}
-        <Pagination
-          currentPage={page}
-          totalItems={filteredUsers.length}
-          pageSize={pageSize}
-          pageSizeOptions={PAGE_SIZE_OPTIONS}
-          onPageChange={handlePageChange}
-          onPageSizeChange={size => {
-            setPageSize(size);
-            setPage(1);
-          }}
-        />
+        <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+          <Pagination
+            currentPage={page}
+            pageSize={pageSize}
+            totalItems={filteredUsers.length}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+            pageSizeOptions={PAGE_SIZE_OPTIONS}
+          />
+        </div>
       </div>
-      {/* Add User Modal */}
-      <Popup
-        isOpen={showAddModal}
-        onClose={handleAddCancel}
-        title="Add User"
-        size="modal-lg"
-        position="modal-center"
-        contentClass="space-y-4"
-        footer={
-          <>
-            <button
-              className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-              onClick={handleAddCancel}
-              type="button"
-            >
-              Cancel
-            </button>
-            <button
-              className={`px-4 py-2 rounded-md ${
-                isAddFormValid 
-                  ? 'bg-primary-500 text-white hover:bg-primary-600' 
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-              onClick={handleAdd}
-              disabled={!isAddFormValid}
-              type="button"
-            >
-              Add
-            </button>
-          </>
-        }
-      >
-        <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={newUser.name}
-            onChange={handleAddChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={newUser.email}
-            onChange={handleAddChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Group</label>
-          <input
-            type="text"
-            name="group"
-            value={newUser.group}
-            onChange={handleAddChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Status</label>
-          <select
-            name="status"
-            value={newUser.status}
-            onChange={handleAddChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Last Active</label>
-          <input
-            type="datetime-local"
-            name="lastActive"
-            value={newUser.lastActive}
-            onChange={handleAddChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-      </Popup>
+
       {/* Edit Modal */}
-      <Popup
-        isOpen={showEditModal && !!editUser}
-        onClose={() => { setShowEditModal(false); setEditUser(null); }}
-        title="Edit User"
-        size="modal-lg"
-        position="modal-center"
-        contentClass="space-y-4"
-        footer={
-          <>
+      {showEditModal && editUser && (
+        <Popup
+          isOpen={showEditModal}
+          title={t('users.actions.edit', 'Edit User')}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditUser(null);
+          }}
+        >
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('users.form.name.label', 'Name')}
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={editUser.name}
+                onChange={handleEditChange}
+                placeholder={t('users.form.name.placeholder', 'Enter user name')}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('users.form.email.label', 'Email')}
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={editUser.email}
+                onChange={handleEditChange}
+                placeholder={t('users.form.email.placeholder', 'Enter email')}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('users.form.group.label', 'Group')}
+              </label>
+              <select
+                name="group"
+                value={editUser.group}
+                onChange={handleEditChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="">{t('users.form.group.placeholder', 'Select group')}</option>
+                <option value="HR">{t('users.groups.hr', 'HR')}</option>
+                <option value="Finance">{t('users.groups.finance', 'Finance')}</option>
+                <option value="Moderator">{t('users.groups.moderator', 'Moderator')}</option>
+                <option value="Admin">{t('users.groups.admin', 'Admin')}</option>
+                <option value="IT">{t('users.groups.it', 'IT')}</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('users.form.status.label', 'Status')}
+              </label>
+              <select
+                name="status"
+                value={editUser.status}
+                onChange={handleEditChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="Active">{t('users.status.active', 'Active')}</option>
+                <option value="Inactive">{t('users.status.inactive', 'Inactive')}</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('users.form.last_active.label', 'Last Active')}
+              </label>
+              <input
+                type="datetime-local"
+                name="lastActive"
+                value={editUser.lastActive}
+                onChange={handleEditChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+          <div className="mt-6 flex justify-end space-x-3">
             <button
-              className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-              onClick={() => { setShowEditModal(false); setEditUser(null); }}
-              type="button"
+              onClick={() => {
+                setShowEditModal(false);
+                setEditUser(null);
+              }}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Cancel
+              {t('users.actions.cancel', 'Cancel')}
             </button>
             <button
-              className={`px-4 py-2 rounded-md ${
-                isEditFormValid 
-                  ? 'bg-primary-500 text-white hover:bg-primary-600' 
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
               onClick={handleUpdate}
               disabled={!isEditFormValid}
-              type="button"
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Update
+              {t('users.actions.save', 'Save')}
             </button>
-          </>
-        }
-      >
-        <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={editUser?.name || ''}
-            onChange={handleEditChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={editUser?.email || ''}
-            onChange={handleEditChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Group</label>
-          <input
-            type="text"
-            name="group"
-            value={editUser?.group || ''}
-            onChange={handleEditChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Status</label>
-          <select
-            name="status"
-            value={editUser?.status || 'Active'}
-            onChange={handleEditChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Last Active</label>
-          <input
-            type="datetime-local"
-            name="lastActive"
-            value={editUser?.lastActive || ''}
-            onChange={handleEditChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          />
-        </div>
-      </Popup>
-      {/* Delete Confirm Dialog */}
-      <Confirm
-        isOpen={showDeleteDialog}
-        title="Confirm Delete"
-        message={<span>Are you sure you want to delete <span className="font-semibold">{userToDelete?.name}</span>?</span>}
-        onCancel={cancelDelete}
-        onConfirm={confirmDelete}
-        confirmText="Confirm"
-        cancelText="Cancel"
-      />
+          </div>
+        </Popup>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteDialog && userToDelete && (
+        <Confirm
+          isOpen={showDeleteDialog}
+          title={t('users.actions.delete', 'Delete User')}
+          message={t('users.actions.confirm_delete', 'Are you sure you want to delete this user?')}
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
+        />
+      )}
+
+      {/* Add User Modal */}
+      {showAddModal && (
+        <Popup
+          isOpen={showAddModal}
+          title={t('users.add_user', 'Add User')}
+          onClose={handleAddCancel}
+        >
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('users.form.name.label', 'Name')}
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={newUser.name}
+                onChange={handleAddChange}
+                placeholder={t('users.form.name.placeholder', 'Enter user name')}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('users.form.email.label', 'Email')}
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={newUser.email}
+                onChange={handleAddChange}
+                placeholder={t('users.form.email.placeholder', 'Enter email')}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('users.form.group.label', 'Group')}
+              </label>
+              <select
+                name="group"
+                value={newUser.group}
+                onChange={handleAddChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="">{t('users.form.group.placeholder', 'Select group')}</option>
+                <option value="HR">{t('users.groups.hr', 'HR')}</option>
+                <option value="Finance">{t('users.groups.finance', 'Finance')}</option>
+                <option value="Moderator">{t('users.groups.moderator', 'Moderator')}</option>
+                <option value="Admin">{t('users.groups.admin', 'Admin')}</option>
+                <option value="IT">{t('users.groups.it', 'IT')}</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('users.form.status.label', 'Status')}
+              </label>
+              <select
+                name="status"
+                value={newUser.status}
+                onChange={handleAddChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="Active">{t('users.status.active', 'Active')}</option>
+                <option value="Inactive">{t('users.status.inactive', 'Inactive')}</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('users.form.last_active.label', 'Last Active')}
+              </label>
+              <input
+                type="datetime-local"
+                name="lastActive"
+                value={newUser.lastActive}
+                onChange={handleAddChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+          <div className="mt-6 flex justify-end space-x-3">
+            <button
+              onClick={handleAddCancel}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              {t('users.actions.cancel', 'Cancel')}
+            </button>
+            <button
+              onClick={handleAdd}
+              disabled={!isAddFormValid}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {t('users.actions.save', 'Save')}
+            </button>
+          </div>
+        </Popup>
+      )}
     </div>
   );
 };

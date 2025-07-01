@@ -7,6 +7,7 @@ File: tailwind scss files
 
 @import "tailwindcss";
 @import "./fonts/fonts.css";
+@import "./rtl.css";
 
 @import "./components/theme.css";
 

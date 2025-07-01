@@ -72,6 +72,7 @@ import {
   TEAM_TYPES
 } from '../../utils/api_service';
 import AuditTasks from './AuditTasks';
+import useTranslation from '../../hooks/useTranslation';
 
 interface TabProps {
   label: string;
@@ -94,28 +95,28 @@ const Tab: React.FC<TabProps> = ({ label, isActive, onClick, className = '' }) =
 );
 
 // Left sidebar navigation items (GitHub style)
-const sidebarNavigation = [
+const getSidebarNavigation = (t: (key: string, fallback?: string) => string) => [
   { 
     id: 'overview', 
-    label: 'Overview', 
+    label: t('auditDetails.navigation.overview', 'Overview'), 
     icon: BookOpen,
     description: 'General audit information'
   },
   { 
     id: 'checklist', 
-    label: 'Audit Items', 
+    label: t('auditDetails.navigation.audit_items', 'Audit Items'), 
     icon: FileText,
     description: 'Simple audit items'
   },
   { 
     id: 'reports', 
-    label: 'Reports', 
+    label: t('auditDetails.navigation.reports', 'Reports'), 
     icon: BarChart3,
     description: 'Audit reports and analytics'
   },
   { 
     id: 'settings', 
-    label: 'Settings', 
+    label: t('auditDetails.navigation.settings', 'Settings'), 
     icon: Settings,
     description: 'Teams, users and audit configuration'
   },
@@ -266,6 +267,7 @@ const AuditDetails: React.FC = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [activeSideTab, setActiveSideTab] = useState('overview');
   const [activeSettingsTab, setActiveSettingsTab] = useState('general');
   const [editorContent, setEditorContent] = useState('');
@@ -355,7 +357,7 @@ const AuditDetails: React.FC = () => {
     
     // Handle tab parameter for direct navigation to specific tabs
     const tabParam = searchParams.get('tab');
-    if (tabParam && sidebarNavigation.some(nav => nav.id === tabParam)) {
+    if (tabParam && getSidebarNavigation(t).some((nav: any) => nav.id === tabParam)) {
       setActiveSideTab(tabParam);
     }
   }, [searchParams]);
@@ -458,6 +460,48 @@ const AuditDetails: React.FC = () => {
     }
   };
 
+  // Temporary function to add test assignments (for debugging)
+  const addTestAssignments = () => {
+    if (users.length === 0 || teams.length === 0) {
+      console.log('Cannot add test assignments - no users or teams loaded yet');
+      return;
+    }
+
+    const updatedChecklists = checklists.map((item, index) => {
+      if (index === 0 && (!item.assigned_users || item.assigned_users.length === 0)) {
+        // Add first user to first task
+        const firstUser = users[0];
+        return {
+          ...item,
+          assigned_users: [{
+            id: firstUser.id,
+            name: firstUser.full_name,
+            email: firstUser.email,
+            full_name: firstUser.full_name
+          }]
+        };
+      }
+      if (index === 1 && teams.length > 0 && (!item.assigned_teams || item.assigned_teams.length === 0)) {
+        // Add first team to second task
+        const firstTeam = teams[0];
+        return {
+          ...item,
+          assigned_teams: [{
+            id: firstTeam.id,
+            name: firstTeam.name,
+            type: firstTeam.type,
+            member_count: firstTeam.members?.length || 0
+          }]
+        };
+      }
+      return item;
+    });
+
+    setChecklists(updatedChecklists);
+    setFilteredChecklists(updatedChecklists);
+    console.log('Test assignments added');
+  };
+
   const loadAuditTasks = async () => {
     if (!id) return;
     
@@ -469,140 +513,144 @@ const AuditDetails: React.FC = () => {
       
       // Transform audit tasks to checklist items format
       const transformedTasks: ChecklistItem[] = tasks.map((task: any) => {
-        console.log('Transforming task:', {
-          id: task.id,
-          task_name: task.task_name,
-          task_assignment: {
-            assigned_to: task.assigned_to,
-            assigned_to_name: task.assigned_to_name,
-            assigned_to_type: typeof task.assigned_to
-          },
-          checklist_assignment: {
-            has_checklist: !!task.checklist,
-            checklist_assigned_to: task.checklist?.assigned_to,
-            checklist_assigned_to_id: task.checklist?.assigned_to?.id,
-            checklist_assigned_to_name: task.checklist?.assigned_to?.full_name || task.checklist?.assigned_to?.username
-          },
-          task_status: task.task_status,
-          checklist_status: task.checklist?.status
+        console.log('=== TRANSFORMING TASK ===', {
+          taskId: task.id,
+          taskName: task.task_name,
+          rawData: {
+            task_assigned_to: task.assigned_to,
+            task_assigned_to_name: task.assigned_to_name,
+            task_assigned_users_details: task.assigned_users_details,
+            task_assigned_teams: task.assigned_teams,
+            checklist: task.checklist ? {
+              id: task.checklist.id,
+              assigned_to: task.checklist.assigned_to,
+              assigned_users: task.checklist.assigned_users,
+              assigned_teams: task.checklist.assigned_teams
+            } : null
+          }
         });
         
-        // Use checklist status if available, otherwise fall back to task status
+        // Map status
         let status: ChecklistItem['status'] = 'Pending';
         if (task.checklist && task.checklist.status) {
-          // Map backend checklist status to frontend status
           switch (task.checklist.status) {
-            case 'in_progress':
-              status = 'In Progress';
-              break;
-            case 'completed':
-              status = 'Completed';
-              break;
-            case 'on_hold':
-              status = 'On Hold';
-              break;
-            case 'cancelled':
-              status = 'Cancelled';
-              break;
+            case 'in_progress': status = 'In Progress'; break;
+            case 'completed': status = 'Completed'; break;
+            case 'on_hold': status = 'On Hold'; break;
+            case 'cancelled': status = 'Cancelled'; break;
             case 'draft':
-            default:
-              status = 'Pending';
-              break;
+            default: status = 'Pending'; break;
           }
         } else {
-          // Fall back to task status
           status = getStatusFromTaskStatus(task.task_status || 'pending');
         }
         
-        console.log('Status mapping for task:', {
-          taskId: task.id,
-          checklistStatus: task.checklist?.status,
-          taskStatus: task.task_status,
-          finalStatus: status
-        });
+        // Process assigned users - priority order: checklist > task
+        let assignedUsers: { id: number; name: string; email?: string; full_name?: string }[] = [];
         
-        // Determine assignment data - support both single and multiple assignments
-        let assignedTo = undefined;
-        let assignedUsers = [];
-        
-        // Priority 1: Use checklist multiple assignments (if array has users)
-        if (task.checklist && task.checklist.assigned_users && task.checklist.assigned_users.length > 0) {
+        // 1. Try checklist assigned_users array first
+        if (task.checklist?.assigned_users && Array.isArray(task.checklist.assigned_users) && task.checklist.assigned_users.length > 0) {
           assignedUsers = task.checklist.assigned_users.map((user: any) => ({
             id: user.id,
-            name: user.full_name || user.username || 'Unknown User',
+            name: user.full_name || user.username || `User ${user.id}`,
             email: user.email,
-            full_name: user.full_name
+            full_name: user.full_name || user.username
           }));
-          // Set first user as primary for backward compatibility
-          assignedTo = assignedUsers[0];
-        } 
-        // Priority 2: Use checklist single assignment (convert to multiple format)
-        else if (task.checklist && task.checklist.assigned_to) {
-          assignedTo = {
-            id: task.checklist.assigned_to.id,
-            name: task.checklist.assigned_to.full_name || task.checklist.assigned_to.username || 'Unknown User',
-            email: task.checklist.assigned_to.email,
-            full_name: task.checklist.assigned_to.full_name
-          };
-          assignedUsers = [assignedTo];
+          console.log('Used checklist assigned_users:', assignedUsers);
         }
-        // Priority 3: Use task multiple assignments (if array has users)
-        else if (task.assigned_users_details && task.assigned_users_details.length > 0) {
+        // 2. Try checklist single assigned_to
+        else if (task.checklist?.assigned_to) {
+          const user = task.checklist.assigned_to;
+          assignedUsers = [{
+            id: user.id,
+            name: user.full_name || user.username || `User ${user.id}`,
+            email: user.email,
+            full_name: user.full_name || user.username
+          }];
+          console.log('Used checklist assigned_to:', assignedUsers);
+        }
+        // 3. Try task assigned_users_details array
+        else if (task.assigned_users_details && Array.isArray(task.assigned_users_details) && task.assigned_users_details.length > 0) {
           assignedUsers = task.assigned_users_details.map((user: any) => ({
             id: user.id,
-            name: user.full_name || user.username || 'Unknown User',
+            name: user.full_name || user.username || `User ${user.id}`,
             email: user.email,
-            full_name: user.full_name
+            full_name: user.full_name || user.username
           }));
-          // Set first user as primary for backward compatibility
-          assignedTo = assignedUsers[0];
+          console.log('Used task assigned_users_details:', assignedUsers);
         }
-        // Priority 4: Fall back to task single assignment (convert to multiple format)
+        // 4. Try task single assigned_to (with name lookup)
         else if (task.assigned_to !== null && task.assigned_to !== undefined) {
-          assignedTo = {
+          assignedUsers = [{
             id: task.assigned_to,
-            name: task.assigned_to_name || 'Unknown User',
-            email: undefined, // Task level doesn't have email
+            name: task.assigned_to_name || `User ${task.assigned_to}`,
+            email: undefined,
             full_name: task.assigned_to_name
-          };
-          assignedUsers = [assignedTo];
+          }];
+          console.log('Used task assigned_to:', assignedUsers);
+        }
+        
+        // Process assigned teams - priority order: checklist > task
+        let assignedTeams: { id: number; name: string; type: string; member_count: number }[] = [];
+        
+        // 1. Try checklist assigned_teams first
+        if (task.checklist?.assigned_teams && Array.isArray(task.checklist.assigned_teams) && task.checklist.assigned_teams.length > 0) {
+          assignedTeams = task.checklist.assigned_teams.map((team: any) => ({
+            id: team.id,
+            name: team.name || `Team ${team.id}`,
+            type: team.type || 'audit',
+            member_count: team.member_count || team.members?.length || 0
+          }));
+          console.log('Used checklist assigned_teams:', assignedTeams);
+        }
+        // 2. Try task assigned_teams
+        else if (task.assigned_teams && Array.isArray(task.assigned_teams) && task.assigned_teams.length > 0) {
+          assignedTeams = task.assigned_teams.map((team: any) => ({
+            id: team.id,
+            name: team.name || `Team ${team.id}`,
+            type: team.type || 'audit',
+            member_count: team.member_count || team.members?.length || 0
+          }));
+          console.log('Used task assigned_teams:', assignedTeams);
         }
 
-        const transformedTask = {
+        const transformedTask: ChecklistItem = {
           id: task.id,
           task_name: task.task_name,
           description: task.description || '',
           completed: status === 'Completed',
-          assigned_to: assignedTo,
+          assigned_to: assignedUsers.length > 0 ? assignedUsers[0] : undefined, // Backward compatibility
           assigned_users: assignedUsers,
+          assigned_teams: assignedTeams,
           isExpanded: false,
           status: status,
           priority: task.priority || 'medium',
           due_date: task.due_date,
-          is_published: task.is_published ?? (task.id % 2 === 0), // Use API field or create sample data
+          is_published: task.is_published ?? false,
           checklist: task.checklist,
           progress_percentage: task.completion_percentage || 0
         };
         
-        console.log(`[ASSIGNMENT DEBUG] Task ${task.id} transformation:`, {
-          originalTask: {
-            assigned_to: task.assigned_to,
-            assigned_to_name: task.assigned_to_name,
-            assigned_users_details: task.assigned_users_details,
-            checklist_assigned_to: task.checklist?.assigned_to,
-            checklist_assigned_users: task.checklist?.assigned_users,
-            checklistHasAssignedUsers: !!(task.checklist && task.checklist.assigned_users && task.checklist.assigned_users.length > 0),
-            taskHasAssignedUsersDetails: !!(task.assigned_users_details && task.assigned_users_details.length > 0)
-          },
-          transformedTask: {
-            assigned_to: transformedTask.assigned_to,
+        console.log(`=== FINAL TRANSFORMATION FOR TASK ${task.id} ===`, {
+          assigned_users_count: transformedTask.assigned_users?.length || 0,
+          assigned_teams_count: transformedTask.assigned_teams?.length || 0,
             assigned_users: transformedTask.assigned_users,
-            hasAssignments: transformedTask.assigned_users?.length > 0,
-            assignedUsersNames: transformedTask.assigned_users?.map((u: any) => u.name)
-          }
+          assigned_teams: transformedTask.assigned_teams,
+          hasAnyAssignments: (transformedTask.assigned_users?.length || 0) > 0 || (transformedTask.assigned_teams?.length || 0) > 0
         });
         
         return transformedTask;
+      });
+      
+      console.log('=== FINAL TRANSFORMED TASKS ===', {
+        totalTasks: transformedTasks.length,
+        tasksWithUsers: transformedTasks.filter(t => t.assigned_users && t.assigned_users.length > 0).length,
+        tasksWithTeams: transformedTasks.filter(t => t.assigned_teams && t.assigned_teams.length > 0).length,
+        sampleTask: transformedTasks[0] ? {
+          id: transformedTasks[0].id,
+          assigned_users: transformedTasks[0].assigned_users,
+          assigned_teams: transformedTasks[0].assigned_teams
+        } : null
       });
       
       setChecklists(transformedTasks);
@@ -725,7 +773,7 @@ const AuditDetails: React.FC = () => {
 
   const handleStatusTransition = async (newStatus: string) => {
     if (!id || !auditData) {
-      toast.error('Audit data not available');
+      toast.error(t('workflows.messages.load_error'));
       return;
     }
     
@@ -740,7 +788,7 @@ const AuditDetails: React.FC = () => {
     try {
       // Check if transition is available
       if (availableTransitions.length > 0 && !availableTransitions.includes(newStatus)) {
-        throw new Error(`Invalid transition. Available transitions: ${availableTransitions.join(', ')}`);
+        throw new Error(t('workflows.transitions.invalid'));
       }
       
       const response = await transitionAuditStatus(parseInt(id), newStatus);
@@ -749,7 +797,7 @@ const AuditDetails: React.FC = () => {
       // Reload audit data to get updated status and transitions
       await loadAuditData();
       
-      toast.success(`Status updated to ${newStatus}`);
+      toast.success(t('workflows.transitions.success'));
     } catch (error: any) {
       console.error('Error transitioning status:', error);
       console.error('Error details:', {
@@ -758,18 +806,18 @@ const AuditDetails: React.FC = () => {
         message: error?.message
       });
       
-      let errorMessage = 'Failed to update status';
+      let errorMessage = t('workflows.transitions.error');
       
       if (error?.response?.status === 404) {
-        errorMessage = 'Audit not found';
+        errorMessage = t('common.errors.not_found');
       } else if (error?.response?.status === 400) {
         const detail = error?.response?.data?.detail;
         const message = error?.response?.data?.message;
-        errorMessage = detail || message || 'Invalid status transition';
+        errorMessage = detail || message || t('workflows.transitions.invalid');
       } else if (error?.response?.status === 403) {
-        errorMessage = 'You do not have permission to change audit status';
+        errorMessage = t('workflows.transitions.permission_denied');
       } else if (error?.response?.status === 500) {
-        errorMessage = 'Server error occurred during status transition';
+        errorMessage = t('workflows.transitions.server_error');
       } else if (error?.response?.data?.detail) {
         errorMessage = error.response.data.detail;
       } else if (error?.response?.data?.message) {
@@ -937,12 +985,13 @@ const AuditDetails: React.FC = () => {
         return;
       }
       
-      // Add user to the existing assignments
+      // Call backend API
       await addUserToTask(checklistId, userId);
       
+      console.log(`[UI] User ${userId} successfully assigned to task ${checklistId} via backend`);
       toast.success('User assigned successfully');
       
-      // Reload the tasks to get the latest data
+      // Reload the tasks to get the latest data from backend
       await loadAuditTasks();
       
     } catch (error: any) {
@@ -953,22 +1002,39 @@ const AuditDetails: React.FC = () => {
     // Close any open search/assignment UI
     setUserSearchTerm('');
     setShowUserDropdown(null);
+    setUnifiedSearchTerm('');
+    setShowUnifiedDropdown(null);
   };
 
   const handleRemoveUserAssignment = async (checklistId: number, userId: number) => {
     try {
       console.log(`[UI] Removing user ${userId} from checklist ${checklistId}`);
       
+      // Update UI immediately for better UX
+      const updatedChecklists = checklists.map(item => {
+        if (item.id === checklistId && item.assigned_users) {
+          return {
+            ...item,
+            assigned_users: item.assigned_users.filter(user => user.id !== userId)
+          };
+        }
+        return item;
+      });
+      
+      setChecklists(updatedChecklists);
+      applyFilters(updatedChecklists, activeFilter, searchQuery);
+      
+      // Call backend API
       await removeUserFromTask(checklistId, userId);
       
-      toast.success('User removed successfully');
-      
-      // Reload the tasks to get the latest data
-      await loadAuditTasks();
+      const user = users.find(u => u.id === userId);
+      toast.success(`User "${user?.full_name || 'Unknown'}" removed from task`);
       
     } catch (error: any) {
       console.error('[UI] Failed to remove user assignment:', error);
       toast.error(error.message || 'Failed to remove user assignment');
+      // Reload on error to get correct state
+      await loadAuditTasks();
     }
   };
 
@@ -1274,9 +1340,17 @@ const AuditDetails: React.FC = () => {
     setShowUserDropdown(searchTerm ? taskId : null);
   };
 
-  const handleUserAssignmentSelect = (user: User, taskId: number) => {
-    console.log('User assignment selected:', { user, taskId });
-    handleAssignUser(taskId, user.id);
+  const handleUserAssignmentSelect = async (user: User, taskId: number) => {
+    try {
+      console.log('User assignment selected:', { userId: user.id, taskId, userName: user.full_name });
+      
+      // Call the main assignment handler which handles backend sync and reloading
+      await handleAssignUser(taskId, user.id);
+      
+    } catch (error: any) {
+      console.error('Error assigning user:', error);
+      toast.error(error.message || 'Failed to assign user');
+    }
   };
 
   const handleRemoveAssignment = async (taskId: number) => {
@@ -1309,9 +1383,9 @@ const AuditDetails: React.FC = () => {
 
   const handleTeamAssignmentSelect = async (team: Team, taskId: number) => {
     try {
-      console.log('Assigning team to task:', { teamId: team.id, taskId });
+      console.log('Assigning team to task:', { teamId: team.id, taskId, teamData: team });
       
-      // Update UI directly (you can integrate with backend later)
+      // Update UI immediately for better UX
       const updatedChecklists = checklists.map(item => {
         if (item.id === taskId) {
           const currentTeams = item.assigned_teams || [];
@@ -1322,7 +1396,7 @@ const AuditDetails: React.FC = () => {
               id: team.id,
               name: team.name,
               type: team.type,
-              member_count: team.members.length
+              member_count: team.members?.length || 0
             };
             
             return {
@@ -1337,13 +1411,23 @@ const AuditDetails: React.FC = () => {
       setChecklists(updatedChecklists);
       applyFilters(updatedChecklists, activeFilter, searchQuery);
       
+      // Call backend API if available (you can implement this later)
+      // await assignTeamToTask(taskId, team.id);
+      
+      // Clear search state
       setShowTeamDropdown(null);
       setTeamSearchTerm('');
       
       toast.success(`Team "${team.name}" assigned to task`);
+      
+      // Reload tasks to sync with backend (optional - remove if not needed)
+      // await loadAuditTasks();
+      
     } catch (error: any) {
       console.error('Error assigning team:', error);
       toast.error(error.message || 'Failed to assign team');
+      // Reload on error to get correct state
+      await loadAuditTasks();
     }
   };
 
@@ -1784,85 +1868,85 @@ const AuditDetails: React.FC = () => {
           {/* Status Card */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Status</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('auditDetails.overview.status')}</h3>
               <Clock className="w-5 h-5 text-gray-400" />
             </div>
             <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusStyling(auditData.status).bgColor} ${getStatusStyling(auditData.status).textColor}`}>
-              {auditData.status}
+              {auditData.status.toLowerCase()}
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-              Current audit status
+              {t('auditDetails.overview.current_audit_status')}
             </p>
           </div>
 
           {/* Progress Card */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Progress</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('auditDetails.overview.progress.title')}</h3>
               <BarChart3 className="w-5 h-5 text-gray-400" />
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               {taskSummary ? Math.round(((taskSummary.breakdown?.by_status?.completed || 0) / (taskSummary.total_tasks || 1)) * 100) : 0}%
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {taskSummary ? `${taskSummary.breakdown?.by_status?.completed || 0} of ${taskSummary.total_tasks || 0} tasks completed` : 'No tasks found'}
+              {taskSummary ? t('auditDetails.overview.progress.tasksCompleted').replace('{completed}', String(taskSummary.breakdown?.by_status?.completed || 0)).replace('{total}', String(taskSummary.total_tasks || 0)) : t('auditDetails.overview.progress.noTasks')}
             </p>
           </div>
 
           {/* Team Card */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Team</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('auditDetails.overview.team')}</h3>
               <Users className="w-5 h-5 text-gray-400" />
             </div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
               {auditData.assigned_users?.length || 0}
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Assigned team members
+              {t('auditDetails.overview.assigned_team_members')}
             </p>
           </div>
         </div>
 
         {/* Audit Information */}
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Audit Information</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('auditDetails.overview.audit_information')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Reference Number
+                {t('auditDetails.overview.reference_number')}
               </label>
               <p className="text-gray-900 dark:text-white">{auditData.reference_number}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Audit Type
+                {t('auditDetails.overview.audit_type')}
               </label>
               <p className="text-gray-900 dark:text-white capitalize">{auditData.audit_type.replace('_', ' ')}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Period From
+                {t('auditDetails.overview.period_from')}
               </label>
-              <p className="text-gray-900 dark:text-white">{auditData.period_from || 'Not specified'}</p>
+              <p className="text-gray-900 dark:text-white">{auditData.period_from || t('auditDetails.overview.notSpecified')}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Period To
+                {t('auditDetails.overview.period_to')}
               </label>
-              <p className="text-gray-900 dark:text-white">{auditData.period_to || 'Not specified'}</p>
+              <p className="text-gray-900 dark:text-white">{auditData.period_to || t('auditDetails.overview.notSpecified')}</p>
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Scope
+                {t('auditDetails.overview.scope')}
               </label>
-              <p className="text-gray-900 dark:text-white">{auditData.scope || 'No scope defined'}</p>
+              <p className="text-gray-900 dark:text-white">{auditData.scope || t('auditDetails.overview.no_scope_defined')}</p>
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Objectives
+                {t('auditDetails.overview.objectives')}
               </label>
-              <p className="text-gray-900 dark:text-white">{auditData.objectives || 'No objectives defined'}</p>
+              <p className="text-gray-900 dark:text-white">{auditData.objectives || t('auditDetails.overview.no_objectives_defined')}</p>
             </div>
           </div>
         </div>
@@ -1870,25 +1954,25 @@ const AuditDetails: React.FC = () => {
         {/* Workflow Information */}
         {currentWorkflow && (
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Workflow Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('auditDetails.overview.workflow_information')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Workflow Name
+                  {t('auditDetails.overview.workflow_name')}
                 </label>
                 <p className="text-gray-900 dark:text-white">{currentWorkflow.name}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Workflow Status
+                  {t('auditDetails.overview.workflow_status')}
                 </label>
-                <p className="text-gray-900 dark:text-white">{currentWorkflow.status}</p>
+                <p className="text-gray-900 dark:text-white">{currentWorkflow.status.toLowerCase()}</p>
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Description
+                  {t('auditDetails.overview.description')}
                 </label>
-                <p className="text-gray-900 dark:text-white">{currentWorkflow.description || 'No description available'}</p>
+                <p className="text-gray-900 dark:text-white">{currentWorkflow.description || t('auditDetails.overview.no_description_available')}</p>
               </div>
             </div>
           </div>
@@ -1904,10 +1988,10 @@ const AuditDetails: React.FC = () => {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Audit Reports
+                {t('auditDetails.reports.title')}
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
-                Generate and view comprehensive audit reports
+                {t('auditDetails.reports.description')}
               </p>
             </div>
             <button
@@ -1915,7 +1999,7 @@ const AuditDetails: React.FC = () => {
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 shadow-sm font-medium"
             >
               <BarChart3 className="w-5 h-5" />
-              View Full Report
+              {t('auditDetails.reports.viewReport')}
             </button>
           </div>
 
@@ -1927,7 +2011,7 @@ const AuditDetails: React.FC = () => {
                   <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-blue-900 dark:text-blue-100">Total Tasks</p>
+                  <p className="text-sm font-medium text-blue-900 dark:text-blue-100">{t('auditDetails.reports.quick_stats.total_tasks')}</p>
                   <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">
                     {taskSummary?.total_tasks || 0}
                   </p>
@@ -1941,7 +2025,7 @@ const AuditDetails: React.FC = () => {
                   <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-green-900 dark:text-green-100">Completed</p>
+                  <p className="text-sm font-medium text-green-900 dark:text-green-100">{t('auditDetails.reports.quick_stats.completed')}</p>
                   <p className="text-lg font-semibold text-green-600 dark:text-green-400">
                     {taskSummary?.breakdown?.by_status?.completed || 0}
                   </p>
@@ -1955,7 +2039,7 @@ const AuditDetails: React.FC = () => {
                   <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">In Progress</p>
+                  <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">{t('auditDetails.reports.quick_stats.in_progress')}</p>
                   <p className="text-lg font-semibold text-yellow-600 dark:text-yellow-400">
                     {taskSummary?.breakdown?.by_status?.in_progress || 0}
                   </p>
@@ -1969,7 +2053,7 @@ const AuditDetails: React.FC = () => {
                   <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-red-900 dark:text-red-100">Pending</p>
+                  <p className="text-sm font-medium text-red-900 dark:text-red-100">{t('auditDetails.reports.quick_stats.pending')}</p>
                   <p className="text-lg font-semibold text-red-600 dark:text-red-400">
                     {taskSummary?.breakdown?.by_status?.pending || 0}
                   </p>
@@ -1980,25 +2064,25 @@ const AuditDetails: React.FC = () => {
 
           {/* Report Actions */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Available Reports</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('auditDetails.reports.available_reports')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                <h4 className="font-medium text-gray-900 dark:text-white">Summary Report</h4>
+                <h4 className="font-medium text-gray-900 dark:text-white">{t('auditDetails.reports.summary_report.title')}</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  High-level overview of audit progress and key findings
+                  {t('auditDetails.reports.summary_report.description')}
                 </p>
                 <button className="mt-3 text-primary-600 dark:text-primary-400 text-sm font-medium hover:underline">
-                  Generate Report →
+                  {t('auditDetails.reports.summary_report.generate')} →
                 </button>
               </div>
               
               <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                <h4 className="font-medium text-gray-900 dark:text-white">Detailed Report</h4>
+                <h4 className="font-medium text-gray-900 dark:text-white">{t('auditDetails.reports.detailed_report.title')}</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  Comprehensive report with all tasks, findings, and evidence
+                  {t('auditDetails.reports.detailed_report.description')}
                 </p>
                 <button className="mt-3 text-primary-600 dark:text-primary-400 text-sm font-medium hover:underline">
-                  Generate Report →
+                  {t('auditDetails.reports.detailed_report.generate')} →
                 </button>
               </div>
             </div>
@@ -2137,14 +2221,14 @@ const AuditDetails: React.FC = () => {
             <div className="flex items-center justify-between">
               <h4 className="text-md font-medium text-gray-900 dark:text-white">Created Teams</h4>
               {teams.length > 0 && (
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
                   {teams.reduce((total, team) => total + team.members.length + 1, 0)} total members
-                </span>
+              </span>
               )}
-            </div>
-            
+          </div>
+
             {teams.length > 0 ? (
-              <div className="space-y-4">
+          <div className="space-y-4">
                 {teams.map((team) => (
                   <div key={team.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800">
                     <div className="flex items-start justify-between mb-3">
@@ -2278,91 +2362,91 @@ const AuditDetails: React.FC = () => {
           </div>
           
           {/* Current Individual Users */}
-          {auditData?.assigned_users_details && auditData.assigned_users_details.length > 0 ? (
+            {auditData?.assigned_users_details && auditData.assigned_users_details.length > 0 ? (
             <div className="space-y-3 mb-4">
-              {auditData.assigned_users_details.map((user: any) => (
+                {auditData.assigned_users_details.map((user: any) => (
                 <div key={user.id} className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3">
                     <div className="w-6 h-6 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
                       <span className="text-xs font-medium text-primary-600 dark:text-primary-400">
-                        {user.first_name?.[0]}{user.last_name?.[0]}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        {user.full_name || `${user.first_name} ${user.last_name}`}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {user.email} • {user.department || 'No Department'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 rounded-full">
-                      Individual User
-                    </span>
-                    <button
-                      onClick={() => {
-                        // Add remove user functionality here
-                        toast.success(`${user.full_name} removed from audit`);
-                      }}
-                      className="p-1 text-gray-400 hover:text-red-600 dark:hover:text-red-400"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-4 border border-dashed border-gray-200 dark:border-gray-700 rounded-lg mb-4">
-              <User className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-              <p className="text-sm text-gray-500 dark:text-gray-400">No individual users assigned</p>
-            </div>
-          )}
-
-          {/* Add Individual Users */}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-            <div className="space-y-3">
-              <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search users to add individually..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-
-              {/* Available Users List */}
-              <div className="max-h-40 overflow-y-auto space-y-2">
-                {users.slice(0, 3).map((user) => (
-                  <div key={user.id} className="flex items-center justify-between py-2 px-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center">
-                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                           {user.first_name?.[0]}{user.last_name?.[0]}
                         </span>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-900 dark:text-white">
-                          {user.full_name}
+                          {user.full_name || `${user.first_name} ${user.last_name}`}
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {user.department || 'No Department'}
+                          {user.email} • {user.department || 'No Department'}
                         </p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => {
-                        // Add user to audit functionality here
-                        toast.success(`${user.full_name} added to audit`);
-                      }}
-                      className="px-2 py-1 text-xs font-medium bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
-                    >
-                      Add
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 rounded-full">
+                      Individual User
+                      </span>
+                      <button
+                        onClick={() => {
+                          // Add remove user functionality here
+                        toast.success(`${user.full_name} removed from audit`);
+                        }}
+                        className="p-1 text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 ))}
+              </div>
+            ) : (
+            <div className="text-center py-4 border border-dashed border-gray-200 dark:border-gray-700 rounded-lg mb-4">
+              <User className="w-6 h-6 text-gray-400 mx-auto mb-1" />
+              <p className="text-sm text-gray-500 dark:text-gray-400">No individual users assigned</p>
+              </div>
+            )}
+
+          {/* Add Individual Users */}
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <div className="space-y-3">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                  placeholder="Search users to add individually..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+
+            {/* Available Users List */}
+              <div className="max-h-40 overflow-y-auto space-y-2">
+                {users.slice(0, 3).map((user) => (
+                <div key={user.id} className="flex items-center justify-between py-2 px-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
+                        {user.first_name?.[0]}{user.last_name?.[0]}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        {user.full_name}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {user.department || 'No Department'}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      // Add user to audit functionality here
+                        toast.success(`${user.full_name} added to audit`);
+                    }}
+                      className="px-2 py-1 text-xs font-medium bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
+                  >
+                    Add
+                  </button>
+                </div>
+              ))}
               </div>
             </div>
           </div>
@@ -2378,36 +2462,36 @@ const AuditDetails: React.FC = () => {
               <h5 className="text-sm font-medium text-gray-800 dark:text-gray-200">Global Audit Permissions</h5>
             </div>
             
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Allow audit editing</label>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Team members can edit audit details and configuration</p>
-                </div>
-                <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600" defaultChecked />
               </div>
+              <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600" defaultChecked />
+            </div>
               
-              <div className="flex items-center justify-between">
-                <div>
+            <div className="flex items-center justify-between">
+              <div>
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Allow task management</label>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Team members can create, edit, and assign tasks</p>
-                </div>
-                <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600" defaultChecked />
               </div>
+              <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600" defaultChecked />
+            </div>
               
-              <div className="flex items-center justify-between">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Allow report generation</label>
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Allow report generation</label>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Team members can generate and export audit reports</p>
-                </div>
-                <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600" />
               </div>
+              <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600" />
+            </div>
               
               <div className="flex items-center justify-between">
                 <div>
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Allow team management</label>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Team owners can invite or remove team members</p>
-                </div>
+          </div>
                 <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600" defaultChecked />
               </div>
             </div>
@@ -2505,24 +2589,24 @@ const AuditDetails: React.FC = () => {
         {/* Header Section */}
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Audit Tasks & Audit Items</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t('auditDetails.tasks.title', 'Audit Tasks & Audit Items')}</h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Comprehensive task management with audit items, evidence collection, and progress tracking
+              {t('auditDetails.tasks.description', 'Comprehensive task management with audit items, evidence collection, and progress tracking')}
             </p>
             {taskSummary && (
               <div className="flex items-center gap-4 mt-2 text-sm">
                 <span className="text-gray-600 dark:text-gray-400">
-                  <strong>{taskSummary.total_tasks || 0}</strong> Total Tasks
+                  <strong>{taskSummary.total_tasks || 0}</strong> {t('auditDetails.tasks.total_tasks', 'Total Tasks')}
                 </span>
                 <span className="text-green-600 dark:text-green-400">
-                  <strong>{taskSummary.breakdown?.by_status?.completed || 0}</strong> Completed
+                  <strong>{taskSummary.breakdown?.by_status?.completed || 0}</strong> {t('auditDetails.tasks.completed_tasks', 'Completed')}
                 </span>
                 <span className="text-blue-600 dark:text-blue-400">
-                  <strong>{taskSummary.breakdown?.by_status?.in_progress || 0}</strong> In Progress
+                  <strong>{taskSummary.breakdown?.by_status?.in_progress || 0}</strong> {t('auditDetails.tasks.in_progress_tasks', 'In Progress')}
                 </span>
                 {taskSummary.breakdown?.overdue_count > 0 && (
                   <span className="text-red-600 dark:text-red-400">
-                    <strong>{taskSummary.breakdown.overdue_count}</strong> Overdue
+                    <strong>{taskSummary.breakdown.overdue_count}</strong> {t('auditDetails.tasks.overdue_tasks', 'Overdue')}
                   </span>
                 )}
               </div>
@@ -2534,7 +2618,7 @@ const AuditDetails: React.FC = () => {
               <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search audit items..."
+                placeholder={t('auditDetails.tasks.search_placeholder', 'Search audit items...')}
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
@@ -2544,7 +2628,7 @@ const AuditDetails: React.FC = () => {
             {/* Progress Summary */}
             {checklists.length > 0 && (
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                {checklists.filter(item => item.completed).length} of {checklists.length} completed
+                {checklists.filter(item => item.completed).length} {t('auditDetails.tasks.tasks_completed', 'of')} {checklists.length} {t('auditDetails.tasks.completed', 'completed')}
               </div>
             )}
             <div className="flex items-center gap-2">
@@ -2553,14 +2637,14 @@ const AuditDetails: React.FC = () => {
                 className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 flex items-center gap-2"
               >
                 <Plus className="h-4 w-4" />
-                New Task
+                {t('auditDetails.tasks.new_task', 'New Task')}
               </button>
               <button
                 onClick={handleAddChecklist}
                 className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 flex items-center gap-2"
               >
                 <CheckSquare className="h-4 w-4" />
-                Quick Item
+                {t('auditDetails.tasks.quick_item', 'Quick Item')}
               </button>
             </div>
           </div>
@@ -2571,7 +2655,7 @@ const AuditDetails: React.FC = () => {
           <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm">
             <div className="flex items-center gap-4">
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                Quick Actions:
+                {t('auditDetails.tasks.quick_actions.title', 'Quick Actions:')}
               </div>
               <button 
                 onClick={async () => {
@@ -2617,7 +2701,9 @@ const AuditDetails: React.FC = () => {
                 }}
                 className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400"
               >
-                {checklists.every(item => item.completed) ? 'Mark All Incomplete' : 'Mark All Complete'}
+                {checklists.every(item => item.completed) 
+                  ? t('auditDetails.tasks.quick_actions.mark_all_incomplete', 'Mark All Incomplete')
+                  : t('auditDetails.tasks.quick_actions.mark_all_complete', 'Mark All Complete')}
               </button>
               <button 
                 onClick={() => {
@@ -2627,7 +2713,7 @@ const AuditDetails: React.FC = () => {
                 }}
                 className="text-sm text-gray-600 hover:text-gray-700 dark:text-gray-400"
               >
-                Collapse All
+                {t('auditDetails.tasks.quick_actions.collapse_all', 'Collapse All')}
               </button>
               <button 
                 onClick={() => {
@@ -2637,11 +2723,11 @@ const AuditDetails: React.FC = () => {
                 }}
                 className="text-sm text-gray-600 hover:text-gray-700 dark:text-gray-400"
               >
-                Expand All
+                {t('auditDetails.tasks.quick_actions.expand_all', 'Expand All')}
               </button>
             </div>
             <div className="flex items-center gap-2">
-              <div className="text-sm text-gray-600 dark:text-gray-400">Progress:</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">{t('auditDetails.tasks.progress', 'Progress')}:</div>
               <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div 
                   className="bg-primary-500 h-2 rounded-full transition-all duration-300"
@@ -2664,6 +2750,10 @@ const AuditDetails: React.FC = () => {
                   ? checklists.length 
                   : checklists.filter(item => item.status === filter).length;
                 
+                const translatedFilter = filter === 'All' 
+                  ? t('auditDetails.tasks.filter.all', 'All')
+                  : t(`auditDetails.tasks.filter.${filter.toLowerCase().replace(' ', '_')}`, filter);
+                
                 return (
                   <button
                     key={filter}
@@ -2674,7 +2764,7 @@ const AuditDetails: React.FC = () => {
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
                     }`}
                   >
-                    {filter} ({count})
+                    {translatedFilter} ({count})
                   </button>
                 );
               })}
@@ -2690,21 +2780,21 @@ const AuditDetails: React.FC = () => {
                 {checklists.length === 0 ? (
                   <>
                     <CheckSquare className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                    <h3 className="text-lg font-medium mb-2">No audit items yet</h3>
-                    <p className="text-sm mb-4">Get started by adding your first audit item</p>
+                    <h3 className="text-lg font-medium mb-2">{t('auditDetails.tasks.empty_state.title', 'No audit items yet')}</h3>
+                    <p className="text-sm mb-4">{t('auditDetails.tasks.empty_state.description', 'Get started by adding your first audit item')}</p>
                     <button
                       onClick={handleAddChecklist}
                       className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 inline-flex items-center gap-2"
                     >
                       <Plus className="h-4 w-4" />
-                      Add First Item
+                      {t('auditDetails.tasks.empty_state.add_first', 'Add First Item')}
                     </button>
                   </>
                 ) : (
                   <>
                     <Search className="h-8 w-8 mx-auto mb-4 text-gray-400" />
-                    <h3 className="text-lg font-medium mb-2">No items found</h3>
-                    <p className="text-sm">Try adjusting your search or filter criteria</p>
+                    <h3 className="text-lg font-medium mb-2">{t('auditDetails.tasks.no_results.title', 'No items found')}</h3>
+                    <p className="text-sm">{t('auditDetails.tasks.no_results.description', 'Try adjusting your search or filter criteria')}</p>
                   </>
                 )}
               </div>
@@ -2725,7 +2815,7 @@ const AuditDetails: React.FC = () => {
               checklistAssignedUsers: item.checklist?.assigned_users
             });
 
-                        return (
+            return (
               <div key={item.id} className={`group relative rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ${
                 item.completed 
                   ? 'border border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/10' 
@@ -2823,7 +2913,7 @@ const AuditDetails: React.FC = () => {
                         {item.progress_percentage !== undefined && (
                           <div className="flex items-center gap-1 px-2 py-1 bg-primary-100 dark:bg-primary-900 rounded text-xs text-primary-700 dark:text-primary-300">
                             <BarChart3 className="h-3 w-3" />
-                            {Math.round(item.progress_percentage)}%
+                              {Math.round(item.progress_percentage)}%
                           </div>
                         )}
                         
@@ -2851,20 +2941,20 @@ const AuditDetails: React.FC = () => {
                           <div className="flex items-center gap-1">
                             {/* User Assignments */}
                             {hasAssignments && (
-                              assignedUsers.length === 1 ? (
+                          assignedUsers.length === 1 ? (
                                 <div className="flex items-center gap-1 px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs text-gray-600 dark:text-gray-400">
                                   <User className="h-3 w-3" />
-                                  {assignedUsers[0].name}
-                                </div>
-                              ) : (
-                                <div 
+                                {assignedUsers[0].name}
+                            </div>
+                          ) : (
+                            <div 
                                   className="flex items-center gap-1 px-2 py-1 bg-primary-100 dark:bg-primary-900 rounded text-xs text-primary-700 dark:text-primary-300"
-                                  title={`Assigned to: ${assignedUsers.map(u => u.name).join(', ')}`}
-                                >
+                              title={`Assigned to: ${assignedUsers.map(u => u.name).join(', ')}`}
+                            >
                                   <Users className="h-3 w-3" />
-                                  {assignedUsers.length} users
-                                </div>
-                              )
+                                {assignedUsers.length} users
+                            </div>
+                          )
                             )}
                             
                             {/* Team Assignments */}
@@ -2888,7 +2978,7 @@ const AuditDetails: React.FC = () => {
                         ) : (
                           <div className="flex items-center gap-1 px-2 py-1 bg-orange-100 dark:bg-orange-900 rounded text-xs text-orange-600 dark:text-orange-400">
                             <UserPlus className="h-3 w-3" />
-                            Unassigned
+                              Unassigned
                           </div>
                         )}
                         
@@ -2900,42 +2990,42 @@ const AuditDetails: React.FC = () => {
                               : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
                           }`}>
                             <Calendar className="h-3 w-3" />
-                            {new Date(item.due_date).toLocaleDateString()}
+                              {new Date(item.due_date).toLocaleDateString()}
                           </div>
                         )}
                       </div>
 
                       {/* Simple Action Buttons */}
                       <div className="flex items-center gap-1">
-                        {/* Expand/Collapse */}
-                        <button
-                          onClick={() => handleChecklistExpand(item.id)}
-                          className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      {/* Expand/Collapse */}
+                      <button
+                        onClick={() => handleChecklistExpand(item.id)}
+                        className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                           title={item.isExpanded ? "Collapse details" : "Expand details"}
-                        >
-                          {item.isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                        </button>
+                      >
+                        {item.isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </button>
 
-                        {/* Task Details */}
-                        <button
-                          onClick={() => {
-                            setSelectedTask(item);
-                            setIsTaskDetailsModalOpen(true);
-                          }}
+                      {/* Task Details */}
+                      <button
+                        onClick={() => {
+                          setSelectedTask(item);
+                          setIsTaskDetailsModalOpen(true);
+                        }}
                           className="p-1 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                          title="View Task Details"
-                        >
-                          <FileText className="h-4 w-4" />
-                        </button>
+                        title="View Task Details"
+                      >
+                        <FileText className="h-4 w-4" />
+                      </button>
 
-                        {/* Delete */}
-                        <button
-                          onClick={() => handleDeleteChecklist(item.id)}
-                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                      {/* Delete */}
+                      <button
+                        onClick={() => handleDeleteChecklist(item.id)}
+                        className="p-1 text-gray-400 hover:text-red-600 transition-colors"
                           title="Delete audit item"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                       </div>
                     </div>
                   </div>
@@ -2943,224 +3033,242 @@ const AuditDetails: React.FC = () => {
                   {/* Simple Expanded Content */}
                   {item.isExpanded && (
                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4 shadow-inner bg-gray-50/50 dark:bg-gray-800/30 rounded-b-lg -mx-4 px-4 pb-4">
-                      {/* Description */}
+                        {/* Description */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Description & Notes
-                        </label>
-                        <textarea
-                          value={item.description}
-                          onChange={(e) => handleChecklistContentChange(item.id, e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                          rows={3}
-                          placeholder="Add detailed description, notes, or requirements for this audit task..."
-                        />
-                      </div>
-
-                      {/* Unified Assignment Section */}
-                      <div>
-
-                        {/* Unified Assignment Search */}
-                        <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Assignments
+                            Description & Notes
                           </label>
-                          
-                          {/* Current Assignments Display */}
-                          <div className="space-y-2">
-                            {/* User Assignments */}
-                            {item.assigned_users && item.assigned_users.map((user) => (
-                              <div key={`user-${user.id}`} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-md border border-gray-200 dark:border-gray-600">
-                                <div className="flex items-center gap-2">
-                                  <div className="h-6 w-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                                    <User className="h-3 w-3 text-gray-600 dark:text-gray-400" />
-                                  </div>
-                                  <div>
-                                    <span className="text-sm text-gray-900 dark:text-white font-medium">
-                                      {user.name}
-                                    </span>
-                                    <div className="text-xs text-gray-500 dark:text-gray-400">User</div>
-                                  </div>
-                                </div>
-                                <button
-                                  onClick={() => handleRemoveUserAssignment(item.id, user.id)}
-                                  className="text-gray-400 hover:text-red-600 dark:hover:text-red-400"
-                                  title="Remove user assignment"
-                                >
-                                  <X className="h-4 w-4" />
-                                </button>
-                              </div>
-                            ))}
-                            
-                            {/* Team Assignments */}
-                            {item.assigned_teams && item.assigned_teams.map((team) => (
-                              <div key={`team-${team.id}`} className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-md border border-blue-200 dark:border-blue-800">
-                                <div className="flex items-center gap-2">
-                                  <div className="h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                                    <Users className="h-3 w-3 text-blue-600 dark:text-blue-400" />
-                                  </div>
-                                  <div>
-                                    <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                      {team.name}
-                                    </span>
-                                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                                      {team.type.charAt(0).toUpperCase() + team.type.slice(1)} Team • {team.member_count} members
-                                    </div>
-                                  </div>
-                                </div>
-                                <button
-                                  onClick={() => handleRemoveTeamAssignment(item.id, team.id)}
-                                  className="text-gray-400 hover:text-red-600 dark:hover:text-red-400"
-                                  title="Remove team assignment"
-                                >
-                                  <X className="h-4 w-4" />
-                                </button>
-                              </div>
-                            ))}
-                              
-                              {/* Unified Search Input */}
-                              <div className="relative unified-assignment-dropdown">
-                                <input
-                                  type="text"
-                                  placeholder="Search users and teams to assign..."
-                                  value={showUnifiedDropdown === item.id ? unifiedSearchTerm : ''}
-                                  onChange={(e) => handleUnifiedSearch(e.target.value, item.id)}
-                                  onFocus={() => setShowUnifiedDropdown(item.id)}
-                                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm placeholder-gray-500 dark:placeholder-gray-400"
-                                />
-                                
-                                {/* Unified Dropdown */}
-                                {showUnifiedDropdown === item.id && unifiedSearchTerm && (
-                                  <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-xl max-h-60 overflow-y-auto">
-                                    {(() => {
-                                      const { users: filteredUsers, teams: filteredTeams } = getFilteredUsersAndTeamsForAssignment();
-                                      const availableUsers = filteredUsers.filter(user => !item.assigned_users?.some(assignedUser => assignedUser.id === user.id));
-                                      const availableTeams = filteredTeams.filter(team => !item.assigned_teams?.some(assignedTeam => assignedTeam.id === team.id));
-                                      
-                                      if (availableUsers.length === 0 && availableTeams.length === 0) {
-                                        return (
-                                          <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-                                            No users or teams found
-                                          </div>
-                                        );
-                                      }
-                                      
-                                      return (
-                                        <>
-                                          {/* Users Section */}
-                                          {availableUsers.length > 0 && (
-                                            <>
-                                              <div className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700">
-                                                Users ({availableUsers.length})
-                                              </div>
-                                              {availableUsers.map((user) => (
-                                                <div
-                                                  key={`search-user-${user.id}`}
-                                                  onClick={() => handleUnifiedAssignmentSelect(user, item.id, 'user')}
-                                                  className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200 dark:border-gray-600"
-                                                >
-                                                  <div className="flex items-center gap-3">
-                                                    <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                                                      <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                                                    </div>
-                                                    <div>
-                                                      <div className="font-medium text-gray-900 dark:text-white text-sm">
-                                                        {user.full_name}
-                                                      </div>
-                                                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                                                        {user.email} • {user.department}
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              ))}
-                                            </>
-                                          )}
-                                          
-                                          {/* Teams Section */}
-                                          {availableTeams.length > 0 && (
-                                            <>
-                                              <div className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700">
-                                                Teams ({availableTeams.length})
-                                              </div>
-                                              {availableTeams.map((team) => (
-                                                <div
-                                                  key={`search-team-${team.id}`}
-                                                  onClick={() => handleUnifiedAssignmentSelect(team, item.id, 'team')}
-                                                  className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200 dark:border-gray-600"
-                                                >
-                                                  <div className="flex items-center gap-3">
-                                                    <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                                                      <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                                    </div>
-                                                    <div>
-                                                      <div className="font-medium text-gray-900 dark:text-white text-sm">
-                                                        {team.name}
-                                                      </div>
-                                                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                                                        {team.type.charAt(0).toUpperCase() + team.type.slice(1)} Team • {team.members.length} members
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              ))}
-                                            </>
-                                          )}
-                                        </>
-                                      );
-                                    })()}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          {/* )} */}
+                          <textarea
+                            value={item.description}
+                            onChange={(e) => handleChecklistContentChange(item.id, e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+                            rows={3}
+                            placeholder="Add detailed description, notes, or requirements for this audit task..."
+                          />
                         </div>
 
-
-                      </div>
-
-                      {/* Additional Actions */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Quick Actions
-                        </label>
-                        <div className="flex flex-wrap gap-2">
-                          <button 
-                            onClick={() => {
-                              setSelectedTask(item);
-                              setIsTaskDetailsModalOpen(true);
-                            }}
-                            className="px-3 py-1 text-xs bg-primary-100 text-primary-700 border border-primary-300 rounded-md hover:bg-primary-200 dark:bg-primary-900 dark:text-primary-300 dark:border-primary-600"
-                          >
-                            <FileText className="h-3 w-3 inline mr-1" />
-                            View Details
-                          </button>
-                          <button 
-                            onClick={() => {
-                              navigate(`/audit-tasks/${item.id}/fill`);
-                            }}
-                            className="px-3 py-1 text-xs bg-green-100 text-green-700 border border-green-300 rounded-md hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:border-green-600"
-                          >
-                            <CheckSquare className="h-3 w-3 inline mr-1" />
-                            Fill Checklist
-                          </button>
-                          {item.checklist?.status !== 'completed' && (
-                            <button 
-                              onClick={async () => {
-                                try {
-                                  await submitTaskForReview(item.id);
-                                  toast.success('Task submitted for review');
-                                  loadAuditTasks();
-                                } catch (error) {
-                                  toast.error('Failed to submit for review');
-                                }
-                              }}
-                              className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 border border-yellow-300 rounded-md hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-300 dark:border-yellow-600"
-                            >
-                              <Send className="h-3 w-3 inline mr-1" />
-                              Submit Review
-                            </button>
+                      {/* Unified Assignment Section */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Assignments
+                          </label>
+                        
+                        {/* Debug Assignment Data */}
+                        {/* {process.env.NODE_ENV === 'development' && (
+                          <div className="mb-2 p-2 bg-yellow-100 dark:bg-yellow-900/20 rounded text-xs">
+                            <strong>Debug - Task {item.id}:</strong><br/>
+                            Users: {JSON.stringify(item.assigned_users)}<br/>
+                            Teams: {JSON.stringify(item.assigned_teams)}
+                          </div>
+                        )} */}
+                          
+                          {/* Current Assignments Display */}
+                        <div className="space-y-2 mb-3">
+                          {/* User Assignments */}
+                          {item.assigned_users && item.assigned_users.length > 0 && item.assigned_users.map((user) => (
+                            <div key={`user-${user.id}`} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 px-3 py-2 rounded-md border border-gray-200 dark:border-gray-600">
+                                  <div className="flex items-center gap-2">
+                                <div className="h-6 w-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                                  <User className="h-3 w-3 text-gray-600 dark:text-gray-400" />
+                                    </div>
+                                <div>
+                                  <span className="text-sm text-gray-900 dark:text-white font-medium">
+                                      {user.name}
+                                    </span>
+                                  <div className="text-xs text-gray-500 dark:text-gray-400">User</div>
+                                </div>
+                                  </div>
+                                  <button
+                                    onClick={() => handleRemoveUserAssignment(item.id, user.id)}
+                                className="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                                title="Remove user assignment"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              ))}
+                              
+                          {/* Team Assignments */}
+                          {item.assigned_teams && item.assigned_teams.map((team) => (
+                            <div key={`team-${team.id}`} className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-md border border-blue-200 dark:border-blue-800">
+                              <div className="flex items-center gap-2">
+                                <div className="h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                                  <Users className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <div>
+                                  <span className="text-sm font-medium text-gray-900 dark:text-white">
+                                    {team.name}
+                                  </span>
+                                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                                    {team.type.charAt(0).toUpperCase() + team.type.slice(1)} Team • {team.member_count} members
+                                  </div>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => handleRemoveTeamAssignment(item.id, team.id)}
+                                className="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                                title="Remove team assignment"
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
+                            </div>
+                          ))}
+                          
+                          {/* Show message when no assignments */}
+                          {(!item.assigned_users || item.assigned_users.length === 0) && 
+                           (!item.assigned_teams || item.assigned_teams.length === 0) && (
+                            <div className="text-sm text-gray-500 dark:text-gray-400 italic">
+                              No users or teams assigned
+                            </div>
                           )}
+                        </div>
+
+                        {/* Unified Search Input */}
+                        <div className="relative unified-assignment-dropdown">
+                                <input
+                                  type="text"
+                            placeholder="Search users and teams to assign..."
+                            value={showUnifiedDropdown === item.id ? unifiedSearchTerm : ''}
+                            onChange={(e) => handleUnifiedSearch(e.target.value, item.id)}
+                            onFocus={() => setShowUnifiedDropdown(item.id)}
+                            onBlur={(e) => {
+                              // Only close if clicking outside
+                              setTimeout(() => {
+                                if (!e.currentTarget.contains(document.activeElement)) {
+                                  setShowUnifiedDropdown(null);
+                                }
+                              }, 150);
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                          
+                          {/* Unified Dropdown */}
+                          {showUnifiedDropdown === item.id && unifiedSearchTerm && (
+                            <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-xl max-h-60 overflow-y-auto">
+                              {(() => {
+                                const { users: filteredUsers, teams: filteredTeams } = getFilteredUsersAndTeamsForAssignment();
+                                const availableUsers = filteredUsers.filter(user => !item.assigned_users?.some(assignedUser => assignedUser.id === user.id));
+                                const availableTeams = filteredTeams.filter(team => !item.assigned_teams?.some(assignedTeam => assignedTeam.id === team.id));
+                                
+                                if (availableUsers.length === 0 && availableTeams.length === 0) {
+                                  return (
+                                    <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                                      No available users or teams found
+                                    </div>
+                                  );
+                                }
+                                
+                                return (
+                                  <>
+                                    {/* Users Section */}
+                                    {availableUsers.length > 0 && (
+                                      <>
+                                        <div className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700">
+                                          Users ({availableUsers.length})
+                                        </div>
+                                        {availableUsers.map((user) => (
+                                          <div
+                                            key={`search-user-${user.id}`}
+                                            onClick={() => handleUnifiedAssignmentSelect(user, item.id, 'user')}
+                                            className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200 dark:border-gray-600 transition-colors"
+                                        >
+                                          <div className="flex items-center gap-3">
+                                            <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                                                <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                                            </div>
+                                            <div>
+                                              <div className="font-medium text-gray-900 dark:text-white text-sm">
+                                                {user.full_name}
+                                              </div>
+                                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                {user.email} • {user.department}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        ))}
+                                      </>
+                                    )}
+                                    
+                                    {/* Teams Section */}
+                                    {availableTeams.length > 0 && (
+                                      <>
+                                        <div className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700">
+                                          Teams ({availableTeams.length})
+                                        </div>
+                                        {availableTeams.map((team) => (
+                                          <div
+                                            key={`search-team-${team.id}`}
+                                            onClick={() => handleUnifiedAssignmentSelect(team, item.id, 'team')}
+                                            className="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200 dark:border-gray-600 transition-colors"
+                                      >
+                                        <div className="flex items-center gap-3">
+                                              <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                                                <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                          </div>
+                                          <div>
+                                            <div className="font-medium text-gray-900 dark:text-white text-sm">
+                                                  {team.name}
+                                            </div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                  {team.type.charAt(0).toUpperCase() + team.type.slice(1)} Team • {team.members.length} members
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                        ))}
+                                      </>
+                                    )}
+                                  </>
+                                );
+                              })()}
+                                </div>
+                              )}
+                            </div>
+                        </div>
+
+                        {/* Additional Actions */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Quick Actions
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            <button 
+                              onClick={() => {
+                                setSelectedTask(item);
+                                setIsTaskDetailsModalOpen(true);
+                              }}
+                            className="px-3 py-1 text-xs bg-primary-100 text-primary-700 border border-primary-300 rounded-md hover:bg-primary-200 dark:bg-primary-900 dark:text-primary-300 dark:border-primary-600"
+                            >
+                              <FileText className="h-3 w-3 inline mr-1" />
+                              View Details
+                            </button>
+                            <button 
+                              onClick={() => {
+                                navigate(`/audit-tasks/${item.id}/fill`);
+                              }}
+                              className="px-3 py-1 text-xs bg-green-100 text-green-700 border border-green-300 rounded-md hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:border-green-600"
+                            >
+                              <CheckSquare className="h-3 w-3 inline mr-1" />
+                              Fill Checklist
+                            </button>
+                            {item.checklist?.status !== 'completed' && (
+                              <button 
+                                onClick={async () => {
+                                  try {
+                                    await submitTaskForReview(item.id);
+                                    toast.success('Task submitted for review');
+                                    loadAuditTasks();
+                                  } catch (error) {
+                                    toast.error('Failed to submit for review');
+                                  }
+                                }}
+                                className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 border border-yellow-300 rounded-md hover:bg-yellow-200 dark:bg-yellow-900 dark:text-yellow-300 dark:border-yellow-600"
+                              >
+                                <Send className="h-3 w-3 inline mr-1" />
+                                Submit Review
+                              </button>
+                            )}
                           
                           {/* Publish Audit Item Button */}
                           {item.status !== 'In Progress' && item.status !== 'Completed' && (
@@ -3171,8 +3279,8 @@ const AuditDetails: React.FC = () => {
                             >
                               <Share className="h-3 w-3 inline mr-1" />
                               Publish Item
-                            </button>
-                          )}
+                              </button>
+                            )}
                         </div>
                       </div>
                     </div>
@@ -3195,6 +3303,14 @@ const AuditDetails: React.FC = () => {
                 Remaining: {checklists.filter(item => !item.completed).length}
               </div>
               <div className="flex items-center gap-4">
+                {process.env.NODE_ENV === 'development' && (
+                  <button 
+                    onClick={addTestAssignments}
+                    className="text-blue-600 hover:text-blue-700 dark:text-blue-400"
+                  >
+                    Add Test Assignments
+                  </button>
+                )}
                 <button 
                   onClick={handleBulkAssign}
                   className="text-primary-600 hover:text-primary-700 dark:text-primary-400"
@@ -3778,7 +3894,7 @@ const AuditDetails: React.FC = () => {
                         }}
                         className={`inline-flex items-center gap-1 px-3 py-1 text-sm font-medium rounded-full transition-colors hover:opacity-80 ${statusStyling.bgColor} ${statusStyling.textColor}`}
                       >
-                        {auditData.status}
+                        {auditData.status.toLowerCase()}
                         <ChevronDown className="h-3 w-3" />
                       </button>
                       
@@ -3824,7 +3940,7 @@ const AuditDetails: React.FC = () => {
                 onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
                 className="px-2 py-1.5 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded"
               >
-                {isRightSidebarOpen ? 'Hide Details' : 'Show Details'}
+                {isRightSidebarOpen ? t('auditDetails.ui.hide_details') : t('auditDetails.ui.show_details')}
               </button>
             </div>
           </div>
@@ -3832,7 +3948,7 @@ const AuditDetails: React.FC = () => {
           {/* Navigation Tabs Row */}
           <div className="flex items-center h-12">
             <nav className="flex space-x-6">
-              {sidebarNavigation.map((item) => {
+              {getSidebarNavigation(t).map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
@@ -3874,7 +3990,7 @@ const AuditDetails: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600 dark:text-gray-400">Current Status</span>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusStyling.bgColor} ${statusStyling.textColor}`}>
-                      {auditData.status}
+                      {auditData.status.toLowerCase()}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
@@ -3913,7 +4029,7 @@ const AuditDetails: React.FC = () => {
                         statusStyling.bgColor.includes('orange') ? 'bg-orange-500' : 
                         statusStyling.bgColor.includes('yellow') ? 'bg-yellow-500' : 
                         statusStyling.bgColor.includes('green') ? 'bg-green-500' : 'bg-gray-500'}`}></div>
-                      <span className="text-sm text-gray-900 dark:text-white">{auditData.status}</span>
+                      <span className="text-sm text-gray-900 dark:text-white">{auditData.status.toLowerCase()}</span>
                     </div>
                   </div>
 
@@ -3954,10 +4070,10 @@ const AuditDetails: React.FC = () => {
 
               {/* Details Card */}
               <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 p-2">
-                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Details</h3>
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">{t('auditDetails.details.title')}</h3>
                 <div className="space-y-2">
                   <div>
-                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Assignees</label>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">{t('auditDetails.details.assignees')}</label>
                     <div className="mt-1 space-y-1">
                       {auditData.assigned_users_details && auditData.assigned_users_details.length > 0 ? (
                         auditData.assigned_users_details.map((user: any) => (
@@ -3973,20 +4089,20 @@ const AuditDetails: React.FC = () => {
                           </div>
                         ))
                       ) : (
-                        <span className="text-sm text-gray-500 dark:text-gray-400">No assignees</span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">{t('auditDetails.details.no_assignees')}</span>
                       )}
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Period End</label>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">{t('auditDetails.details.period_end')}</label>
                     <p className="text-sm text-gray-900 dark:text-white mt-1">{new Date(auditData.period_to).toLocaleDateString()}</p>
                   </div>
                   <div>
-                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Created</label>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">{t('auditDetails.details.created')}</label>
                     <p className="text-sm text-gray-900 dark:text-white mt-1">{new Date(auditData.created_at).toLocaleDateString()}</p>
                   </div>
                   <div>
-                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Created By</label>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">{t('auditDetails.details.created_by')}</label>
                     <p className="text-sm text-gray-900 dark:text-white mt-1">{auditData.created_by_name}</p>
                   </div>
                 </div>

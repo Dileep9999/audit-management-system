@@ -170,40 +170,10 @@ const Sidebar = ({
                     className="inline-flex items-center justify-center w-full"
                   >
                     <div className="group-data-[sidebar=small]:hidden">
-                      <img
-                        src={mainLogo}
-                        aria-label="logo"
-                        alt="logo"
-                        className="h-6 mx-auto group-data-[sidebar-colors=light]:dark:hidden group-data-[sidebar-colors=dark]:hidden group-data-[sidebar-colors=brand]:hidden group-data-[sidebar-colors=purple]:hidden group-data-[sidebar-colors=sky]:hidden"
-                        width={132}
-                        height={24}
-                      />
-                      <img
-                        src={logoWhite}
-                        aria-label="logo"
-                        alt="logo"
-                        className="h-6 mx-auto group-data-[sidebar-colors=light]:hidden group-data-[sidebar-colors=light]:dark:inline-block"
-                        width={132}
-                        height={24}
-                      />
+                      <span className="text-2xl font-bold text-primary-500 dark:text-white">AMS</span>
                     </div>
                     <div className="hidden group-data-[sidebar=small]:inline-block">
-                      <img
-                        src={logoSmDark}
-                        aria-label="logo"
-                        alt="logo"
-                        className="h-6 mx-auto group-data-[sidebar-colors=light]:dark:hidden group-data-[sidebar-colors=dark]:hidden group-data-[sidebar-colors=brand]:hidden group-data-[sidebar-colors=purple]:hidden group-data-[sidebar-colors=sky]:hidden"
-                        width={24}
-                        height={24}
-                      />
-                      <img
-                        src={logoSm}
-                        aria-label="logo"
-                        alt="logo"
-                        className="h-6 mx-auto group-data-[sidebar-colors=light]:hidden group-data-[sidebar-colors=light]:dark:inline-block"
-                        width={24}
-                        height={24}
-                      />
+                      <span className="text-2xl font-bold text-primary-500 dark:text-white">A</span>
                     </div>
                   </Link>
                 </div>

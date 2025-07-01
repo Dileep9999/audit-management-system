@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Footer from "./footer";
+import Footer from "./Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@src/slices/reducer";
 import { changeSidebarSize } from "@src/slices/thunk";
@@ -22,7 +22,10 @@ const Layout = ({ children, breadcrumbTitle }: LayoutProps) => {
     ? ` ${breadcrumbTitle} | Domiex - React TS Admin & Dashboard Template `
     : "Domiex - Admin & Dashboard Template";
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  // Initialize sidebar state based on window width
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => 
+    window.innerWidth >= 1000
+  );
   const {
     layoutMode,
     layoutType,
@@ -72,33 +75,35 @@ const Layout = ({ children, breadcrumbTitle }: LayoutProps) => {
 
   useEffect(() => {
     const handleResize = () => {
-      // Update the sidebar state based on the window width
-      setIsSidebarOpen(window.innerWidth >= 1024);
+      // Update the sidebar state based on the window width using same threshold
+      setIsSidebarOpen(window.innerWidth >= 1000);
+      
       if (
         layoutType === LAYOUT_TYPES.SEMIBOX ||
         layoutType === LAYOUT_TYPES.MODERN
       ) {
         if (window.innerWidth > 1000) {
-          // Set the layout to the layoutType if screen size is greater than 1000px
           document.documentElement.setAttribute("data-layout", layoutType);
         } else {
-          // Set to 'default' if screen size is 1000px or less
           document.documentElement.setAttribute("data-layout", "default");
         }
       } else {
-        // For other layouts, just set to layoutType, no need to check screen size
         document.documentElement.setAttribute("data-layout", layoutType);
       }
     };
+
     // Initial layout check on component mount
     handleResize();
+    
     // Listen for window resize events
     window.addEventListener("resize", handleResize);
+    
     // Cleanup the event listener on unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [layoutType]); // Only rerun the effect when layoutType changes
+  }, [layoutType]);
+
   // handle search menu
   const handleSearchClient = (value: string) => {
     setSearchValue(value);
