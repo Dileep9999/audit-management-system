@@ -65,19 +65,7 @@ enum DATA_COLORS {
 
 enum LAYOUT_LANGUAGES {
   ENGLISH = "en",
-  SPANISH = "es",
-  FRENCH = "fr",
-  RUSSIAN = "ru",
-  GERMAN = "de",
-  ITALIAN = "it",
-  CHINESE = "zh",
   ARABIC = "ar",
-  TURKISH = "tr",
-  HEBREW = "he",
-  VIETNAMESE = "vi",
-  DUTCH = "nl",
-  KOREAN = "ko",
-  PORTUGUESE = "pt",
 }
 
 export {

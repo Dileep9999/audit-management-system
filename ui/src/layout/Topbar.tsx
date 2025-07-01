@@ -11,8 +11,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import logo from "@assets/images/main-logo.png";
-import logoWhite from "@assets/images/logo-white.png";
+import uaeGovLogo from "@assets/images/logo/uae-gov-logo.webp";
 import ToolsAppsModal from "@src/components/layout/toolsAppsModal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@src/slices/reducer";
@@ -123,8 +122,12 @@ const TopBar: React.FC<TopBarProps> = ({
             {/* Logo */}
             <div className="navbar-brand">
               <div className="logos">
-                <Link to="/dashboard">
-                  <span className="text-2xl font-bold text-primary-500 dark:text-white">AMS</span>
+                <Link to="/dashboard" className="flex items-center">
+                  <img
+                    src={uaeGovLogo}
+                    alt="UAE Government"
+                    className="h-12 w-auto"
+                  />
                 </Link>
               </div>
               <button

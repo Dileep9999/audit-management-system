@@ -3,7 +3,7 @@ import Footer from "./Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@src/slices/reducer";
 import { changeSidebarSize } from "@src/slices/thunk";
-import TopBar from "./topBar";
+import TopBar from "./Topbar";
 import { MegaMenu, SubMenu, MainMenu } from "@src/dtos";
 import { LAYOUT_TYPES, SIDEBAR_SIZE } from "@src/components/constants/layout";
 import Sidebar from "./sidebar";
@@ -22,10 +22,14 @@ const Layout = ({ children, breadcrumbTitle }: LayoutProps) => {
     ? ` ${breadcrumbTitle} | Domiex - React TS Admin & Dashboard Template `
     : "Domiex - Admin & Dashboard Template";
 
-  // Initialize sidebar state based on window width
+  // Initialize sidebar states
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => 
     window.innerWidth >= 1000
   );
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(() => 
+    window.innerWidth >= 1000
+  );
+
   const {
     layoutMode,
     layoutType,
@@ -60,33 +64,36 @@ const Layout = ({ children, breadcrumbTitle }: LayoutProps) => {
     }
   }, [layoutType, layoutSidebar, dispatch]);
 
-  const toggleSidebar = () => {
-    if (window.innerWidth < 1000) {
-      // Toggle sidebar open/close for small screens
-      setIsSidebarOpen((prev) => !prev);
-      setNewThemeData("data-sidebar-size", SIDEBAR_SIZE.DEFAULT);
-      changeHTMLAttribute("data-sidebar", SIDEBAR_SIZE.DEFAULT);
-      dispatch(changeSidebarSize(SIDEBAR_SIZE.DEFAULT));
+  const toggleSidebar = useCallback(() => {
+    if (!isLargeScreen) {
+      // Mobile behavior: toggle sidebar visibility
+      setIsSidebarOpen(prev => !prev);
     } else {
-      // On larger screens, toggle between big and small sidebar
+      // Desktop behavior: toggle sidebar size
       handleThemeSidebarSize();
     }
-  };
+  }, [isLargeScreen, handleThemeSidebarSize]);
 
   useEffect(() => {
     const handleResize = () => {
-      // Update the sidebar state based on the window width using same threshold
-      setIsSidebarOpen(window.innerWidth >= 1000);
+      const width = window.innerWidth;
+      const isLarge = width >= 1000;
       
-      if (
-        layoutType === LAYOUT_TYPES.SEMIBOX ||
-        layoutType === LAYOUT_TYPES.MODERN
-      ) {
-        if (window.innerWidth > 1000) {
-          document.documentElement.setAttribute("data-layout", layoutType);
-        } else {
-          document.documentElement.setAttribute("data-layout", "default");
-        }
+      setIsLargeScreen(isLarge);
+      
+      // Only auto-open sidebar on large screens
+      if (isLarge) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
+      
+      // Handle layout type changes
+      if (layoutType === LAYOUT_TYPES.SEMIBOX || layoutType === LAYOUT_TYPES.MODERN) {
+        document.documentElement.setAttribute(
+          "data-layout",
+          isLarge ? layoutType : "default"
+        );
       } else {
         document.documentElement.setAttribute("data-layout", layoutType);
       }

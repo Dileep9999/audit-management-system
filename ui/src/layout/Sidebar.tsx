@@ -164,7 +164,7 @@ const Sidebar = ({
           >
             <div className="sidebar-wrapper">
               <div>
-                <div className="navbar-brand">
+                {/* <div className="navbar-brand">
                   <Link
                     to="/dashboard"
                     className="inline-flex items-center justify-center w-full"
@@ -176,7 +176,7 @@ const Sidebar = ({
                       <span className="text-2xl font-bold text-primary-500 dark:text-white">A</span>
                     </div>
                   </Link>
-                </div>
+                </div> */}
 
                 <div className="relative group-data-[layout=horizontal]:hidden group-data-[sidebar=small]:w-full">
                   <div className="block dropdown">

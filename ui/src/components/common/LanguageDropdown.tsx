@@ -18,15 +18,15 @@ const LanguageDropdown = () => {
   const { layoutLanguages } = useSelector((state: RootState) => state.Layout);
   const { isRTL } = useTranslation();
 
-  // Simplified language options
+  // Simplified language options - only EN and AR
   const languages = [
-    { code: LAYOUT_LANGUAGES.ENGLISH, language: "English", flag: "https://images.kcubeinfotech.com/domiex/images/flag/us.svg" },
-    { code: LAYOUT_LANGUAGES.ARABIC, language: "Arabic", flag: "https://images.kcubeinfotech.com/domiex/images/flag/sa.svg" }
+    { code: LAYOUT_LANGUAGES.ENGLISH, language: "English", label: "EN" },
+    { code: LAYOUT_LANGUAGES.ARABIC, language: "Arabic", label: "AR" }
   ];
 
-  // get country flag
-  const getCountryFlag = (code: string) => {
-    return languages.find((item) => item.code === code)?.flag;
+  // Get current language label
+  const getCurrentLanguageLabel = (code: string) => {
+    return languages.find((item) => item.code === code)?.label || "EN";
   };
 
   // change language and direction
@@ -42,16 +42,9 @@ const LanguageDropdown = () => {
     <React.Fragment>
       <Dropdown position="right" trigger="click" dropdownClassName={`dropdown ${isRTL ? 'rtl-dropdown' : ''}`}>
         <DropdownButton colorClass="topbar-link">
-          <img
-            src={
-              getCountryFlag(layoutLanguages) ||
-              "https://images.kcubeinfotech.com/domiex/images/flag/us.svg"
-            }
-            alt="flag"
-            className="object-cover rounded-md size-6"
-            width={24}
-            height={24}
-          />
+          <span className="text-sm font-medium">
+            {getCurrentLanguageLabel(layoutLanguages)}
+          </span>
         </DropdownButton>
 
         <DropdownMenu>
@@ -63,13 +56,6 @@ const LanguageDropdown = () => {
                 key={key}
                 onClick={() => changeLanguage(value.code)}
               >
-                <img
-                  src={value.flag}
-                  alt={value.language}
-                  className="object-cover rounded-md size-5"
-                  width={20}
-                  height={20}
-                />
                 <span>{value.language}</span>
               </Link>
             ))}
