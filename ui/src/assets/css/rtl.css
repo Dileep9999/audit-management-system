@@ -488,3 +488,40 @@ html[dir="rtl"] .metadata-item {
 html[dir="rtl"] .metadata-label {
   text-align: right;
 }
+
+/* Language dropdown RTL styles */
+html[dir="rtl"] .rtl-dropdown .dropdown-menu {
+  right: auto !important;
+  left: 0 !important;
+}
+
+html[dir="rtl"] .rtl-dropdown .dropdown-item {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+html[dir="rtl"] .rtl-dropdown .dropdown-item img {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Notifications dropdown RTL styles */
+html[dir="rtl"] .rtl-dropdown .dropdown-menu {
+  right: auto !important;
+  left: 0 !important;
+}
+
+html[dir="rtl"] .rtl-content {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .rtl-content img {
+  margin-left: 0.75rem;
+  margin-right: 0;
+}
+
+html[dir="rtl"] .rtl-content .grow {
+  text-align: right;
+}

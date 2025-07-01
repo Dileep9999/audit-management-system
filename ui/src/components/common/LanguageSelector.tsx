@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Globe, ChevronDown, Check } from 'lucide-react';
 import { SUPPORTED_LANGUAGES, SupportedLanguageCode } from '../../utils/api_service';
+import useTranslation from '../../hooks/useTranslation';
 
 interface LanguageSelectorProps {
   currentLanguage: SupportedLanguageCode;
@@ -16,6 +17,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   className = ''
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isRTL } = useTranslation();
 
   const currentLang = SUPPORTED_LANGUAGES.find(lang => lang.code === currentLanguage) || SUPPORTED_LANGUAGES[0];
 
@@ -59,14 +61,14 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           />
           
           {/* Dropdown */}
-          <div className="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20 overflow-hidden">
+          <div className={`absolute top-full ${isRTL ? 'right-0' : 'left-0'} mt-1 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20 overflow-hidden`}>
             <div className="py-1">
               {SUPPORTED_LANGUAGES.map((language) => (
                 <button
                   key={language.code}
                   onClick={() => handleLanguageSelect(language.code)}
                   disabled={isLoading}
-                  className="w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className={`w-full flex items-center ${isRTL ? 'space-x-reverse' : 'space-x-3'} px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   <span className="text-xl" role="img" aria-label={`${language.name} flag`}>
                     {language.flag}

@@ -211,7 +211,7 @@ const WorkflowList = () => {
                     workflow.status === 'inactive' ? 'bg-gray-100 text-gray-800' :
                     'bg-yellow-100 text-yellow-800'
                   }`}>
-                    {workflow.status}
+                    {t(`workflows.status.${workflow.status}`)}
                   </span>
                 </div>
               </div>

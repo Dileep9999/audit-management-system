@@ -212,9 +212,9 @@ const TopBar: React.FC<TopBarProps> = ({
               {/* Notifications */}
 
               <Dropdown
-                position="right"
+                position={isRTL ? "right" : ""}
                 trigger="click"
-                dropdownClassName="dropdown"
+                dropdownClassName="dropdown rtl-dropdown"
               >
                 <DropdownButton colorClass="topbar-link">
                   <span className="relative">
@@ -238,7 +238,7 @@ const TopBar: React.FC<TopBarProps> = ({
                       <div className="px-3">
                         <Link
                           to="#!"
-                          className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850 unread"
+                          className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850 unread rtl-content"
                         >
                           <img
                             src={user10}

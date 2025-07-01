@@ -1088,6 +1088,9 @@
 
   "workflows": {
     "title": "Workflows",
+    "create": "Create Workflow",
+    "create_first": "Create Your First Workflow",
+    "no_workflows": "No workflows found",
     "status": {
       "draft": "Draft",
       "active": "Active",
@@ -1101,22 +1104,66 @@
       "approved": "Approved",
       "rejected": "Rejected"
     },
-    "transitions": {
-      "success": "Status updated successfully",
-      "error": "Failed to update status",
-      "not_available": "No transitions available",
-      "invalid": "Invalid transition",
-      "permission_denied": "You do not have permission to change workflow status",
-      "server_error": "Server error occurred during status transition"
+    "list": {
+      "version": "Version",
+      "created_by": "Created by",
+      "created_at": "Created at",
+      "last_modified": "Last modified",
+      "nodes": "Nodes",
+      "connections": "Connections"
+    },
+    "designer": {
+      "title": "Workflow Designer",
+      "node_form": {
+        "title": "Node Details",
+        "name": {
+          "label": "Name",
+          "placeholder": "Enter node name"
+        },
+        "label": {
+          "label": "Label",
+          "placeholder": "Enter node label"
+        },
+        "color": {
+          "label": "Color"
+        },
+        "roles": {
+          "label": "Roles"
+        }
+      },
+      "edge_form": {
+        "title": "Transition Details",
+        "action": {
+          "placeholder": "Enter action name"
+        }
+      }
+    },
+    "form": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Enter workflow name"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Enter workflow description"
+      },
+      "status": {
+        "label": "Status"
+      }
+    },
+    "actions": {
+      "back": "Back",
+      "add_node": "Add Node",
+      "save": "Save",
+      "cancel": "Cancel",
+      "add_action": "Add Action",
+      "remove_action": "Remove Action"
     },
     "messages": {
-      "load_error": "Failed to load workflows",
-      "create_success": "Workflow created successfully",
-      "update_success": "Workflow updated successfully",
       "delete_success": "Workflow deleted successfully",
-      "create_error": "Failed to create workflow",
-      "update_error": "Failed to update workflow",
-      "delete_error": "Failed to delete workflow"
+      "delete_error": "Failed to delete workflow",
+      "duplicate_success": "Workflow duplicated successfully",
+      "duplicate_error": "Failed to duplicate workflow"
     }
   }
 }

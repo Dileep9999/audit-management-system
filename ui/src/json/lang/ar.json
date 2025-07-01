@@ -1117,16 +1117,7 @@
     "title": "سير العمل",
     "create": "إنشاء سير عمل",
     "create_first": "إنشاء أول سير عمل",
-    "loading": "جاري التحميل...",
     "no_workflows": "لم يتم العثور على سير عمل",
-    "list": {
-      "version": "الإصدار",
-      "created_by": "تم الإنشاء بواسطة",
-      "created_at": "تاريخ الإنشاء",
-      "last_modified": "آخر تعديل",
-      "nodes": "العقد",
-      "connections": "الروابط"
-    },
     "status": {
       "draft": "مسودة",
       "active": "نشط",
@@ -1140,27 +1131,13 @@
       "approved": "موافق عليه",
       "rejected": "مرفوض"
     },
-    "transitions": {
-      "success": "تم تحديث الحالة بنجاح",
-      "error": "فشل في تحديث الحالة",
-      "not_available": "لا توجد انتقالات متاحة",
-      "invalid": "انتقال غير صالح",
-      "permission_denied": "ليس لديك صلاحية لتغيير حالة سير العمل",
-      "server_error": "حدث خطأ في الخادم أثناء تغيير الحالة"
-    },
-    "actions": {
-      "edit": "تعديل",
-      "delete": "حذف",
-      "duplicate": "نسخ",
-      "save": "حفظ",
-      "cancel": "إلغاء",
-      "back": "رجوع",
-      "add_node": "إضافة عقدة",
-      "edit_node": "تعديل العقدة",
-      "add_action": "إضافة إجراء",
-      "remove_action": "حذف إجراء",
-      "add_transition": "إضافة انتقال",
-      "remove_transition": "حذف انتقال"
+    "list": {
+      "version": "الإصدار",
+      "created_by": "تم الإنشاء بواسطة",
+      "created_at": "تاريخ الإنشاء",
+      "last_modified": "آخر تعديل",
+      "nodes": "العقد",
+      "connections": "الروابط"
     },
     "designer": {
       "title": "مصمم سير العمل",
@@ -1178,27 +1155,20 @@
           "label": "اللون"
         },
         "roles": {
-          "label": "الأدوار",
-          "placeholder": "اختر الأدوار"
+          "label": "الأدوار"
         }
       },
       "edge_form": {
         "title": "تفاصيل الانتقال",
         "action": {
-          "label": "الإجراء",
           "placeholder": "أدخل اسم الإجراء"
         }
       }
     },
     "form": {
-      "title": {
-        "create": "إنشاء سير عمل",
-        "edit": "تعديل سير العمل"
-      },
       "name": {
-        "label": "اسم سير العمل",
-        "placeholder": "أدخل اسم سير العمل",
-        "required": "اسم سير العمل مطلوب"
+        "label": "الاسم",
+        "placeholder": "أدخل اسم سير العمل"
       },
       "description": {
         "label": "الوصف",
@@ -1208,19 +1178,19 @@
         "label": "الحالة"
       }
     },
+    "actions": {
+      "back": "رجوع",
+      "add_node": "إضافة عقدة",
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "add_action": "إضافة إجراء",
+      "remove_action": "إزالة الإجراء"
+    },
     "messages": {
-      "save_success": "تم حفظ سير العمل بنجاح",
-      "save_error": "فشل في حفظ سير العمل",
       "delete_success": "تم حذف سير العمل بنجاح",
       "delete_error": "فشل في حذف سير العمل",
       "duplicate_success": "تم نسخ سير العمل بنجاح",
-      "duplicate_error": "فشل في نسخ سير العمل",
-      "load_error": "فشل في تحميل سير العمل",
-      "validation": {
-        "name_required": "اسم العقدة مطلوب",
-        "roles_required": "يجب اختيار دور واحد على الأقل",
-        "action_required": "الإجراء مطلوب"
-      }
+      "duplicate_error": "فشل في نسخ سير العمل"
     }
   },
   

@@ -11,10 +11,12 @@ import { Link } from "react-router-dom";
 import { LAYOUT_LANGUAGES, LAYOUT_DIRECTION } from "@src/components/constants/layout";
 import { RootState, AppDispatch } from "src/slices/reducer";
 import { changeDirection, changeLayoutLanguage } from "@src/slices/thunk";
+import useTranslation from "@src/hooks/useTranslation";
 
 const LanguageDropdown = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { layoutLanguages } = useSelector((state: RootState) => state.Layout);
+  const { isRTL } = useTranslation();
 
   // Simplified language options
   const languages = [
@@ -38,7 +40,7 @@ const LanguageDropdown = () => {
 
   return (
     <React.Fragment>
-      <Dropdown position="right" trigger="click" dropdownClassName="dropdown">
+      <Dropdown position="right" trigger="click" dropdownClassName={`dropdown ${isRTL ? 'rtl-dropdown' : ''}`}>
         <DropdownButton colorClass="topbar-link">
           <img
             src={
@@ -57,7 +59,7 @@ const LanguageDropdown = () => {
             {languages.map((value, key) => (
               <Link
                 to="#!"
-                className="dropdown-item"
+                className={`dropdown-item ${isRTL ? 'rtl-content' : ''}`}
                 key={key}
                 onClick={() => changeLanguage(value.code)}
               >

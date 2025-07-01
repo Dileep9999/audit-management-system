@@ -11,6 +11,8 @@ import { LAYOUT_TYPES, SIDEBAR_SIZE } from "@constants/layout";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { RootState } from "@src/slices/reducer";
+import { ChevronDown } from "lucide-react";
+import useTranslation from "@src/hooks/useTranslation";
 
 export type DropdownPosition = "" | "right" | "top-right" | "top-left";
 interface DropdownProps {
@@ -54,6 +56,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const menuRef = useRef<HTMLDivElement>(null!);
   const { pathname } = useLocation();
+  const { isRTL } = useTranslation();
 
   const handleToggle = useCallback(() => {
     // if horizontall
@@ -196,10 +199,15 @@ const Dropdown: React.FC<DropdownProps> = ({
     const yTSpace = buttonRect.top;
     const yBSpace = window.innerHeight - buttonRect.bottom;
     const xLSpace = buttonRect.right;
-    data.left =
-      xLSpace < dropdownWidth
+
+    // In RTL mode, we want to position from the left edge
+    if (isRTL) {
+      data.left = buttonRect.left;
+    } else {
+      data.left = xLSpace < dropdownWidth
         ? buttonRect.left
         : buttonRect.right - dropdownWidth;
+    }
 
     if (yBSpace >= dropdownHeight) {
       data.top = buttonRect.bottom;
@@ -207,9 +215,9 @@ const Dropdown: React.FC<DropdownProps> = ({
       data.top = buttonRect.top - dropdown.offsetHeight;
     } else {
       data.top = buttonRect.top;
-      if (xLSpace - buttonRect.width > dropdownWidth) {
+      if (!isRTL && xLSpace - buttonRect.width > dropdownWidth) {
         data.left = buttonRect.left - dropdown.offsetWidth;
-      } else {
+      } else if (!isRTL) {
         data.left = buttonRect.right;
       }
     }
