@@ -366,38 +366,25 @@
       "transition_error": "Failed to update status"
     },
     "overview": {
-      "status": {
-        "title": "Status",
-        "description": "Current audit status"
-      },
+      "status": "Status",
+      "current_audit_status": "Current Audit Status",
       "progress": {
         "title": "Progress",
-        "tasksCompleted": "{completed} of {total} tasks completed",
-        "noTasks": "No tasks found"
+        "tasksCompleted": "{{completed}} of {{total}} tasks completed"
       },
-      "team": {
-        "title": "Team",
-        "description": "Assigned team members"
-      },
-      "information": {
-        "title": "Audit Information",
-        "referenceNumber": "Reference Number",
-        "auditType": "Audit Type",
-        "periodFrom": "Period From",
-        "periodTo": "Period To",
-        "scope": "Scope",
-        "objectives": "Objectives",
-        "notSpecified": "Not specified",
-        "noScopeDefined": "No scope defined",
-        "noObjectivesDefined": "No objectives defined"
-      },
-      "workflow": {
-        "title": "Workflow Information",
-        "name": "Workflow Name",
-        "status": "Workflow Status",
-        "description": "Description",
-        "noDescription": "No description available"
-      }
+      "team": "Team",
+      "assigned_team_members": "Assigned Team Members",
+      "audit_information": "Audit Information",
+      "reference_number": "Reference Number",
+      "audit_type": "Audit Type",
+      "period_from": "Period From",
+      "period_to": "Period To",
+      "scope": "Scope",
+      "objectives": "Objectives",
+      "workflow_information": "Workflow Information",
+      "workflow_name": "Workflow Name",
+      "workflow_status": "Workflow Status",
+      "description": "Description"
     },
     "tasks": {
       "title": "Audit Items",
@@ -456,6 +443,23 @@
         "generating": "Generating report...",
         "ready": "Report ready",
         "failed": "Report generation failed"
+      },
+      "quick_stats": {
+        "total_tasks": "Total Tasks",
+        "completed": "Completed Tasks",
+        "in_progress": "In Progress Tasks",
+        "pending": "Pending Tasks"
+      },
+      "available_reports": "Available Reports",
+      "summary_report": {
+        "title": "Summary Report",
+        "description": "A high-level overview of the audit findings and status",
+        "generate": "Generate Summary Report"
+      },
+      "detailed_report": {
+        "title": "Detailed Report",
+        "description": "Comprehensive report with all audit details and findings",
+        "generate": "Generate Detailed Report"
       }
     },
     "settings": {

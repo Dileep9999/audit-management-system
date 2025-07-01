@@ -366,12 +366,8 @@
     "overview": {
       "status": "الحالة",
       "current_audit_status": "حالة التدقيق الحالية",
-      "progress": {
-        "title": "التقدم",
-        "tasksCompleted": "{completed} من {total} المهام المكتملة",
-        "noTasks": "لم يتم العثور على مهام"
-      },
-      "tasks_completed": "المهام المكتملة",
+      "progress": "التقدم",
+      "tasks_completed": "من {{total}} مهام مكتملة",
       "team": "الفريق",
       "assigned_team_members": "أعضاء الفريق المعينين",
       "audit_information": "معلومات التدقيق",
@@ -380,14 +376,11 @@
       "period_from": "الفترة من",
       "period_to": "الفترة إلى",
       "scope": "النطاق",
-      "no_scope_defined": "لم يتم تحديد النطاق",
       "objectives": "الأهداف",
-      "no_objectives_defined": "لم يتم تحديد الأهداف",
       "workflow_information": "معلومات سير العمل",
       "workflow_name": "اسم سير العمل",
       "workflow_status": "حالة سير العمل",
-      "description": "الوصف",
-      "no_description_available": "لا يوجد وصف متاح"
+      "description": "الوصف"
     },
     "tasks": {
       "title": "مهام وعناصر التدقيق",
@@ -444,6 +437,23 @@
         "generating": "جاري إنشاء التقرير...",
         "ready": "التقرير جاهز",
         "failed": "فشل إنشاء التقرير"
+      },
+      "quick_stats": {
+        "total_tasks": "إجمالي المهام",
+        "completed": "المهام المكتملة",
+        "in_progress": "المهام قيد التنفيذ",
+        "pending": "المهام المعلقة"
+      },
+      "available_reports": "التقارير المتاحة",
+      "summary_report": {
+        "title": "التقرير الموجز",
+        "description": "نظرة عامة عالية المستوى على نتائج وحالة التدقيق",
+        "generate": "إنشاء التقرير الموجز"
+      },
+      "detailed_report": {
+        "title": "التقرير المفصل",
+        "description": "تقرير شامل مع جميع تفاصيل ونتائج التدقيق",
+        "generate": "إنشاء التقرير المفصل"
       }
     },
     "settings": {
