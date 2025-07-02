@@ -109,6 +109,12 @@ const getSidebarNavigation = (t: (key: string, fallback?: string) => string) => 
     description: 'Simple audit items'
   },
   { 
+    id: 'ai-insights', 
+    label: t('auditDetails.navigation.ai_insights', 'AI Insights'), 
+    icon: Brain,
+    description: 'AI-powered audit analysis and recommendations'
+  },
+  { 
     id: 'reports', 
     label: t('auditDetails.navigation.reports', 'Reports'), 
     icon: BarChart3,
@@ -2093,6 +2099,755 @@ const AuditDetails: React.FC = () => {
     );
   };
 
+  const renderAIInsightsContent = () => {
+    // Enhanced dummy data for AI insights with more unique features
+    const aiInsights = {
+      riskScore: 72,
+      complianceScore: 85,
+      anomalyDetection: {
+        detected: 7,
+        resolved: 4,
+        pending: 3,
+        lastDetected: '2 hours ago'
+      },
+      aiAgent: {
+        name: 'AuditBot Pro',
+        status: 'active',
+        tasksCompleted: 142,
+        accuracy: 96.7,
+        learningProgress: 78
+      },
+      predictiveAnalytics: {
+        nextRiskEvent: {
+          probability: 68,
+          timeframe: '14 days',
+          type: 'Control Failure',
+          department: 'Finance'
+        },
+        budgetImpact: {
+          potential: '$45,000',
+          confidence: 91
+        }
+      },
+      recommendations: [
+        {
+          id: 1,
+          type: 'high',
+          title: 'Critical Control Gap Identified',
+          description: 'AI analysis detected potential gaps in financial controls based on similar audit patterns from 1,247 comparable organizations.',
+          confidence: 94,
+          impact: 'High',
+          category: 'Risk Assessment',
+          aiGenerated: true,
+          estimatedSavings: '$125,000',
+          implementationTime: '2-3 weeks'
+        },
+        {
+          id: 2,
+          type: 'medium',
+          title: 'Process Automation Opportunity',
+          description: 'Machine learning identified 23% efficiency improvement through automated workflow orchestration.',
+          confidence: 87,
+          impact: 'Medium',
+          category: 'Process Improvement',
+          aiGenerated: true,
+          estimatedSavings: '$67,500',
+          implementationTime: '1-2 months'
+        },
+        {
+          id: 3,
+          type: 'low',
+          title: 'Smart Documentation Assistant',
+          description: 'Natural Language Processing suggests auto-completion for 3 documentation sections using industry templates.',
+          confidence: 78,
+          impact: 'Low',
+          category: 'Documentation',
+          aiGenerated: true,
+          estimatedSavings: '$12,000',
+          implementationTime: '1 week'
+        }
+      ],
+      trends: [
+        { month: 'Jan', riskScore: 65, complianceScore: 78, anomalies: 12 },
+        { month: 'Feb', riskScore: 68, complianceScore: 82, anomalies: 8 },
+        { month: 'Mar', riskScore: 72, complianceScore: 85, anomalies: 7 }
+      ],
+      keyFindings: [
+        'Deep learning analysis of 1,247 similar audits',
+        'Real-time pattern recognition across 15 risk categories',
+        'Predictive modeling with 96.7% accuracy rate',
+        'Continuous compliance monitoring with AI agents',
+        'Natural language processing for document analysis',
+        'Behavioral analytics detecting unusual patterns'
+      ],
+      industryBenchmark: {
+        yourScore: 85,
+        industryAverage: 73,
+        topPerformer: 92,
+        ranking: '23rd percentile'
+      },
+      realTimeAlerts: [
+        {
+          id: 1,
+          type: 'warning',
+          message: 'Unusual transaction pattern detected in Q1 expenses',
+          timestamp: '5 minutes ago',
+          severity: 'medium'
+        },
+        {
+          id: 2,
+          type: 'info',
+          message: 'AI model completed training on new compliance regulations',
+          timestamp: '1 hour ago',
+          severity: 'low'
+        },
+        {
+          id: 3,
+          type: 'success',
+          message: 'Automated control test passed with 98% confidence',
+          timestamp: '3 hours ago',
+          severity: 'low'
+        }
+      ]
+    };
+
+    const getRecommendationColor = (type: string) => {
+      switch (type) {
+        case 'high':
+          return 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800';
+        case 'medium':
+          return 'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800';
+        case 'low':
+          return 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800';
+        default:
+          return 'bg-gray-50 border-gray-200 dark:bg-gray-900/20 dark:border-gray-800';
+      }
+    };
+
+    const getRecommendationIcon = (type: string) => {
+      switch (type) {
+        case 'high':
+          return <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />;
+        case 'medium':
+          return <Target className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />;
+        case 'low':
+          return <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+        default:
+          return <Brain className="w-5 h-5 text-gray-600 dark:text-gray-400" />;
+      }
+    };
+
+         return (
+       <div className="space-y-6">
+         {/* Enhanced Header with AI Agent Status */}
+         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
+           <div className="flex items-center justify-between mb-6">
+             <div>
+               <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                 <Brain className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+                 AI Insights & Analysis
+                 <span className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full">
+                   BETA
+                 </span>
+               </h1>
+               <p className="text-gray-600 dark:text-gray-400 mt-1">
+                 Powered by {aiInsights.aiAgent.name} - Advanced audit intelligence system
+               </p>
+             </div>
+             <div className="flex items-center gap-3">
+               <div className="text-right">
+                 <div className="text-sm font-medium text-gray-900 dark:text-white">
+                   {aiInsights.aiAgent.tasksCompleted} tasks completed
+                 </div>
+                 <div className="text-xs text-gray-500 dark:text-gray-400">
+                   {aiInsights.aiAgent.accuracy}% accuracy
+                 </div>
+               </div>
+               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                 AI Agent Active
+               </span>
+             </div>
+           </div>
+
+           {/* Real-time Alerts Banner */}
+           <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+             <div className="flex items-center justify-between mb-3">
+               <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 flex items-center gap-2">
+                 <Bell className="w-4 h-4" />
+                 Real-time AI Alerts
+               </h3>
+               <span className="text-xs text-blue-600 dark:text-blue-400">
+                 Last updated: {aiInsights.realTimeAlerts[0].timestamp}
+               </span>
+             </div>
+             <div className="space-y-2">
+               {aiInsights.realTimeAlerts.slice(0, 2).map((alert) => (
+                 <div key={alert.id} className="flex items-center gap-3 text-sm">
+                   <div className={`w-2 h-2 rounded-full ${
+                     alert.type === 'warning' ? 'bg-yellow-500' :
+                     alert.type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+                   }`}></div>
+                   <span className="text-gray-700 dark:text-gray-300">{alert.message}</span>
+                   <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">
+                     {alert.timestamp}
+                   </span>
+                 </div>
+               ))}
+             </div>
+           </div>
+
+          {/* Risk & Compliance Scores */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-lg p-6 border border-red-200 dark:border-red-800">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Risk Score</h3>
+                <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+              </div>
+              <div className="flex items-end gap-4">
+                <div className="text-3xl font-bold text-red-600 dark:text-red-400">{aiInsights.riskScore}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400 pb-1">/ 100</div>
+              </div>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-3">
+                <div 
+                  className="bg-red-600 h-2 rounded-full transition-all duration-1000" 
+                  style={{ width: `${aiInsights.riskScore}%` }}
+                ></div>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                Moderate risk level detected
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-6 border border-green-200 dark:border-green-800">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Compliance Score</h3>
+                <Shield className="w-6 h-6 text-green-600 dark:text-green-400" />
+              </div>
+              <div className="flex items-end gap-4">
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400">{aiInsights.complianceScore}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400 pb-1">/ 100</div>
+              </div>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-3">
+                <div 
+                  className="bg-green-600 h-2 rounded-full transition-all duration-1000" 
+                  style={{ width: `${aiInsights.complianceScore}%` }}
+                ></div>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                Good compliance alignment
+              </p>
+            </div>
+          </div>
+
+          {/* Key Findings */}
+          <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-6 border border-primary-200 dark:border-primary-800">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Brain className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+              AI Analysis Summary
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {aiInsights.keyFindings.map((finding, index) => (
+                <div key={index} className="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                  <CheckCircle className="w-4 h-4 text-primary-600 dark:text-primary-400 flex-shrink-0" />
+                  {finding}
+                </div>
+              ))}
+            </div>
+          </div>
+                 </div>
+
+         {/* Anomaly Detection & Predictive Analytics */}
+         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+           {/* Anomaly Detection */}
+           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
+             <div className="flex items-center justify-between mb-4">
+               <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                 <AlertCircle className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                 Anomaly Detection
+               </h2>
+               <span className="text-xs bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300 px-2 py-1 rounded-full">
+                 ML-Powered
+               </span>
+             </div>
+             
+             <div className="grid grid-cols-3 gap-4 mb-6">
+               <div className="text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                 <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+                   {aiInsights.anomalyDetection.detected}
+                 </div>
+                 <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">Detected</div>
+               </div>
+               <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                 <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                   {aiInsights.anomalyDetection.resolved}
+                 </div>
+                 <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">Resolved</div>
+               </div>
+               <div className="text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                 <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                   {aiInsights.anomalyDetection.pending}
+                 </div>
+                 <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">Pending</div>
+               </div>
+             </div>
+
+             <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+               <div className="flex items-center justify-between text-sm">
+                 <span className="text-gray-600 dark:text-gray-400">Last Detection:</span>
+                 <span className="font-medium text-gray-900 dark:text-white">
+                   {aiInsights.anomalyDetection.lastDetected}
+                 </span>
+               </div>
+               <div className="mt-3">
+                 <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                   <span>Detection Accuracy</span>
+                   <span>94%</span>
+                 </div>
+                 <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                   <div className="bg-orange-500 h-2 rounded-full" style={{ width: '94%' }}></div>
+                 </div>
+               </div>
+             </div>
+           </div>
+
+           {/* Predictive Analytics */}
+           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
+             <div className="flex items-center justify-between mb-4">
+               <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                 <Target className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                 Predictive Analytics
+               </h2>
+               <span className="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300 px-2 py-1 rounded-full">
+                 AI Forecast
+               </span>
+             </div>
+
+             <div className="space-y-4">
+               <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                 <div className="flex items-center justify-between mb-2">
+                   <h3 className="font-semibold text-gray-900 dark:text-white">Next Risk Event</h3>
+                   <span className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                     {aiInsights.predictiveAnalytics.nextRiskEvent.probability}% probability
+                   </span>
+                 </div>
+                 <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                   <div>Type: <span className="font-medium text-gray-900 dark:text-white">{aiInsights.predictiveAnalytics.nextRiskEvent.type}</span></div>
+                   <div>Department: <span className="font-medium text-gray-900 dark:text-white">{aiInsights.predictiveAnalytics.nextRiskEvent.department}</span></div>
+                   <div>Timeframe: <span className="font-medium text-gray-900 dark:text-white">{aiInsights.predictiveAnalytics.nextRiskEvent.timeframe}</span></div>
+                 </div>
+               </div>
+
+               <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                 <div className="flex items-center justify-between mb-2">
+                   <h3 className="font-semibold text-gray-900 dark:text-white">Budget Impact</h3>
+                   <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                     {aiInsights.predictiveAnalytics.budgetImpact.confidence}% confidence
+                   </span>
+                 </div>
+                 <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                   {aiInsights.predictiveAnalytics.budgetImpact.potential}
+                 </div>
+                 <div className="text-sm text-gray-600 dark:text-gray-400">
+                   Potential cost avoidance through AI recommendations
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+
+         {/* Industry Benchmarking */}
+         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
+           <div className="flex items-center justify-between mb-6">
+             <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+               <BarChart3 className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+               Industry Benchmarking
+             </h2>
+             <button className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+               View Full Report
+             </button>
+           </div>
+
+           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+             <div className="text-center p-4 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-lg border border-indigo-200 dark:border-indigo-800">
+               <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                 {aiInsights.industryBenchmark.yourScore}
+               </div>
+               <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Your Score</div>
+               <div className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">
+                 +{aiInsights.industryBenchmark.yourScore - aiInsights.industryBenchmark.industryAverage} vs avg
+               </div>
+             </div>
+             <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+               <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
+                 {aiInsights.industryBenchmark.industryAverage}
+               </div>
+               <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Industry Average</div>
+             </div>
+             <div className="text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg border border-green-200 dark:border-green-800">
+               <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                 {aiInsights.industryBenchmark.topPerformer}
+               </div>
+               <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Top Performer</div>
+               <div className="text-xs text-orange-600 dark:text-orange-400 mt-2 font-medium">
+                 -{aiInsights.industryBenchmark.topPerformer - aiInsights.industryBenchmark.yourScore} to reach
+               </div>
+             </div>
+             <div className="text-center p-4 bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+               <div className="text-lg font-bold text-yellow-600 dark:text-yellow-400">
+                 {aiInsights.industryBenchmark.ranking}
+               </div>
+               <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Your Ranking</div>
+               <div className="text-xs text-blue-600 dark:text-blue-400 mt-2 font-medium">
+                 Above average
+               </div>
+             </div>
+           </div>
+
+           <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg">
+             <div className="flex items-center gap-3 mb-3">
+               <Brain className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+               <h3 className="font-semibold text-gray-900 dark:text-white">AI Insight</h3>
+             </div>
+             <p className="text-sm text-gray-700 dark:text-gray-300">
+               Your organization performs <span className="font-semibold text-green-600 dark:text-green-400">16% better</span> than industry average. 
+               AI analysis suggests focusing on process automation to reach top performer level within 6 months.
+             </p>
+           </div>
+         </div>
+
+         {/* Enhanced AI Recommendations */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">AI Recommendations</h2>
+          <div className="space-y-4">
+            {aiInsights.recommendations.map((recommendation) => (
+              <div 
+                key={recommendation.id} 
+                className={`rounded-lg p-6 border ${getRecommendationColor(recommendation.type)}`}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0">
+                    {getRecommendationIcon(recommendation.type)}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        {recommendation.title}
+                      </h3>
+                      <div className="flex items-center gap-3">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                          {recommendation.category}
+                        </span>
+                        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                          {recommendation.confidence}% confidence
+                        </span>
+                      </div>
+                    </div>
+                                         <p className="text-gray-700 dark:text-gray-300 mb-4">
+                       {recommendation.description}
+                     </p>
+                     
+                     {/* Enhanced metrics */}
+                     <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                       <div>
+                         <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Estimated Savings</div>
+                         <div className="text-lg font-bold text-green-600 dark:text-green-400">{recommendation.estimatedSavings}</div>
+                       </div>
+                       <div>
+                         <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Implementation</div>
+                         <div className="text-sm font-medium text-gray-900 dark:text-white">{recommendation.implementationTime}</div>
+                       </div>
+                     </div>
+                     
+                     <div className="flex items-center justify-between">
+                       <div className="flex items-center gap-3">
+                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                           recommendation.impact === 'High' 
+                             ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                             : recommendation.impact === 'Medium'
+                             ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                             : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                         }`}>
+                           {recommendation.impact} Impact
+                         </span>
+                         {recommendation.aiGenerated && (
+                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
+                             <Brain className="w-3 h-3 mr-1" />
+                             AI Generated
+                           </span>
+                         )}
+                       </div>
+                       <div className="flex gap-2">
+                         <button className="px-4 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                           <CheckCircle className="w-4 h-4" />
+                           Accept
+                         </button>
+                         <button className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                           Dismiss
+                         </button>
+                       </div>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Trend Analysis */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Trend Analysis</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Risk Score Trend</h3>
+              <div className="space-y-3">
+                {aiInsights.trends.map((trend, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <span className="font-medium text-gray-900 dark:text-white">{trend.month}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-24 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                        <div 
+                          className="bg-red-500 h-2 rounded-full transition-all duration-500" 
+                          style={{ width: `${trend.riskScore}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400 w-8">
+                        {trend.riskScore}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Compliance Score Trend</h3>
+              <div className="space-y-3">
+                {aiInsights.trends.map((trend, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <span className="font-medium text-gray-900 dark:text-white">{trend.month}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-24 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                        <div 
+                          className="bg-green-500 h-2 rounded-full transition-all duration-500" 
+                          style={{ width: `${trend.complianceScore}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400 w-8">
+                        {trend.complianceScore}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+                 {/* Action Items */}
+         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
+           <div className="flex items-center justify-between mb-6">
+             <h2 className="text-xl font-bold text-gray-900 dark:text-white">AI-Generated Action Items</h2>
+             <div className="flex gap-2">
+               <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-medium rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 flex items-center gap-2">
+                 <Brain className="w-4 h-4" />
+                 Regenerate with AI
+               </button>
+               <button className="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors">
+                 Export Report
+               </button>
+             </div>
+           </div>
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+               <div className="flex items-center gap-3 mb-3">
+                 <Target className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                 <h3 className="font-semibold text-gray-900 dark:text-white">Immediate Actions</h3>
+                 <span className="text-xs bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 px-2 py-1 rounded-full">
+                   High Priority
+                 </span>
+               </div>
+               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                 <li className="flex items-center gap-2">
+                   <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                   Review high-risk financial controls
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                   Update documentation gaps (3 areas)
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                   Schedule compliance team training
+                 </li>
+               </ul>
+               <div className="mt-3 text-xs text-blue-600 dark:text-blue-400 font-medium">
+                 Est. completion: 2-3 weeks
+               </div>
+             </div>
+             <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800">
+               <div className="flex items-center gap-3 mb-3">
+                 <Calendar className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                 <h3 className="font-semibold text-gray-900 dark:text-white">Short-term Goals</h3>
+                 <span className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 px-2 py-1 rounded-full">
+                   Medium Priority
+                 </span>
+               </div>
+               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                 <li className="flex items-center gap-2">
+                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                   Implement process automation
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                   Enhance real-time monitoring
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                   Conduct quarterly reviews
+                 </li>
+               </ul>
+               <div className="mt-3 text-xs text-yellow-600 dark:text-yellow-400 font-medium">
+                 Est. completion: 1-2 months
+               </div>
+             </div>
+             <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
+               <div className="flex items-center gap-3 mb-3">
+                 <Star className="w-5 h-5 text-green-600 dark:text-green-400" />
+                 <h3 className="font-semibold text-gray-900 dark:text-white">Strategic Initiatives</h3>
+                 <span className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 px-2 py-1 rounded-full">
+                   Long-term
+                 </span>
+               </div>
+               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                 <li className="flex items-center gap-2">
+                   <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                   Develop AI-driven controls
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+                   Establish industry best practices
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
+                   Create organizational knowledge base
+                 </li>
+               </ul>
+               <div className="mt-3 text-xs text-green-600 dark:text-green-400 font-medium">
+                 Est. completion: 3-6 months
+               </div>
+             </div>
+           </div>
+         </div>
+
+         {/* AI Chat Assistant */}
+         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
+           <div className="flex items-center justify-between mb-6">
+             <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+               <Brain className="w-6 h-6 text-gradient-to-r from-purple-600 to-pink-600" />
+               Ask AI Assistant
+               <span className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full">
+                 NEW
+               </span>
+             </h2>
+             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+               Online
+             </div>
+           </div>
+
+           {/* Chat Messages */}
+           <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
+             <div className="flex items-start gap-3">
+               <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                 <Brain className="w-4 h-4 text-white" />
+               </div>
+               <div className="flex-1 bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                 <div className="text-sm font-medium text-gray-900 dark:text-white mb-1">AuditBot Pro</div>
+                 <div className="text-sm text-gray-700 dark:text-gray-300">
+                   Hi! I've analyzed your audit data and identified several optimization opportunities. 
+                   Would you like me to explain the critical control gap I detected?
+                 </div>
+                 <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">2 minutes ago</div>
+               </div>
+             </div>
+             
+             <div className="flex items-start gap-3 justify-end">
+               <div className="flex-1 max-w-xs bg-primary-500 rounded-lg p-3">
+                 <div className="text-sm text-white">
+                   Yes, please explain the control gap and suggest remediation steps.
+                 </div>
+                 <div className="text-xs text-primary-100 mt-2">Just now</div>
+               </div>
+               <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                 <User className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+               </div>
+             </div>
+
+             <div className="flex items-start gap-3">
+               <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                 <Brain className="w-4 h-4 text-white" />
+               </div>
+               <div className="flex-1 bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                 <div className="text-sm font-medium text-gray-900 dark:text-white mb-1">AuditBot Pro</div>
+                 <div className="text-sm text-gray-700 dark:text-gray-300">
+                   <div className="flex items-center gap-2 mb-2">
+                     <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                     <span className="text-xs text-blue-600 dark:text-blue-400">Analyzing...</span>
+                   </div>
+                   Based on my analysis of 1,247 similar audits, I've identified a potential segregation of duties issue in your financial approval process. Here's what I recommend:
+                   
+                   <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border-l-2 border-blue-500">
+                     <div className="text-xs font-medium text-blue-800 dark:text-blue-300">Immediate Actions:</div>
+                     <ul className="text-xs text-blue-700 dark:text-blue-400 mt-1 space-y-1">
+                                               <li>• Implement dual approval for transactions &gt;$10K</li>
+                       <li>• Separate authorization from recording functions</li>
+                       <li>• Add automated control monitoring</li>
+                     </ul>
+                   </div>
+                 </div>
+                 <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">Just now</div>
+               </div>
+             </div>
+           </div>
+
+           {/* Chat Input */}
+           <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+             <input
+               type="text"
+               placeholder="Ask about audit findings, recommendations, or compliance..."
+               className="flex-1 bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+             />
+             <div className="flex items-center gap-2">
+               <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                 <Paperclip className="w-4 h-4" />
+               </button>
+               <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 flex items-center gap-2">
+                 <Send className="w-4 h-4" />
+                 Send
+               </button>
+             </div>
+           </div>
+
+           {/* Quick Actions */}
+           <div className="flex flex-wrap gap-2 mt-3">
+             <button className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+               Explain risk score
+             </button>
+             <button className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+               Suggest improvements
+             </button>
+             <button className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+               Compare to industry
+             </button>
+             <button className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+               Generate report
+             </button>
+           </div>
+         </div>
+      </div>
+    );
+  };
+
   const renderSettingsContent = () => {
     const settingsTabs = [
       { id: 'general', label: 'General', icon: Settings },
@@ -3829,6 +4584,8 @@ const AuditDetails: React.FC = () => {
         }
         case 'checklist':
           return renderChecklistContent();
+        case 'ai-insights':
+          return renderAIInsightsContent();
         case 'reports':
           return renderReportsContent();
         case 'settings':
