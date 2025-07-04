@@ -88,8 +88,9 @@ api.interceptors.response.use(
         // Clear any existing auth state
         localStorage.removeItem('isRedirecting');
         
-        // Redirect to login page
-        window.location.href = '/login';
+        // Redirect to Django login page
+        const nextParam = encodeURIComponent(`/#${currentPath}`);
+        window.location.href = `http://localhost:8000/login/?next=${nextParam}`;
       }
     }
     

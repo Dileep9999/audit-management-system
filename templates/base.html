@@ -1,8 +1,9 @@
 {% load i18n %}
 {% load static %}
 
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
-<html lang="{{ request.LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_CODE == 'ar' %}dir="rtl"{% endif %}>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,21 +11,8 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
-<body>
-    <!-- Language switcher -->
-    <form action="{% url 'set_language' %}" method="post" class="language-switcher">
-        {% csrf_token %}
-        <input name="next" type="hidden" value="{{ request.path }}">
-        <select name="language" onchange="this.form.submit()">
-            {% get_current_language as LANGUAGE_CODE %}
-            {% get_available_languages as LANGUAGES %}
-            {% for lang_code, lang_name in LANGUAGES %}
-                <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>
-                    {{ lang_name }}
-                </option>
-            {% endfor %}
-        </select>
-    </form>
+<body {% if LANGUAGE_CODE == 'ar' %}class="rtl"{% endif %}>
+    
 
     <!-- Content blocks -->
     {% block content %}
@@ -45,7 +33,5 @@
       </div>
     {% endif %}
 
-	Current language: {{ LANGUAGE_CODE }}<br>
-	Language cookie: {{ request.COOKIES.language }}
 </body>
 </html>

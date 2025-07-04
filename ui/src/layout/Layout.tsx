@@ -6,7 +6,7 @@ import { changeSidebarSize } from "@src/slices/thunk";
 import TopBar from "./Topbar";
 import { MegaMenu, SubMenu, MainMenu } from "@src/dtos";
 import { LAYOUT_TYPES, SIDEBAR_SIZE } from "@src/components/constants/layout";
-import Sidebar from "./sidebar";
+import Sidebar from "./Sidebar";
 import { menu } from "@data/index";
 import { changeHTMLAttribute, setNewThemeData } from "@src/slices/layout/utils";
 import { changeSettingModalOpen } from "@src/slices/layout/reducer";
@@ -39,6 +39,7 @@ const Layout = ({ children, breadcrumbTitle }: LayoutProps) => {
     layoutSidebarColor,
     layoutDataColor,
     layoutDirection,
+    layoutLanguages,
   } = useSelector((state: RootState) => state.Layout);
   const dispatch = useDispatch<AppDispatch>();
   const [searchSidebar, setSearchSidebar] = useState<MegaMenu[]>(menu);
@@ -164,7 +165,7 @@ const Layout = ({ children, breadcrumbTitle }: LayoutProps) => {
     document.documentElement.classList.add("scroll-smooth", "group");
     document.documentElement.setAttribute("data-mode", layoutMode);
     document.documentElement.setAttribute("data-colors", layoutDataColor);
-    document.documentElement.setAttribute("lang", "en");
+    document.documentElement.setAttribute("lang", layoutLanguages === 'ar' ? 'ar' : 'en');
     document.documentElement.setAttribute("data-layout", layoutType);
     document.documentElement.setAttribute("data-content-width", layoutWidth);
     document.documentElement.setAttribute("data-sidebar", layoutSidebar);
@@ -174,7 +175,7 @@ const Layout = ({ children, breadcrumbTitle }: LayoutProps) => {
     );
     document.documentElement.setAttribute("data-nav-type", layoutDarkModeClass);
     document.documentElement.setAttribute("dir", layoutDirection);
-  }, []);
+  }, [layoutMode, layoutDataColor, layoutType, layoutWidth, layoutSidebar, layoutSidebarColor, layoutDarkModeClass, layoutDirection, layoutLanguages]);
 
   return (
     <React.Fragment>

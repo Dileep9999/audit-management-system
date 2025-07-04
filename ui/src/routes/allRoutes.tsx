@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import SignInBasic from "../views/auth/signIn/signinBasic";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Dashboard from "../views/dashboard/Dashboard";
 import Audits from "../views/audits/Audits";
@@ -208,7 +207,6 @@ const routes: IRoute[] = [
 ];
 
 const nonAuthRoutes: IRoute[] = [
-  { path: "/login", component: <SignInBasic /> },
   { path: "*", component: <NotFound /> }
 ];
 

@@ -131,9 +131,9 @@ const Header: React.FC = () => {
           ></i>
         </button>
         <div>
-          <Link to="/login" className="btn btn-active-gray me-2">
+          <a href="http://localhost:8000/login/" className="btn btn-active-gray me-2">
             Sign In
-          </Link>
+          </a>
           <button
             type="button"
             className="hidden btn btn-sub-primary md:inline-block"

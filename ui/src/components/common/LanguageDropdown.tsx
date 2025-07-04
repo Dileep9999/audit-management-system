@@ -12,6 +12,7 @@ import { LAYOUT_LANGUAGES, LAYOUT_DIRECTION } from "@src/components/constants/la
 import { RootState, AppDispatch } from "src/slices/reducer";
 import { changeDirection, changeLayoutLanguage } from "@src/slices/thunk";
 import useTranslation from "@src/hooks/useTranslation";
+import LanguageSyncService from "@src/utils/language_sync_service";
 
 const LanguageDropdown = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -30,12 +31,30 @@ const LanguageDropdown = () => {
   };
 
   // change language and direction
-  const changeLanguage = (lng: LAYOUT_LANGUAGES) => {
-    i18n.changeLanguage(lng);
-    // Change direction based on language
-    dispatch(changeDirection(lng === LAYOUT_LANGUAGES.ARABIC ? LAYOUT_DIRECTION.RTL : LAYOUT_DIRECTION.LTR));
-    // Update the language in the store
-    dispatch(changeLayoutLanguage(lng));
+  const changeLanguage = async (lng: LAYOUT_LANGUAGES) => {
+    // Prevent rapid clicks
+    if (lng === layoutLanguages) {
+      console.log('Language already set to:', lng);
+      return;
+    }
+
+    try {
+      console.log('Changing language to:', lng);
+      
+      // Use language sync service to update both Django and React
+      await LanguageSyncService.getInstance().changeLanguage(lng);
+      
+      // Also update i18n for immediate translation changes
+      i18n.changeLanguage(lng);
+      
+      console.log('Language changed successfully:', lng);
+    } catch (error) {
+      console.error('Failed to change language:', error);
+      // Fallback to local change only
+      i18n.changeLanguage(lng);
+      dispatch(changeDirection(lng === LAYOUT_LANGUAGES.ARABIC ? LAYOUT_DIRECTION.RTL : LAYOUT_DIRECTION.LTR));
+      dispatch(changeLayoutLanguage(lng));
+    }
   };
 
   return (

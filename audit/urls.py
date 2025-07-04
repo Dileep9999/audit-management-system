@@ -17,7 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 from django.conf import settings
 from django.views.static import serve
 from django.conf.urls.static import static
@@ -28,7 +28,9 @@ import os
 from apps.user.admin_views import custom_dashboard
 from .views import (
     CustomLoginView,
+    CustomLogoutView,
     HomeTemplateView,
+    ReactAppView,
     SetLanguageAPIView,
     custom_404_view,
     custom_set_language,
@@ -49,11 +51,11 @@ urlpatterns = [
     path("impersonate/", include("impersonate.urls")),
     path("", HomeTemplateView.as_view(), name="home"),
     path(
-        "login",
-        CustomLoginView.as_view(redirect_authenticated_user=True, next_page="/"),
+        "login/",
+        CustomLoginView.as_view(redirect_authenticated_user=True, next_page="/#/dashboard"),
         name="login",
     ),
-    path("logout", LogoutView.as_view(next_page="login"), name="logout"),
+    path("logout/", CustomLogoutView.as_view(), name="logout"),
     path("rosetta/", include("rosetta.urls")),
     path("i18n/setlang", custom_set_language, name="set_language"),
     path("api/setlang", SetLanguageAPIView.as_view(), name="set_language_api"),
@@ -68,6 +70,7 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
+    # Static file serving - must come BEFORE catch-all route
     urlpatterns += [
         re_path(
             r"^media/(?P<path>.*)$",
@@ -76,19 +79,12 @@ if settings.DEBUG:
                 "document_root": settings.MEDIA_ROOT,
             },
         ),
-        re_path(
-            r"^assets/(?P<path>.*)$",
-            serve,
-            {
-                "document_root": "static/angular/assets",
-            },
-        ),
         # Serve React frontend static files
         re_path(
             r"^static/(?P<path>.*)$",
             serve,
             {
-                "document_root": os.path.join(settings.BASE_DIR, "ui", "dist"),
+                "document_root": os.path.join(settings.BASE_DIR, "static", "dist"),
             },
         ),
         # Serve React frontend assets
@@ -96,8 +92,13 @@ if settings.DEBUG:
             r"^assets/(?P<path>.*)$",
             serve,
             {
-                "document_root": os.path.join(settings.BASE_DIR, "ui", "public"),
+                "document_root": os.path.join(settings.BASE_DIR, "static", "dist", "assets"),
             },
         ),
     ]
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# Catch-all route for React app - must be AFTER static file routes
+urlpatterns += [
+    re_path(r'^(?!api/|admin/|impersonate/|rosetta/|i18n/|login/|logout/|static/|assets/|media/).*$', ReactAppView.as_view(), name='react_app'),
+]

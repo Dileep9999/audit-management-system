@@ -23,13 +23,18 @@ class AuthService {
   private static instance: AuthService;
   private isAuthenticatedFlag: boolean = false;
   private currentUser: User | null = null;
-  private readonly LOGIN_URL = 'http://localhost:8000/login';  // Django expects 'login' without trailing slash
-  private readonly LOGOUT_URL = 'http://localhost:8000/logout'; // Django expects 'logout' without trailing slash
+  private readonly LOGIN_URL = 'http://localhost:8000/login/';  // Django login URL with trailing slash
+  private readonly LOGOUT_URL = 'http://localhost:8000/logout/'; // Django logout URL with trailing slash
   private isInitialized: boolean = false;
+  private static whoamiInProgress: boolean = false;
+  private static lastWhoamiTime: number = 0;
+  private static whoamiDebounceDelay: number = 2000; // 2 second debounce
 
   private constructor() {
     this.initializeAuth();
   }
+
+
 
   private isLoggedIn(): boolean {
     const wasLoggedIn = localStorage.getItem('wasLoggedIn');
@@ -91,7 +96,7 @@ class AuthService {
 
     // Check if the session cookie has a value
     const sessionValue = sessionCookie ? sessionCookie.split('=')[1] || '' : '';
-    const isValid = sessionValue.length > 0 || (storedSessionId && storedSessionId.length > 0);
+    const isValid = sessionValue.length > 0 || (storedSessionId !== null && storedSessionId.length > 0);
     
     console.log('Session check:', { 
       hasCookie: !!sessionCookie, 
@@ -284,6 +289,31 @@ class AuthService {
   }
 
   public async whoami(): Promise<User> {
+    // Prevent multiple simultaneous whoami calls
+    if (AuthService.whoamiInProgress) {
+      console.log('Whoami already in progress, waiting...');
+      // Wait for current call to complete
+      while (AuthService.whoamiInProgress) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      // Return cached user if available
+      if (this.currentUser) {
+        return this.currentUser;
+      }
+    }
+
+    // Debounce whoami calls
+    const now = Date.now();
+    if (now - AuthService.lastWhoamiTime < AuthService.whoamiDebounceDelay) {
+      console.log('Whoami debounced, returning cached user...');
+      if (this.currentUser) {
+        return this.currentUser;
+      }
+    }
+
+    AuthService.whoamiInProgress = true;
+    AuthService.lastWhoamiTime = now;
+
     try {
       console.log('Making whoami request...', {
         cookies: document.cookie,
@@ -296,17 +326,20 @@ class AuthService {
       this.isAuthenticatedFlag = true;
       this.currentUser = response;
       localStorage.setItem('wasLoggedIn', 'true');
+      
       return response;
     } catch (error) {
       console.error('Whoami error:', error);
       // Only clear auth state if we're not in the process of logging in
-      if (!localStorage.getItem('isRedirecting')) {
+      if (!this.getLocalStorageBoolean('isRedirecting')) {
         this.clearAuthState();
       }
       if (error instanceof Error) {
         throw new Error(`Failed to get user info: ${error.message}`);
       }
       throw new Error('Failed to get user info: Unknown error');
+    } finally {
+      AuthService.whoamiInProgress = false;
     }
   }
 
@@ -317,12 +350,17 @@ class AuthService {
         currentPath: window.location.pathname
       });
 
+      // Get CSRF token for logout
+      const csrfToken = await this.getCsrfToken();
+      console.log('Got CSRF token for logout:', csrfToken.substring(0, 10) + '...');
+
       await fetch(this.LOGOUT_URL, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': csrfToken
         }
       });
 
@@ -331,6 +369,8 @@ class AuthService {
       console.error('Logout error:', error);
     } finally {
       this.clearAuthState();
+      // Redirect to Django login page
+      window.location.href = this.LOGIN_URL;
     }
   }
 

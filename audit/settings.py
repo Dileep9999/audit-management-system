@@ -124,11 +124,11 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # Must be at the top
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",  # Must be before UserLanguageMiddleware
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "apps.user.middlewares.UserLanguageMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
+    "apps.user.middlewares.UserLanguageMiddleware",  # After LocaleMiddleware
     "django.contrib.messages.middleware.MessageMiddleware",
     "impersonate.middleware.ImpersonateMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -158,8 +158,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "audit.wsgi.application"
 
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/#/dashboard"
+LOGOUT_REDIRECT_URL = "/login/"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -250,8 +250,14 @@ AUTHENTICATION_BACKENDS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
-LANGUAGE_COOKIE_NAME = "language"
-LOCALE_PATHS = [BASE_DIR / "locale"]  #
+LANGUAGE_COOKIE_NAME = "django_language"
+LANGUAGE_COOKIE_AGE = 60 * 60 * 24 * 365  # 1 year
+LANGUAGE_COOKIE_PATH = "/"
+LANGUAGE_COOKIE_DOMAIN = None
+LANGUAGE_COOKIE_SECURE = False  # Set to True in production with HTTPS
+LANGUAGE_COOKIE_HTTPONLY = False  # Must be False for JavaScript access
+LANGUAGE_COOKIE_SAMESITE = 'Lax'
+LOCALE_PATHS = [BASE_DIR / "locale"]
 LANGUAGE_CODE = "en"
 TIME_ZONE = "Asia/Dubai"
 USE_I18N = True
@@ -266,8 +272,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
-    os.path.join(BASE_DIR, "ui", "dist"),  # React frontend static files
-    os.path.join(BASE_DIR, "ui", "public"),  # React frontend public assets
+    os.path.join(BASE_DIR, "static", "dist"),  # React frontend static files
 ]
 
 MEDIA_URL = "/media/"

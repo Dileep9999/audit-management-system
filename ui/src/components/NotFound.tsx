@@ -11,7 +11,9 @@ const NotFound: React.FC = () => {
     if (authService.isAuthenticated()) {
       navigate('/dashboard', { replace: true });
     } else {
-      navigate('/login', { replace: true });
+      // Redirect to Django login
+      const nextParam = encodeURIComponent('/#/dashboard');
+      window.location.href = `http://localhost:8000/login/?next=${nextParam}`;
     }
   }, [navigate]);
 

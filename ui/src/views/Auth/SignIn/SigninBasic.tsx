@@ -64,8 +64,8 @@ const SignInBasic = () => {
 
   // Language options
   const languages = [
-    { code: LAYOUT_LANGUAGES.ENGLISH, label: "EN", name: "English", flag: "🇺🇸" },
-    { code: LAYOUT_LANGUAGES.ARABIC, label: "AR", name: "العربية", flag: "🇸🇦" }
+    { code: LAYOUT_LANGUAGES.ENGLISH, label: "EN", name: "English" },
+    { code: LAYOUT_LANGUAGES.ARABIC, label: "AR", name: "العربية" }
   ];
 
   const getCurrentLanguage = () => {
@@ -179,13 +179,12 @@ const SignInBasic = () => {
                 <button
                   key={lang.code}
                   onClick={() => changeLanguage(lang.code)}
-                  className={`w-full px-4 py-2 text-left hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors flex items-center gap-3 ${
+                  className={`w-full px-4 py-2 text-left hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors flex items-center ${
                     layoutLanguages === lang.code 
                       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300' 
                       : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >
-                  <span className="text-lg">{lang.flag}</span>
                   <span className="font-medium">{lang.name}</span>
                 </button>
               ))}
@@ -242,6 +241,16 @@ const SignInBasic = () => {
       )}
 
       <div className="container">
+                {/* Header Section */}
+        <div className="text-center mb-8">
+          <h1 className="text-h2 font-bold text-primary-700 dark:text-primary-300 mb-2" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '3rem', lineHeight: '1.125' }}>
+            {t("auth.signin.title")}
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400" style={{ fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '1.125rem', lineHeight: '1.75rem' }}>
+            {t("auth.signin.subtitle")}
+          </p>
+        </div>
+
         <div className="grid grid-cols-12">
           <div className="col-span-12 mb-0 md:col-span-10 lg:col-span-6 xl:col-span-4 md:col-start-2 lg:col-start-4 xl:col-start-5 card border-primary-200 dark:border-primary-800 shadow-xl">
             <div className="md:p-10 card-body">
@@ -279,7 +288,7 @@ const SignInBasic = () => {
               <form onSubmit={validateForm}>
                 <div className="grid grid-cols-12 gap-5 mt-5">
                   <div className="col-span-12">
-                    <label htmlFor="username" className="form-label text-primary-700 dark:text-primary-300 font-medium">
+                    <label htmlFor="username" className="form-label text-primary-700 dark:text-primary-300 font-medium" style={{ fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '1rem', lineHeight: '1.5rem' }}>
                       {t("auth.signin.username.label")}
                     </label>
                     <input
@@ -290,10 +299,11 @@ const SignInBasic = () => {
                       className="w-full form-input border-primary-200 dark:border-primary-700 focus:border-primary-500 focus:ring-primary-500 dark:focus:border-primary-400 dark:focus:ring-primary-400"
                       placeholder={t("auth.signin.username.placeholder")}
                       disabled={loading}
+                      style={{ fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '1rem', lineHeight: '1.5rem' }}
                     />
                   </div>
                   <div className="col-span-12">
-                    <label htmlFor="password" className="form-label text-primary-700 dark:text-primary-300 font-medium">
+                    <label htmlFor="password" className="form-label text-primary-700 dark:text-primary-300 font-medium" style={{ fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '1rem', lineHeight: '1.5rem' }}>
                       {t("auth.signin.password.label")}
                     </label>
                     <div className="relative">
@@ -305,6 +315,7 @@ const SignInBasic = () => {
                         className="w-full ltr:pr-8 rtl:pl-8 form-input border-primary-200 dark:border-primary-700 focus:border-primary-500 focus:ring-primary-500 dark:focus:border-primary-400 dark:focus:ring-primary-400"
                         placeholder={t("auth.signin.password.placeholder")}
                         disabled={loading}
+                        style={{ fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '1rem', lineHeight: '1.5rem' }}
                       />
                       <button
                         type="button"
@@ -320,7 +331,7 @@ const SignInBasic = () => {
                     </div>
                   </div>
                   <div className="col-span-12">
-                    <label htmlFor="adChoice" className="form-label text-primary-700 dark:text-primary-300 font-medium">
+                    <label htmlFor="adChoice" className="form-label text-primary-700 dark:text-primary-300 font-medium" style={{ fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '1rem', lineHeight: '1.5rem' }}>
                       {t("auth.signin.domain.label")}
                     </label>
                     <select
@@ -329,6 +340,7 @@ const SignInBasic = () => {
                       onChange={handleInputChange}
                       className="w-full form-input border-primary-200 dark:border-primary-700 focus:border-primary-500 focus:ring-primary-500 dark:focus:border-primary-400 dark:focus:ring-primary-400"
                       disabled={loading}
+                      style={{ fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '1rem', lineHeight: '1.5rem' }}
                     >
                       <option value="local">{t("auth.signin.domain.options.local")}</option>
                       <option value="Emirates.Net">{t("auth.signin.domain.options.emirates")}</option>
@@ -348,6 +360,7 @@ const SignInBasic = () => {
                         <label
                           htmlFor="checkboxBasic1"
                           className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer"
+                          style={{ fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '0.875rem', lineHeight: '1.25rem' }}
                         >
                           {t("auth.signin.remember_me")}
                         </label>
@@ -356,6 +369,7 @@ const SignInBasic = () => {
                         type="button"
                         onClick={handleForgotPasswordClick}
                         className="block text-sm font-medium underline transition duration-300 ease-linear ltr:text-right rtl:text-left shrink-0 text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+                        style={{ fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '0.875rem', lineHeight: '1.25rem' }}
                       >
                         {t("auth.signin.forgot_password")}
                       </button>
@@ -366,6 +380,7 @@ const SignInBasic = () => {
                       type="submit" 
                       className="w-full btn bg-primary-600 hover:bg-primary-700 text-white border-primary-600 hover:border-primary-700 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
                       disabled={loading}
+                      style={{ fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Fira Sans", "Helvetica Neue", sans-serif', fontSize: '1rem', lineHeight: '1.5rem', fontWeight: '500' }}
                     >
                       {loading ? t("auth.signin.signing_in") : t("auth.signin.sign_in_button")}
                     </button>

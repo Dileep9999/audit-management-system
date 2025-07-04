@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import mainLogo from "@assets/images/main-logo.png";
@@ -55,6 +55,8 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@src/slices/reducer";
 import { LAYOUT_TYPES, SIDEBAR_SIZE } from "@src/components/constants/layout";
+import AuthService from "@src/utils/auth_service";
+import { clearTranslationCache } from "@src/hooks/useTranslation";
 
 interface SidebarProps {
   searchSidebar: any;
@@ -73,9 +75,19 @@ const Sidebar = ({
   const router = useLocation();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
-  const { layoutType, layoutSidebar } = useSelector(
+  const { layoutType, layoutSidebar, layoutLanguages } = useSelector(
     (state: RootState) => state.Layout,
   );
+
+  // Debug: Log current language and translation
+  console.log('[Sidebar] Current language:', layoutLanguages, 'Dashboard translation:', t('Dashboard'));
+
+  // Force re-render and clear translation cache on language change
+  const [, forceUpdate] = useReducer(x => x + 1, 0);
+  useEffect(() => {
+    clearTranslationCache(layoutLanguages === 'ar' ? 'ar' : 'en');
+    forceUpdate();
+  }, [layoutLanguages]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -148,14 +160,22 @@ const Sidebar = ({
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
-  const handleOnLogout = () => {
-    localStorage.setItem("wasLoggedIn", "false");
-    navigate("/login");
+  const handleOnLogout = async () => {
+    try {
+      const authService = AuthService.getInstance();
+      await authService.logout();
+      // The logout method will handle the redirect to Django login
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Fallback: redirect to Django login even if logout API fails
+      localStorage.setItem("wasLoggedIn", "false");
+      window.location.href = "http://localhost:8000/login/";
+    }
   };
   return (
     <>
       {isSidebarOpen === true && (
-        <>
+        <React.Fragment key={layoutLanguages}>
           <div
             id="main-sidebar"
             className={`main-sidebar group-data-[layout=boxed]:top-[calc(theme('spacing.topbar')_+_theme('spacing.sidebar-boxed'))] lg:block ${
@@ -395,7 +415,7 @@ const Sidebar = ({
             className={`backdrop-overlay backdrop-blur-xs z-[1004] lg:hidden print:hidden`}
             onClick={toggleSidebar}
           ></div>
-        </>
+        </React.Fragment>
       )}
     </>
   );

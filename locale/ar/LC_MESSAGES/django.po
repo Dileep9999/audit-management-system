@@ -319,6 +319,58 @@ msgstr "الانتقال إلى لوحة الإدارة"
 msgid "Sign in"
 msgstr "تسجيل الدخول"
 
+#: templates/registration/login.html:6
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+#: templates/registration/login.html:6
+msgid "Audit Management System"
+msgstr "نظام إدارة التدقيق"
+
+#: templates/registration/login.html:898
+msgid "Password Reset Required"
+msgstr "إعادة تعيين كلمة المرور مطلوبة"
+
+#: templates/registration/login.html:907
+msgid "For security reasons, password resets must be handled by your system administrator."
+msgstr "لأسباب أمنية، يجب أن تتم إعادة تعيين كلمة المرور بواسطة مدير النظام."
+
+#: templates/registration/login.html:910
+msgid "Please contact the IT support team for immediate assistance with your account access."
+msgstr "يرجى الاتصال بفريق الدعم التقني للحصول على المساعدة الفورية للوصول إلى حسابك."
+
+#: templates/registration/login.html:916
+msgid "Understood"
+msgstr "مفهوم"
+
+#: templates/registration/login.html:963
+msgid "Enter your username"
+msgstr "أدخل اسم المستخدم"
+
+#: templates/registration/login.html:972
+msgid "Enter your password"
+msgstr "أدخل كلمة المرور"
+
+#: templates/registration/login.html:982
+msgid "Authentication Domain"
+msgstr "نطاق المصادقة"
+
+#: templates/registration/login.html:995
+msgid "Keep me signed in"
+msgstr "إبقائي مسجل الدخول"
+
+#: templates/registration/login.html:999
+msgid "Need help?"
+msgstr "تحتاج المساعدة؟"
+
+#: templates/registration/login.html:1005
+msgid "Sign In Securely"
+msgstr "تسجيل الدخول بأمان"
+
+#: templates/registration/login.html:1110
+msgid "Signing in..."
+msgstr "جارٍ تسجيل الدخول..."
+
 #: templates/registration/login.html:27
 msgid "Remember Me"
 msgstr "تذكرني"

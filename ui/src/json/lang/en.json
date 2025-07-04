@@ -1173,7 +1173,7 @@
 
   "auth": {
     "signin": {
-      "title": "Welcome Back!",
+      "title": "Audit Management System",
       "subtitle": "Sign in to your account",
       "username": {
         "label": "Username",

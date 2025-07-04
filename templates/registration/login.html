@@ -4,64 +4,1197 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "Login" %}{% endblock %}
+{% block title %}{% trans "Login" %} - {% trans "Audit Management System" %}{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --primary-50: #F9F7ED;
+    --primary-100: #F2ECCF;
+    --primary-200: #E6D7A2;
+    --primary-300: #D7BC6D;
+    --primary-400: #CBA344;
+    --primary-500: #B68A35;
+    --primary-600: #92722A;
+    --primary-700: #7C5E24;
+    --primary-800: #6C4527;
+    --primary-900: #5D3B26;
+    --primary-950: #361E12;
+    
+    --glass-bg: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.15);
+    --shadow-heavy: rgba(0, 0, 0, 0.25);
+  }
+
+  body {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .login-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 0;
+    background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 25%, var(--primary-200) 50%, var(--primary-300) 75%, var(--primary-400) 100%);
+    overflow: hidden;
+  }
+
+  /* Animated Background Elements */
+  .login-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 20%, rgba(182, 138, 53, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(124, 94, 36, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 20% 70%, rgba(215, 188, 109, 0.06) 0%, transparent 50%);
+    animation: backgroundFloat 20s ease-in-out infinite;
+    z-index: 0;
+  }
+
+  .login-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23B68A35' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    z-index: 1;
+  }
+
+  @keyframes backgroundFloat {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(-20px, -20px) rotate(1deg); }
+    66% { transform: translate(20px, -10px) rotate(-1deg); }
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .header-section {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .main-title {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+    font-size: 3.5rem;
+    line-height: 1.1;
+    font-weight: 800;
+    color: var(--primary-800);
+    margin-bottom: 0.75rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--primary-700);
+    font-weight: 400;
+    opacity: 0.9;
+  }
+
+  .grid-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    width: 100%;
+  }
+
+  .login-card {
+    min-width: 260px;
+    max-width: 340px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    grid-column: 1 / -1 !important;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 1.2rem;
+    box-shadow: 
+      0 18px 36px -10px var(--shadow-heavy),
+      0 0 0 1px rgba(255, 255, 255, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    margin-bottom: 0;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  }
+
+  .login-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 32px 64px -12px var(--shadow-heavy),
+      0 0 0 1px rgba(255, 255, 255, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .card-body {
+    padding: 1.2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo-section {
+    text-align: center;
+    margin-bottom: 1.2rem;
+    animation: fadeIn 1s ease-out 0.4s both;
+  }
+
+  .logo-section img {
+    height: 1.7rem;
+    margin: 0 auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    transition: transform 0.3s ease;
+  }
+
+  .logo-section img:hover {
+    transform: scale(1.05);
+  }
+
+  .error-alert {
+    position: relative;
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #fef2f2 0%, #fde8e8 100%);
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    animation: slideInDown 0.5s ease-out;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    animation: fadeInUp 0.6s ease-out calc(0.6s + var(--delay, 0s)) both;
+  }
+
+  .form-group:nth-child(1) { --delay: 0s; }
+  .form-group:nth-child(2) { --delay: 0.1s; }
+  .form-group:nth-child(3) { --delay: 0.2s; }
+  .form-group:nth-child(4) { --delay: 0.3s; }
+  .form-group:nth-child(5) { --delay: 0.4s; }
+
+  .form-label {
+    display: block;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 600;
+    color: var(--primary-800);
+    margin-bottom: 0.75rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid rgba(182, 138, 53, 0.2);
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    position: relative;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 
+      0 0 0 4px rgba(182, 138, 53, 0.1),
+      0 4px 12px rgba(182, 138, 53, 0.15);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+  }
+
+  .form-input::placeholder {
+    color: rgba(107, 114, 128, 0.7);
+    transition: opacity 0.3s ease;
+  }
+
+  .form-input:focus::placeholder {
+    opacity: 0.5;
+  }
+
+  .password-container {
+    position: relative;
+  }
+
+  .password-container .form-input {
+    padding-right: 3.5rem;
+  }
+
+  .password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--primary-500);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+  }
+
+  .password-toggle:hover {
+    color: var(--primary-600);
+    background: rgba(182, 138, 53, 0.1);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+  }
+
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+  }
+
+  .checkbox-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--primary-600);
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(182, 138, 53, 0.3);
+    border-radius: 0.375rem;
+    margin-right: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .checkbox-input:checked {
+    background-color: var(--primary-600);
+    border-color: var(--primary-600);
+    box-shadow: 0 2px 4px rgba(182, 138, 53, 0.3);
+  }
+
+  .checkbox-input:focus {
+    box-shadow: 0 0 0 3px rgba(182, 138, 53, 0.2);
+  }
+
+  .checkbox-label {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    font-weight: 500;
+    color: var(--primary-700);
+    cursor: pointer;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+    transition: color 0.3s ease;
+  }
+
+  .checkbox-label:hover {
+    color: var(--primary-800);
+  }
+
+  .forgot-password-link {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    font-weight: 600;
+    color: var(--primary-600);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    position: relative;
+  }
+
+  .forgot-password-link:hover {
+    color: var(--primary-700);
+    background: rgba(182, 138, 53, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .submit-button {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+      0 10px 25px rgba(182, 138, 53, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+    letter-spacing: -0.01em;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .submit-button:hover {
+    background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-800) 100%);
+    box-shadow: 
+      0 15px 35px rgba(182, 138, 53, 0.4),
+      0 8px 20px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .submit-button:hover::before {
+    left: 100%;
+  }
+
+  .submit-button:active {
+    transform: translateY(0);
+    box-shadow: 
+      0 5px 15px rgba(182, 138, 53, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Language Dropdown */
+  .language-dropdown {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    z-index: 10;
+    animation: fadeInDown 0.6s ease-out 0.8s both;
+  }
+
+  .language-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.75rem;
+    color: var(--primary-700);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  .language-button:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--primary-800);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .language-menu {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    padding: 0.75rem 0;
+    min-width: 160px;
+    z-index: 20;
+    display: none;
+    animation: fadeInScale 0.3s ease-out;
+  }
+
+  .language-menu.show {
+    display: block;
+  }
+
+  .language-option {
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--primary-700);
+    font-weight: 500;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  .language-option:hover {
+    background: rgba(182, 138, 53, 0.1);
+    color: var(--primary-800);
+  }
+
+  .language-option.active {
+    background: rgba(182, 138, 53, 0.15);
+    color: var(--primary-800);
+    font-weight: 600;
+  }
+
+  /* Modal */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 1rem;
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .modal.show {
+    display: flex;
+  }
+
+  .modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 1.25rem;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    max-width: 32rem;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .modal-body {
+    padding: 2rem;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .modal-icon {
+    padding: 0.75rem;
+    background: linear-gradient(135deg, var(--primary-100) 0%, var(--primary-200) 100%);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(182, 138, 53, 0.2);
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-800);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+  }
+
+  .modal-close:hover {
+    color: #6b7280;
+    background: rgba(156, 163, 175, 0.1);
+    transform: scale(1.1);
+  }
+
+  .modal-text {
+    color: var(--primary-700);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  .modal-subtext {
+    font-size: 0.9rem;
+    color: var(--primary-600);
+    margin-bottom: 2rem;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+    opacity: 0.8;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .modal-button {
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(182, 138, 53, 0.3);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Ubuntu', 'Fira Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  .modal-button:hover {
+    background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-800) 100%);
+    box-shadow: 0 8px 20px rgba(182, 138, 53, 0.4);
+    transform: translateY(-2px);
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes slideInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 640px) {
+    .main-title {
+      font-size: 2.5rem;
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+    }
+    
+    .language-dropdown {
+      top: 1rem;
+      right: 1rem;
+    }
+    
+    .language-button {
+      padding: 0.5rem 0.75rem;
+      gap: 0.5rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .login-card {
+      min-width: 380px;
+      max-width: 480px;
+      width: 100%;
+      grid-column: unset;
+    }
+    .grid-container {
+      min-height: 70vh;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .login-card {
+      min-width: 420px;
+      max-width: 520px;
+    }
+    .grid-container {
+      min-height: 80vh;
+    }
+  }
+
+  /* Loading state */
+  .submit-button.loading {
+    pointer-events: none;
+  }
+
+  .submit-button.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border: 2px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .login-form label {
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .login-form input[type="text"],
+  .login-form input[type="password"] {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.7rem;
+    height: 2.1rem;
+    border-radius: 0.5rem;
+  }
+
+  .login-form button[type="submit"] {
+    font-size: 1rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 0.5rem;
+  }
+
+  /* RTL Styles */
+  .rtl, .rtl * {
+    direction: rtl !important;
+    text-align: right !important;
+  }
+  
+  .rtl .login-container {
+    direction: rtl !important;
+  }
+  
+  .rtl .form-label {
+    text-align: right !important;
+  }
+  
+  .rtl .form-label i {
+    margin-right: 0 !important;
+    margin-left: 0.5rem !important;
+  }
+  
+  .rtl .form-input {
+    text-align: right !important;
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+  }
+  
+  .rtl .form-input::placeholder {
+    text-align: right !important;
+  }
+  
+  .rtl .password-container {
+    flex-direction: row-reverse !important;
+  }
+  
+  .rtl .password-toggle {
+    left: 1rem !important;
+    right: auto !important;
+  }
+  
+  .rtl .checkbox-container {
+    flex-direction: row-reverse !important;
+  }
+  
+  .rtl .checkbox-group {
+    flex-direction: row-reverse !important;
+  }
+  
+  .rtl .checkbox-label {
+    text-align: right !important;
+    margin-right: 0 !important;
+    margin-left: 0.5rem !important;
+  }
+  
+  .rtl .forgot-password-link {
+    text-align: left !important;
+  }
+  
+  .rtl .error-alert {
+    text-align: right !important;
+  }
+  
+  .rtl .error-alert i {
+    margin-right: 0 !important;
+    margin-left: 0.5rem !important;
+  }
+  
+  .rtl .language-dropdown {
+    left: 1.5rem !important;
+    right: auto !important;
+  }
+  
+  .rtl .language-button {
+    flex-direction: row-reverse !important;
+  }
+  
+  .rtl .language-button i:first-child {
+    margin-right: 0 !important;
+    margin-left: 0.5rem !important;
+  }
+  
+  .rtl .language-button i:last-child {
+    margin-left: 0 !important;
+    margin-right: 0.5rem !important;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="login-container">
-    <div class="login-card">
-        <div class="login-header">
-            <h2>{% trans "Sign in" %}</h2>
+{% get_current_language as LANGUAGE_CODE %}
+<div class="login-container {% if LANGUAGE_CODE == 'ar' %}rtl{% endif %}">
+  <!-- Language Dropdown -->
+  <div class="language-dropdown {% if LANGUAGE_CODE == 'ar' %}rtl{% endif %}">
+    <form action="{% url 'set_language' %}" method="post" class="language-form">
+      {% csrf_token %}
+      <input name="next" type="hidden" value="{{ request.path }}">
+      <div style="position: relative;">
+        <button type="button" onclick="toggleLanguageDropdown()" class="language-button">
+          <i data-lucide="globe" style="width: 1.125rem; height: 1.125rem;"></i>
+          <span>
+            {% get_current_language as LANGUAGE_CODE %}
+            {% if LANGUAGE_CODE == 'ar' %}العربية{% else %}English{% endif %}
+          </span>
+          <i data-lucide="chevron-down" style="width: 1rem; height: 1rem;"></i>
+        </button>
+        
+        <div id="language-dropdown" class="language-menu">
+          {% get_available_languages as LANGUAGES %}
+          {% for lang_code, lang_name in LANGUAGES %}
+            <button type="button" onclick="changeLanguage('{{ lang_code }}')" class="language-option {% if lang_code == LANGUAGE_CODE %}active{% endif %}">
+              <span>{{ lang_name }}</span>
+            </button>
+          {% endfor %}
         </div>
-        <form method="post" class="login-form">
-            {% csrf_token %}
-            
-            {% if form.non_field_errors %}
-            <div class="error-message">
+      </div>
+    </form>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgot-password-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="modal-header">
+          <div class="modal-header-content">
+            <div class="modal-icon">
+              <i data-lucide="shield-alert" style="width: 1.5rem; height: 1.5rem; color: var(--primary-600);"></i>
+            </div>
+            <h3 class="modal-title">{% trans "Password Reset Required" %}</h3>
+          </div>
+          <button onclick="closeForgotPasswordModal()" class="modal-close">
+            <i data-lucide="x" style="width: 1.25rem; height: 1.25rem;"></i>
+          </button>
+        </div>
+        
+        <div>
+          <p class="modal-text">
+            {% trans "For security reasons, password resets must be handled by your system administrator." %}
+          </p>
+          <p class="modal-subtext">
+            {% trans "Please contact the IT support team for immediate assistance with your account access." %}
+          </p>
+        </div>
+        
+        <div class="modal-footer">
+          <button onclick="closeForgotPasswordModal()" class="modal-button">
+            {% trans "Understood" %}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <h1 class="main-title">
+        {% trans "Audit Management System" %}
+      </h1>
+      
+    </div>
+
+    <div class="grid-container">
+      <div class="login-card">
+        <div class="card-body">
+          <div class="logo-section">
+            <img src="{% static 'images/uae-federal-authority-logo.jpeg' %}" alt="UAE Federal Authority" style="width: 100%; height: 100%;">
+          </div>
+          
+          {% if form.non_field_errors or form.errors %}
+          <div class="error-alert">
+            <i data-lucide="alert-triangle" style="width: 1rem; height: 1rem; display: inline; margin-right: 0.5rem;"></i>
+            <span>
                 {% for error in form.non_field_errors %}
+                {{ error }}
+              {% endfor %}
+              {% for field in form %}
+                {% for error in field.errors %}
                     {{ error }}
                 {% endfor %}
+              {% endfor %}
+            </span>
             </div>
             {% endif %}
 
-            {% for field in form %}
+          <form method="post" id="login-form" class="{% if LANGUAGE_CODE == 'ar' %}rtl{% endif %}">
+            {% csrf_token %}
+            <div class="form-grid {% if LANGUAGE_CODE == 'ar' %}rtl{% endif %}">
+              <div class="form-group">
+                <label for="id_username" class="form-label">
+                  <i data-lucide="user" style="width: 1rem; height: 1rem; display: inline; margin-right: 0.5rem;"></i>
+                  {% trans "Username" %}
+                </label>
+                <input type="text" name="username" id="id_username"  autocomplete="off" class="form-input" placeholder="{% trans 'Enter your username' %}" required>
+              </div>
+              
             <div class="form-group">
-                {{ field.label_tag }}
-                {{ field }}
-                {% if field.errors %}
-                <div class="error-message">
-                    {% for error in field.errors %}
-                        {{ error }}
-                    {% endfor %}
+                <label for="id_password" class="form-label">
+                  <i data-lucide="lock" style="width: 1rem; height: 1rem; display: inline; margin-right: 0.5rem;"></i>
+                  {% trans "Password" %}
+                </label>
+                <div class="password-container">
+                  <input type="password" name="password" id="id_password" class="form-input" placeholder="{% trans 'Enter your password' %}" required>
+                  <button type="button" onclick="togglePassword()" class="password-toggle">
+                    <i data-lucide="eye-off" id="password-icon" style="width: 1.25rem; height: 1.25rem;"></i>
+                  </button>
                 </div>
-                {% endif %}
             </div>
-            {% endfor %}
 
             <div class="form-group">
-                <label for="ad_choice">{% trans "Select Domain" %}</label>
-                <select name="ad_choice" id="ad_choice">
+                <label for="ad_choice" class="form-label">
+                  <i data-lucide="server" style="width: 1rem; height: 1rem; display: inline; margin-right: 0.5rem;"></i>
+                  {% trans "Authentication Domain" %}
+                </label>
+                <select name="ad_choice" id="ad_choice" class="form-input">
                     {% for key in ad_keys %}
                         <option value="{{ key }}">{{ key|capfirst }}</option>
                     {% endfor %}
                 </select>
             </div>
 
+              <div class="checkbox-container">
             <div class="checkbox-group">
-                <input type="checkbox" name="remember_me" id="id_remember_me">
-                <label for="id_remember_me">{% trans "Remember Me" %}</label>
+                  <input id="remember_me" name="remember_me" type="checkbox" class="checkbox-input">
+                  <label for="remember_me" class="checkbox-label">
+                    {% trans "Keep me signed in" %}
+                  </label>
+                </div>
+                <button type="button" onclick="showForgotPasswordModal()" class="forgot-password-link">
+                  {% trans "Need help?" %}
+                </button>
+              </div>
+              
+              <div class="form-group">
+                <button type="submit" class="submit-button" id="signin-btn">
+                  <span id="button-text">{% trans "Sign In Securely" %}</span>
+                </button>
+              </div>
             </div>
-
-            <button type="submit" class="submit-button">{% trans "Sign in" %}</button>
         </form>
-       <div class="pb-4">
-        {% comment %} <a href="{% url 'password_reset' %}">Forgot Password?</a> {% endcomment %}
-       </a>
-		</div>
-        {% if password_reset_url %}
-        <div class="forgot-password">
-            <a href="{% url 'password_reset' %}">{% trans "Forgot Password?" %}</a>
         </div>
-        {% endif %}
+      </div>
+    </div>
     </div>
 </div>
+
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  // Toggle password visibility
+  function togglePassword() {
+    const passwordInput = document.getElementById('id_password');
+    const passwordIcon = document.getElementById('password-icon');
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      passwordIcon.setAttribute('data-lucide', 'eye');
+    } else {
+      passwordInput.type = 'password';
+      passwordIcon.setAttribute('data-lucide', 'eye-off');
+    }
+    lucide.createIcons();
+  }
+
+  // Toggle language dropdown
+  function toggleLanguageDropdown() {
+    const dropdown = document.getElementById('language-dropdown');
+    dropdown.classList.toggle('show');
+  }
+
+  // Change language
+  function changeLanguage(langCode) {
+    const form = document.querySelector('.language-form');
+    const languageSelect = document.createElement('select');
+    languageSelect.name = 'language';
+    languageSelect.value = langCode;
+    languageSelect.style.display = 'none';
+    
+    const option = document.createElement('option');
+    option.value = langCode;
+    option.selected = true;
+    languageSelect.appendChild(option);
+    
+    form.appendChild(languageSelect);
+    form.submit();
+  }
+
+  // Helper function to set cookies
+  function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/;SameSite=Lax';
+  }
+
+  // Helper function to get cookies
+  function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+
+  // Apply RTL styles based on current language
+  function applyRTL() {
+    const currentLang = '{{ LANGUAGE_CODE }}';
+    const elementsToToggle = [
+      '.login-container',
+      '.language-dropdown', 
+      '#login-form',
+      '.form-grid'
+    ];
+    
+    elementsToToggle.forEach(selector => {
+      const element = document.querySelector(selector);
+      if (element) {
+        if (currentLang === 'ar') {
+          element.classList.add('rtl');
+        } else {
+          element.classList.remove('rtl');
+        }
+      }
+    });
+  }
+
+  // Apply RTL and language on page load
+  window.addEventListener('load', function() {
+    applyRTL();
+    checkLanguageCookie();
+  });
+
+  // Check language cookie and update UI accordingly
+  function checkLanguageCookie() {
+    const cookieLang = getCookie('{{ settings.LANGUAGE_COOKIE_NAME }}');
+    const currentLang = '{{ LANGUAGE_CODE }}';
+    
+    // Update the language dropdown to show the correct language based on current language
+    updateLanguageDropdown(currentLang);
+    
+    // Apply RTL if the current language is Arabic
+    if (currentLang === 'ar') {
+      document.body.classList.add('rtl');
+      document.documentElement.setAttribute('dir', 'rtl');
+    } else {
+      document.body.classList.remove('rtl');
+      document.documentElement.setAttribute('dir', 'ltr');
+    }
+  }
+
+  // Update language dropdown display
+  function updateLanguageDropdown(langCode) {
+    const langButton = document.querySelector('.language-button span');
+    if (langButton) {
+      if (langCode === 'ar') {
+        langButton.textContent = 'العربية';
+      } else {
+        langButton.textContent = 'English';
+      }
+    }
+  }
+
+  // Show forgot password modal
+  function showForgotPasswordModal() {
+    document.getElementById('forgot-password-modal').classList.add('show');
+  }
+
+  // Close forgot password modal
+  function closeForgotPasswordModal() {
+    document.getElementById('forgot-password-modal').classList.remove('show');
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('language-dropdown');
+    const button = event.target.closest('.language-button');
+    
+    if (!button) {
+      dropdown.classList.remove('show');
+    }
+  });
+
+  // Handle form submission with loading state
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    const submitButton = document.getElementById('signin-btn');
+    const buttonText = document.getElementById('button-text');
+    
+    // Add loading state
+    submitButton.classList.add('loading');
+    buttonText.textContent = '{% trans "Signing in..." %}';
+    
+    // Allow the form to submit normally
+    // The Django view will handle the redirect
+  });
+
+  // Input focus animations
+  document.querySelectorAll('.form-input').forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.style.transform = 'translateY(-2px)';
+    });
+    
+    input.addEventListener('blur', function() {
+      this.parentElement.style.transform = 'translateY(0)';
+    });
+  });
+
+  // Check if user is already authenticated and redirect
+  window.addEventListener('load', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const next = urlParams.get('next');
+    
+    if (window.location.search.includes('success') || 
+        (next && next.includes('dashboard'))) {
+      window.location.href = '/#/dashboard';
+    }
+  });
+
+  // Add subtle parallax effect to background
+  window.addEventListener('mousemove', function(e) {
+    const container = document.querySelector('.login-container');
+    const x = e.clientX / window.innerWidth;
+    const y = e.clientY / window.innerHeight;
+    
+    container.style.backgroundPosition = `${50 + x * 2}% ${50 + y * 2}%`;
+  });
+</script>
 {% endblock %}

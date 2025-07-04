@@ -39,7 +39,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     if (location.pathname !== '/dashboard') {
       localStorage.setItem('redirectAfterLogin', location.pathname);
     }
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    // Redirect to Django login with next parameter
+    const nextParam = encodeURIComponent(`/#${location.pathname}`);
+    window.location.href = `http://localhost:8000/login/?next=${nextParam}`;
+    return null;
   }
 
   return <>{children}</>;
